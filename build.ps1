@@ -17,11 +17,6 @@ properties {
 	$sln_file = "$source_dir\$product.sln"
 }
 
-# Projects information
-properties {
-    [array] $projects = @{ Name="TestsShared"; Description="Common helpers for all test libraries" }
-}
-
 # Unit tests information
 properties {
     $unit_tests_category = "UnitTests"
@@ -36,6 +31,33 @@ task GetVersion -description "Sets version property according to type of build (
 	#TODO: fetch version information from environment variables provided by Hudson CI
 }
 
+task GetProjects -description "Identifies all projects in product" {
+    [array] $script:projects = @()
+    $project_files = Get-ChildItem -Filter "*.csproj" -Path $source_dir -Recurse
+    
+    foreach($project_file in $project_files) {
+        $project_name = $project_file.Name.Substring(0, $project_file.Name.Length - ".csproj".Length)
+
+        # validate that project's name matches it's location
+        $expected_directory = "$source_dir\$project_name"
+        Assert ($expected_directory -eq $project_file.DirectoryName) "Project name doesn't match directory name: $($project_file.FullName)"
+        
+        # try to get project's description
+        $description = ""
+        $readme_file = $project_file.DirectoryName + "\readme.txt"
+        if(Test-Path $readme_file) {
+            $description = Get-Content $readme_file -TotalCount 1
+        }
+        
+        $project = New-Object PSObject -Property @{Name = $project_name; Description = $description}
+        $script:projects = $script:projects + $project
+    }
+}
+
+task ListProjects -depends GetProjects {
+    $script:projects | Select-Object Name, Description | Format-Table
+}
+
 task Logo -depends GetVersion -description "Displays build header" -action {
 	"----------------------------------------------------------------------"
 	"Building $product version $version"
@@ -48,13 +70,13 @@ task Clean {
     Remove-Item -Recurse -Force $build_dir -ErrorAction SilentlyContinue
 }
  
-task Init -depends Clean {
+task Init -depends Clean, GetProjects {
     New-Item $release_dir -ItemType directory | Out-Null
     New-Item $build_dir -ItemType directory | Out-Null
     
     # generate assembly infos
-	if($projects) {
-		foreach($project in $projects) {
+	if($script:projects) {
+		foreach($project in $script:projects) {
 			$file = "$source_dir\$($project.Name)\Properties\AssemblyInfo.cs"
 			Generate-AssemblyInfo -file $file `
 				-title $project.Name `
