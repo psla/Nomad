@@ -19,7 +19,7 @@ properties {
 
 # Projects information
 properties {
-    [array] $projects
+    [array] $projects = @{ Name="TestsShared"; Description="Common helpers for all test libraries" }
 }
 
 # Unit tests information
