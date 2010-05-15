@@ -19,8 +19,7 @@ properties {
 
 # Projects information
 properties {
-    $projects = @{ Name = "Nomad"; Description = "Main library of the Nomad framework" },
-                @{ Name = "Nomad.Tests"; Description = "Tests for Nomad library" }
+    [array] $projects
 }
 
 # Unit tests information
