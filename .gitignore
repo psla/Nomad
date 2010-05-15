@@ -1,0 +1,10 @@
+/[Bb]uild/
+/[Rr]elease/
+*resharper.user
+_ReSharper.*/
+*.user
+*.suo
+*.cache
+[Bb]in/
+[Oo]bj/
+[Aa]ssembly[Ii]nfo.cs
