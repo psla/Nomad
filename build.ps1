@@ -53,21 +53,23 @@ task Init -depends Clean {
     New-Item $build_dir -ItemType directory | Out-Null
     
     # generate assembly infos
-    foreach($project in $projects) {
-        $file = "$source_dir\$($project.Name)\Properties\AssemblyInfo.cs"
-        Generate-AssemblyInfo -file $file `
-            -title $project.Name `
-            -description $project.Description `
-            -product $product `
-            -version $version `
-            -company $company `
-            -copyright $copyright
-    }
+	if($projects) {
+		foreach($project in $projects) {
+			$file = "$source_dir\$($project.Name)\Properties\AssemblyInfo.cs"
+			Generate-AssemblyInfo -file $file `
+				-title $project.Name `
+				-description $project.Description `
+				-product $product `
+				-version $version `
+				-company $company `
+				-copyright $copyright
+		}
+	}
 }
  
 task Compile -depends Init {
     # execute msbuild - it is added to path by PSake
-    Exec { msbuild $sln_file /nologo /verbosity:minimal }
+    Exec { msbuild "$sln_file"  /p:Configuration=Release /nologo /verbosity:quiet }
 }
 
 task UnitTest -depends Compile {
