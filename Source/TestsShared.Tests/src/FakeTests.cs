@@ -20,7 +20,7 @@ namespace TestsShared.Tests
         [Test]
         public void PostReceiveTest()
         {
-            Assert.Pass("Checking if build runs after push");
+            Assert.Pass("Checking if build runs after push fix");
         }
     }
 }
