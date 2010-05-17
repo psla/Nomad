@@ -106,7 +106,7 @@ task UnitTest -depends Compile {
     # execute tests from each of those libraries
     foreach($test_assembly in $test_assemblies) {
         $file_name = $test_assembly.Name
-        $results_file_name = $file_name.Replace(".Tests.dll", "-unittestresults.xml")
+        $results_file_name = $file_name.Replace(".Tests.dll", ".unittest.results.xml")
 		$results_path = Join-Path $build_dir $results_file_name
         
         Write-Host "Executing unit tests from assembly $file_name"
