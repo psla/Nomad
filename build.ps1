@@ -107,9 +107,10 @@ task UnitTest -depends Compile {
     foreach($test_assembly in $test_assemblies) {
         $file_name = $test_assembly.Name
         $results_file_name = $file_name.Replace(".Tests.dll", ".unittest.results.xml")
+		$results_path = Join-Path $build_dir $results_file_name
         
         Write-Host "Executing unit tests from assembly $file_name"
-        Exec { & $lib_dir\NUnit\nunit-console.exe /nologo /include:$unit_tests_category $test_assembly /xml=$results_file_name }
+        Exec { & $lib_dir\NUnit\nunit-console.exe /nologo /include:$unit_tests_category $test_assembly /xml=$results_path }
     }
 }
 
