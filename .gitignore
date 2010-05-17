@@ -1,6 +1,7 @@
 /[Bb]uild/
 /[Rr]elease/
-*resharper.user
+-*resharper.user
+*.ReSharper
 _ReSharper.*/
 *.user
 *.suo
@@ -8,3 +9,4 @@ _ReSharper.*/
 [Bb]in/
 [Oo]bj/
 [Aa]ssembly[Ii]nfo.cs
+*.unittest.results.xml
