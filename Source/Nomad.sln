@@ -3,6 +3,10 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestsShared", "TestsShared\TestsShared.csproj", "{568F24F9-9ED8-4D0B-931C-8506E3A4808C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nomad", "Nomad\Nomad.csproj", "{3828EBBD-FFBA-4C30-BF46-D3742BC165F1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nomad.Tests", "Nomad.Tests\Nomad.Tests.csproj", "{18AC8400-37F4-4473-9BEB-204B0C9D9ABE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +17,14 @@ Global
 		{568F24F9-9ED8-4D0B-931C-8506E3A4808C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{568F24F9-9ED8-4D0B-931C-8506E3A4808C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{568F24F9-9ED8-4D0B-931C-8506E3A4808C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3828EBBD-FFBA-4C30-BF46-D3742BC165F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3828EBBD-FFBA-4C30-BF46-D3742BC165F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3828EBBD-FFBA-4C30-BF46-D3742BC165F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3828EBBD-FFBA-4C30-BF46-D3742BC165F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18AC8400-37F4-4473-9BEB-204B0C9D9ABE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18AC8400-37F4-4473-9BEB-204B0C9D9ABE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18AC8400-37F4-4473-9BEB-204B0C9D9ABE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18AC8400-37F4-4473-9BEB-204B0C9D9ABE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
