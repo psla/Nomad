@@ -109,9 +109,7 @@ task UnitTest -depends Compile {
         $results_file_name = $file_name.Replace(".Tests.dll", ".unittest.results.xml")
         
         Write-Host "Executing unit tests from assembly $file_name"
-        Exec { & $lib_dir\NUnit\nunit-console.exe /nologo $test_assembly /xml=$results_file_name }
-		# probably this should be "Tests"..
-		#/include:$unit_tests_category
+        Exec { & $lib_dir\NUnit\nunit-console.exe /nologo /include:$unit_tests_category $test_assembly /xml=$results_file_name }
     }
 }
 
