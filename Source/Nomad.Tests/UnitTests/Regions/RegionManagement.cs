@@ -8,7 +8,8 @@ using TestsShared;
 
 namespace Nomad.Tests.UnitTests.Regions
 {
-    public class RegionManagement : UnitTestsFixture
+    [TestFixture]
+    public class RegionManagement
     {
         private const string RegionName = "region name";
         private DependencyObject _view;
@@ -40,6 +41,7 @@ namespace Nomad.Tests.UnitTests.Regions
         /// Describe behavior of empty region manager - no regions should be available, and
         /// trying to get one will result in failure
         /// </summary>
+        [UnitTests]
         public class EmptyRegionManager : RegionManagement
         {
             [Test]
@@ -60,6 +62,7 @@ namespace Nomad.Tests.UnitTests.Regions
         /// Client should be able to retrieve the region, validate it's presence.
         /// It should be impossible to add new region with the same name.
         /// </summary>
+        [UnitTests]
         public class SingleRegionAdded : RegionManagement
         {
             private IRegion _returnedRegion;
@@ -108,6 +111,7 @@ namespace Nomad.Tests.UnitTests.Regions
         /// <summary>
         /// Validates that region manager can store more than one region
         /// </summary>
+        [UnitTests]
         public class TwoRegionsAdded : RegionManagement
         {
             private const string SecondRegionName = "second region name";
