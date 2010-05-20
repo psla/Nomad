@@ -24,11 +24,7 @@ namespace Nomad.Tests.UnitTests.Regions
             _region = new Mock<IRegion>().Object;
             _view = new DependencyObject();
 
-            _regionFactoryMock = new Mock<IRegionFactory>();
-            _regionFactoryMock
-                .Setup(factory => factory.CreateRegion(_view))
-                .Returns(_region);
-
+            _regionFactoryMock = new Mock<IRegionFactory>(MockBehavior.Strict);
             _regionManager = new RegionManager(_regionFactoryMock.Object);
 
             OnSetUp();
@@ -41,8 +37,8 @@ namespace Nomad.Tests.UnitTests.Regions
 
 
         /// <summary>
-        /// Describe behavior of empty region manager - no regions should be available, and
-        /// trying to get one will result in failure
+        ///     Describe behavior of empty region manager - no regions should be available, and
+        ///     trying to get one will result in failure
         /// </summary>
         [UnitTests]
         public class EmptyRegionManager : RegionManagement
@@ -62,9 +58,53 @@ namespace Nomad.Tests.UnitTests.Regions
         }
 
         /// <summary>
-        /// Describe behavior of region manager with region registered.
-        /// Client should be able to retrieve the region, validate it's presence.
-        /// It should be impossible to add new region with the same name.
+        ///     Describes argument and dependency contracts - prohibited argument values and 
+        ///     dependency behaviors and reactions to contract violations
+        /// </summary>
+        [UnitTests]
+        public class RegionManagerArgumentAndDependencyValidation : RegionManagement
+        {
+            [Test]
+            public void attach_region_throws_on_null_region_name()
+            {
+                Assert.Throws<ArgumentException>(() => _regionManager.AttachRegion(null, _view));
+            }
+
+            [Test]
+            public void attach_region_throws_on_empty_region_name()
+            {
+                Assert.Throws<ArgumentException>(() => _regionManager.AttachRegion(string.Empty, _view));
+            }
+
+            [Test]
+            public void contains_region_throws_on_null_region_name()
+            {
+                Assert.Throws<ArgumentException>(() => _regionManager.ContainsRegion(null));
+            }
+
+            [Test]
+            public void contains_region_throws_on_empty_region_name()
+            {
+                Assert.Throws<ArgumentException>(() => _regionManager.ContainsRegion(string.Empty));
+            }
+
+            [Test]
+            public void get_region_throws_on_null_region_name()
+            {
+                Assert.Throws<ArgumentException>(() => _regionManager.GetRegion(null));
+            }
+
+            [Test]
+            public void get_region_throws_on_empty_region_name()
+            {
+                Assert.Throws<ArgumentException>(() => _regionManager.GetRegion(string.Empty));
+            }
+        }
+
+        /// <summary>
+        ///     Describe behavior of region manager with region registered.
+        ///     Client should be able to retrieve the region, validate it's presence.
+        ///     It should be impossible to add new region with the same name.
         /// </summary>
         [UnitTests]
         public class SingleRegionAdded : RegionManagement
@@ -74,6 +114,10 @@ namespace Nomad.Tests.UnitTests.Regions
 
             protected override void OnSetUp()
             {
+                _regionFactoryMock
+                    .Setup(factory => factory.CreateRegion(_view))
+                    .Returns(_region);
+
                 _returnedRegion = _regionManager.AttachRegion(RegionName, _view);
             }
 
@@ -120,7 +164,7 @@ namespace Nomad.Tests.UnitTests.Regions
         }
 
         /// <summary>
-        /// Validates that region manager can store more than one region
+        ///     Validates that region manager can store more than one region
         /// </summary>
         [UnitTests]
         public class TwoRegionsAdded : RegionManagement
@@ -132,6 +176,10 @@ namespace Nomad.Tests.UnitTests.Regions
 
             protected override void OnSetUp()
             {
+                _regionFactoryMock
+                    .Setup(factory => factory.CreateRegion(_view))
+                    .Returns(_region);
+
                 _secondView = new DependencyObject();
                 _secondRegion = new Mock<IRegion>().Object;
                 _regionFactoryMock

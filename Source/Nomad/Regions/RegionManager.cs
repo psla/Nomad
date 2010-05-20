@@ -41,6 +41,7 @@ namespace Nomad.Regions
         /// </exception>
         public IRegion AttachRegion(string regionName, DependencyObject view)
         {
+            ValidateRegionName(regionName);
             if (ContainsRegion(regionName))
                 throw new ArgumentException(string.Format("Region \"{0}\" already exists",
                                                           regionName));
@@ -62,11 +63,14 @@ namespace Nomad.Regions
         /// </exception>
         public IRegion GetRegion(string regionName)
         {
+            ValidateRegionName(regionName);
+
             IRegion region;
             if (!_regions.TryGetValue(regionName, out region))
-                throw new KeyNotFoundException(string.Format(
-                    "Region \"{0}\" has not been attached",
-                    regionName));
+            {
+                var message = string.Format("Region \"{0}\" has not been attached", regionName);
+                throw new KeyNotFoundException(message);
+            }
             return region;
         }
 
@@ -81,7 +85,23 @@ namespace Nomad.Regions
         /// </returns>
         public bool ContainsRegion(string regionName)
         {
+            ValidateRegionName(regionName);
             return _regions.ContainsKey(regionName);
+        }
+
+
+        /// <summary>
+        ///     Ensures that <paramref name="regionName"/> is valid region name.
+        ///     If not, exception is thrown
+        /// </summary>
+        /// <param name="regionName">Input to be validated</param>
+        /// <exception cref="ArgumentException">
+        ///     When <paramref name="regionName"/> is not a valid region name.
+        /// </exception>
+        private static void ValidateRegionName(string regionName)
+        {
+            if (string.IsNullOrEmpty(regionName))
+                throw new ArgumentException("Region name cannot be null or empty", "regionName");
         }
     }
 }
