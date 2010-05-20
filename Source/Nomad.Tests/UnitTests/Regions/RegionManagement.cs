@@ -17,6 +17,7 @@ namespace Nomad.Tests.UnitTests.Regions
         private Mock<IRegionFactory> _regionFactoryMock;
         private IRegion _region;
 
+
         [SetUp]
         public void SetUp()
         {
@@ -33,10 +34,12 @@ namespace Nomad.Tests.UnitTests.Regions
             OnSetUp();
         }
 
+
         protected virtual void OnSetUp()
         {
         }
-    
+
+
         /// <summary>
         /// Describe behavior of empty region manager - no regions should be available, and
         /// trying to get one will result in failure
@@ -49,6 +52,7 @@ namespace Nomad.Tests.UnitTests.Regions
             {
                 Assert.IsFalse(_regionManager.ContainsRegion(RegionName));
             }
+
 
             [Test]
             public void get_region_throws_exception()
@@ -67,10 +71,12 @@ namespace Nomad.Tests.UnitTests.Regions
         {
             private IRegion _returnedRegion;
 
+
             protected override void OnSetUp()
             {
                 _returnedRegion = _regionManager.AttachRegion(RegionName, _view);
             }
+
 
             [Test]
             public void region_manager_creates_region()
@@ -78,11 +84,13 @@ namespace Nomad.Tests.UnitTests.Regions
                 Assert.AreSame(_region, _returnedRegion);
             }
 
+
             [Test]
             public void can_retrieve_attached_region()
             {
                 Assert.AreSame(_region, _regionManager.GetRegion(RegionName));
             }
+
 
             [Test]
             public void can_validate_existence_of_attached_region()
@@ -90,11 +98,14 @@ namespace Nomad.Tests.UnitTests.Regions
                 Assert.IsTrue(_regionManager.ContainsRegion(RegionName));
             }
 
+
             [Test]
             public void throws_on_adding_new_region_with_same_name()
             {
-                Assert.Throws<ArgumentException>(() => _regionManager.AttachRegion(RegionName, _view));
+                Assert.Throws<ArgumentException>(
+                    () => _regionManager.AttachRegion(RegionName, _view));
             }
+
 
             [Test]
             public void region_is_not_created_on_adding_new_region_with_same_name()
@@ -118,6 +129,7 @@ namespace Nomad.Tests.UnitTests.Regions
             private IRegion _secondRegion;
             private DependencyObject _secondView;
 
+
             protected override void OnSetUp()
             {
                 _secondView = new DependencyObject();
@@ -129,12 +141,14 @@ namespace Nomad.Tests.UnitTests.Regions
                 _regionManager.AttachRegion(RegionName, _view);
                 _regionManager.AttachRegion(SecondRegionName, _secondView);
             }
-            
+
+
             [Test]
             public void can_retrieve_attached_region()
             {
                 Assert.AreSame(_region, _regionManager.GetRegion(RegionName));
             }
+
 
             [Test]
             public void can_validate_existence_of_attached_region()

@@ -12,6 +12,7 @@ namespace Nomad.Regions
         private readonly IRegionFactory _regionFactory;
         private readonly Dictionary<string, IRegion> _regions = new Dictionary<string, IRegion>();
 
+
         /// <summary>
         ///     Initializes new instance of the <see cref="RegionManager"/> class.
         /// </summary>
@@ -22,6 +23,7 @@ namespace Nomad.Regions
             if (regionFactory == null) throw new ArgumentNullException("regionFactory");
             _regionFactory = regionFactory;
         }
+
 
         /// <summary>
         ///     Attaches new region to <paramref name="view"/> and registers it under <paramref name="regionName"/> name.
@@ -40,13 +42,15 @@ namespace Nomad.Regions
         public IRegion AttachRegion(string regionName, DependencyObject view)
         {
             if (ContainsRegion(regionName))
-                throw new ArgumentException(string.Format("Region \"{0}\" already exists", regionName));
+                throw new ArgumentException(string.Format("Region \"{0}\" already exists",
+                                                          regionName));
 
             var region = _regionFactory.CreateRegion(view);
 
             _regions.Add(regionName, region);
             return region;
         }
+
 
         /// <summary>
         ///     Gets <see cref="IRegion"/> registered under <paramref name="regionName"/> name.
@@ -60,9 +64,12 @@ namespace Nomad.Regions
         {
             IRegion region;
             if (!_regions.TryGetValue(regionName, out region))
-                throw new KeyNotFoundException(string.Format("Region \"{0}\" has not been attached", regionName));
+                throw new KeyNotFoundException(string.Format(
+                    "Region \"{0}\" has not been attached",
+                    regionName));
             return region;
         }
+
 
         /// <summary>
         ///     Checks whether this <see cref="RegionManager"/> contains region named <paramref name="regionName"/>.
