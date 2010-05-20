@@ -70,11 +70,22 @@ namespace Nomad.Tests.UnitTests.Regions
                 Assert.Throws<ArgumentException>(() => _regionManager.AttachRegion(null, _view));
             }
 
+
             [Test]
             public void attach_region_throws_on_empty_region_name()
             {
-                Assert.Throws<ArgumentException>(() => _regionManager.AttachRegion(string.Empty, _view));
+                Assert.Throws<ArgumentException>(
+                    () => _regionManager.AttachRegion(string.Empty, _view));
             }
+
+
+            [Test]
+            public void attach_region_throws_on_null_view()
+            {
+                Assert.Throws<ArgumentNullException>(
+                    () => _regionManager.AttachRegion(RegionName, null));
+            }
+
 
             [Test]
             public void contains_region_throws_on_null_region_name()
@@ -82,17 +93,20 @@ namespace Nomad.Tests.UnitTests.Regions
                 Assert.Throws<ArgumentException>(() => _regionManager.ContainsRegion(null));
             }
 
+
             [Test]
             public void contains_region_throws_on_empty_region_name()
             {
                 Assert.Throws<ArgumentException>(() => _regionManager.ContainsRegion(string.Empty));
             }
 
+
             [Test]
             public void get_region_throws_on_null_region_name()
             {
                 Assert.Throws<ArgumentException>(() => _regionManager.GetRegion(null));
             }
+
 
             [Test]
             public void get_region_throws_on_empty_region_name()

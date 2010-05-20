@@ -41,10 +41,14 @@ namespace Nomad.Regions
         /// </exception>
         public IRegion AttachRegion(string regionName, DependencyObject view)
         {
+            if (view == null) throw new ArgumentNullException("view");
+            
             ValidateRegionName(regionName);
             if (ContainsRegion(regionName))
-                throw new ArgumentException(string.Format("Region \"{0}\" already exists",
-                                                          regionName));
+            {
+                var message = string.Format("Region \"{0}\" already exists", regionName);
+                throw new ArgumentException(message);
+            }
 
             var region = _regionFactory.CreateRegion(view);
 
