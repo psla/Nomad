@@ -1,0 +1,10 @@
+﻿<Window x:Class="FunctionalTests.TestApp.Window"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Height="300" Width="300" Title="MainWindow">
+    <StackPanel>
+        <Button Name="PleaseClickMe" Click="ButtonClicked">Please click me</Button>
+        <CheckBox IsEnabled="False" IsChecked="{Binding HasBeenClicked}"></CheckBox>
+        <Label Name="PleaseReadMe" Content="{Binding Text}"></Label>
+    </StackPanel>
+</Window>
