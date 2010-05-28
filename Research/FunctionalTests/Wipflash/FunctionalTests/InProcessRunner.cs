@@ -60,6 +60,15 @@ namespace WipflashFunctionalTests.FunctionalTests
         }
 
         [Test]
+        public void can_interact_with_the_window_and_wait_using_dispatcher()
+        {
+            _window.HasBeenClicked = false;
+            _windowAutomation.Find<Button>("PleaseClickMe").Click();
+            _dispatcher.Invoke(new ThreadStart(() => { }), DispatcherPriority.Input);
+            Assert.IsTrue(_window.HasBeenClicked);
+        }
+
+        [Test]
         public void can_send_data_to_the_window()
         {
             _dispatcher.Invoke(new ThreadStart(() => _window.Text = "Lorem ipsum"));
