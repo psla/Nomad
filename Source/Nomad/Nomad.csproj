@@ -51,7 +51,9 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Regions\IRegion.cs" />
+    <Compile Include="Regions\IRegionAdapter.cs" />
     <Compile Include="Regions\IRegionFactory.cs" />
+    <Compile Include="Regions\RegionFactory.cs" />
     <Compile Include="Regions\RegionManager.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
