@@ -1,8 +1,12 @@
+using System;
 using System.Diagnostics;
+using System.IO.Ports;
 using System.Threading;
+using System.Windows.Automation;
 using System.Windows.Threading;
 using NUnit.Framework;
 using WiPFlash.Components;
+using WiPFlash.Exceptions;
 using WipflashFunctionalTests.TestApp;
 using Window = WipflashFunctionalTests.TestApp.Window;
 
@@ -39,43 +43,50 @@ namespace WipflashFunctionalTests.FunctionalTests
             _dispatcher = Dispatcher.FromThread(_thread);
             _dispatcher.Invoke(new ThreadStart(() => _window = _app.MainWindow as TestApp.Window));
 
-            _application = new Application(Process.GetCurrentProcess());
+            _process = Process.GetCurrentProcess();
+            _application = new Application(_process);
             _windowAutomation = _application.FindWindow("MainWindow");
+          //  Thread.Sleep(TimeSpan.FromSeconds(20));
         }
+
+        private Process _process;
 
         [TestFixtureTearDown]
         public void kill_application()
         {
-            _dispatcher.Invoke(new ThreadStart(() => { _window.Close(); _app.Shutdown(0); }));
-            Thread.Sleep(100);
-            
+            var watch = Stopwatch.StartNew();
+            _dispatcher.Invoke(DispatcherPriority.SystemIdle, new ThreadStart(() => { _window.Close(); _app.Shutdown(0); }));
+            Thread.Sleep(250);
+            _windowAutomation.WaitFor(c => _windowAutomation.IsClosed());
+            watch.Stop();
+            Console.WriteLine(watch.Elapsed.ToString());
         }
 
-        [Test]
-        public void can_interact_with_the_window()
-        {
-            _windowAutomation.Find<Button>("PleaseClickMe").Click();
-            Thread.Sleep(100);
-            Assert.IsTrue(_window.HasBeenClicked);
-        }
+        //[Test]
+        //public void can_interact_with_the_window()
+        //{
+        //    _windowAutomation.Find<Button>("PleaseClickMe").Click();
+        //    Thread.Sleep(100);
+        //    Assert.IsTrue(_window.HasBeenClicked);
+        //}
 
-        [Test]
-        public void can_interact_with_the_window_and_wait_using_dispatcher()
-        {
-            _window.HasBeenClicked = false;
-            _windowAutomation.Find<Button>("PleaseClickMe").Click();
-            _dispatcher.Invoke(new ThreadStart(() => { }), DispatcherPriority.Input);
-            Assert.IsTrue(_window.HasBeenClicked);
-        }
+        //[Test]
+        //public void can_interact_with_the_window_and_wait_using_dispatcher()
+        //{
+        //    _window.HasBeenClicked = false;
+        //    _windowAutomation.Find<Button>("PleaseClickMe").Click();
+        //    _dispatcher.Invoke(new ThreadStart(() => { }), DispatcherPriority.Input);
+        //    Assert.IsTrue(_window.HasBeenClicked);
+        //}
 
-        [Test]
-        public void can_send_data_to_the_window()
-        {
-            _dispatcher.Invoke(new ThreadStart(() => _window.Text = "Lorem ipsum"));
-            Thread.Sleep(100);
+        //[Test]
+        //public void can_send_data_to_the_window()
+        //{
+        //    _dispatcher.Invoke(new ThreadStart(() => _window.Text = "Lorem ipsum"));
+        //    Thread.Sleep(100);
 
-            var text = _windowAutomation.Find<Label>("PleaseReadMe").Text;
-            Assert.AreEqual("Lorem ipsum", text);
-        }
+        //    var text = _windowAutomation.Find<Label>("PleaseReadMe").Text;
+        //    Assert.AreEqual("Lorem ipsum", text);
+        //}
     }
 }
