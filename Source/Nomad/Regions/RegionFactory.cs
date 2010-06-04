@@ -57,22 +57,32 @@ namespace Nomad.Regions
         {
             if (view == null) throw new ArgumentNullException("view");
 
+            var adapter = FindAdapterFor(view);
+            if (adapter == null)
+                throw new InvalidOperationException("No adapter has been found for view of type " +
+                                                    view.GetType().Name);
+
+            return adapter.AdaptView(view);
+        }
+
+
+        private IRegionAdapter FindAdapterFor(DependencyObject view)
+        {
             var type = view.GetType();
             while (type != null)
             {
-                var adapter = FindAdapterFor(type);
+                var adapter = FindAdapterForExactType(type);
                 if (adapter != null)
-                    return adapter.AdaptView(view);
+                    return adapter;
 
                 type = type.BaseType;
             }
 
-            throw new InvalidOperationException("No adapter has been found for view of type " +
-                                                view.GetType().Name);
+            return null;
         }
 
 
-        private IRegionAdapter FindAdapterFor(Type type)
+        private IRegionAdapter FindAdapterForExactType(Type type)
         {
             return _regionAdapters.FirstOrDefault(adapter => adapter.SupportedType == type);
         }
