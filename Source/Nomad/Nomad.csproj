@@ -53,6 +53,8 @@
     <Compile Include="Regions\IRegion.cs" />
     <Compile Include="Regions\IRegionFactory.cs" />
     <Compile Include="Regions\RegionManager.cs" />
+    <Compile Include="Signing\ISignatureAlgorithm.cs" />
+    <Compile Include="Signing\RsaSignatureAlgorithm.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
