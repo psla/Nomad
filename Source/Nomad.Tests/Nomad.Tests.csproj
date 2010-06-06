@@ -69,6 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UnitTests\AssemblyLoading\SignedAssemblyLoaderTests.cs" />
     <Compile Include="UnitTests\Regions\RegionManagement.cs" />
     <Compile Include="UnitTests\Signing\AssemblyVerification.cs" />
     <Compile Include="UnitTests\Signing\SignatureTests.cs" />

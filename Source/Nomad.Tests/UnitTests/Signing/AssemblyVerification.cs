@@ -33,16 +33,16 @@ namespace Nomad.Tests.UnitTests.Signing
             #endregion
         }
         
-        private FileVerificator _fileVerificator;
+        private FileSignatureVerificator _fileSignatureVerificator;
 
 
         [SetUp]
         public void SetUp()
         {
-            _fileVerificator = new FileVerificator();
+            _fileSignatureVerificator = new FileSignatureVerificator();
             var issuerInformation = new IssuerInformation("Nomad",
                                                           new NullSignatureAlgorithm());
-            _fileVerificator.AddTrustedIssuer(issuerInformation);
+            _fileSignatureVerificator.AddTrustedIssuer(issuerInformation);
         }
 
         [Test]
@@ -52,7 +52,7 @@ namespace Nomad.Tests.UnitTests.Signing
                                 { FileName = "Nomad.dll", IssuerName = "Nomad", Signature = new byte[] {65, 64, 63, 62, 61}};
             var file = new File()
                            {FileName = "Nomad.dll", Data = new byte[] {65, 64, 63, 62, 61, 60}};
-            Assert.IsTrue(_fileVerificator.VerifyFile(file, signature));
+            Assert.IsTrue(_fileSignatureVerificator.VerifyFile(file, signature));
         }
 
         [Test]
@@ -61,7 +61,7 @@ namespace Nomad.Tests.UnitTests.Signing
             var signature = new FileSignature() { FileName = "Nomad.dll", IssuerName = "Nomad2", Signature = new byte[] { 65, 64, 63, 62, 61 } };
             var file = new File() { FileName = "Nomad.dll", Data = new byte[] { 65, 64, 63, 62, 61, 60 } };
 
-            Assert.IsFalse(_fileVerificator.VerifyFile(file, signature));
+            Assert.IsFalse(_fileSignatureVerificator.VerifyFile(file, signature));
         }
 
         [Test]
@@ -69,7 +69,7 @@ namespace Nomad.Tests.UnitTests.Signing
         {
             var signature = new FileSignature() { FileName = "Nomad.dll", IssuerName = "Nomad", Signature = new byte[] { 65, 64, 63, 62, 61 } };
             var file = new File() { FileName = "Nomad.dll", Data = new byte[] { 65, 64, 63, 62, 60, 60 } };
-            Assert.IsFalse(_fileVerificator.VerifyFile(file, signature));
+            Assert.IsFalse(_fileSignatureVerificator.VerifyFile(file, signature));
         }
 
         [Test]
@@ -77,7 +77,7 @@ namespace Nomad.Tests.UnitTests.Signing
         {
             var signature = new FileSignature() { FileName = "Nomad2.dll", IssuerName = "Nomad", Signature = new byte[] { 65, 64, 63, 62, 61 } };
             var file = new File() { FileName = "Nomad.dll", Data = new byte[] { 65, 64, 63, 62, 61, 60 } };
-            Assert.IsFalse(_fileVerificator.VerifyFile(file, signature));
+            Assert.IsFalse(_fileSignatureVerificator.VerifyFile(file, signature));
         }
     }
 }
