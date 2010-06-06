@@ -53,7 +53,7 @@
     <Compile Include="Regions\IRegion.cs" />
     <Compile Include="Regions\IRegionFactory.cs" />
     <Compile Include="Regions\RegionManager.cs" />
-    <Compile Include="Signing\AssemblyVerificator.cs" />
+    <Compile Include="Signing\FileVerificator.cs" />
     <Compile Include="Signing\File.cs" />
     <Compile Include="Signing\FileSignature.cs" />
     <Compile Include="Signing\ISignatureAlgorithm.cs" />
