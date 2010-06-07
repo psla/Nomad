@@ -82,6 +82,11 @@ namespace TestsShared.FunctionalTests
         }
 
 
+        public void Invoke(Action action)
+        {
+            Dispatcher.Invoke(DispatcherPriority.Normal, action);
+        }
+
         /// <summary>
         ///     Waits until input processing & data binding is done.
         /// </summary>

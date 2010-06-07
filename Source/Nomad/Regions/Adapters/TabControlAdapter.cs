@@ -1,6 +1,7 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using Nomad.Regions.Behaviors;
 
 namespace Nomad.Regions.Adapters
 {
@@ -14,7 +15,12 @@ namespace Nomad.Regions.Adapters
 
         public IRegion AdaptView(DependencyObject view)
         {
-            return new SingleActiveViewRegion();
+            var tabControl = view as TabControl;
+            var region = new SingleActiveViewRegion();
+
+            new SynchronizeItemsBehavior().Attach(region, tabControl);
+            new SynchronizeActiveItemsBehavior().Attach(region, tabControl);
+            return region;
         }
     }
 }

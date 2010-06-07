@@ -59,6 +59,8 @@
     <Compile Include="AssemblyLoading\SignedAssemblyLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Regions\Adapters\TabControlAdapter.cs" />
+    <Compile Include="Regions\Behaviors\SynchronizeActiveItemsBehavior.cs" />
+    <Compile Include="Regions\Behaviors\SynchronizeItemsBehavior.cs" />
     <Compile Include="Regions\IRegion.cs" />
     <Compile Include="Regions\IRegionAdapter.cs" />
     <Compile Include="Regions\IRegionFactory.cs" />
