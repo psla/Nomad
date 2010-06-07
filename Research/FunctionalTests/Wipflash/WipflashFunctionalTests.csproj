@@ -70,18 +70,9 @@
   <ItemGroup>
     <Compile Include="FunctionalTests\InProcessRunner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestApp\App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-    </Compile>
     <Compile Include="TestApp\Window.xaml.cs">
       <DependentUpon>Window.xaml</DependentUpon>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="TestApp\App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Include="TestApp\Window.xaml">
