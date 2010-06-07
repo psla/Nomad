@@ -8,8 +8,7 @@ using TestsShared;
 
 namespace Nomad.Tests.UnitTests.Regions
 {
-    [TestFixture]
-    public class RegionManagement
+    public abstract class RegionManagement
     {
         private const string RegionName = "region name";
         private DependencyObject _view;
