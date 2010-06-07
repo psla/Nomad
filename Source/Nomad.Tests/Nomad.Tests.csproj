@@ -57,6 +57,9 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="UIAutomationProvider">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
     <Reference Include="White.Core, Version=0.2.0.0, Culture=neutral, PublicKeyToken=2672efbf3e161801, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Libraries\White\White.Core.dll</HintPath>
@@ -74,6 +77,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FunctionalTests\Regions\FakeWindowWithRegions.xaml.cs">
+      <DependentUpon>FakeWindowWithRegions.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FunctionalTests\Regions\TabControlBehaviors.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UnitTests\Regions\RegionCreation.cs" />
     <Compile Include="UnitTests\Regions\RegionManagement.cs" />
@@ -93,6 +100,12 @@
     <None Include="FunctionalTests\.gitignore" />
     <None Include="IntegrationTests\.gitignore" />
     <None Include="UnitTests\.gitignore" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="FunctionalTests\Regions\FakeWindowWithRegions.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
