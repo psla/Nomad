@@ -32,6 +32,12 @@
     <DocumentationFile>..\..\Build\Nomad.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="PresentationFramework">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -52,11 +58,15 @@
     <Compile Include="AssemblyLoading\IAssemblyLoader.cs" />
     <Compile Include="AssemblyLoading\SignedAssemblyLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Regions\Adapters\TabControlAdapter.cs" />
     <Compile Include="Regions\IRegion.cs" />
     <Compile Include="Regions\IRegionAdapter.cs" />
     <Compile Include="Regions\IRegionFactory.cs" />
+    <Compile Include="Regions\IViewCollection.cs" />
     <Compile Include="Regions\RegionFactory.cs" />
     <Compile Include="Regions\RegionManager.cs" />
+    <Compile Include="Regions\SingleActiveViewRegion.cs" />
+    <Compile Include="Regions\ViewCollection.cs" />
     <Compile Include="Signing\FileSignatureVerificator.cs" />
     <Compile Include="Signing\File.cs" />
     <Compile Include="Signing\FileSignature.cs" />

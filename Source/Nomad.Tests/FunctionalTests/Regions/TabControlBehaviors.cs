@@ -1,4 +1,4 @@
-using System.Threading;
+using Nomad.Regions;
 using NUnit.Framework;
 using TestsShared.FunctionalTests;
 
@@ -7,7 +7,8 @@ namespace Nomad.Tests.FunctionalTests.Regions
     public class TabControlBehaviors
     {
         private GuiTestRunner<FakeWindowWithRegions> _guiTestRunner;
-            
+        private RegionManager _regionManager;
+
 
         [TestFixtureSetUp]
         public void show_window()
@@ -23,10 +24,28 @@ namespace Nomad.Tests.FunctionalTests.Regions
             _guiTestRunner.Stop();
         }
 
-        [Test]
-        public void can_do_nothing()
+
+        [SetUp]
+        public void set_up()
         {
-            Thread.Sleep(10000);
+            var adapters = new IRegionAdapter[] {};
+            var regionFactory = new RegionFactory(adapters);
+            _regionManager = new RegionManager(regionFactory);
+        }
+
+
+        [Test]
+        public void can_attach_region()
+        {
+            var region = _regionManager.AttachRegion("region", _guiTestRunner.Window.TabControl);
+            Assert.IsNotNull(region);
+        }
+
+        
+        [Test]
+        public void can_add_a_tab()
+        {
+            
         }
     }
 }
