@@ -39,10 +39,13 @@ namespace Nomad.Regions.Behaviors
 
         public void Attach(IRegion region, DependencyObject regionHost)
         {
-            if(!(regionHost is Selector))
-                throw new InvalidOperationException("Only Selector and MultiSelector controls can be enchanced by this behavior");
+            if (region == null) throw new ArgumentNullException("region");
+            if (regionHost == null) throw new ArgumentNullException("regionHost");
+            if (!(regionHost is Selector))
+                throw new InvalidOperationException(
+                    "Only Selector and MultiSelector controls can be enchanced by this behavior");
 
-            _control = (Selector)regionHost;
+            _control = (Selector) regionHost;
             _region = region;
 
             _control.SelectionChanged += ControlSelectionChanged;
