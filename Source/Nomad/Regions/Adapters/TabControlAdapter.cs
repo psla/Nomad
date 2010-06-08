@@ -23,15 +23,30 @@ namespace Nomad.Regions.Adapters
     /// </remarks>
     public class TabControlAdapter : IRegionAdapter
     {
+        /// <summary>Gets type of control that this adapter can adapt to be region host.</summary>
         public Type SupportedType
         {
             get { return typeof (TabControl); }
         }
 
 
-        public IRegion AdaptView(DependencyObject view)
+        /// <summary>
+        ///     Creates and attaches new region to <paramref name="regionHost"/>
+        /// </summary>
+        /// <param name="regionHost">Control that will become a region host</param>
+        /// <returns>Created and attached region</returns>
+        /// <exception cref="ArgumentNullException">When <paramref name="regionHost"/> is null</exception>
+        /// <exception cref="InvalidOperationException">
+        ///     When <paramref name="regionHost"/> is of type that is not supported by this adapter
+        /// </exception>
+        public IRegion AdaptView(DependencyObject regionHost)
         {
-            var tabControl = view as TabControl;
+            if (regionHost == null) throw new ArgumentNullException("regionHost");
+            if (!(regionHost is TabControl))
+                throw new InvalidOperationException(
+                    "This adapter only supports regionHosts that are TabControls");
+
+            var tabControl = (TabControl) regionHost;
             var region = new SingleActiveViewRegion();
 
             new SynchronizeItemsBehavior().Attach(region, tabControl);
