@@ -1,17 +1,23 @@
 using System.Collections;
 using System.Threading;
+using System.Windows.Controls;
+using Moq;
 using Nomad.Regions;
 using Nomad.Regions.Adapters;
+using Nomad.Regions.Behaviors;
 using NUnit.Framework;
+using TestsShared;
 using TestsShared.FunctionalTests;
 using WiPFlash.Framework;
 
 namespace Nomad.Tests.FunctionalTests.Regions
 {
+    [FunctionalTests]
     public class TabControlBehaviors
     {
         private GuiTestRunner<FakeWindowWithRegions> _guiTestRunner;
         private RegionManager _regionManager;
+        private TabControl _tabControl;
 
 
         [TestFixtureSetUp]
@@ -19,6 +25,7 @@ namespace Nomad.Tests.FunctionalTests.Regions
         {
             _guiTestRunner = new GuiTestRunner<FakeWindowWithRegions>();
             _guiTestRunner.Run();
+            _tabControl = _guiTestRunner.Window.TabControl;
         }
 
 
@@ -42,9 +49,7 @@ namespace Nomad.Tests.FunctionalTests.Regions
         public void can_attach_region()
         {
             IRegion region = null;
-            _guiTestRunner.Invoke(
-                () =>
-                region = _regionManager.AttachRegion("region", _guiTestRunner.Window.TabControl));
+            _guiTestRunner.Invoke(() => region = _regionManager.AttachRegion("region", _tabControl));
             Assert.IsNotNull(region);
         }
 
@@ -55,16 +60,15 @@ namespace Nomad.Tests.FunctionalTests.Regions
             _guiTestRunner.Invoke(
                 () =>
                     {
-                        var region = _regionManager.AttachRegion("region",
-                                                                 _guiTestRunner.Window.TabControl);
-                        var view = new object();
+                        var region = _regionManager.AttachRegion("region", _tabControl);
+                        var view = "tab1";
                         region.AddView(view);
                     });
 
             _guiTestRunner.Wait();
 
             _guiTestRunner.WindowAutomation.Find<WiPFlash.Components.Tab>(
-                new TitleBasedFinder(), "System.Object");
+                new TitleBasedFinder(), "tab1");
         }
 
 
@@ -72,7 +76,6 @@ namespace Nomad.Tests.FunctionalTests.Regions
         public void synchronizes_active_item_when_user_clicks()
         {
             IRegion region = null;
-
             _guiTestRunner.Invoke(
                 () =>
                     {
@@ -82,38 +85,69 @@ namespace Nomad.Tests.FunctionalTests.Regions
                         region.AddView("tab2");
                         region.AddView("tab3");
                     });
-            _guiTestRunner.Wait();
-
+            
             var tab = _guiTestRunner.WindowAutomation.Find<WiPFlash.Components.Tab>(
                 new TitleBasedFinder(), "tab1");
-            tab.Select();
+            tab.Select();            
+            _guiTestRunner.Wait();
 
             Assert.Contains("tab1", (ICollection) region.ActiveViews);
         }
 
+
         [Test]
-        [Ignore]
         public void synchronizes_active_item_when_program_activates()
         {
-            IRegion region = null;
+            _guiTestRunner.Invoke(
+                () =>
+                    {
+                        var region = _regionManager.AttachRegion("region", _tabControl);
+                        region.AddView("tab1");
+                        region.AddView("tab2");
+                        region.AddView("tab3");
+
+                        region.Activate("tab2");
+                    });
+            _guiTestRunner.Wait();
+
+            object selectedItem = null;
+            _guiTestRunner.Invoke(() => selectedItem = _tabControl.SelectedItem);
+            Assert.AreEqual("tab2", selectedItem);
+        }
+
+        [Test]
+        public void active_aware_view_is_notified_when_it_is_activated()
+        {
+            var viewMock = new Mock<IActiveAware>();
+            bool lastIsActive = false;
+
+            viewMock.Setup(aware => aware.SetIsActive(It.IsAny<bool>()))
+                .Callback<bool>(isActive => lastIsActive = isActive)
+                .Verifiable();
+
+            viewMock.Setup(aware => aware.ToString())
+                .Returns("ActiveAware");
 
             _guiTestRunner.Invoke(
                 () =>
                 {
-                    region = _regionManager.AttachRegion("region",
-                                                         _guiTestRunner.Window.TabControl);
-                    region.AddView("tab1");
+                    var region = _regionManager.AttachRegion("region", _tabControl);
+                    region.AddView(viewMock.Object);
                     region.AddView("tab2");
                     region.AddView("tab3");
 
-                    region.Activate("tab1");
+                    region.Activate("tab2");
                 });
             _guiTestRunner.Wait();
 
+            Assert.IsFalse(lastIsActive);
+            
             var tab = _guiTestRunner.WindowAutomation.Find<WiPFlash.Components.Tab>(
-                new TitleBasedFinder(), "tab1");
+                new TitleBasedFinder(), viewMock.Object.GetType().FullName);
+            tab.Select();
+            _guiTestRunner.Wait();
 
-            // TODO: test whether it is actually selected
+            Assert.IsTrue(lastIsActive);
         }
     }
 }

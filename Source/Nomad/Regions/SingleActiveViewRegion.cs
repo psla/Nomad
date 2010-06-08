@@ -27,7 +27,8 @@ namespace Nomad.Regions
 
         public void Activate(object view)
         {
-            _activeViews.Clear();
+            if(_activeViews.Count > 0)
+                _activeViews.RemoveAt(0);
             _activeViews.Add(view);
         }
 

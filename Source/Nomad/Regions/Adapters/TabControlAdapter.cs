@@ -20,6 +20,7 @@ namespace Nomad.Regions.Adapters
 
             new SynchronizeItemsBehavior().Attach(region, tabControl);
             new SynchronizeActiveItemsBehavior().Attach(region, tabControl);
+            new ActiveAwareBehavior().Attach(region, tabControl);
             return region;
         }
     }
