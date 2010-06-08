@@ -65,6 +65,7 @@
     <Compile Include="Regions\Behaviors\SynchronizeItemsBehavior.cs" />
     <Compile Include="Regions\IRegion.cs" />
     <Compile Include="Regions\IRegionAdapter.cs" />
+    <Compile Include="Regions\IRegionBehavior.cs" />
     <Compile Include="Regions\IRegionFactory.cs" />
     <Compile Include="Regions\IViewCollection.cs" />
     <Compile Include="Regions\RegionFactory.cs" />
