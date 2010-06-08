@@ -82,13 +82,26 @@ namespace TestsShared.FunctionalTests
         }
 
 
+        /// <summary>
+        ///     Invokes <paramref name="action"/> on application under test dispatcher thread,
+        ///     with <see cref="DispatcherPriority.Normal">normal priority</see>.
+        /// </summary>
+        /// <remarks>
+        ///     This method is synchronous. Once the caller regains control, 
+        ///     the action has already been executed.
+        /// </remarks>
+        /// <param name="action">Action to be executed</param>
+        /// <exception cref="ArgumentNullException">When <paramref name="action"/> is null</exception>
         public void Invoke(Action action)
         {
+            if (action == null) throw new ArgumentNullException("action");
+
             Dispatcher.Invoke(DispatcherPriority.Normal, action);
         }
 
+
         /// <summary>
-        ///     Waits until input processing & data binding is done.
+        ///     Waits until input processing and data binding is done.
         /// </summary>
         public void Wait()
         {
