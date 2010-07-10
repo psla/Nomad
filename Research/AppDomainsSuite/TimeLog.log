@@ -1,0 +1,30 @@
+2010-07-10 19:55:44.7586|Info|Starting program InterDomainCommunicationTests
+2010-07-10 19:55:44.8016|Info|Creating NormalCreation |  9ms
+2010-07-10 19:55:47.4577|Info|Invoking SomeIOMethod within class MemberTypes |  2653ms
+2010-07-10 19:55:47.6898|Info|Invoking SomeMethodWithSimpleParameter within class MemberTypes |  230ms
+2010-07-10 19:55:47.9508|Info|Invoking SomeMethodWithSerializabeParameter within class MemberTypes |  258ms
+2010-07-10 19:55:49.7579|Info|Invoking SomeMethodWithProxyEneabledParameter within class MemberTypes |  1306ms
+2010-07-10 19:55:49.8949|Info|Invoking SomeMathMethod within class MemberTypes |  134ms
+2010-07-10 19:55:50.0209|Info|Invoking SomeEmptyMethod within class MemberTypes |  125ms
+2010-07-10 19:55:50.3519|Info|Invoking GetLifetimeService within class MemberTypes |  329ms
+2010-07-10 19:55:50.7599|Info|Invoking InitializeLifetimeService within class MemberTypes |  407ms
+2010-07-10 19:55:50.7599|Info|Invoking CreateObjRef within class MemberTypes |  0ms
+2010-07-10 19:55:50.9939|Info|Invoking ToString within class MemberTypes |  231ms
+2010-07-10 19:55:50.9939|Info|Invoking Equals within class MemberTypes |  0ms
+2010-07-10 19:55:51.2130|Info|Invoking GetHashCode within class MemberTypes |  217ms
+2010-07-10 19:55:51.3420|Info|Invoking GetType within class MemberTypes |  126ms
+2010-07-10 19:56:27.4820|Info|Creating MarshalledCreation |  36137ms
+2010-07-10 19:56:31.2442|Info|Invoking SomeIOMethod within class MemberTypes |  3758ms
+2010-07-10 19:56:32.1813|Info|Invoking SomeMethodWithSimpleParameter within class MemberTypes |  932ms
+2010-07-10 19:56:34.3544|Info|Invoking SomeMethodWithSerializabeParameter within class MemberTypes |  2172ms
+2010-07-10 19:56:40.4808|Info|Invoking SomeMethodWithProxyEneabledParameter within class MemberTypes |  5640ms
+2010-07-10 19:56:41.2238|Info|Invoking SomeMathMethod within class MemberTypes |  741ms
+2010-07-10 19:56:41.9639|Info|Invoking SomeEmptyMethod within class MemberTypes |  738ms
+2010-07-10 19:56:46.3631|Info|Invoking GetLifetimeService within class MemberTypes |  4398ms
+2010-07-10 19:56:50.7954|Info|Invoking InitializeLifetimeService within class MemberTypes |  4429ms
+2010-07-10 19:56:50.7954|Info|Invoking CreateObjRef within class MemberTypes |  0ms
+2010-07-10 19:56:51.6074|Info|Invoking ToString within class MemberTypes |  807ms
+2010-07-10 19:56:51.6074|Info|Invoking Equals within class MemberTypes |  0ms
+2010-07-10 19:56:52.4405|Info|Invoking GetHashCode within class MemberTypes |  830ms
+2010-07-10 19:56:55.9237|Info|Invoking GetType within class MemberTypes |  3482ms
+2010-07-10 19:56:55.9237|Info|Finishing work of the InterDomainCommunicationTests

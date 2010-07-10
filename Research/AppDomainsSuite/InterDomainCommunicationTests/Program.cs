@@ -21,7 +21,7 @@ namespace InterDomainCommunicationTests
         {
             Logger.Info("Starting program InterDomainCommunicationTests");
 
-            TestRunner  runner  =new TestRunner(1000);
+            TestRunner  runner  =new TestRunner(100000);
             runner.RunTests();
 
             Logger.Info("Finishing work of the InterDomainCommunicationTests");

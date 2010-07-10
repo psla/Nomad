@@ -82,6 +82,42 @@ namespace InterDomainCommunicationTests
                        elapsedMiliseconds = TimeTestMethodCall ( () => methodInfo.Invoke(_mbrt, new object[] {callingDomainName}));         
                     }
 
+                    if ((methodInfo.GetParameters().Length == 3) && methodInfo.Name.Equals("SomeMethodWithSimpleParameter"))
+                    {
+                        elapsedMiliseconds =
+                            TimeTestMethodCall(() => methodInfo.Invoke(_mbrt, new object[] {"AlaMakota", 10, 10.0}));
+                    }
+
+                    if ((methodInfo.GetParameters().Length == 1) && methodInfo.Name.Equals("SomeMethodWithSerializabeParameter"))
+                    {
+                        elapsedMiliseconds = TimeTestMethodCall(
+                                                                () =>
+                                                                methodInfo.Invoke(_mbrt, new object[]
+                                                                                             {
+                                                                                                 new SerializableClass()
+                                                                                                     {
+                                                                                                         Field1 =
+                                                                                                             "field1",
+                                                                                                         Field2 = 1,
+                                                                                                         Field3 = 1.0
+                                                                                                     }
+                                                                                             }));
+                    }
+
+                    if ((methodInfo.GetParameters().Length == 1) && methodInfo.Name.Equals("SomeMethodWithProxyEneabledParameter"))
+                    {
+                        //Performed marshalled creation in domian C
+
+                        TestObjectMarshall objectMarshall = null;
+                        objectMarshall = new MarshalledCreation().CreateObject(objectMarshall, AppDomain.CreateDomain("Domain C"), exeAssembly);
+
+                        elapsedMiliseconds = TimeTestMethodCall(
+                            ()
+                            =>
+                            methodInfo.Invoke(_mbrt, new object[] {objectMarshall}));
+                    }
+
+
                     Logger.Info("Invoking {0} within class {1} |  " + elapsedMiliseconds +"ms", methodInfo.Name,
                                 methodInfo.MemberType.GetType().Name);
                 }

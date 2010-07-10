@@ -19,7 +19,8 @@ namespace InterDomainCommunicationTests
 
 
         /// <summary>
-        /// Using method that heavly depends on I/O
+        /// Using method that heavly depends on I/O. Also this method takes one parameter. It is example of the method that just works normally in the program.
+        /// Logger here looks as normal I/O operation
         /// </summary>
         /// <param name="callingDomainName">Name of the calling domain.</param>
         public void SomeIOMethod(string callingDomainName)
@@ -41,12 +42,52 @@ namespace InterDomainCommunicationTests
                          Thread.GetDomain().FriendlyName
                 );
         }
+        /// <summary>
+        /// Simple invocation
+        /// </summary>
+        /// <param name="simpleParameter"></param>
+        /// <param name="simpleParameter2"></param>
+        /// <param name="simpleParameter3"></param>
+        public void SomeMethodWithSimpleParameter(string simpleParameter, int simpleParameter2, double simpleParameter3)
+        {
+            //Do something with parameters, casue optimazer might got nasty
+            string s = simpleParameter.ToLower();
+            int a = ++simpleParameter2;
+            double b = simpleParameter3/2.0;
+
+            return;
+        }
+
+        /// <summary>
+        /// Tests whether serializable objects are passed easier than Marshalled things
+        /// </summary>
+        /// <param name="parameter"></param>
+        public void SomeMethodWithSerializabeParameter(SerializableClass parameter)
+        {
+            //Do something with this class.
+            string s = parameter.ToString();
+            return;
+        }
+
+        /// <summary>
+        /// Test whether marshalled objects can be made
+        /// </summary>
+        /// <param name="objectMarshall"></param>
+        public void SomeMethodWithProxyEneabledParameter(TestObjectMarshall objectMarshall)
+        {
+            //Do something with this object
+            objectMarshall.SomeEmptyMethod();
+            objectMarshall.SomeMathMethod();
+            objectMarshall.SomeMethodWithSimpleParameter("AlaMakota",9999,2.0);
+
+            return;
+        }
 
         /// <summary>
         /// Call the methods which does only inner mathematic logic.
         /// Should take some time.
         /// </summary>
-        public void SomeMATHMethod()
+        public void SomeMathMethod()
         {
             //non-fast (no shifting possible) power function
             Double result = Math.Pow(7, 32);
