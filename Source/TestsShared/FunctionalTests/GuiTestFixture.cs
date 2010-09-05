@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Windows.Threading;
+using NUnit.Framework;
 
 namespace TestsShared.FunctionalTests
 {
@@ -10,7 +11,7 @@ namespace TestsShared.FunctionalTests
     /// <typeparam name="T">
     ///     Type of window to be run. Must have public parameterless constructor.
     /// </typeparam>
-    public class GuiTestRunner<T> where T : System.Windows.Window, new()
+    public class GuiTestFixture<T> where T : System.Windows.Window, new()
     {
         private static readonly TimeSpan WaitTimeout = TimeSpan.FromSeconds(5);
 
@@ -20,32 +21,29 @@ namespace TestsShared.FunctionalTests
         public T Window { get; private set; }
 
         /// <summary>
-        ///     Gets application under test
-        /// </summary>
-        public System.Windows.Application Application { get; private set; }
-
-        /// <summary>
         ///     Gets dispatcher used by application
         /// </summary>
-        public Dispatcher Dispatcher { get; private set; }
+        public Dispatcher Dispatcher { get { return Window.Dispatcher; } }
 
 
         /// <summary>
         ///     Runs fake application in new thread and gets basic
         ///     automation wrappers.
         /// </summary>
+        [TestFixtureSetUp]
         public void Run()
         {
-
+            Window = (T) GuiApplicationContainer.OpenWindow(() => new T());
         }
 
 
         /// <summary>
         ///     Tries to stop application - closes the window and waits for confirmation.
         /// </summary>
+        [TestFixtureTearDown]
         public void Stop()
         {
-            
+            Invoke(() => Window.Close());
         }
 
 
@@ -59,7 +57,7 @@ namespace TestsShared.FunctionalTests
         /// </remarks>
         /// <param name="action">Action to be executed</param>
         /// <exception cref="ArgumentNullException">When <paramref name="action"/> is null</exception>
-        public void Invoke(Action action)
+        protected void Invoke(Action action)
         {
             if (action == null) throw new ArgumentNullException("action");
 
@@ -70,7 +68,7 @@ namespace TestsShared.FunctionalTests
         /// <summary>
         ///     Waits until input processing and data binding is done.
         /// </summary>
-        public void Wait()
+        protected void Wait()
         {
             Dispatcher.Invoke(DispatcherPriority.Input,
                               WaitTimeout,
