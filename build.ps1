@@ -73,6 +73,7 @@ task Clean {
 task Init -depends Clean, GetProjects {
     New-Item $release_dir -ItemType directory | Out-Null
     New-Item $build_dir -ItemType directory | Out-Null
+	New-Item $build_dir\Modules -ItemType directory | Out-Null
     
     # generate assembly infos
 	if($script:projects) {
@@ -114,7 +115,13 @@ task UnitTest -depends Compile {
     }
 }
 
+task CompileSimplestModules -depends Compile {
+	Push-Location $build_dir\Modules
+	Exec { & csc.exe /out:SimplestModulePossible1.dll /target:library $source_dir\SimplestModulePossible.cs /reference:$build_dir/Nomad.dll /r:$build_dir/Nomad.Tests.dll}
+	Exec { & csc.exe /out:SimplestModulePossible2.dll /target:library $source_dir\SimplestModulePossible.cs /reference:$build_dir/Nomad.dll /r:$build_dir/Nomad.Tests.dll}
+	Pop-Location
+}
 
-task Release -depends UnitTest {
+task Release -depends UnitTest,CompileSimplestModules {
 	 
 }

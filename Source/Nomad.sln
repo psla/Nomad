@@ -7,6 +7,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nomad", "Nomad\Nomad.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nomad.Tests", "Nomad.Tests\Nomad.Tests.csproj", "{18AC8400-37F4-4473-9BEB-204B0C9D9ABE}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{795BD409-5B1D-47E3-BC98-1ABFECB7D046}"
+	ProjectSection(SolutionItems) = preProject
+		SimplestModulePossible.cs = SimplestModulePossible.cs
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
