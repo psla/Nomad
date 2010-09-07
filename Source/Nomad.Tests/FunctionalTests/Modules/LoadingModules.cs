@@ -10,18 +10,21 @@ namespace Nomad.Tests.FunctionalTests.Modules
     [FunctionalTests]
     public class LoadingModules
     {
+        private ModuleLoader _moduleLoader;
+
+
         [SetUp]
         public void Setup()
         {
             LoadedModulesRegistry.Clear();
+            _moduleLoader = new ModuleLoader();
         }
         [Test]
         public void loads_one_module_and_executes_its_bootstraper()
         {
             var libraryPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
                                            @"Modules\SimplestModulePossible1.dll");
-            var moduleLoader = new ModuleLoader();
-            moduleLoader.LoadModuleFromFile(libraryPath);
+            _moduleLoader.LoadModuleFromFile(libraryPath);
             var registeredModules = LoadedModulesRegistry.GetRegisteredModules();
             Assert.AreEqual(1, registeredModules.Count);
         }
@@ -31,10 +34,33 @@ namespace Nomad.Tests.FunctionalTests.Modules
         {
             var libraryPaths = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
                                    @"Modules");
-            var moduleLoader = new ModuleLoader();
-            moduleLoader.LoadModulesFromDirectory(libraryPaths);
+            _moduleLoader.LoadModulesFromDirectory(libraryPaths);
             var registeredModules = LoadedModulesRegistry.GetRegisteredModules();
             Assert.AreEqual(2, registeredModules.Count);
+        }
+
+        [Test]
+        public void loads_all_modules_even_if_there_is_incorrect_file()
+        {
+            var incorrectFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+                                                     @"Modules\bzdurnyplikk.txt");
+            try
+            {
+                var libraryPaths = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+                                                @"Modules");
+                
+                File.WriteAllText(incorrectFilePath, @"bzdura");
+
+
+                _moduleLoader.LoadModulesFromDirectory(libraryPaths);
+                var registeredModules = LoadedModulesRegistry.GetRegisteredModules();
+                Assert.AreEqual(2, registeredModules.Count);
+            }
+            finally
+            {
+                File.Delete(incorrectFilePath);
+            }
+
         }
     }
 }
