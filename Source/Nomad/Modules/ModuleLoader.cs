@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Reflection;
 using System.Linq;
 
@@ -16,6 +17,16 @@ namespace Nomad.Modules
             var bootstraperType = bootstraperTypes.SingleOrDefault();
             var bootstraper = (IModuleBootstraper)Activator.CreateInstance(bootstraperType);
             bootstraper.Initialize();
+        }
+
+
+        public void LoadModulesFromDirectory(string libraryPaths)
+        {
+            var files = Directory.GetFiles(libraryPaths);
+            foreach (var file in files)
+            {
+                this.LoadModuleFromFile(file);
+            }
         }
     }
 }

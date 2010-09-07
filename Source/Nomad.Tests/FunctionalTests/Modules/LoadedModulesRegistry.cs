@@ -16,5 +16,11 @@ namespace Nomad.Tests.FunctionalTests.Modules
         {
             return _types.AsReadOnly();
         }
+
+
+        public static void Clear()
+        {
+            _types.Clear();
+        }
     }
 }
