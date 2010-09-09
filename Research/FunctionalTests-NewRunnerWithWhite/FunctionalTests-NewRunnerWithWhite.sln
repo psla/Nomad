@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunctionalTests-NewRunnerWithWhite", "FunctionalTests-NewRunnerWithWhite\FunctionalTests-NewRunnerWithWhite.csproj", "{8B50D341-F8B6-4197-984E-46FDEFFE131F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestsShared", "..\..\Source\TestsShared\TestsShared.csproj", "{568F24F9-9ED8-4D0B-931C-8506E3A4808C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8B50D341-F8B6-4197-984E-46FDEFFE131F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B50D341-F8B6-4197-984E-46FDEFFE131F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B50D341-F8B6-4197-984E-46FDEFFE131F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B50D341-F8B6-4197-984E-46FDEFFE131F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{568F24F9-9ED8-4D0B-931C-8506E3A4808C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{568F24F9-9ED8-4D0B-931C-8506E3A4808C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{568F24F9-9ED8-4D0B-931C-8506E3A4808C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{568F24F9-9ED8-4D0B-931C-8506E3A4808C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{568F24F9-9ED8-4D0B-931C-8506E3A4808C}</ProjectGuid>
+    <ProjectGuid>{8B50D341-F8B6-4197-984E-46FDEFFE131F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TestsShared</RootNamespace>
-    <AssemblyName>TestsShared</AssemblyName>
+    <RootNamespace>FunctionalTests_NewRunnerWithWhite</RootNamespace>
+    <AssemblyName>FunctionalTests-NewRunnerWithWhite</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -25,24 +25,15 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\Build\</OutputPath>
+    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\Build\TestsShared.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Bricks, Version=1.0.0.0, Culture=neutral, PublicKeyToken=83a26c96fb92c77f, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Libraries\White\Bricks.dll</HintPath>
-    </Reference>
-    <Reference Include="Bricks.RuntimeFramework, Version=1.0.0.0, Culture=neutral, PublicKeyToken=83a26c96fb92c77f, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Libraries\White\Bricks.RuntimeFramework.dll</HintPath>
-    </Reference>
     <Reference Include="nunit.framework, Version=2.5.5.10112, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Libraries\NUnit\nunit.framework.dll</HintPath>
+      <HintPath>..\..\..\Libraries\NUnit\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
@@ -62,29 +53,22 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="White.Core, Version=0.2.0.0, Culture=neutral, PublicKeyToken=2672efbf3e161801, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Libraries\White\White.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="White.CustomControls, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Libraries\White\White.CustomControls.dll</HintPath>
-    </Reference>
-    <Reference Include="White.NUnit, Version=0.2.0.0, Culture=neutral, PublicKeyToken=2672efbf3e161801, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Libraries\White\White.NUnit.dll</HintPath>
-    </Reference>
     <Reference Include="WindowsBase">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FunctionalTestsAttribute.cs" />
-    <Compile Include="FunctionalTests\GuiApplicationContainer.cs" />
-    <Compile Include="FunctionalTests\GuiNunitHooks.cs" />
-    <Compile Include="FunctionalTests\GuiTestFixture.cs" />
+    <Compile Include="Fixture1.cs" />
+    <Compile Include="Fixture2.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UnitTestsAttribute.cs" />
+    <Compile Include="Window1.cs" />
+    <Compile Include="Window2.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Source\TestsShared\TestsShared.csproj">
+      <Project>{568F24F9-9ED8-4D0B-931C-8506E3A4808C}</Project>
+      <Name>TestsShared</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

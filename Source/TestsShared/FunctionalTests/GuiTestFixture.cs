@@ -1,7 +1,9 @@
 using System;
 using System.Threading;
+using System.Windows;
 using System.Windows.Threading;
 using NUnit.Framework;
+using WhiteWindow=White.Core.UIItems.WindowItems.Window;
 
 namespace TestsShared.FunctionalTests
 {
@@ -11,7 +13,7 @@ namespace TestsShared.FunctionalTests
     /// <typeparam name="T">
     ///     Type of window to be run. Must have public parameterless constructor.
     /// </typeparam>
-    public class GuiTestFixture<T> where T : System.Windows.Window, new()
+    public class GuiTestFixture<T> where T : Window, new()
     {
         private static readonly TimeSpan WaitTimeout = TimeSpan.FromSeconds(5);
 
@@ -19,6 +21,11 @@ namespace TestsShared.FunctionalTests
         ///     Gets window under test
         /// </summary>
         public T Window { get; private set; }
+
+        /// <summary>
+        ///     Get White's automation wrapper for window under test
+        /// </summary>
+        public WhiteWindow WhiteWindow { get; private set; }
 
         /// <summary>
         ///     Gets dispatcher used by application
@@ -33,7 +40,12 @@ namespace TestsShared.FunctionalTests
         [TestFixtureSetUp]
         public void Run()
         {
-            Window = (T) GuiApplicationContainer.OpenWindow(() => new T());
+            Window window;
+            WhiteWindow whiteWindow;
+            GuiApplicationContainer.OpenWindow(() => new T(), out window, out whiteWindow);
+
+            Window = (T) window;
+            WhiteWindow = whiteWindow;
         }
 
 
@@ -57,7 +69,7 @@ namespace TestsShared.FunctionalTests
         /// </remarks>
         /// <param name="action">Action to be executed</param>
         /// <exception cref="ArgumentNullException">When <paramref name="action"/> is null</exception>
-        protected void Invoke(Action action)
+        public void Invoke(Action action)
         {
             if (action == null) throw new ArgumentNullException("action");
 
@@ -68,7 +80,7 @@ namespace TestsShared.FunctionalTests
         /// <summary>
         ///     Waits until input processing and data binding is done.
         /// </summary>
-        protected void Wait()
+        public void Wait()
         {
             Dispatcher.Invoke(DispatcherPriority.Input,
                               WaitTimeout,
