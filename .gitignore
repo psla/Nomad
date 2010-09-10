@@ -1,5 +1,7 @@
 /[Bb]uild/
 /[Rr]elease/
+/[Dd]ocumentation/
+/SandcastleTemp/
 -*resharper.user
 *.ReSharper
 _ReSharper.*/
