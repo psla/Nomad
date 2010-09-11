@@ -143,7 +143,7 @@ task Documentation -depends Compile, GetProjects -description "Provideds automat
 		$env:path = $env:path + ";C:\Program Files\HTML Help Workshop"
 	}
 	
-	$documentation_command = "scbuild -BuildChm  -framework $framework_version -name $documentation_dir/$product -sources "
+	$documentation_command = "scbuild -BuildChm  -framework $framework_version -name '$documentation_dir/$product' -sources "
 	
 	echo "Getting list of projects with documentation: "
 	
@@ -152,7 +152,7 @@ task Documentation -depends Compile, GetProjects -description "Provideds automat
 	{
 		foreach($project in $script:projects) 
 		{
-			#Skip the test projects ??? 
+			#Skip the test projects  
 			if( $($project.Name) -match ".*test.*" )
 			{
 				continue
@@ -174,7 +174,7 @@ task Documentation -depends Compile, GetProjects -description "Provideds automat
 			
 			echo "$($project.Name).$sufix with $($project.Name).XML"
 			
-			$documentation_command += "$build_dir/$($project.Name).$sufix, $build_dir/$($project.Name).XML"
+			$documentation_command += "'$build_dir/$($project.Name).$sufix', '$build_dir/$($project.Name).XML'"
 			$documentation_command += ","
 		}
 	}
