@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Threading;
 using System.Windows.Controls;
 using Moq;
 using Nomad.Regions;
@@ -13,9 +12,8 @@ using White.Core.UIItems.TabItems;
 namespace Nomad.Tests.FunctionalTests.Regions
 {
     [FunctionalTests]
-    public class TabControlBehaviors
+    public class TabControlBehaviors : GuiTestFixture<FakeWindowWithRegions>
     {
-        private GuiTestFixture<FakeWindowWithRegions> _guiTestFixture;
         private RegionManager _regionManager;
         private TabControl _tabControl;
 
@@ -23,23 +21,22 @@ namespace Nomad.Tests.FunctionalTests.Regions
         [TestFixtureSetUp]
         public void show_window()
         {
-            _guiTestFixture = new GuiTestFixture<FakeWindowWithRegions>();
-            _guiTestFixture.Run();
-            _tabControl = _guiTestFixture.Window.TabControl;
+            Run();
+            _tabControl = Window.TabControl;
         }
 
 
         [TestFixtureTearDown]
         public void close_window()
         {
-            _guiTestFixture.Stop();
+            Stop();
         }
 
 
         [SetUp]
         public void set_up()
         {
-            var adapters = new IRegionAdapter[] { new TabControlAdapter() };
+            var adapters = new IRegionAdapter[] {new TabControlAdapter()};
             var regionFactory = new RegionFactory(adapters);
             _regionManager = new RegionManager(regionFactory);
         }
@@ -49,7 +46,7 @@ namespace Nomad.Tests.FunctionalTests.Regions
         public void can_attach_region()
         {
             IRegion region = null;
-            _guiTestFixture.Invoke(() => region = _regionManager.AttachRegion("region", _tabControl));
+            Invoke(() => region = _regionManager.AttachRegion("region", _tabControl));
             Assert.IsNotNull(region);
         }
 
@@ -57,17 +54,17 @@ namespace Nomad.Tests.FunctionalTests.Regions
         [Test]
         public void can_add_a_tab()
         {
-            _guiTestFixture.Invoke(
+            Invoke(
                 () =>
-                {
-                    var region = _regionManager.AttachRegion("region", _tabControl);
-                    var view = "tab1";
-                    region.AddView(view);
-                });
+                    {
+                        var region = _regionManager.AttachRegion("region", _tabControl);
+                        var view = "tab1";
+                        region.AddView(view);
+                    });
 
-            _guiTestFixture.Wait();
+            Wait();
 
-            var whiteTab = _guiTestFixture.WhiteWindow.Get<Tab>("TabControl");
+            var whiteTab = WhiteWindow.Get<Tab>("TabControl");
             Assert.IsNotNull(whiteTab.Pages.Find(obj => obj.Name.Contains("tab1")));
         }
 
@@ -76,43 +73,44 @@ namespace Nomad.Tests.FunctionalTests.Regions
         public void synchronizes_active_item_when_user_clicks()
         {
             IRegion region = null;
-            _guiTestFixture.Invoke(
+            Invoke(
                 () =>
-                {
-                    region = _regionManager.AttachRegion("region",
-                                                         _guiTestFixture.Window.TabControl);
-                    region.AddView("tab1");
-                    region.AddView("tab2");
-                    region.AddView("tab3");
-                });
+                    {
+                        region = _regionManager.AttachRegion("region",
+                                                             Window.TabControl);
+                        region.AddView("tab1");
+                        region.AddView("tab2");
+                        region.AddView("tab3");
+                    });
 
-            var whiteTabControl = _guiTestFixture.WhiteWindow.Get<Tab>("TabControl");
+            var whiteTabControl = WhiteWindow.Get<Tab>("TabControl");
             whiteTabControl.SelectTabPage("tab1");
-            _guiTestFixture.Wait();
+            Wait();
 
-            Assert.Contains("tab1", (ICollection)region.ActiveViews);
+            Assert.Contains("tab1", (ICollection) region.ActiveViews);
         }
 
 
         [Test]
         public void synchronizes_active_item_when_program_activates()
         {
-            _guiTestFixture.Invoke(
+            Invoke(
                 () =>
-                {
-                    var region = _regionManager.AttachRegion("region", _tabControl);
-                    region.AddView("tab1");
-                    region.AddView("tab2");
-                    region.AddView("tab3");
+                    {
+                        var region = _regionManager.AttachRegion("region", _tabControl);
+                        region.AddView("tab1");
+                        region.AddView("tab2");
+                        region.AddView("tab3");
 
-                    region.Activate("tab2");
-                });
-            _guiTestFixture.Wait();
+                        region.Activate("tab2");
+                    });
+            Wait();
 
             object selectedItem = null;
-            _guiTestFixture.Invoke(() => selectedItem = _tabControl.SelectedItem);
+            Invoke(() => selectedItem = _tabControl.SelectedItem);
             Assert.AreEqual("tab2", selectedItem);
         }
+
 
         [Test]
         public void active_aware_view_is_notified_when_it_is_activated()
@@ -127,23 +125,24 @@ namespace Nomad.Tests.FunctionalTests.Regions
             viewMock.Setup(aware => aware.ToString())
                 .Returns("ActiveAware");
 
-            _guiTestFixture.Invoke(
+            Invoke(
                 () =>
-                {
-                    var region = _regionManager.AttachRegion("region", _tabControl);
-                    region.AddView(viewMock.Object);
-                    region.AddView("tab2");
-                    region.AddView("tab3");
+                    {
+                        var region = _regionManager.AttachRegion("region", _tabControl);
+                        region.AddView(viewMock.Object);
+                        region.AddView("tab2");
+                        region.AddView("tab3");
 
-                    region.Activate("tab2");
-                });
-            _guiTestFixture.Wait();
+                        region.Activate("tab2");
+                    });
+            Wait();
 
             Assert.IsFalse(lastIsActive);
-            var whiteTab = _guiTestFixture.WhiteWindow.Get<Tab>("TabControl");
-            var tab = whiteTab.Pages.Find(obj => obj.Name.Contains(viewMock.Object.GetType().FullName));
+            var whiteTab = WhiteWindow.Get<Tab>("TabControl");
+            var tab =
+                whiteTab.Pages.Find(obj => obj.Name.Contains(viewMock.Object.GetType().FullName));
             tab.Select();
- 
+
             Assert.IsTrue(lastIsActive);
         }
     }
