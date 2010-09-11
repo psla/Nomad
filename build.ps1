@@ -206,6 +206,6 @@ task CompileSimplestModules -depends Compile {
 }
 
 
-task Release -depends UnitTest,CompileSimplestModules,Documentation {
+task Release -depends UnitTest,CompileSimplestModules {
 	 
 }
