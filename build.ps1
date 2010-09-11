@@ -126,7 +126,6 @@ task Documentation -depends Compile, GetProjects -description "Provideds automat
 	{
 		echo "Setting 64 bit paths"
 		
-		#$DxRoot = "C:\Program Files (x86)\Sandcastle"
 		#[Environment]::SetEnvironmentVariable("Path", $env:Path + ";C:\Program Files (x86)\Sandcastle\ProductionTools","Process")
 		#[Environment]::SetEnvironmentVariable("Path", $env:Path + ";C:\Program Files (x86)\Sandcastle\ProductionTransforms","Process")
 		#[Environment]::SetEnvironmentVariable("Path", $env:Path + ";C:\Program Files (x86)\HTML Help Workshop","Process")
@@ -135,22 +134,16 @@ task Documentation -depends Compile, GetProjects -description "Provideds automat
 		$env:path = $env:path + ";C:\Program Files (x86)\Sandcastle\ProductionTools"
 		$env:path = $env:path + ";C:\Program Files (x86)\HTML Help Workshop"
 		
-		
-		#Prepare Command for execution
-		#$documentation_command = "C:\Program Files (x86)\Sandcastle\ProductionTools\scbuild.ps1' -DxRoot '$DxRoot' -BuildChm -TempDir $temp_dir -framework $framework_version -name $documentation_dir/$product -sources "
-		
-		#$documentation_command = "C:\Program Files (x86)\Sandcastle\ProductionTools\scbuild.ps1' -DxRoot '$DxRoot' -BuildChm -TempDir $temp_dir -framework $framework_version -name $documentation_dir/$product -sources "
-		#$documentation_command = "'" + $documentation_command
 	}
 	else
 	{
 		echo "Setting 32 bit paths"
 		$env:DxRoot = "C:\Program Files\Sandcastle"
 		$env:path = $env:path + ";C:\Program Files\Sandcastle\ProductionTools"
-		$env:path = $env:path + ";C:\Program Files\\HTML Help Workshop"
+		$env:path = $env:path + ";C:\Program Files\HTML Help Workshop"
 	}
 	
-		$documentation_command = "scbuild -BuildChm  -framework $framework_version -name $documentation_dir/$product -sources "
+	$documentation_command = "scbuild -BuildChm  -framework $framework_version -name $documentation_dir/$product -sources "
 	
 	echo "Getting list of projects with documentation: "
 	
@@ -188,7 +181,7 @@ task Documentation -depends Compile, GetProjects -description "Provideds automat
 	
 	#Remove the last element and save all verbose information from Sandcastle to log file.
 	$documentation_command  = $documentation_command.Substring(0, $documentation_command.Length - 1 )
-	$documentation_command += " > $documentation_dir\Documentation.log"
+	#$documentation_command += " > $documentation_dir\Documentation.log"
 	
 	#Perform this task in big try ... catch block, beacuse of failure rate during documentation, should not stop the entire buid process
 	echo "Begging generating documentation... " 
