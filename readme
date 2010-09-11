@@ -5,5 +5,6 @@ Piotr Jessa
 Piotr Slatala
 
 
+
 Developerzy moga puszowac wylacznie do branchu staging.
 Branch master zarzadzany jest przez CI, zawsze aktualnie dzialajacy kod.
