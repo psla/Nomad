@@ -1,6 +1,6 @@
 # Product information
 properties {
-	$version = "0.0.0.0"
+	$version = $Env:BUILDVERSION
 	$framework_version = "3.5"
 	$product = "Nomad"
     $company = "Miko³aj Dobski, Piotr Jessa, Maciej Kowalewski, Piotr Œlata³a"
