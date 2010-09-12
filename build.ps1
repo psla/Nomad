@@ -126,10 +126,6 @@ task Documentation -depends Compile, GetProjects -description "Provideds automat
 	{
 		echo "Setting 64 bit paths"
 		
-		#[Environment]::SetEnvironmentVariable("Path", $env:Path + ";C:\Program Files (x86)\Sandcastle\ProductionTools","Process")
-		#[Environment]::SetEnvironmentVariable("Path", $env:Path + ";C:\Program Files (x86)\Sandcastle\ProductionTransforms","Process")
-		#[Environment]::SetEnvironmentVariable("Path", $env:Path + ";C:\Program Files (x86)\HTML Help Workshop","Process")
-		
 		$env:DxRoot = "C:\Program Files (x86)\Sandcastle"
 		$env:path = $env:path + ";C:\Program Files (x86)\Sandcastle\ProductionTools"
 		$env:path = $env:path + ";C:\Program Files (x86)\HTML Help Workshop"
@@ -189,8 +185,6 @@ task Documentation -depends Compile, GetProjects -description "Provideds automat
 	try
 	{
 		Invoke-Expression -Command $documentation_command 
-		#Exec { & $documentation_command }
-		#& $documentation_command 
 	}
 	catch [Exception]
 	{
@@ -206,6 +200,6 @@ task CompileSimplestModules -depends Compile {
 }
 
 
-task Release -depends UnitTest,CompileSimplestModules {
+task Release -depends UnitTest,CompileSimplestModules,Documentation {
 	 
 }
