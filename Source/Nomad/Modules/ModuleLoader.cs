@@ -5,9 +5,15 @@ using System.Linq;
 
 namespace Nomad.Modules
 {
+    /// <summary>
+    /// Module loading logic. 
+    /// </summary>
     public class ModuleLoader
     {
-
+        /// <summary>
+        /// Loades module from file.
+        /// </summary>
+        /// <param name="s">Path to module</param>
         public void LoadModuleFromFile(string s)
         {
             try
@@ -28,7 +34,10 @@ namespace Nomad.Modules
             }
         }
 
-
+        /// <summary>
+        /// Loades all modules from provided directory path.
+        /// </summary>
+        /// <param name="libraryPaths">Path to directory</param>
         public void LoadModulesFromDirectory(string libraryPaths)
         {
             var files = Directory.GetFiles(libraryPaths);
