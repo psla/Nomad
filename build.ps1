@@ -199,7 +199,10 @@ task CompileSimplestModules -depends Compile {
 	Pop-Location
 }
 
+task LocalBuild -depends UnitTest,CompileSimplestModules,Compile,GetProjects -description "Local build without building documentation"{
 
-task Release -depends UnitTest,CompileSimplestModules,Documentation {
+}
+
+task Release -depends UnitTest,CompileSimplestModules,Documentation -description "Fully fledgged build with everything in it" {
 	 
 }
