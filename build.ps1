@@ -22,12 +22,32 @@ properties {
 
 # Unit tests information
 properties {
-    $unit_tests_category = "UnitTests",
+    $unit_tests_category = "UnitTests"
 	$functional_tests_category = "FunctionalTests"
 }    
 
 include ".\Libraries\PsakeExt\psake-ext.ps1"
 
+function tests([string] $tests_category)
+{
+	# find all assemblies that names end with ".Tests.dll"
+    $test_assemblies = Get-Item "$build_dir\*.Tests.dll"
+    
+    if(!$test_assemblies) {
+        Write-Warning "No test assemblies found"
+        return;
+    }
+    
+    # execute tests from each of those libraries
+    foreach($test_assembly in $test_assemblies) {
+        $file_name = $test_assembly.Name
+        $results_file_name = $file_name.Replace(".Tests.dll", ".$tests_category.results.xml")
+		$results_path = Join-Path $build_dir $results_file_name
+        
+        Write-Host "Executing unit tests from assembly $file_name"
+        Exec { & $lib_dir\NUnit\nunit-console.exe /nologo /include:$tests_category $test_assembly /xml=$results_path }
+    }
+}
 
 task default -depends Logo, Release
 
@@ -111,23 +131,7 @@ task Compile -depends Init {
 }
 
 task UnitTest -depends Compile, CompileSimplestModules {
-    # find all assemblies that names end with ".Tests.dll"
-    $test_assemblies = Get-Item "$build_dir\*.Tests.dll"
-    
-    if(!$test_assemblies) {
-        Write-Warning "No test assemblies found"
-        return;
-    }
-    
-    # execute tests from each of those libraries
-    foreach($test_assembly in $test_assemblies) {
-        $file_name = $test_assembly.Name
-        $results_file_name = $file_name.Replace(".Tests.dll", ".unittest.results.xml")
-		$results_path = Join-Path $build_dir $results_file_name
-        
-        Write-Host "Executing unit tests from assembly $file_name"
-        Exec { & $lib_dir\NUnit\nunit-console.exe /nologo /include:$unit_tests_category $test_assembly /xml=$results_path }
-    }
+    tests $unit_tests_category
 }
 
 task Documentation -depends Compile, GetProjects -description "Provideds automated documentation" {
@@ -154,7 +158,7 @@ task Documentation -depends Compile, GetProjects -description "Provideds automat
 		$env:path = $env:path + ";C:\Program Files\HTML Help Workshop"
 	}
 	
-	$documentation_command1 = "scbuild -BuildChm  -framework $framework_version -name '$release_dir\$product\doc' -sources "
+	$documentation_command1 = "scbuild -BuildChm  -framework $framework_version -name '$release_dir\$product\doc\Nomad' -sources "
 	$documentation_command2 = "scbuild -BuildChm  -framework $framework_version -name '$release_dir\Examples\doc' -sources "
 	
 	echo "Getting list of projects with documentation: "
@@ -230,7 +234,7 @@ task FastBuild -depends UnitTest {
 }
 
 task FunctionalTest {
-
+	tests $functional_tests_category
 }
 
 
