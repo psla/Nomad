@@ -12,16 +12,18 @@ properties {
     $base_dir = Resolve-Path .
 	$lib_dir = "$base_dir\Libraries"
 	$build_dir = "$base_dir\Build"
+	$xmldoc_dir = "$base_dir\XmlDocumentation"
 	$source_dir = "$base_dir\Source"
 	$release_dir = "$base_dir\Release"
-	$documentation_dir = "$base_dir\Documentation"
+	$documentation_dir = "$base_dir\Release"
 	
 	$sln_file = "$source_dir\$product.sln"
 }
 
 # Unit tests information
 properties {
-    $unit_tests_category = "UnitTests"
+    $unit_tests_category = "UnitTests",
+	$functional_tests_category = "FunctionalTests"
 }    
 
 include ".\Libraries\PsakeExt\psake-ext.ps1"
@@ -71,13 +73,22 @@ task Clean {
     Remove-Item -Recurse -Force $release_dir -ErrorAction SilentlyContinue
     Remove-Item -Recurse -Force $build_dir -ErrorAction SilentlyContinue
 	Remove-Item -Recurse -Force $documentation_dir -ErrorAction SilentlyContinue
+	Remove-Item -Recurse -Force $xmldoc_dir -ErrorAction SilentlyContinue
 }
  
 task Init -depends Clean, GetProjects {
     New-Item $release_dir -ItemType directory | Out-Null
+    New-Item $release_dir\Nomad -ItemType directory | Out-Null
+    New-Item $release_dir\Nomad\bin -ItemType directory | Out-Null
+    New-Item $release_dir\Nomad\doc -ItemType directory | Out-Null
+    New-Item $release_dir\Examples -ItemType directory | Out-Null
+    New-Item $release_dir\Examples\doc -ItemType directory | Out-Null
     New-Item $build_dir -ItemType directory | Out-Null
-	New-Item $documentation_dir -ItemType directory | Out-Null
+	#New-Item $documentation_dir -ItemType directory | Out-Null
 	New-Item $build_dir\Modules -ItemType directory | Out-Null
+	New-Item $xmldoc_dir -ItemType directory | Out-Null
+	New-Item $xmldoc_dir\Examples -ItemType directory | Out-Null
+	New-Item $xmldoc_dir\Nomad -ItemType directory | Out-Null
     
     # generate assembly infos
 	if($script:projects) {
@@ -143,44 +154,37 @@ task Documentation -depends Compile, GetProjects -description "Provideds automat
 		$env:path = $env:path + ";C:\Program Files\HTML Help Workshop"
 	}
 	
-	$documentation_command = "scbuild -BuildChm  -framework $framework_version -name '$documentation_dir/$product' -sources "
+	$documentation_command1 = "scbuild -BuildChm  -framework $framework_version -name '$release_dir\$product\doc' -sources "
+	$documentation_command2 = "scbuild -BuildChm  -framework $framework_version -name '$release_dir\Examples\doc' -sources "
 	
 	echo "Getting list of projects with documentation: "
 	
 	#Get Projects builded by Nomad Team and provide them with documentation.
-	if($script:projects)
+
+	$nomad_files = Get-ChildItem $xmldoc_dir\Nomad\
+	$other_files = Get-ChildItem $xmldoc_dir\Examples\ 
+	foreach($file in $nomad_files)
 	{
-		foreach($project in $script:projects) 
-		{
-			#Skip the test projects  
-			if( $($project.Name) -match ".*test.*" )
-			{
-				continue
-			}
-			
-			$project_file = cat "$source_dir\$($project.Name)\$($project.Name).csproj"
-			
-			$regex = [regex]"<OutputType>([A-Za-z]+)</OutputType>"
-			$value =  $regex.Matches($project_file).Item(0).Groups[1].Value
-			
-			if ( $value -eq "Library" )
-			{
-				$sufix = "dll"
-			}
-			elseif ( $value -eq "WinExe" )
-			{	
-				$sufix = "exe"
-			}
-			
-			echo "$($project.Name).$sufix with $($project.Name).XML"
-			
-			$documentation_command += "'$build_dir/$($project.Name).$sufix', '$build_dir/$($project.Name).XML'"
-			$documentation_command += ","
-		}
+		$file_bn = $file.BaseName
+		$binary_file = ls "$release_dir\Nomad\bin\$file_bn.*" | where {$_ -match '.(dll|exe)$'}
+		
+		$binary_fn = $binary_file.FullName
+		$file_fn = $file.FullName
+		$documentation_command1 += "'$binary_fn', '$file_fn',"
+	}
+	
+	foreach($file in $other_files)
+	{
+		$file_bn = $file.BaseName
+		$binary_file = Get-ChildItem "$release_dir\Examples\" -r | where {$_ -match '^$file_bn.(dll|exe)$'}
+		$binary_fn = $binary_file.FullName
+		$file_fn = $file.FullName
+		$documentation_command2 += "'$binary_fn', '$file_fn',"
 	}
 	
 	#Remove the last element and save all verbose information from Sandcastle to log file.
-	$documentation_command  = $documentation_command.Substring(0, $documentation_command.Length - 1 )
+	$documentation_command1  = $documentation_command1.Substring(0, $documentation_command1.Length - 1 )
+	$documentation_command2  = $documentation_command2.Substring(0, $documentation_command2.Length - 1 )
 	#$documentation_command += " > $documentation_dir\Documentation.log"
 	
 	#Perform this task in big try ... catch block, beacuse of failure rate during documentation, should not stop the entire buid process
@@ -188,13 +192,24 @@ task Documentation -depends Compile, GetProjects -description "Provideds automat
 	
 	try
 	{
-		Invoke-Expression -Command $documentation_command 
+		Write-Host $documentation_command1
+		Invoke-Expression -Command $documentation_command1
 		#Exec { & $documentation_command }
 		#& $documentation_command 
 	}
 	catch [Exception]
 	{
-		"Error !!! : $_" 
+		"Error while documenting Nomad!!! : $_" 
+	}
+	
+	try 
+	{
+		Write-Host $documentation_command2
+		Invoke-Expression -Command $documentation_command2
+	}
+	catch [Exception]
+	{
+		"Error while documenting examples!!! : $_" 
 	}
 }
 
@@ -214,16 +229,22 @@ task FastBuild -depends UnitTest {
 
 }
 
+task FunctionalTest {
+
+}
+
+
 task SlowBuild -depends FastBuild, FunctionalTest, Documentation, Deploy {
 
 }
 
 task Deploy -depends Compile {
 	#$result_file_name = "Nomad-$version.zip"
-	$result_file_name = "..\Nomad.zip"
-	If(Test-Path $result_file_name)
+	$result_file_name = "..\${product}.zip"
+	if(Test-Path $result_file_name -eq ) {
 		Remove-Item $result_file_name
-	Push-Location $build_dir
+	}
+	Push-Location $release_dir
 	Exec { & ..\Libraries\7za465\7za.exe a ${result_file_name} . }
 	Pop-Location
 }
