@@ -141,10 +141,6 @@ task Documentation -depends Compile, GetProjects -description "Provideds automat
 	{
 		echo "Setting 64 bit paths"
 		
-		#[Environment]::SetEnvironmentVariable("Path", $env:Path + ";C:\Program Files (x86)\Sandcastle\ProductionTools","Process")
-		#[Environment]::SetEnvironmentVariable("Path", $env:Path + ";C:\Program Files (x86)\Sandcastle\ProductionTransforms","Process")
-		#[Environment]::SetEnvironmentVariable("Path", $env:Path + ";C:\Program Files (x86)\HTML Help Workshop","Process")
-		
 		$env:DxRoot = "C:\Program Files (x86)\Sandcastle"
 		$env:path = $env:path + ";C:\Program Files (x86)\Sandcastle\ProductionTools"
 		$env:path = $env:path + ";C:\Program Files (x86)\HTML Help Workshop"
@@ -224,8 +220,11 @@ task CompileSimplestModules -depends Compile {
 	Pop-Location
 }
 
+task LocalBuild -depends UnitTest,CompileSimplestModules,Compile,GetProjects -description "Local build without building documentation"{
 
-task Release -depends UnitTest,Deploy {
+}
+
+task Release -depends UnitTest,CompileSimplestModules,Documentation -description "Fully fledgged build with everything in it" {
 	 
 }
 

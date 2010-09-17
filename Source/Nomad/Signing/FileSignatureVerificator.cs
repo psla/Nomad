@@ -2,6 +2,9 @@
 
 namespace Nomad.Signing
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IFileSignatureVerificator
     {
         /// <summary>
