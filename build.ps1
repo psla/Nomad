@@ -99,7 +99,7 @@ task Compile -depends Init {
     Exec { msbuild "$sln_file"  /p:Configuration=Release /nologo /verbosity:quiet }
 }
 
-task UnitTest -depends Compile {
+task UnitTest -depends Compile, CompileSimplestModules {
     # find all assemblies that names end with ".Tests.dll"
     $test_assemblies = Get-Item "$build_dir\*.Tests.dll"
     
@@ -206,6 +206,24 @@ task CompileSimplestModules -depends Compile {
 }
 
 
-task Release -depends UnitTest,CompileSimplestModules {
+task Release -depends UnitTest,Deploy {
 	 
+}
+
+task FastBuild -depends UnitTest {
+
+}
+
+task SlowBuild -depends FastBuild, FunctionalTest, Documentation, Deploy {
+
+}
+
+task Deploy -depends Compile {
+	#$result_file_name = "Nomad-$version.zip"
+	$result_file_name = "..\Nomad.zip"
+	If(Test-Path $result_file_name)
+		Remove-Item $result_file_name
+	Push-Location $build_dir
+	Exec { & ..\Libraries\7za465\7za.exe a ${result_file_name} . }
+	Pop-Location
 }
