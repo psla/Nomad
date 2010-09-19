@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using Nomad.EventAggregation;
@@ -93,6 +94,18 @@ namespace Nomad.Tests.FunctionalTests.EventAggregation
                 thread.Start();
             }
             Assert.IsFalse(exceptionOccured);
+        }
+
+        [Test]
+        public void unsubscribe_unsubscribes()
+        {
+            byte firedCount = 0;
+            _eventAggregator.Subscribe<MessageType>(x => { firedCount++; });
+            Action<MessageType> myAction = x => { firedCount++; };
+            _eventAggregator.Subscribe<MessageType>(myAction);
+            _eventAggregator.Unsubsribe<MessageType>(myAction);
+            _eventAggregator.Notify<MessageType>(new MessageType(NameToSend));
+            Assert.AreEqual(1, firedCount);
         }
 
         #region Nested type: MessageType

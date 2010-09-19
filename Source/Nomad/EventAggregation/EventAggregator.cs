@@ -10,6 +10,12 @@ namespace Nomad.EventAggregation
 
         #region Implementation of IEventAggregator
 
+        /// <summary>
+        /// Adds action for execution.
+        /// <see cref="IEventAggregator.Subscribe{T}"/>
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="action"></param>
         public void Subscribe<T>(Action<T> action) where T : class
         {
             //_action = action;
@@ -29,14 +35,31 @@ namespace Nomad.EventAggregation
         }
 
 
+        //TODO: Unsubsribing new lambda won't work!
+        /// <summary>
+        /// Removes event from collection. Thread safe.
+        /// <see cref="IEventAggregator.Unsubsribe{T}"/>
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="action"></param>
         public void Unsubsribe<T>(Action<T> action) where T : class
         {
-            throw new NotImplementedException();
+            IList<object> actions = null;
+
+            //two parts of methods prevents stopping another thread for waiting to the end of the lock
+            lock (_dictionary)
+            {
+                if (_dictionary.TryGetValue(typeof (T), out actions))
+                {
+                    actions.Remove(action);
+                }
+            }
         }
 
 
         /// <summary>
         /// Notifies event listeners. Thread safe.
+        /// <see cref="IEventAggregator.Notify{T}"/>
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="message"></param>
