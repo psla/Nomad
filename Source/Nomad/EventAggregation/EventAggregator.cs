@@ -6,14 +6,23 @@ namespace Nomad.EventAggregation
 {
     public class EventAggregator : IEventAggregator
     {
-        private IDictionary<Type, object> _dictionary = new Dictionary<Type, object>();
+        private IDictionary<Type, IList<object>> _dictionary = new Dictionary<Type, IList<object>>();
 
         #region Implementation of IEventAggregator
 
         public void Subscribe<T>(Action<T> action) where T : class
         {
             //_action = action;
-            _dictionary[typeof (T)] = action;
+            var type = typeof (T);
+            IList<object> events = null;
+            if(_dictionary.TryGetValue(type, out events))
+            {
+                events.Add(action);
+            }
+            else
+            {
+                _dictionary[type] = new List<object>() { action };
+            }
         }
 
 
@@ -25,12 +34,15 @@ namespace Nomad.EventAggregation
 
         public void Notify<T>(T message)
         {
-            object action=null;
-            if(_dictionary.TryGetValue(typeof(T), out action))
+            IList<object> actions=null;
+            if(_dictionary.TryGetValue(typeof(T), out actions))
             {
-                var act = action as Action<T>;
-                if (act != null) 
-                    act(message);
+                foreach (var action in actions)
+                {
+                    var act = action as Action<T>;
+                    if (act != null)
+                        act(message);
+                }
             }
         }
 

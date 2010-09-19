@@ -29,7 +29,7 @@ namespace Nomad.Tests.FunctionalTests.EventAggregation
             _eventAggregator = new EventAggregator();
         }
 
-        [TestCase(MessagesSending.NameToSend, true)]
+        [TestCase(NameToSend, true)]
         [TestCase("blablabla", false)]
         public void sending_events_one_listener_success(string nameToSend, bool expectedValue)
         {
@@ -41,6 +41,20 @@ namespace Nomad.Tests.FunctionalTests.EventAggregation
             Assert.AreEqual(expectedValue, correctlyFired);
         }
 
+        [Test]
+        public void sending_events_when_no_listeners()
+        {
+            _eventAggregator.Notify(new MessageType(NameToSend));
+        }
 
+        [Test]
+        public void multiple_listeners()
+        {
+            byte fireCount = 0;
+            _eventAggregator.Subscribe<MessageType>(x => { fireCount++; });
+            _eventAggregator.Subscribe<MessageType>(x => { fireCount++; });
+            _eventAggregator.Notify(new MessageType(NameToSend));
+            Assert.AreEqual(2, fireCount);
+        }
     }
 }
