@@ -1,27 +1,30 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Nomad.EventAggregation
 {
     public class EventAggregator : IEventAggregator
     {
-        private IDictionary<Type, IList<object>> _dictionary = new Dictionary<Type, IList<object>>();
+        private readonly IDictionary<Type, IList<object>> _dictionary =
+            new Dictionary<Type, IList<object>>();
 
         #region Implementation of IEventAggregator
 
         public void Subscribe<T>(Action<T> action) where T : class
         {
             //_action = action;
-            var type = typeof (T);
+            Type type = typeof (T);
             IList<object> events = null;
-            if(_dictionary.TryGetValue(type, out events))
+            lock (_dictionary)
             {
-                events.Add(action);
-            }
-            else
-            {
-                _dictionary[type] = new List<object>() { action };
+                if (_dictionary.TryGetValue(type, out events))
+                {
+                    events.Add(action);
+                }
+                else
+                {
+                    _dictionary[type] = new List<object> {action};
+                }
             }
         }
 
@@ -32,17 +35,30 @@ namespace Nomad.EventAggregation
         }
 
 
+        /// <summary>
+        /// Notifies event listeners. Thread safe.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="message"></param>
         public void Notify<T>(T message)
         {
-            IList<object> actions=null;
-            if(_dictionary.TryGetValue(typeof(T), out actions))
+            IList<object> actions = null;
+            IList<object> actionsToExecute = new List<object>();
+
+            //two parts of methods prevents stopping another thread for waiting to the end of the lock
+            lock (_dictionary)
             {
-                foreach (var action in actions)
+                if (_dictionary.TryGetValue(typeof (T), out actions))
                 {
-                    var act = action as Action<T>;
-                    if (act != null)
-                        act(message);
+                    actionsToExecute = new List<object>(actions);
                 }
+            }
+
+            foreach (object action in actionsToExecute)
+            {
+                var act = action as Action<T>;
+                if (act != null)
+                    act(message);
             }
         }
 

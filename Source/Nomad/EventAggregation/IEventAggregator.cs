@@ -21,6 +21,8 @@ namespace Nomad.EventAggregation
         /// <typeparam name="T"></typeparam>
         /// <param name="action"></param>
         void Unsubsribe<T>(Action<T> action) where T : class;
+
+
         //TODO: Is it possible to unsubscribe delegate? it will be another reference :/
 
 
