@@ -65,6 +65,8 @@
   <ItemGroup>
     <Compile Include="AssemblyLoading\IAssemblyLoader.cs" />
     <Compile Include="AssemblyLoading\SignedAssemblyLoader.cs" />
+    <Compile Include="EventAggregation\EventAggregator.cs" />
+    <Compile Include="EventAggregation\IEventAggregator.cs" />
     <Compile Include="Modules\IModuleBootstraper.cs" />
     <Compile Include="Modules\ModuleLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
