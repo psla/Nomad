@@ -77,8 +77,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FunctionalTests\Modules\IInjectableModulesRegistry.cs" />
+    <Compile Include="FunctionalTests\Modules\InjectableModulesRegistry.cs" />
     <Compile Include="FunctionalTests\Modules\LoadedModulesRegistry.cs" />
     <Compile Include="FunctionalTests\Modules\LoadingModules.cs" />
+    <Compile Include="FunctionalTests\Modules\LoadingModulesWithDependencies.cs" />
     <Compile Include="FunctionalTests\Regions\FakeWindowWithRegions.xaml.cs">
       <DependentUpon>FakeWindowWithRegions.xaml</DependentUpon>
     </Compile>

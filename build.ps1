@@ -214,9 +214,17 @@ task Documentation -depends Compile, GetProjects -description "Provideds automat
 }
 
 task CompileSimplestModules -depends Compile {
-	Push-Location $build_dir\Modules
+	New-Item $build_dir\Modules\Simple -ItemType directory | Out-Null
+	New-Item $build_dir\Modules\WithDependencies -ItemType directory | Out-Null
+	
+	Push-Location $build_dir\Modules\Simple
 	Exec { & csc.exe /out:SimplestModulePossible1.dll /target:library $source_dir\SimplestModulePossible.cs /reference:$build_dir/Nomad.dll /r:$build_dir/Nomad.Tests.dll}
 	Exec { & csc.exe /out:SimplestModulePossible2.dll /target:library $source_dir\SimplestModulePossible.cs /reference:$build_dir/Nomad.dll /r:$build_dir/Nomad.Tests.dll}
+	Pop-Location
+	
+	Push-Location $build_dir\Modules\WithDependencies
+	Exec { & csc.exe /out:ModuleWithConstructorDependency.dll /target:library $source_dir\ModuleWithConstructorDependency.cs /reference:$build_dir/Nomad.dll /r:$build_dir/Nomad.Tests.dll}
+	Exec { & csc.exe /out:ModuleWithPropertyDependency.dll /target:library $source_dir\ModuleWithPropertyDependency.cs /reference:$build_dir/Nomad.dll /r:$build_dir/Nomad.Tests.dll}
 	Pop-Location
 }
 

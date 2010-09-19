@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nomad.Tests", "Nomad.Tests\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{795BD409-5B1D-47E3-BC98-1ABFECB7D046}"
 	ProjectSection(SolutionItems) = preProject
+		ModuleWithConstructorDependency.cs = ModuleWithConstructorDependency.cs
+		ModuleWithPropertyDependency.cs = ModuleWithPropertyDependency.cs
 		SimplestModulePossible.cs = SimplestModulePossible.cs
 	EndProjectSection
 EndProject

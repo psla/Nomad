@@ -23,7 +23,7 @@ namespace Nomad.Tests.FunctionalTests.Modules
         public void loads_one_module_and_executes_its_bootstraper()
         {
             var libraryPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-                                           @"Modules\SimplestModulePossible1.dll");
+                                           @"Modules\Simple\SimplestModulePossible1.dll");
             _moduleLoader.LoadModuleFromFile(libraryPath);
             var registeredModules = LoadedModulesRegistry.GetRegisteredModules();
             Assert.AreEqual(1, registeredModules.Count);
@@ -33,7 +33,7 @@ namespace Nomad.Tests.FunctionalTests.Modules
         public void loads_all_modules_and_executes_their_bootstrapers()
         {
             var libraryPaths = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-                                   @"Modules");
+                                   @"Modules\Simple\");
             _moduleLoader.LoadModulesFromDirectory(libraryPaths);
             var registeredModules = LoadedModulesRegistry.GetRegisteredModules();
             Assert.AreEqual(2, registeredModules.Count);
@@ -43,11 +43,11 @@ namespace Nomad.Tests.FunctionalTests.Modules
         public void loads_all_modules_even_if_there_is_incorrect_file()
         {
             var incorrectFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-                                                     @"Modules\bzdurnyplikk.txt");
+                                                     @"Modules\Simple\bzdurnyplikk.txt");
             try
             {
                 var libraryPaths = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-                                                @"Modules");
+                                                @"Modules\Simple\");
                 
                 File.WriteAllText(incorrectFilePath, @"bzdura");
 
