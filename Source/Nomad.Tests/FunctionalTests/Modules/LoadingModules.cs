@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using Castle.Windsor;
 using Nomad.Modules;
 using NUnit.Framework;
 using TestsShared;
@@ -17,7 +18,7 @@ namespace Nomad.Tests.FunctionalTests.Modules
         public void Setup()
         {
             LoadedModulesRegistry.Clear();
-            _moduleLoader = new ModuleLoader();
+            _moduleLoader = new ModuleLoader(new WindsorContainer());
         }
         [Test]
         public void loads_one_module_and_executes_its_bootstraper()
