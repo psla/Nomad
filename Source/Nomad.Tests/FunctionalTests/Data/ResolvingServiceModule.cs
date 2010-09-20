@@ -1,11 +1,12 @@
 using System;
-using Nomad.Tests.FunctionalTests.ServiceLocator;
+using Nomad.Tests.FunctionalTests.ServiceLocation;
+using Nomad.ServiceLocation;
 
 public class ResolvingServiceModule : Nomad.Modules.IModuleBootstraper
 {
-    private Nomad.ServiceLocator.IServiceLocator _serviceLocator;
+    private IServiceLocator _serviceLocator;
 
-    public ResolvingServiceModule(Nomad.ServiceLocator.IServiceLocator serviceLocator)
+    public ResolvingServiceModule(IServiceLocator serviceLocator)
 	{
         _serviceLocator = serviceLocator;
 	}

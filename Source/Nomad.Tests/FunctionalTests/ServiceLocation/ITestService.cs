@@ -1,4 +1,4 @@
-namespace Nomad.Tests.FunctionalTests.ServiceLocator
+namespace Nomad.Tests.FunctionalTests.ServiceLocation
 {
     /// <summary>
     ///     Service only for acceptance testing.

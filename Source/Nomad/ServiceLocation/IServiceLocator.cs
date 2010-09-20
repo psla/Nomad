@@ -1,4 +1,4 @@
-namespace Nomad.ServiceLocator
+namespace Nomad.ServiceLocation
 {
     /// <summary>
     ///     Provides means for registering and resolving Services of the specyfic interface.

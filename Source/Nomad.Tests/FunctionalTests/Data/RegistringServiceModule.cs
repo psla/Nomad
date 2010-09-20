@@ -1,11 +1,12 @@
 using System;
-using Nomad.Tests.FunctionalTests.ServiceLocator;
+using Nomad.Tests.FunctionalTests.ServiceLocation;
+using Nomad.ServiceLocation;
 
 public class RegistringServiceModule : Nomad.Modules.IModuleBootstraper
 {
-    private Nomad.ServiceLocator.IServiceLocator _serviceLocator;
+    private IServiceLocator _serviceLocator;
 
-    public RegistringServiceModule(Nomad.ServiceLocator.IServiceLocator serviceLocator)
+    public RegistringServiceModule(IServiceLocator serviceLocator)
     {
        _serviceLocator = serviceLocator;
     }
@@ -18,9 +19,14 @@ public class RegistringServiceModule : Nomad.Modules.IModuleBootstraper
 
     class TestServiceFromModule : ITestService
     {
+        public TestServiceFromModule()
+        {
+            ServiceRegistry.Register(typeof(TestServiceFromModule));
+        }
+
         public void Execute()
         {
-            //TODO: wrtie doing sth
+            ServiceRegistry.IncreaseCounter(typeof(TestServiceFromModule));
         }
     }
 }

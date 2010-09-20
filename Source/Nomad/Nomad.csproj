@@ -86,7 +86,8 @@
     <Compile Include="Regions\RegionManager.cs" />
     <Compile Include="Regions\SingleActiveViewRegion.cs" />
     <Compile Include="Regions\ViewCollection.cs" />
-    <Compile Include="ServiceLocator\IServiceLocator.cs" />
+    <Compile Include="ServiceLocation\IServiceLocator.cs" />
+    <Compile Include="ServiceLocation\ServiceLocator.cs" />
     <Compile Include="Signing\FileSignatureVerificator.cs" />
     <Compile Include="Signing\File.cs" />
     <Compile Include="Signing\FileSignature.cs" />
