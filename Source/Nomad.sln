@@ -8,10 +8,14 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nomad.Tests", "Nomad.Tests\Nomad.Tests.csproj", "{18AC8400-37F4-4473-9BEB-204B0C9D9ABE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{795BD409-5B1D-47E3-BC98-1ABFECB7D046}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Functional Data", "Functional Data", "{6B0366F8-104B-4B8B-A38C-F03BC6504B90}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{A3991F62-5131-4901-AE6D-4F027BD6EFF0}"
 	ProjectSection(SolutionItems) = preProject
-		ModuleWithConstructorDependency.cs = ModuleWithConstructorDependency.cs
-		ModuleWithPropertyDependency.cs = ModuleWithPropertyDependency.cs
-		SimplestModulePossible.cs = SimplestModulePossible.cs
+		Nomad.Tests\FunctionalTests\Data\ModuleWithConstructorDependency.cs = Nomad.Tests\FunctionalTests\Data\ModuleWithConstructorDependency.cs
+		Nomad.Tests\FunctionalTests\Data\ModuleWithPropertyDependency.cs = Nomad.Tests\FunctionalTests\Data\ModuleWithPropertyDependency.cs
+		Nomad.Tests\FunctionalTests\Data\SimplestModulePossible.cs = Nomad.Tests\FunctionalTests\Data\SimplestModulePossible.cs
 	EndProjectSection
 EndProject
 Global
@@ -35,5 +39,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6B0366F8-104B-4B8B-A38C-F03BC6504B90} = {795BD409-5B1D-47E3-BC98-1ABFECB7D046}
+		{A3991F62-5131-4901-AE6D-4F027BD6EFF0} = {6B0366F8-104B-4B8B-A38C-F03BC6504B90}
 	EndGlobalSection
 EndGlobal

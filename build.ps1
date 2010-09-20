@@ -26,6 +26,12 @@ properties {
 	$functional_tests_category = "FunctionalTests"
 }    
 
+#Directories for handling data for various types of tests
+properties {
+	$functional_data_dir="$source_dir\$product.Tests\$functional_tests_category\Data"
+
+}
+
 include ".\Libraries\PsakeExt\psake-ext.ps1"
 
 function tests([string] $tests_category)
@@ -130,7 +136,7 @@ task Compile -depends Init {
     Exec { msbuild "$sln_file"  /p:Configuration=Release /nologo /verbosity:quiet }
 }
 
-task UnitTest -depends Compile, CompileSimplestModules {
+task UnitTest -depends Compile, FunctionalDataPrepare {
     tests $unit_tests_category
 }
 
@@ -213,26 +219,31 @@ task Documentation -depends Compile, GetProjects -description "Provideds automat
 	}
 }
 
-task CompileSimplestModules -depends Compile {
+task FunctionalDataPrepare -depends Compile -description "Data preparations for functional tests" {
 	New-Item $build_dir\Modules\Simple -ItemType directory | Out-Null
 	New-Item $build_dir\Modules\WithDependencies -ItemType directory | Out-Null
+	New-Item $build_dir\Modules\ServiceLocatorEnabled -ItemType directory | Out-Null
 	
 	Push-Location $build_dir\Modules\Simple
-	Exec { & csc.exe /out:SimplestModulePossible1.dll /target:library $source_dir\SimplestModulePossible.cs /reference:$build_dir/Nomad.dll /r:$build_dir/Nomad.Tests.dll}
-	Exec { & csc.exe /out:SimplestModulePossible2.dll /target:library $source_dir\SimplestModulePossible.cs /reference:$build_dir/Nomad.dll /r:$build_dir/Nomad.Tests.dll}
+	Exec { & csc.exe /out:SimplestModulePossible1.dll /target:library $functional_data_dir\SimplestModulePossible.cs /reference:$build_dir/Nomad.dll /r:$build_dir/Nomad.Tests.dll}
+	Exec { & csc.exe /out:SimplestModulePossible2.dll /target:library $functional_data_dir\SimplestModulePossible.cs /reference:$build_dir/Nomad.dll /r:$build_dir/Nomad.Tests.dll}
 	Pop-Location
 	
 	Push-Location $build_dir\Modules\WithDependencies
-	Exec { & csc.exe /out:ModuleWithConstructorDependency.dll /target:library $source_dir\ModuleWithConstructorDependency.cs /reference:$build_dir/Nomad.dll /r:$build_dir/Nomad.Tests.dll}
-	Exec { & csc.exe /out:ModuleWithPropertyDependency.dll /target:library $source_dir\ModuleWithPropertyDependency.cs /reference:$build_dir/Nomad.dll /r:$build_dir/Nomad.Tests.dll}
+	Exec { & csc.exe /out:ModuleWithConstructorDependency.dll /target:library $functional_data_dir\ModuleWithConstructorDependency.cs /reference:$build_dir/Nomad.dll /r:$build_dir/Nomad.Tests.dll}
+	Exec { & csc.exe /out:ModuleWithPropertyDependency.dll /target:library $functional_data_dir\ModuleWithPropertyDependency.cs /reference:$build_dir/Nomad.dll /r:$build_dir/Nomad.Tests.dll}
+	Pop-Location
+	
+	Push-Location $build_dir\Modules\ServiceLocatorEnabled
+	
 	Pop-Location
 }
 
-task LocalBuild -depends UnitTest,CompileSimplestModules,Compile,GetProjects -description "Local build without building documentation"{
+task LocalBuild -depends UnitTest,FunctionalDataPrepare,Compile -description "Local build without building documentation"{
 
 }
 
-task Release -depends UnitTest,CompileSimplestModules,Documentation -description "Fully fledgged build with everything in it" {
+task Release -depends UnitTest,FunctionalDataPrepare,Documentation -description "Fully fledgged build with everything in it" {
 	 
 }
 
