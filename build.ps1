@@ -140,6 +140,10 @@ task UnitTest -depends Compile, FunctionalDataPrepare {
     tests $unit_tests_category
 }
 
+task FunctionalTest -depends Compile,FunctionalDataPrepare {
+	tests $functional_tests_category
+}
+
 task Documentation -depends Compile, GetProjects -description "Provideds automated documentation" {
 	
 	#Prepare EVN Varibles ( We expect no Windows XP x64 or Win2003 x64 )
@@ -235,7 +239,8 @@ task FunctionalDataPrepare -depends Compile -description "Data preparations for 
 	Pop-Location
 	
 	Push-Location $build_dir\Modules\ServiceLocatorEnabled
-	
+	Exec { & csc.exe /out:ResolvingServiceModule.dll /t:library $functional_data_dir\ResolvingServiceModule.cs /r:$build_dir/Nomad.dll /r:$build_dir/Nomad.Tests.dll}
+	Exec { & csc.exe /out:RegistringServiceModule.dll /t:library $functional_data_dir\RegistringServiceModule.cs /r:$build_dir/Nomad.dll /r:$build_dir/Nomad.Tests.dll}
 	Pop-Location
 }
 
@@ -250,11 +255,6 @@ task Release -depends UnitTest,FunctionalDataPrepare,Documentation -description 
 task FastBuild -depends UnitTest {
 
 }
-
-task FunctionalTest {
-	tests $functional_tests_category
-}
-
 
 task SlowBuild -depends FastBuild, FunctionalTest, Documentation, Deploy {
 

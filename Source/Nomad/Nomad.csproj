@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{3828EBBD-FFBA-4C30-BF46-D3742BC165F1}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -86,6 +86,7 @@
     <Compile Include="Regions\RegionManager.cs" />
     <Compile Include="Regions\SingleActiveViewRegion.cs" />
     <Compile Include="Regions\ViewCollection.cs" />
+    <Compile Include="ServiceLocator\IServiceLocator.cs" />
     <Compile Include="Signing\FileSignatureVerificator.cs" />
     <Compile Include="Signing\File.cs" />
     <Compile Include="Signing\FileSignature.cs" />

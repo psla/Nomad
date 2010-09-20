@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{18AC8400-37F4-4473-9BEB-204B0C9D9ABE}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -87,6 +87,9 @@
       <DependentUpon>FakeWindowWithRegions.xaml</DependentUpon>
     </Compile>
     <Compile Include="FunctionalTests\Regions\TabControlBehaviors.cs" />
+    <Compile Include="FunctionalTests\ServiceLocator\ITestService.cs" />
+    <Compile Include="FunctionalTests\ServiceLocator\ServiceLocator.cs" />
+    <Compile Include="FunctionalTests\ServiceLocator\ServiceRegistry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UnitTests\Regions\Adapters\AdapterContractBase.cs" />
     <Compile Include="UnitTests\Regions\Adapters\TabControlAdapterContract.cs" />
