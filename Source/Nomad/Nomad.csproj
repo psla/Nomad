@@ -65,6 +65,8 @@
   <ItemGroup>
     <Compile Include="AssemblyLoading\IAssemblyLoader.cs" />
     <Compile Include="AssemblyLoading\SignedAssemblyLoader.cs" />
+    <Compile Include="Core\NomadConfiguration.cs" />
+    <Compile Include="Core\NomadKernel.cs" />
     <Compile Include="EventAggregation\EventAggregator.cs" />
     <Compile Include="EventAggregation\IEventAggregator.cs" />
     <Compile Include="Modules\IModuleBootstraper.cs" />

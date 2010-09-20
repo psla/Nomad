@@ -70,10 +70,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Libraries\White\White.CustomControls.dll</HintPath>
     </Reference>
-    <Reference Include="White.NUnit, Version=0.2.0.0, Culture=neutral, PublicKeyToken=2672efbf3e161801, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Libraries\White\White.NUnit.dll</HintPath>
-    </Reference>
     <Reference Include="WindowsBase">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
