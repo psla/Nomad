@@ -1,18 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
 
 namespace Nomad.Core
 {
     /// <summary>
-    /// Contains all informations concerning Nomad configuration. Also provides default configuration.
+    /// Contains all informations concerning <see cref="NomadKernel"/> configuration.
+    /// This class acts as freezable. Also provides default configuration.
     /// </summary>
     public class NomadConfiguration
     {
         /// <summary>
-        /// Contains string based configuration dictionary.
+        /// Determines the state of configuration object.
         /// </summary>
-        public IDictionary<string, string> SettingsDictionary;
-
-        //TODO: ADD rest of configuration-dependent classes/interfaces.
+        public bool IsFrozen { get; private set; }
 
         /// <summary>
         /// Provides default and user-modifiable configuration for Nomad framework.
@@ -21,14 +20,35 @@ namespace Nomad.Core
         {
             get
             {
-                return new NomadConfiguration
+                return new NomadConfiguration()
                            {
-                               SettingsDictionary = new Dictionary<string, string>
-                                                        {
-                                                            {"setting1", "value1"}
-                                                        }
                            };
             }
+        }
+
+
+        /// <summary>
+        /// Checks wheter current instance is already frozen.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">
+        /// If object is already frozen.
+        /// </exception>
+        private void AssertNotFrozen()
+        {
+            if (IsFrozen)
+            {
+                throw new InvalidOperationException("This configuration object is frozen.");
+            }
+        }
+
+
+        /// <summary>
+        /// Freezes the configuration.
+        /// </summary>
+        public void Freeze()
+        {
+            AssertNotFrozen();
+            IsFrozen = true;
         }
     }
 }
