@@ -33,6 +33,8 @@ namespace Nomad.Modules
         /// <param name="s">Path to module</param>
         public void LoadModuleFromFile(string s)
         {
+            IModuleBootstraper bootstraper;
+
             try
             {
                 var assembly = Assembly.LoadFile(s);
@@ -44,14 +46,17 @@ namespace Nomad.Modules
                 var bootstraperType = bootstraperTypes.SingleOrDefault();
 
                 var subContainer = CreateSubContainerConfiguredFor(bootstraperType);
-                var bootstraper = subContainer.Resolve<IModuleBootstraper>();
-                bootstraper.Initialize();
+                bootstraper = subContainer.Resolve<IModuleBootstraper>();
             }
             catch (Exception e)
             {
+                //TODO: fix this issue
                 //_logger.WarnException("Couldn't load assembly", e);
-                
+                //throw;
+                return;
             }
+
+            bootstraper.Initialize();
         }
 
 
