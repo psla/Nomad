@@ -5,8 +5,8 @@ namespace Nomad.EventAggregation
 {
     public class EventAggregator : IEventAggregator
     {
-        private readonly IDictionary<Type, IList<object>> _dictionary =
-            new Dictionary<Type, IList<object>>();
+        private readonly IDictionary<Type, Delegate> _dictionary =
+            new Dictionary<Type, Delegate>();
 
         #region Implementation of IEventAggregator
 
@@ -18,18 +18,18 @@ namespace Nomad.EventAggregation
         /// <param name="action"></param>
         public void Subscribe<T>(Action<T> action) where T : class
         {
-            //_action = action;
             Type type = typeof (T);
-            IList<object> events = null;
+            Delegate events = null;
             lock (_dictionary)
             {
                 if (_dictionary.TryGetValue(type, out events))
                 {
-                    events.Add(action);
+                    //events.Add(action);
+                    _dictionary[type] = Delegate.Combine(events, action);
                 }
                 else
                 {
-                    _dictionary[type] = new List<object> {action};
+                    _dictionary[type] = action;
                 }
             }
         }
@@ -42,17 +42,17 @@ namespace Nomad.EventAggregation
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="action"></param>
+        /// <exception cref="KeyNotFoundException">when unsubscribing from type which was no subsription ever</exception>
+        /// <exception cref="MemberAccessException"></exception>
+        /// <exception cref="ArgumentException"></exception>
         public void Unsubsribe<T>(Action<T> action) where T : class
         {
-            IList<object> actions = null;
-
+            Delegate actions = null;
+            var type = typeof (T);
             //two parts of methods prevents stopping another thread for waiting to the end of the lock
             lock (_dictionary)
             {
-                if (_dictionary.TryGetValue(typeof (T), out actions))
-                {
-                    actions.Remove(action);
-                }
+                _dictionary[type] = Delegate.Remove(_dictionary[type], action);
             }
         }
 
@@ -65,23 +65,10 @@ namespace Nomad.EventAggregation
         /// <param name="message"></param>
         public void Notify<T>(T message)
         {
-            IList<object> actions = null;
-            IList<object> actionsToExecute = new List<object>();
-
-            //two parts of methods prevents stopping another thread for waiting to the end of the lock
-            lock (_dictionary)
+            Delegate actions;
+            if (_dictionary.TryGetValue(typeof (T), out actions))
             {
-                if (_dictionary.TryGetValue(typeof (T), out actions))
-                {
-                    actionsToExecute = new List<object>(actions);
-                }
-            }
-
-            foreach (object action in actionsToExecute)
-            {
-                var act = action as Action<T>;
-                if (act != null)
-                    act(message);
+                actions.DynamicInvoke(message);
             }
         }
 
