@@ -35,16 +35,9 @@ namespace Nomad.ServiceLocation
         {
             bool found = true;
 
-            try
-            {
-                _serviceContainer.Resolve<T>();
-            }
-            catch (Castle.MicroKernel.ComponentNotFoundException e)
-            {
-                //Service not registered
-                found = false;
-            }
-            
+            var componentModel = new ComponentModel(serviceProvider.GetType().Name,typeof(T),serviceProvider.GetType());
+            found = Component.ServiceAlreadyRegistered(_serviceContainer.Kernel,componentModel);
+
             if(found == false)
             {
                 _serviceContainer.Register(

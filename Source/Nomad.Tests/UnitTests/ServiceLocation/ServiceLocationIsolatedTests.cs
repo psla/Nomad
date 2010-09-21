@@ -100,5 +100,7 @@ namespace Nomad.Tests.UnitTests.ServiceLocation
         {
             Assert.Throws<ArgumentException>(() => _serviceLocator.Resolve<ITestInterface>());
         }
+
+        //TODO: wrtie test for IDisposable test class which will be disposed during being registered as service
     }
 }
