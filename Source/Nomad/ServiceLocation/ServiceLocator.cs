@@ -1,4 +1,5 @@
 using System;
+using Castle.Core;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 
@@ -32,9 +33,30 @@ namespace Nomad.ServiceLocation
         /// <param name="serviceProvider">Concreate instance that provides the implementation of T</param>
         public void Register<T>(T serviceProvider)
         {
-            _serviceContainer.Register(
-                Component.For<T>().Instance(serviceProvider)
-                );
+            bool found = true;
+
+            try
+            {
+                _serviceContainer.Resolve<T>();
+            }
+            catch (Castle.MicroKernel.ComponentNotFoundException e)
+            {
+                //Service not registered
+                found = false;
+            }
+            
+            if(found == false)
+            {
+                _serviceContainer.Register(
+                Component.For<T>()
+                    .Instance(serviceProvider)
+                    .Unless(Component.ServiceAlreadyRegistered)
+                );    
+            }
+            else
+            {
+                throw new ArgumentException("Service already registered");
+            }
         }
 
         /// <summary>
@@ -44,7 +66,15 @@ namespace Nomad.ServiceLocation
         /// <returns>Instance implementing T interface</returns>
         public T Resolve<T>()
         {
-            return _serviceContainer.Resolve<T>();
+            try
+            {
+                return _serviceContainer.Resolve<T>();    
+            }
+            catch(Castle.MicroKernel.ComponentNotFoundException e)
+            {
+                throw new ArgumentException("Service not found",e); 
+            }
+            
         }
 
         #endregion

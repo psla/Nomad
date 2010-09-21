@@ -57,13 +57,16 @@ namespace Nomad.Tests.FunctionalTests.ServiceLocation
         {
             _moduleLoader.LoadModuleFromFile(_pathToRegistering);
             Assert.AreEqual(1, ServiceRegistry.GetRegisteredServices().Count);
-            Assert.Throws<Exception>(() => _moduleLoader.LoadModuleFromFile(_pathToRegistering));
+
+            _moduleLoader.LoadModuleFromFile(_pathToRegistering);
+
+            Assert.Throws<ArgumentException>(() => _moduleLoader.LoadModuleFromFile(_pathToRegistering));
         }
 
         [Test]
         public void module_demanding_service_loaded_without_registering_service_earlier()
         {
-            Assert.Throws<Exception>( () => _moduleLoader.LoadModuleFromFile(_pathToResolving));
+            Assert.Throws<ArgumentException>(() => _moduleLoader.LoadModuleFromFile(_pathToResolving));
         }
 
     }

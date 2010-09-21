@@ -50,6 +50,7 @@ namespace Nomad.Modules
             catch (Exception e)
             {
                 //_logger.WarnException("Couldn't load assembly", e);
+                
             }
         }
 
