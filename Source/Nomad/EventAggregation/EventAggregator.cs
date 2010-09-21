@@ -63,7 +63,7 @@ namespace Nomad.EventAggregation
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="message"></param>
-        public void Publish<T>(T message)
+        public void Publish<T>(T message) where T : class
         {
             Delegate actions;
             if (_dictionary.TryGetValue(typeof (T), out actions))

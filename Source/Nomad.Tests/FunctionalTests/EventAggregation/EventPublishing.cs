@@ -29,7 +29,7 @@ namespace Nomad.Tests.FunctionalTests.EventAggregation
             MessageType receivedPayload = null;
 
             _eventAggregator.Subscribe<MessageType>(payload => receivedPayload = payload);
-            _eventAggregator.Notify(sentPayload);
+            _eventAggregator.Publish(sentPayload);
 
             Assert.AreSame(sentPayload, receivedPayload,
                            "Event handler did not receive expected payload object or was not invoked at all");
@@ -39,8 +39,8 @@ namespace Nomad.Tests.FunctionalTests.EventAggregation
         [Test]
         public void notify_ignores_event_when_no_listeners()
         {
-            Assert.DoesNotThrow(() => _eventAggregator.Notify(new MessageType(NameToSend)),
-                                "Notify should not throw an exception when no listeners");
+            Assert.DoesNotThrow(() => _eventAggregator.Publish(new MessageType(NameToSend)),
+                                "Publish should not throw an exception when no listeners");
         }
 
 
@@ -52,7 +52,7 @@ namespace Nomad.Tests.FunctionalTests.EventAggregation
             var payload = new MessageType(NameToSend);
             _eventAggregator.Subscribe<MessageType>(x => { firstListener = x; });
             _eventAggregator.Subscribe<MessageType>(x => { secondListener = x; });
-            _eventAggregator.Notify(payload);
+            _eventAggregator.Publish(payload);
             Assert.AreSame(payload, firstListener, "First event was not successfuly invoked");
             Assert.AreSame(payload, secondListener, "Second event was not successfuly invoked");
         }
@@ -86,7 +86,7 @@ namespace Nomad.Tests.FunctionalTests.EventAggregation
                                   {
                                       try
                                       {
-                                          _eventAggregator.Notify(new MessageType(NameToSend));
+                                          _eventAggregator.Publish(new MessageType(NameToSend));
                                       }
                                       catch
                                       {
@@ -111,7 +111,7 @@ namespace Nomad.Tests.FunctionalTests.EventAggregation
             _eventAggregator.Subscribe(myAction);
             _eventAggregator.Subscribe<MessageType>(x => { firedCount++; });
             _eventAggregator.Unsubsribe(myAction);
-            _eventAggregator.Notify(new MessageType(NameToSend));
+            _eventAggregator.Publish(new MessageType(NameToSend));
             Assert.AreEqual(2, firedCount);
         }
 
