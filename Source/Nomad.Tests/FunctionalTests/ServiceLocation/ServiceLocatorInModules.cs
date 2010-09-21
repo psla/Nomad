@@ -25,10 +25,11 @@ namespace Nomad.Tests.FunctionalTests.ServiceLocation
         public void SetUp()
         {
             ServiceRegistry.Clear();
-            _serviceLocator = new ServiceLocator();
+            
 
             var container = new WindsorContainer();
             _moduleLoader = new ModuleLoader(container);
+            _serviceLocator = new ServiceLocator(container);
             
             container.Register(
                 Component.For<IServiceLocator>().Instance(_serviceLocator)
@@ -42,8 +43,9 @@ namespace Nomad.Tests.FunctionalTests.ServiceLocation
 
             Assert.AreEqual(1, ServiceRegistry.GetRegisteredServices().Count);
 
-            Assert.NotNull(_serviceLocator.Resolve<ITestService>());
-
+            var serviceProvided =  _serviceLocator.Resolve<ITestService>();
+            Assert.NotNull(serviceProvided);
+            
             Assert.AreEqual(0,ServiceRegistry.GetRegisteredServiceCounter()[typeof(ITestService)]);
             _moduleLoader.LoadModuleFromFile(_pathToResolving);
             Assert.AreEqual(1, ServiceRegistry.GetRegisteredServiceCounter()[typeof(ITestService)]);

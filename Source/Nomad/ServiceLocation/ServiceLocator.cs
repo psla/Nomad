@@ -1,22 +1,50 @@
 using System;
+using Castle.MicroKernel.Registration;
+using Castle.Windsor;
 
 namespace Nomad.ServiceLocation
 {
     /// <summary>
     ///     Default Nomad Implementation of IServiceLocator based on Castle Windsor IoC Container.
     /// </summary>
+    /// <remarks>
+    ///     No clearing is performed within passed container.
+    /// </remarks>
     public class ServiceLocator : IServiceLocator
     {
-        #region Implementation of IServiceLocator
+        private readonly IWindsorContainer _serviceContainer;
 
-        public void Register<T>(T serviceProvider)
+        /// <summary>
+        ///      Initializes new instance of the <see cref="ServiceLocator"/> class.
+        /// </summary>
+        /// <param name="windsorContainer">Passed container will be used as general container for all services.</param>
+        public ServiceLocator(IWindsorContainer windsorContainer)
         {
-            throw new NotImplementedException();
+            _serviceContainer = windsorContainer;   
         }
 
+        #region Implementation of IServiceLocator
+
+        /// <summary>
+        ///     Registers the new interface T as a service proviede by passed instance.
+        /// </summary>
+        /// <typeparam name="T">Type of service</typeparam>
+        /// <param name="serviceProvider">Concreate instance that provides the implementation of T</param>
+        public void Register<T>(T serviceProvider)
+        {
+            _serviceContainer.Register(
+                Component.For<T>().Instance(serviceProvider)
+                );
+        }
+
+        /// <summary>
+        ///     Resolves the instance previously registerd as service provider.
+        /// </summary>
+        /// <typeparam name="T">Interface of the service. </typeparam>
+        /// <returns>Instance implementing T interface</returns>
         public T Resolve<T>()
         {
-            throw new NotImplementedException();
+            return _serviceContainer.Resolve<T>();
         }
 
         #endregion

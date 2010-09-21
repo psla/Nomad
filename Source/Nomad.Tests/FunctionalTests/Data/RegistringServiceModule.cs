@@ -21,12 +21,12 @@ public class RegistringServiceModule : Nomad.Modules.IModuleBootstraper
     {
         public TestServiceFromModule()
         {
-            ServiceRegistry.Register(typeof(TestServiceFromModule));
+            ServiceRegistry.Register(typeof(ITestService));
         }
 
         public void Execute()
         {
-            ServiceRegistry.IncreaseCounter(typeof(TestServiceFromModule));
+            ServiceRegistry.IncreaseCounter(typeof(ITestService));
         }
     }
 }
