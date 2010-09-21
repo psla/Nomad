@@ -3,7 +3,7 @@ using System;
 namespace Nomad.EventAggregation
 {
     /// <summary>
-    /// Responsible for passing events from the calee to the listeners
+    /// Provides means for publishing events, where listeners know little or nothing about publishers. Events are dispatched based on event type, not based on origin of the event
     /// </summary>
     public interface IEventAggregator
     {
@@ -16,9 +16,11 @@ namespace Nomad.EventAggregation
 
 
         /// <summary>
-        /// Unsubsribes specified action. Be carefull when using lambda! 
-        /// Two same lambdas may not be equal. Use method group instead.
+        /// Unsubsribes specified action. 
         /// </summary>
+        /// <remarks>Be carefull when using lambda! 
+        /// Two same lambdas may not be equal. Use method group instead.
+        /// </remarks>
         /// <typeparam name="T">type of message we are stopping to listen</typeparam>
         /// <param name="action"></param>
         void Unsubsribe<T>(Action<T> action) where T : class;
@@ -29,6 +31,6 @@ namespace Nomad.EventAggregation
         /// </summary>
         /// <typeparam name="T">Type of message to send</typeparam>
         /// <param name="message">Message to send</param>
-        void Notify<T>(T message);
+        void Publish<T>(T message) where T : class;
     }
 }

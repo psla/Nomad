@@ -8,8 +8,7 @@ using TestsShared;
 namespace Nomad.Tests.FunctionalTests.EventAggregation
 {
     [UnitTests]
-    //TODO: This probably should be functional tests, but it also are unittests, and while unittests are those, which are running in fast build, I tagged them UnitTests
-    public class MessagesSending
+    public class EventPublishing
     {
         private const string NameToSend = "testname";
 
@@ -23,38 +22,44 @@ namespace Nomad.Tests.FunctionalTests.EventAggregation
         }
 
 
-        [TestCase(NameToSend, true)]
-        [TestCase("blablabla", false)]
-        public void sending_events_one_listener_success(string nameToSend, bool expectedValue)
+        [Test]
+        public void payload_object_is_passed_to_the_listener()
         {
-            bool correctlyFired = false;
-            _eventAggregator.Subscribe<MessageType>(
-                x => { correctlyFired = x.Name == NameToSend; });
-            _eventAggregator.Notify(new MessageType(nameToSend));
-            Assert.AreEqual(expectedValue, correctlyFired);
+            var sentPayload = new MessageType(NameToSend);
+            MessageType receivedPayload = null;
+
+            _eventAggregator.Subscribe<MessageType>(payload => receivedPayload = payload);
+            _eventAggregator.Notify(sentPayload);
+
+            Assert.AreSame(sentPayload, receivedPayload,
+                           "Event handler did not receive expected payload object or was not invoked at all");
         }
 
 
         [Test]
-        public void sending_events_when_no_listeners()
+        public void notify_ignores_event_when_no_listeners()
         {
-            _eventAggregator.Notify(new MessageType(NameToSend));
+            Assert.DoesNotThrow(() => _eventAggregator.Notify(new MessageType(NameToSend)),
+                                "Notify should not throw an exception when no listeners");
         }
 
 
         [Test]
-        public void multiple_listeners()
+        public void all_listeners_for_type_invoked()
         {
-            byte fireCount = 0;
-            _eventAggregator.Subscribe<MessageType>(x => { fireCount++; });
-            _eventAggregator.Subscribe<MessageType>(x => { fireCount++; });
-            _eventAggregator.Notify(new MessageType(NameToSend));
-            Assert.AreEqual(2, fireCount);
+            MessageType firstListener = null;
+            MessageType secondListener = null;
+            var payload = new MessageType(NameToSend);
+            _eventAggregator.Subscribe<MessageType>(x => { firstListener = x; });
+            _eventAggregator.Subscribe<MessageType>(x => { secondListener = x; });
+            _eventAggregator.Notify(payload);
+            Assert.AreSame(payload, firstListener, "First event was not successfuly invoked");
+            Assert.AreSame(payload, secondListener, "Second event was not successfuly invoked");
         }
 
 
         [Test]
-        public void thread_safety()
+        public void basic_thread_safety()
         {
             bool exceptionOccured = false;
             var threads = new List<Thread>();
@@ -96,16 +101,18 @@ namespace Nomad.Tests.FunctionalTests.EventAggregation
             Assert.IsFalse(exceptionOccured);
         }
 
+
         [Test]
         public void unsubscribe_unsubscribes()
         {
             byte firedCount = 0;
             _eventAggregator.Subscribe<MessageType>(x => { firedCount++; });
-            Action<MessageType> myAction = x => { firedCount++; };
-            _eventAggregator.Subscribe<MessageType>(myAction);
-            _eventAggregator.Unsubsribe<MessageType>(myAction);
-            _eventAggregator.Notify<MessageType>(new MessageType(NameToSend));
-            Assert.AreEqual(1, firedCount);
+            Action<MessageType> myAction = x => { Assert.Fail("Delegate was not removed"); };
+            _eventAggregator.Subscribe(myAction);
+            _eventAggregator.Subscribe<MessageType>(x => { firedCount++; });
+            _eventAggregator.Unsubsribe(myAction);
+            _eventAggregator.Notify(new MessageType(NameToSend));
+            Assert.AreEqual(2, firedCount);
         }
 
         #region Nested type: MessageType

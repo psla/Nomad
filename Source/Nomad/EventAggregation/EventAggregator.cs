@@ -59,11 +59,11 @@ namespace Nomad.EventAggregation
 
         /// <summary>
         /// Notifies event listeners. Thread safe.
-        /// <see cref="IEventAggregator.Notify{T}"/>
+        /// <see cref="IEventAggregator.Publish{T}"/>
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="message"></param>
-        public void Notify<T>(T message)
+        public void Publish<T>(T message)
         {
             Delegate actions;
             if (_dictionary.TryGetValue(typeof (T), out actions))
