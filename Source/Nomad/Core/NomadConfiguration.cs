@@ -47,7 +47,6 @@ namespace Nomad.Core
         /// </summary>
         public void Freeze()
         {
-            AssertNotFrozen();
             IsFrozen = true;
         }
     }

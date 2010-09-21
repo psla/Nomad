@@ -35,10 +35,8 @@ namespace Nomad.Core
         /// Initializes new instance of the <see cref="NomadKernel"/> class.
         /// Uses frozen <see cref="NomadConfiguration.Default"/> as configuration data.
         /// </summary>
-        public NomadKernel()
+        public NomadKernel(): this(NomadConfiguration.Default)
         {
-            KernelConfiguration = NomadConfiguration.Default;
-            KernelConfiguration.Freeze();
         }
     }
 }
