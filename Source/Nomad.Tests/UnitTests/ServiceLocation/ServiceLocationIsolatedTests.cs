@@ -1,4 +1,5 @@
 using System;
+using Castle.MicroKernel.ComponentActivator;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using Moq;
@@ -18,25 +19,10 @@ namespace Nomad.Tests.UnitTests.ServiceLocation
             int Execute();
         }
 
-        private class TestClass : ITestInterface
-        {
-            private readonly int _value;
-
-            public TestClass(int value)
-            {
-                _value = value;
-            }
-
-            public int Execute()
-            {
-                return _value;
-            }
-        }
-
         #endregion
 
         private IServiceLocator _serviceLocator;
-        
+
         [SetUp]
         public void SetUp()
         {
@@ -49,58 +35,73 @@ namespace Nomad.Tests.UnitTests.ServiceLocation
         }
 
         [Test]
-        public void service_registration_service_resolving()
+        public void resolve_returns_same_service_that_was_registered_for_given_interface()
         {
-            //int counter = 0;
-            //Prepare Mock for concreate implementation
-            //var mockServiceProvider = new Mock<ITestInterface>();
-            //mockServiceProvider.Setup(x => x.Execute()).Callback(() => counter++);
-            //_serviceLocator.Register<ITestInterface>(mockServiceProvider.Object);
-            const int returnValue = 5;
-            var serviceProvider = new TestClass(returnValue);
-            _serviceLocator.Register<ITestInterface>(serviceProvider);
+            ////Prepare mock IoC Container
+            //var mockContainer = new Mock<IWindsorContainer>();
+            //ITestInterface objectStoredInContainer = null;
+            
+            //mockContainer.Setup(x => x.Register(It.IsAny<ComponentRegistration<ITestInterface>>()))
+            //    .Callback((ComponentRegistration<ITestInterface> componentRegistration) =>
+            //                  {
+            //                      ;
+            //                  });
 
+            //mockContainer.Setup(x => x.Resolve<ITestInterface>()).Returns(
+            //    (ITestInterface testInterface) => objectStoredInContainer);
+
+            
+            //_serviceLocator = new ServiceLocator(mockContainer.Object);
+            _serviceLocator = new ServiceLocator(new WindsorContainer());
+
+            //Prepare Mock for concrete implementation
+            var mockServiceProvider = new Mock<ITestInterface>();
+
+            _serviceLocator.Register<ITestInterface>(mockServiceProvider.Object);
             var serviceProvided = _serviceLocator.Resolve<ITestInterface>();
-            Assert.NotNull(serviceProvided);
-            Assert.AreEqual(returnValue,serviceProvided.Execute());
 
-            //behavioral check and state check
-            //mockServiceProvider.Verify( x => x.Execute(), Times.Exactly(1));
-            //Assert.AreEqual(1,counter);
+            Assert.AreSame(mockServiceProvider.Object,serviceProvided,"Service (object) registered should be same instance as service resolved");
         }
 
         [Test]
-        public void double_same_service_regestration_expect_exception()
+        public void atempt_to_register_service_for_interface_that_is_already_registered_results_in_exception()
         {
-            const int returnValue = 5;
-            var serviceProvider = new TestClass(returnValue);
+            var mockServiceProvider = new Mock<ITestInterface>();
 
-            _serviceLocator.Register<ITestInterface>(serviceProvider);
+            _serviceLocator.Register<ITestInterface>(mockServiceProvider.Object);
 
-            Assert.Throws<ArgumentException>(() => _serviceLocator.Register<ITestInterface>(serviceProvider));
+            //TODO: change exception type.
+            Assert.Throws<ArgumentException>(() => _serviceLocator.Register<ITestInterface>(mockServiceProvider.Object),"No exception thrown during second attempt to register already registered service");
         }
 
         [Test]
-        public void double_differnet_service_regestration_expect_fist_number_being_returned()
+        public void when_registering_service_of_already_known_type_original_service_is_not_substituted()
         {
-            const int returnValue = 5;
-            const int returnValue2 = 10;
+            var mockServiceProvider = new Mock<ITestInterface>();
+            var mockServiceProvider2 = new Mock<ITestInterface>();
+            
+            _serviceLocator.Register<ITestInterface>(mockServiceProvider.Object);
 
-            var serviceProvider = new TestClass(returnValue);
-            _serviceLocator.Register<ITestInterface>(serviceProvider);
+            Assert.Throws<ArgumentException>(() => _serviceLocator.Register<ITestInterface>(mockServiceProvider2.Object));
 
-            var serviceProvider2 = new TestClass(returnValue2);
-            Assert.Throws<ArgumentException>(() => _serviceLocator.Register<ITestInterface>(serviceProvider2));
-
-            Assert.AreEqual(returnValue,_serviceLocator.Resolve<ITestInterface>().Execute());
+            Assert.AreSame(mockServiceProvider.Object,_serviceLocator.Resolve<ITestInterface>(),"Resolved service must be same as the first service registered");
         }
 
         [Test]
-        public void no_regestration_before_resolving_service_expect_exception()
+        public void atempt_to_resolve_unregistered_service_results_in_exception()
         {
-            Assert.Throws<ArgumentException>(() => _serviceLocator.Resolve<ITestInterface>());
+            //TODO: change exception type
+            Assert.Throws<ArgumentException>(() => _serviceLocator.Resolve<ITestInterface>(),"The exception should be thrown during resolving unknown service");
         }
 
-        //TODO: wrtie test for IDisposable test class which will be disposed during being registered as service
+        [Test]
+        public void atempt_to_register_null_service_results_in_exception()
+        {
+            ITestInterface serviceProvider = null;
+            Assert.Throws<NullReferenceException>(() => _serviceLocator.Register(serviceProvider),"The exception should be thrown when passing null as service provider");
+
+        } 
+
+        //TODO: write test for IDisposable test class which will be disposed during being registered as service
     }
 }
