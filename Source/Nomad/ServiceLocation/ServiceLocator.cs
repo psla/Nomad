@@ -6,10 +6,10 @@ using Castle.Windsor;
 namespace Nomad.ServiceLocation
 {
     /// <summary>
-    ///     Default Nomad Implementation of IServiceLocator based on Castle Windsor IoC Container.
+    ///     Default Nomad implementation of IServiceLocator based on Castle Windsor IoC Container.
     /// </summary>
     /// <remarks>
-    ///     No clearing is performed within passed container.
+    ///     No clearing is performed for passed container. 
     /// </remarks>
     public class ServiceLocator : IServiceLocator
     {
@@ -27,10 +27,10 @@ namespace Nomad.ServiceLocation
         #region Implementation of IServiceLocator
 
         /// <summary>
-        ///     Registers the new interface T as a service proviede by passed instance.
+        ///     Registers the new interface T as a service provided by passed instance.
         /// </summary>
         /// <typeparam name="T">Type of service</typeparam>
-        /// <param name="serviceProvider">Concreate instance that provides the implementation of T</param>
+        /// <param name="serviceProvider">Concrete instance that provides the implementation of T</param>
         public void Register<T>(T serviceProvider)
         {
             bool found = true;
@@ -53,7 +53,7 @@ namespace Nomad.ServiceLocation
         }
 
         /// <summary>
-        ///     Resolves the instance previously registerd as service provider.
+        ///     Resolves the instance previously registered as service provider.
         /// </summary>
         /// <typeparam name="T">Interface of the service. </typeparam>
         /// <returns>Instance implementing T interface</returns>

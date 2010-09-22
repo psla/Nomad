@@ -1,25 +1,28 @@
 namespace Nomad.ServiceLocation
 {
     /// <summary>
-    ///     Provides means for registering and resolving Services of the specyfic interface.
+    ///     Provides means for registering and resolving Services of the specific interface.
     /// </summary>
-    /// <remarks>
-    ///     Allows only One Service of the interface to be registered at the time.
-    /// </remarks>
     public interface IServiceLocator
     {
         /// <summary>
-        ///     Register passed object as and set it as serviceProvider for provided interface T.
+        ///     Registers passed object as an service implementation of interface T.
         /// </summary>
         /// <typeparam name="T">Interface of provided service.</typeparam>
-        /// <param name="serviceProvider">Service implementation, thus service provider.</param>
+        /// <param name="serviceProvider">Service implementation, thus service provider object.</param>
+        /// <remarks>
+        ///     Allows only One Service of the same interface to be registered at the time.
+        /// </remarks>
         void Register<T>(T serviceProvider);
 
         /// <summary>
-        ///     Gets the object fullfilling the specified service interface.
+        ///     Gets the object fulfilling the specified service interface.
         /// </summary>
-        /// <typeparam name="T">Service type wanted.</typeparam>
-        /// <returns>Service Provider</returns>
+        /// <typeparam name="T">Interface of the service type.</typeparam>
+        /// <returns>Object implementing requested interface</returns>
+        /// <remarks>
+        ///     When no implementation of T is available throws an exception.
+        /// </remarks>
         T Resolve<T>();
     }
 }
