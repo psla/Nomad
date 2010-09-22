@@ -69,6 +69,8 @@
     <Compile Include="Core\NomadKernel.cs" />
     <Compile Include="EventAggregation\EventAggregator.cs" />
     <Compile Include="EventAggregation\IEventAggregator.cs" />
+    <Compile Include="Exceptions\DuplicateServiceException.cs" />
+    <Compile Include="Exceptions\ServiceNotFoundException .cs" />
     <Compile Include="Modules\IModuleBootstraper.cs" />
     <Compile Include="Modules\ModuleLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

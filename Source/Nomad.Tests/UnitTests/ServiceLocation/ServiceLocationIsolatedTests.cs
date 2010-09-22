@@ -3,6 +3,7 @@ using Castle.MicroKernel.ComponentActivator;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using Moq;
+using Nomad.Exceptions;
 using Nomad.ServiceLocation;
 using NUnit.Framework;
 using TestsShared;
@@ -37,10 +38,10 @@ namespace Nomad.Tests.UnitTests.ServiceLocation
         [Test]
         public void resolve_returns_same_service_that_was_registered_for_given_interface()
         {
-            ////Prepare mock IoC Container
+            //Prepare mock IoC Container
             //var mockContainer = new Mock<IWindsorContainer>();
             //ITestInterface objectStoredInContainer = null;
-            
+
             //mockContainer.Setup(x => x.Register(It.IsAny<ComponentRegistration<ITestInterface>>()))
             //    .Callback((ComponentRegistration<ITestInterface> componentRegistration) =>
             //                  {
@@ -50,9 +51,8 @@ namespace Nomad.Tests.UnitTests.ServiceLocation
             //mockContainer.Setup(x => x.Resolve<ITestInterface>()).Returns(
             //    (ITestInterface testInterface) => objectStoredInContainer);
 
-            
+
             //_serviceLocator = new ServiceLocator(mockContainer.Object);
-            _serviceLocator = new ServiceLocator(new WindsorContainer());
 
             //Prepare Mock for concrete implementation
             var mockServiceProvider = new Mock<ITestInterface>();
@@ -70,11 +70,10 @@ namespace Nomad.Tests.UnitTests.ServiceLocation
 
             _serviceLocator.Register<ITestInterface>(mockServiceProvider.Object);
 
-            //TODO: change exception type.
-            Assert.Throws<ArgumentException>(() => _serviceLocator.Register<ITestInterface>(mockServiceProvider.Object),"No exception thrown during second attempt to register already registered service");
+            Assert.Throws<DuplicateServiceException>(() => _serviceLocator.Register<ITestInterface>(mockServiceProvider.Object), "No exception thrown during second attempt to register already registered service");
         }
 
-        [Test]
+        [Test]  
         public void when_registering_service_of_already_known_type_original_service_is_not_substituted()
         {
             var mockServiceProvider = new Mock<ITestInterface>();
@@ -82,7 +81,7 @@ namespace Nomad.Tests.UnitTests.ServiceLocation
             
             _serviceLocator.Register<ITestInterface>(mockServiceProvider.Object);
 
-            Assert.Throws<ArgumentException>(() => _serviceLocator.Register<ITestInterface>(mockServiceProvider2.Object));
+            Assert.Throws<DuplicateServiceException>(() => _serviceLocator.Register<ITestInterface>(mockServiceProvider2.Object));
 
             Assert.AreSame(mockServiceProvider.Object,_serviceLocator.Resolve<ITestInterface>(),"Resolved service must be same as the first service registered");
         }
@@ -90,8 +89,7 @@ namespace Nomad.Tests.UnitTests.ServiceLocation
         [Test]
         public void atempt_to_resolve_unregistered_service_results_in_exception()
         {
-            //TODO: change exception type
-            Assert.Throws<ArgumentException>(() => _serviceLocator.Resolve<ITestInterface>(),"The exception should be thrown during resolving unknown service");
+            Assert.Throws<ServiceNotFoundException>(() => _serviceLocator.Resolve<ITestInterface>(),"The exception should be thrown during resolving unknown service");
         }
 
         [Test]
