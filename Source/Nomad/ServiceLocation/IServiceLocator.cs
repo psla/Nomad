@@ -15,6 +15,7 @@ namespace Nomad.ServiceLocation
         /// </remarks>
         void Register<T>(T serviceProvider);
 
+
         /// <summary>
         ///     Gets the object fulfilling the specified service interface.
         /// </summary>

@@ -1,5 +1,5 @@
 using System;
-using Castle.Core;
+using Castle.MicroKernel;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using Nomad.Exceptions;
@@ -16,13 +16,14 @@ namespace Nomad.ServiceLocation
     {
         private readonly IWindsorContainer _serviceContainer;
 
+
         /// <summary>
         ///      Initializes new instance of the <see cref="ServiceLocator"/> class.
         /// </summary>
         /// <param name="windsorContainer">Passed container will be used as general container for all services.</param>
         public ServiceLocator(IWindsorContainer windsorContainer)
         {
-            _serviceContainer = windsorContainer;   
+            _serviceContainer = windsorContainer;
         }
 
         #region Implementation of IServiceLocator
@@ -36,15 +37,15 @@ namespace Nomad.ServiceLocation
         /// <exception cref="ArgumentNullException">Raised during attempt to pass null as service implantation</exception>
         public void Register<T>(T serviceProvider)
         {
-
-            if(_serviceContainer.Kernel.HasComponent(typeof(T)))
+            if (_serviceContainer.Kernel.HasComponent(typeof (T)))
                 throw new DuplicateServiceException("Service already registered");
 
             _serviceContainer.Register(
                 Component.For<T>()
                     .Instance(serviceProvider)
-                );    
+                );
         }
+
 
         /// <summary>
         ///     Resolves the instance previously registered as service provider.
@@ -56,13 +57,12 @@ namespace Nomad.ServiceLocation
         {
             try
             {
-                return _serviceContainer.Resolve<T>();    
+                return _serviceContainer.Resolve<T>();
             }
-            catch(Castle.MicroKernel.ComponentNotFoundException e)
+            catch (ComponentNotFoundException e)
             {
-                throw new ServiceNotFoundException("Service not found",e); 
+                throw new ServiceNotFoundException("Service not found", e);
             }
-            
         }
 
         #endregion
