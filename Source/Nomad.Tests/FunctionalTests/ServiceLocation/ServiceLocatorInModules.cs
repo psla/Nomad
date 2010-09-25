@@ -15,10 +15,10 @@ namespace Nomad.Tests.FunctionalTests.ServiceLocation
         private IServiceLocator _serviceLocator;
         private ModuleLoader _moduleLoader;
 
-        private string _pathToRegistering = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+        private readonly string _pathToRegistering = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
                                                  @"Modules\ServiceLocatorEnabled\RegistringServiceModule.dll");
 
-        private string _pathToResolving = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+        private readonly string _pathToResolving = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
                                                @"Modules\ServiceLocatorEnabled\ResolvingServiceModule.dll");
 
         [SetUp]
@@ -26,7 +26,6 @@ namespace Nomad.Tests.FunctionalTests.ServiceLocation
         {
             ServiceRegistry.Clear();
             
-
             var container = new WindsorContainer();
             _moduleLoader = new ModuleLoader(container);
             _serviceLocator = new ServiceLocator(container);
@@ -37,34 +36,35 @@ namespace Nomad.Tests.FunctionalTests.ServiceLocation
         }
 
         [Test]
-        public void one_module_registering_one_module_resolving()
+        public void loading_module_with_service_provider_then_resolving_this_service_by_another_module()
         {
             _moduleLoader.LoadModuleFromFile(_pathToRegistering);
 
-            Assert.AreEqual(1, ServiceRegistry.GetRegisteredServices().Count);
-
-            var serviceProvided =  _serviceLocator.Resolve<ITestService>();
-            Assert.NotNull(serviceProvided);
+            Assert.AreEqual(1, ServiceRegistry.GetRegisteredServices().Count,"Module has not called the constructor of the service provider class");
             
-            Assert.AreEqual(0,ServiceRegistry.GetRegisteredServiceCounter()[typeof(ITestService)]);
+            Assert.DoesNotThrow( () => _serviceLocator.Resolve<ITestService>(),"Module has not properly registered service provider");
+
+            Assert.AreEqual(0,ServiceRegistry.GetRegisteredServiceCounter()[typeof(ITestService)],"Method in service has already been used");
+
             _moduleLoader.LoadModuleFromFile(_pathToResolving);
-            Assert.AreEqual(1, ServiceRegistry.GetRegisteredServiceCounter()[typeof(ITestService)]);
-            
+
+            Assert.AreEqual(1, ServiceRegistry.GetRegisteredServiceCounter()[typeof(ITestService)],"Method in service was not called exactly one time");
         }
 
         [Test]
-        public void two_module_registring_same_service()
+        public void attempt_to_register_by_two_modules_same_service_results_in_exception_event()
         {
             _moduleLoader.LoadModuleFromFile(_pathToRegistering);
-            Assert.AreEqual(1, ServiceRegistry.GetRegisteredServices().Count);
 
-            Assert.Throws<ArgumentException>(() => _moduleLoader.LoadModuleFromFile(_pathToRegistering));
+            //TODO: Make this test up, when Module Loader Exception Handling Interface will be defined
+            //Assert.Throws<ArgumentException>(() => _moduleLoader.LoadModuleFromFile(_pathToRegistering));
         }
 
         [Test]
-        public void module_demanding_service_loaded_without_registering_service_earlier()
+        public void attempt_to_load_module_with_service_dependency_without_loading_this_dependency_earlier_results_in_exception_event()
         {
-            Assert.Throws<ArgumentException>(() => _moduleLoader.LoadModuleFromFile(_pathToResolving));
+            //TODO: Make this test up, when Module Loader Exception Handling Interface will be defined
+            //Assert.Throws<ArgumentException>(() => _moduleLoader.LoadModuleFromFile(_pathToResolving));
         }
 
     }
