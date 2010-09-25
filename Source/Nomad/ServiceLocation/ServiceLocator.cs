@@ -2,6 +2,7 @@ using System;
 using Castle.Core;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
+using Nomad.Exceptions;
 
 namespace Nomad.ServiceLocation
 {
@@ -31,25 +32,18 @@ namespace Nomad.ServiceLocation
         /// </summary>
         /// <typeparam name="T">Type of service</typeparam>
         /// <param name="serviceProvider">Concrete instance that provides the implementation of T</param>
+        /// <exception cref="DuplicateServiceException">Raised during attempt to register same interface T as a service for second time.</exception>
+        /// <exception cref="ArgumentNullException">Raised during attempt to pass null as service implantation</exception>
         public void Register<T>(T serviceProvider)
         {
-            bool found = true;
 
-            var componentModel = new ComponentModel(serviceProvider.GetType().Name,typeof(T),serviceProvider.GetType());
-            found = Component.ServiceAlreadyRegistered(_serviceContainer.Kernel,componentModel);
+            if(_serviceContainer.Kernel.HasComponent(typeof(T)))
+                throw new DuplicateServiceException("Service already registered");
 
-            if(found == false)
-            {
-                _serviceContainer.Register(
+            _serviceContainer.Register(
                 Component.For<T>()
                     .Instance(serviceProvider)
-                    .Unless(Component.ServiceAlreadyRegistered)
                 );    
-            }
-            else
-            {
-                throw new ArgumentException("Service already registered");
-            }
         }
 
         /// <summary>
@@ -57,6 +51,7 @@ namespace Nomad.ServiceLocation
         /// </summary>
         /// <typeparam name="T">Interface of the service. </typeparam>
         /// <returns>Instance implementing T interface</returns>
+        /// <exception cref="ServiceNotFoundException">Raised during attempt to resolve service which has not been registered before.</exception>
         public T Resolve<T>()
         {
             try
@@ -65,7 +60,7 @@ namespace Nomad.ServiceLocation
             }
             catch(Castle.MicroKernel.ComponentNotFoundException e)
             {
-                throw new ArgumentException("Service not found",e); 
+                throw new ServiceNotFoundException("Service not found",e); 
             }
             
         }

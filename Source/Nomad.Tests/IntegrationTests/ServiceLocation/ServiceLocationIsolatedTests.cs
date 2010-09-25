@@ -1,5 +1,4 @@
 using System;
-using Castle.MicroKernel.ComponentActivator;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using Moq;
@@ -8,14 +7,14 @@ using Nomad.ServiceLocation;
 using NUnit.Framework;
 using TestsShared;
 
-namespace Nomad.Tests.UnitTests.ServiceLocation
+namespace Nomad.Tests.IntegrationTests.ServiceLocation
 {
     [UnitTests]
     public class ServiceLocationIsolatedTests
     {
         #region Class and interfacces for test purposes
 
-        private interface ITestInterface
+        public interface ITestInterface
         {
             int Execute();
         }
@@ -38,22 +37,6 @@ namespace Nomad.Tests.UnitTests.ServiceLocation
         [Test]
         public void resolve_returns_same_service_that_was_registered_for_given_interface()
         {
-            //Prepare mock IoC Container
-            //var mockContainer = new Mock<IWindsorContainer>();
-            //ITestInterface objectStoredInContainer = null;
-
-            //mockContainer.Setup(x => x.Register(It.IsAny<ComponentRegistration<ITestInterface>>()))
-            //    .Callback((ComponentRegistration<ITestInterface> componentRegistration) =>
-            //                  {
-            //                      ;
-            //                  });
-
-            //mockContainer.Setup(x => x.Resolve<ITestInterface>()).Returns(
-            //    (ITestInterface testInterface) => objectStoredInContainer);
-
-
-            //_serviceLocator = new ServiceLocator(mockContainer.Object);
-
             //Prepare Mock for concrete implementation
             var mockServiceProvider = new Mock<ITestInterface>();
 
@@ -64,7 +47,7 @@ namespace Nomad.Tests.UnitTests.ServiceLocation
         }
 
         [Test]
-        public void atempt_to_register_service_for_interface_that_is_already_registered_results_in_exception()
+        public void attempt_to_register_service_for_interface_that_is_already_registered_results_in_exception()
         {
             var mockServiceProvider = new Mock<ITestInterface>();
 
@@ -87,16 +70,16 @@ namespace Nomad.Tests.UnitTests.ServiceLocation
         }
 
         [Test]
-        public void atempt_to_resolve_unregistered_service_results_in_exception()
+        public void attempt_to_resolve_unregistered_service_results_in_exception()
         {
             Assert.Throws<ServiceNotFoundException>(() => _serviceLocator.Resolve<ITestInterface>(),"The exception should be thrown during resolving unknown service");
         }
 
         [Test]
-        public void atempt_to_register_null_service_results_in_exception()
+        public void attempt_to_register_null_service_results_in_exception()
         {
             ITestInterface serviceProvider = null;
-            Assert.Throws<NullReferenceException>(() => _serviceLocator.Register(serviceProvider),"The exception should be thrown when passing null as service provider");
+            Assert.Throws<ArgumentNullException>(() => _serviceLocator.Register(serviceProvider), "The exception should be thrown when passing null as service provider");
 
         } 
 
