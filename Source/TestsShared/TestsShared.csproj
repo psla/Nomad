@@ -78,7 +78,6 @@
     <Compile Include="FunctionalTestsAttribute.cs" />
     <Compile Include="FunctionalTests\GuiApplicationContainer.cs" />
     <Compile Include="FunctionalTests\GuiTestFixture.cs" />
-    <Compile Include="GuiNunitHooks.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UnitTestsAttribute.cs" />
   </ItemGroup>
