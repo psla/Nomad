@@ -61,64 +61,34 @@ namespace Nomad.Tests.FunctionalTests.EventAggregation
         [Test]
         public void basic_thread_safety()
         {
-            var threadTestClass = new ThreadingTestParameters();
-            
-            for (int i = 0; i < ThreadingTestParameters.listener_threads; i++)
+            var threadTestClass = new ThreadingTestHelper(_eventAggregator);
+
+            for (int i = 0; i < ThreadingTestHelper.ListenerThreadsNumber; i++)
             {
-                threadTestClass.endSynchronization[i] = new ManualResetEvent(false);
-                int value = i;
-                var thread = new Thread(
-                    (ThreadStart) delegate
-                                      {
-                                          threadTestClass.startSemaphore.WaitOne();
-                                          try
-                                          {
-                                              _eventAggregator.Subscribe
-                                                  <MessageType>((x) => { threadTestClass.invoked[value] = true; });
-                                          }
-                                          catch (Exception e)
-                                          {
-                                              threadTestClass.exception = e;
-                                          }
-                                          finally
-                                          {
-                                              threadTestClass.endSynchronization[value].Set();
-                                          }
-                                      });
-                threadTestClass.threads.Add(thread);
+                threadTestClass.CreateListenerThread(i);
             }
 
-            var notifyThread = new Thread(
-                (ThreadStart) delegate
-                                  {
-                                      threadTestClass.startSemaphore.WaitOne();
-                                      try
-                                      {
-                                          _eventAggregator.Publish(new MessageType(NameToSend));
-                                      }
-                                      catch (Exception e)
-                                      {
-                                          threadTestClass.exception = e;
-                                      }
-                                  });
-            threadTestClass.threads.Insert(ThreadingTestParameters.listener_threads / 2, notifyThread);
-            foreach (Thread thread in threadTestClass.threads)
+            threadTestClass.CreatePublisherThread();
+
+            threadTestClass.StartAllThreadsAndWaitForTheEndOfThem();
+
+            //wait for the end of all listeners, one second for each. Otherwise break the test
+            for (int i = 0; i < ThreadingTestHelper.ListenerThreadsNumber; i++)
             {
-                thread.Start();
+                Assert.IsTrue(threadTestClass.EndSynchronization[i].WaitOne(1000),
+                              "All listeners did not finish in specified amount of time");
+                threadTestClass.Invoked[i] = false;
             }
-            threadTestClass.startSemaphore.Release(ThreadingTestParameters.listener_threads + ThreadingTestParameters.publisher_threads);
-            //wait for the end of all listeners, for one second. Otherwise 
-            for (int i = 0; i < ThreadingTestParameters.listener_threads; i++)
-            {
-                Assert.IsTrue(threadTestClass.endSynchronization[i].WaitOne(1000),
-                              "All listeners did not finished in specified amount of time");
-                threadTestClass.invoked[i] = false;
-            }
-            if (threadTestClass.exception != null)
-                throw threadTestClass.exception;
+            if (threadTestClass.Exception != null)
+                throw threadTestClass.Exception;
+
+            //verify, if all listeners subscribed successfuly
+            //invoke
             _eventAggregator.Publish(new MessageType(NameToSend));
+            //verify response
             for (int i = 0; i < 100; i++)
-                Assert.IsTrue(threadTestClass.invoked[i], string.Format("Subscribed event {0} was not invoked", i));
+                Assert.IsTrue(threadTestClass.Invoked[i],
+                              string.Format("Subscribed event {0} was not invoked", i));
         }
 
 
@@ -172,17 +142,114 @@ namespace Nomad.Tests.FunctionalTests.EventAggregation
             public string Name { get; private set; }
         }
 
-        internal class ThreadingTestParameters
+        #endregion
+
+        #region Nested type: ThreadingTestHelper
+
+        internal class ThreadingTestHelper
         {
-            public const int listener_threads = 100; //this value may be any number
-            public const int publisher_threads = 1; //this value cannot be changed without changing in test
-            public List<Thread> threads = new List<Thread>();
-            public Semaphore startSemaphore = new Semaphore(0, listener_threads + publisher_threads);
-            public ManualResetEvent[] endSynchronization = new ManualResetEvent[listener_threads];
-            public Exception exception = null;
-            // verifies if each event was invoked (if each was subscribed properly)
-            public bool[] invoked = new bool[100];
+            /// <summary>
+            /// How many listeners should subscribe
+            /// </summary>
+            public const int ListenerThreadsNumber = 100; //this value may be any number
+
+            private const int publisher_threads = 1;
+                              //this value cannot be changed without changing in test
+
+            private readonly IEventAggregator _eventAggregator;
+
+            private readonly Semaphore startSemaphore = new Semaphore(0,
+                                                                      ListenerThreadsNumber +
+                                                                      publisher_threads);
+
+            private readonly List<Thread> threads = new List<Thread>();
+
+            /// <summary>
+            /// If any exception was thrown in any thread, it is stored in this field
+            /// </summary>
+            public Exception Exception;
+
+            /// <summary>
+            /// verifies if each event was invoked (if each was subscribed properly). All values should be true
+            /// </summary>
+            public bool[] Invoked = new bool[100];
+
+            /// <summary>
+            /// Events invoked at the end of each listener thread. When all set, then all threads finished their operations.
+            /// </summary>
+            public ManualResetEvent[] EndSynchronization = new ManualResetEvent[ListenerThreadsNumber];
+
+
+            public ThreadingTestHelper(IEventAggregator eventAggregator)
+            {
+                _eventAggregator = eventAggregator;
+            }
+
+
+            /// <summary>
+            /// Creates listener and enqueues it
+            /// </summary>
+            /// <param name="i"></param>
+            public void CreateListenerThread(int i)
+            {
+                EndSynchronization[i] = new ManualResetEvent(false);
+                var thread = new Thread(
+                    (ThreadStart) delegate
+                                      {
+                                          startSemaphore.WaitOne();
+                                          try
+                                          {
+                                              _eventAggregator.Subscribe
+                                                  <MessageType>((x) => { Invoked[i] = true; });
+                                          }
+                                          catch (Exception e)
+                                          {
+                                              Exception = e;
+                                          }
+                                          finally
+                                          {
+                                              EndSynchronization[i].Set();
+                                          }
+                                      });
+                threads.Add(thread);
+            }
+
+
+            /// <summary>
+            /// Creates publish thread
+            /// </summary>
+            public void CreatePublisherThread()
+            {
+                var notifyThread = new Thread(
+                    (ThreadStart) delegate
+                                      {
+                                          startSemaphore.WaitOne();
+                                          try
+                                          {
+                                              _eventAggregator.Publish(new MessageType(NameToSend));
+                                          }
+                                          catch (Exception e)
+                                          {
+                                              Exception = e;
+                                          }
+                                      });
+                threads.Insert(ListenerThreadsNumber / 2, notifyThread);
+            }
+
+
+            /// <summary>
+            /// Starts all threads and waits for their ending
+            /// </summary>
+            public void StartAllThreadsAndWaitForTheEndOfThem()
+            {
+                foreach (Thread thread in threads)
+                {
+                    thread.Start();
+                }
+                startSemaphore.Release(ListenerThreadsNumber + publisher_threads);
+            }
         }
+
         #endregion
     }
 }
