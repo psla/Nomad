@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!--This file represents the results of running a test suite-->
+<test-results name="Build\Nomad.Tests.dll" total="8" errors="0" failures="0" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2010-09-26" time="13:08:50">
+  <environment nunit-version="2.5.5.10112" clr-version="2.0.50727.4952" os-version="Microsoft Windows NT 6.1.7600.0" platform="Win32NT" cwd="D:\projekty\uczelnia-git\studia-inz" machine-name="FIREBALL" user="debug" user-domain="Fireball" />
+  <culture-info current-culture="pl-PL" current-uiculture="pl-PL" />
+  <test-suite type="Test Project" name="" executed="True" result="Success" success="True" time="11.750" asserts="0">
+    <results>
+      <test-suite type="Assembly" name="Build\Nomad.Tests.dll" executed="True" result="Success" success="True" time="11.362" asserts="0">
+        <results>
+          <test-suite type="Namespace" name="Nomad" executed="True" result="Success" success="True" time="11.322" asserts="0">
+            <results>
+              <test-suite type="Namespace" name="Tests" executed="True" result="Success" success="True" time="11.322" asserts="0">
+                <results>
+                  <test-suite type="Namespace" name="FunctionalTests" executed="True" result="Success" success="True" time="11.321" asserts="0">
+                    <results>
+                      <test-suite type="Namespace" name="Modules" executed="True" result="Success" success="True" time="0.598" asserts="0">
+                        <results>
+                          <test-suite type="TestFixture" name="LoadingModules" executed="True" result="Success" success="True" time="0.596" asserts="0">
+                            <categories>
+                              <category name="FunctionalTests" />
+                            </categories>
+                            <properties>
+                              <property name="Timeout" value="10000" />
+                            </properties>
+                            <results>
+                              <test-case name="Nomad.Tests.FunctionalTests.Modules.LoadingModules.loads_all_modules_and_executes_their_bootstrapers" executed="True" result="Success" success="True" time="0.538" asserts="1" />
+                              <test-case name="Nomad.Tests.FunctionalTests.Modules.LoadingModules.loads_all_modules_even_if_there_is_incorrect_file" executed="True" result="Success" success="True" time="0.025" asserts="1" />
+                              <test-case name="Nomad.Tests.FunctionalTests.Modules.LoadingModules.loads_one_module_and_executes_its_bootstraper" executed="True" result="Success" success="True" time="0.003" asserts="1" />
+                            </results>
+                          </test-suite>
+                        </results>
+                      </test-suite>
+                      <test-suite type="Namespace" name="Regions" executed="True" result="Success" success="True" time="10.715" asserts="0">
+                        <results>
+                          <test-suite type="TestFixture" name="TabControlBehaviors" executed="True" result="Success" success="True" time="10.715" asserts="0">
+                            <categories>
+                              <category name="FunctionalTests" />
+                            </categories>
+                            <results>
+                              <test-case name="Nomad.Tests.FunctionalTests.Regions.TabControlBehaviors.active_aware_view_is_notified_when_it_is_activated" executed="True" result="Success" success="True" time="2.749" asserts="2" />
+                              <test-case name="Nomad.Tests.FunctionalTests.Regions.TabControlBehaviors.can_add_a_tab" executed="True" result="Success" success="True" time="0.126" asserts="1" />
+                              <test-case name="Nomad.Tests.FunctionalTests.Regions.TabControlBehaviors.can_attach_region" executed="True" result="Success" success="True" time="0.002" asserts="1" />
+                              <test-case name="Nomad.Tests.FunctionalTests.Regions.TabControlBehaviors.synchronizes_active_item_when_program_activates" executed="True" result="Success" success="True" time="0.021" asserts="1" />
+                              <test-case name="Nomad.Tests.FunctionalTests.Regions.TabControlBehaviors.synchronizes_active_item_when_user_clicks" executed="True" result="Success" success="True" time="0.114" asserts="1" />
+                            </results>
+                          </test-suite>
+                        </results>
+                      </test-suite>
+                    </results>
+                  </test-suite>
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+    </results>
+  </test-suite>
+</test-results>

@@ -14,7 +14,7 @@ namespace TestsShared.FunctionalTests
     ///     Responsible for mantaining lifetime of single wpf's application used 
     ///     for all ui-based tests.
     /// </summary>
-    internal static class GuiApplicationContainer
+    public static class GuiApplicationContainer
     {
         private static Thread _thread;
         private static Application _application;
@@ -69,7 +69,7 @@ namespace TestsShared.FunctionalTests
         /// <remarks>
         ///     If the application is not running, calls to this method are ignored.
         /// </remarks>
-        internal static void ShutdownApplication()
+        public static void ShutdownApplication()
         {
             lock (typeof (GuiApplicationContainer))
             {
