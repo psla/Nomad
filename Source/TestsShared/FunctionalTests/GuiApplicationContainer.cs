@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading;
 using System.Windows;
@@ -58,6 +59,8 @@ namespace TestsShared.FunctionalTests
 
             window = temporaryWindow;
             whiteWindow = _whiteApplication.GetWindow(title, InitializeOption.NoCache);
+            if (whiteWindow == null)
+                throw new InvalidStateException("whiteWindow cannot be null");
         }
 
         /// <summary>
@@ -112,6 +115,14 @@ namespace TestsShared.FunctionalTests
             _application = new Application {ShutdownMode = ShutdownMode.OnExplicitShutdown};
             _application.Startup += (s, e) => synchronization.Set();
             _application.Run();
+        }
+    }
+
+    internal class InvalidStateException : Exception
+    {
+        public InvalidStateException(string message) : base(message)
+        {
+            
         }
     }
 }
