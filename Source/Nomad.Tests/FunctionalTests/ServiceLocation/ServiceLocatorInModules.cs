@@ -9,8 +9,7 @@ using TestsShared;
 
 namespace Nomad.Tests.FunctionalTests.ServiceLocation
 {
-    //[FunctionalTests]
-    //[Timeout(10000)] 
+    [FunctionalTests]
     public class ServiceLocatorInModules
     {
         private readonly string _pathToRegistering =
