@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Threading;
 using System.Windows.Controls;
 using Moq;
 using Nomad.Regions;
@@ -82,7 +83,7 @@ namespace Nomad.Tests.FunctionalTests.Regions
                         region.AddView("tab2");
                         region.AddView("tab3");
                     });
-
+            Thread.Sleep(1000);
             var whiteTabControl = WhiteWindow.Get<Tab>("TabControl");
             whiteTabControl.SelectTabPage("tab1");
             Wait();
