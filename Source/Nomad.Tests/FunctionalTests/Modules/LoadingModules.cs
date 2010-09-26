@@ -9,6 +9,7 @@ using TestsShared;
 namespace Nomad.Tests.FunctionalTests.Modules
 {
     [FunctionalTests]
+    [Timeout(10000)] 
     public class LoadingModules
     {
         private ModuleLoader _moduleLoader;
