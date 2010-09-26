@@ -118,14 +118,16 @@ namespace Nomad.Tests.FunctionalTests.EventAggregation
             startSemaphore.Release(listener_threads + publisher_threads);
             //wait for the end of all listeners, for one second. Otherwise 
             for (int i = 0; i < listener_threads; i++)
+            {
                 Assert.IsTrue(endSynchronization[i].WaitOne(1000),
                               "All listeners did not finished in specified amount of time");
+                invoked[i] = false;
+            }
             if (exception != null)
                 throw exception;
+            _eventAggregator.Publish(new MessageType(NameToSend));
             for (int i = 0; i < 100; i++)
-            {
                 Assert.IsTrue(invoked[i], string.Format("Subscribed event {0} was not invoked", i));
-            }
         }
 
 
