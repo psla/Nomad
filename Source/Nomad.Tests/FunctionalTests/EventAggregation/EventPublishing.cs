@@ -61,21 +61,36 @@ namespace Nomad.Tests.FunctionalTests.EventAggregation
         [Test]
         public void basic_thread_safety()
         {
+            int listener_threads = 100;
+            int publisher_threads = 1;
             bool exceptionOccured = false;
             var threads = new List<Thread>();
-            for (int i = 0; i < 100; i++)
+            var startSemaphore = new Semaphore(0, listener_threads + publisher_threads);
+            var endSynchronization = new ManualResetEvent[listener_threads];
+            Exception exception = null;
+
+            var invoked = new bool[100];
+            for (int i = 0; i < listener_threads; i++)
             {
+                endSynchronization[i] = new ManualResetEvent(false);
+                int value = i;
                 var thread = new Thread(
                     (ThreadStart) delegate
                                       {
+                                          startSemaphore.WaitOne();
                                           try
                                           {
                                               _eventAggregator.Subscribe
-                                                  <MessageType>((x) => { });
+                                                  <MessageType>((x) => { invoked[value] = true; });
                                           }
-                                          catch
+                                          catch (Exception e)
                                           {
                                               exceptionOccured = true;
+                                              exception = e;
+                                          }
+                                          finally
+                                          {
+                                              endSynchronization[value].Set();
                                           }
                                       });
                 threads.Add(thread);
@@ -84,35 +99,71 @@ namespace Nomad.Tests.FunctionalTests.EventAggregation
             var notifyThread = new Thread(
                 (ThreadStart) delegate
                                   {
+                                      startSemaphore.WaitOne();
                                       try
                                       {
                                           _eventAggregator.Publish(new MessageType(NameToSend));
                                       }
-                                      catch
+                                      catch (Exception e)
                                       {
                                           exceptionOccured = true;
+                                          exception = e;
                                       }
                                   });
-            threads.Insert(50, notifyThread);
+            threads.Insert(listener_threads / 2, notifyThread);
             foreach (Thread thread in threads)
             {
                 thread.Start();
             }
-            Assert.IsFalse(exceptionOccured);
+            startSemaphore.Release(listener_threads + publisher_threads);
+            //wait for the end of all listeners, for one second. Otherwise 
+            for (int i = 0; i < listener_threads; i++)
+                Assert.IsTrue(endSynchronization[i].WaitOne(1000),
+                              "All listeners did not finished in specified amount of time");
+            if (exception != null)
+                throw exception;
+            for (int i = 0; i < 100; i++)
+            {
+                Assert.IsTrue(invoked[i], string.Format("Subscribed event {0} was not invoked", i));
+            }
         }
 
 
         [Test]
-        public void unsubscribe_unsubscribes()
+        public void after_calling_unsubscribe_handler_is_not_called_when_event_is_published()
         {
-            byte firedCount = 0;
-            _eventAggregator.Subscribe<MessageType>(x => { firedCount++; });
             Action<MessageType> myAction = x => { Assert.Fail("Delegate was not removed"); };
             _eventAggregator.Subscribe(myAction);
-            _eventAggregator.Subscribe<MessageType>(x => { firedCount++; });
             _eventAggregator.Unsubsribe(myAction);
             _eventAggregator.Publish(new MessageType(NameToSend));
-            Assert.AreEqual(2, firedCount);
+        }
+
+
+        [Test]
+        public void after_unsubscribing_subscribing_again_results_in_working_event()
+        {
+            Action<MessageType> myAction = x => { Assert.Fail("Delegate was not removed"); };
+            _eventAggregator.Subscribe(myAction);
+            _eventAggregator.Unsubsribe(myAction);
+            _eventAggregator.Subscribe<MessageType>(x => { });
+            Assert.DoesNotThrow(() => _eventAggregator.Publish(new MessageType(NameToSend)),
+                                "After subscribing and unsubscribing an event we can no longer use event of this type");
+        }
+
+
+        [Test]
+        public void when_one_handler_unsubscribes_others_are_still_called()
+        {
+            var sentPayload = new MessageType(NameToSend);
+            MessageType receivedPayload = null;
+            _eventAggregator.Subscribe<MessageType>(payload => receivedPayload = payload);
+
+            Action<MessageType> myAction = x => { };
+            _eventAggregator.Subscribe(myAction);
+            _eventAggregator.Unsubsribe(myAction);
+
+            _eventAggregator.Publish(sentPayload);
+            Assert.AreSame(sentPayload, receivedPayload);
         }
 
         #region Nested type: MessageType

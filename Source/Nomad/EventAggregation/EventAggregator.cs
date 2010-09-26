@@ -66,9 +66,15 @@ namespace Nomad.EventAggregation
         public void Publish<T>(T message) where T : class
         {
             Delegate actions;
-            if (_dictionary.TryGetValue(typeof (T), out actions))
+
+            //dictionary implementation may enter race condition if tryget is not in critical section
+            lock (_dictionary)
             {
-                actions.DynamicInvoke(message);
+                if (_dictionary.TryGetValue(typeof (T), out actions))
+                {
+                    if(actions != null)
+                        actions.DynamicInvoke(message);
+                }
             }
         }
 
