@@ -61,73 +61,64 @@ namespace Nomad.Tests.FunctionalTests.EventAggregation
         [Test]
         public void basic_thread_safety()
         {
-            int listener_threads = 100;
-            int publisher_threads = 1;
-            bool exceptionOccured = false;
-            var threads = new List<Thread>();
-            var startSemaphore = new Semaphore(0, listener_threads + publisher_threads);
-            var endSynchronization = new ManualResetEvent[listener_threads];
-            Exception exception = null;
-
-            var invoked = new bool[100];
-            for (int i = 0; i < listener_threads; i++)
+            var threadTestClass = new ThreadingTestParameters();
+            
+            for (int i = 0; i < ThreadingTestParameters.listener_threads; i++)
             {
-                endSynchronization[i] = new ManualResetEvent(false);
+                threadTestClass.endSynchronization[i] = new ManualResetEvent(false);
                 int value = i;
                 var thread = new Thread(
                     (ThreadStart) delegate
                                       {
-                                          startSemaphore.WaitOne();
+                                          threadTestClass.startSemaphore.WaitOne();
                                           try
                                           {
                                               _eventAggregator.Subscribe
-                                                  <MessageType>((x) => { invoked[value] = true; });
+                                                  <MessageType>((x) => { threadTestClass.invoked[value] = true; });
                                           }
                                           catch (Exception e)
                                           {
-                                              exceptionOccured = true;
-                                              exception = e;
+                                              threadTestClass.exception = e;
                                           }
                                           finally
                                           {
-                                              endSynchronization[value].Set();
+                                              threadTestClass.endSynchronization[value].Set();
                                           }
                                       });
-                threads.Add(thread);
+                threadTestClass.threads.Add(thread);
             }
 
             var notifyThread = new Thread(
                 (ThreadStart) delegate
                                   {
-                                      startSemaphore.WaitOne();
+                                      threadTestClass.startSemaphore.WaitOne();
                                       try
                                       {
                                           _eventAggregator.Publish(new MessageType(NameToSend));
                                       }
                                       catch (Exception e)
                                       {
-                                          exceptionOccured = true;
-                                          exception = e;
+                                          threadTestClass.exception = e;
                                       }
                                   });
-            threads.Insert(listener_threads / 2, notifyThread);
-            foreach (Thread thread in threads)
+            threadTestClass.threads.Insert(ThreadingTestParameters.listener_threads / 2, notifyThread);
+            foreach (Thread thread in threadTestClass.threads)
             {
                 thread.Start();
             }
-            startSemaphore.Release(listener_threads + publisher_threads);
+            threadTestClass.startSemaphore.Release(ThreadingTestParameters.listener_threads + ThreadingTestParameters.publisher_threads);
             //wait for the end of all listeners, for one second. Otherwise 
-            for (int i = 0; i < listener_threads; i++)
+            for (int i = 0; i < ThreadingTestParameters.listener_threads; i++)
             {
-                Assert.IsTrue(endSynchronization[i].WaitOne(1000),
+                Assert.IsTrue(threadTestClass.endSynchronization[i].WaitOne(1000),
                               "All listeners did not finished in specified amount of time");
-                invoked[i] = false;
+                threadTestClass.invoked[i] = false;
             }
-            if (exception != null)
-                throw exception;
+            if (threadTestClass.exception != null)
+                throw threadTestClass.exception;
             _eventAggregator.Publish(new MessageType(NameToSend));
             for (int i = 0; i < 100; i++)
-                Assert.IsTrue(invoked[i], string.Format("Subscribed event {0} was not invoked", i));
+                Assert.IsTrue(threadTestClass.invoked[i], string.Format("Subscribed event {0} was not invoked", i));
         }
 
 
@@ -181,6 +172,17 @@ namespace Nomad.Tests.FunctionalTests.EventAggregation
             public string Name { get; private set; }
         }
 
+        internal class ThreadingTestParameters
+        {
+            public const int listener_threads = 100; //this value may be any number
+            public const int publisher_threads = 1; //this value cannot be changed without changing in test
+            public List<Thread> threads = new List<Thread>();
+            public Semaphore startSemaphore = new Semaphore(0, listener_threads + publisher_threads);
+            public ManualResetEvent[] endSynchronization = new ManualResetEvent[listener_threads];
+            public Exception exception = null;
+            // verifies if each event was invoked (if each was subscribed properly)
+            public bool[] invoked = new bool[100];
+        }
         #endregion
     }
 }
