@@ -84,6 +84,8 @@ namespace Nomad.Tests.FunctionalTests.Regions
                         region.AddView("tab3");
                     });
             var whiteTabControl = WhiteWindow.Get<Tab>("TabControl");
+            if (whiteTabControl == null)
+                throw new InvalidStateException("White tab control should not be null");
             whiteTabControl.SelectTabPage("tab1");
             Wait();
 

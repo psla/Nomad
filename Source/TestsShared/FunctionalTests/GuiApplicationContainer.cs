@@ -118,7 +118,7 @@ namespace TestsShared.FunctionalTests
         }
     }
 
-    internal class InvalidStateException : Exception
+    public class InvalidStateException : Exception
     {
         public InvalidStateException(string message) : base(message)
         {
