@@ -23,12 +23,14 @@ properties {
 # Unit tests information
 properties {
     $unit_tests_category = "UnitTests"
+	$integration_tests_category = "IntegrationTests"
 	$functional_tests_category = "FunctionalTests"
 }    
 
 #Directories for handling data for various types of tests
 properties {
 	$functional_data_dir="$source_dir\$product.Tests\$functional_tests_category\Data"
+	$integration_data_dir="$source_dir\$product.Tests\$integration_tests_category\Data"
 
 }
 
@@ -140,6 +142,10 @@ task UnitTest -depends Compile, FunctionalDataPrepare {
     tests $unit_tests_category
 }
 
+task IntegrationTest -depends Compile,IntegrationDataPrepare{
+	tests $integration_tests_category
+}
+
 task FunctionalTest -depends Compile,FunctionalDataPrepare {
 	tests $functional_tests_category
 }
@@ -223,6 +229,10 @@ task Documentation -depends Compile, GetProjects -description "Provideds automat
 	}
 }
 
+task IntegrationDataPrepare -depends Compile -description "Data preparations for integration tests"{
+
+}
+
 task FunctionalDataPrepare -depends Compile -description "Data preparations for functional tests" {
 	New-Item $build_dir\Modules\Simple -ItemType directory | Out-Null
 	New-Item $build_dir\Modules\WithDependencies -ItemType directory | Out-Null
@@ -244,7 +254,7 @@ task FunctionalDataPrepare -depends Compile -description "Data preparations for 
 	Pop-Location
 }
 
-task LocalBuild -depends UnitTest,FunctionalDataPrepare,Compile -description "Local build without building documentation"{
+task LocalBuild -depends UnitTest, IntegrationTest, FunctionalTest -description "Local build without building documentation"{
 
 }
 
