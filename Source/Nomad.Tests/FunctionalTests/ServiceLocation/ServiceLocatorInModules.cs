@@ -51,13 +51,8 @@ namespace Nomad.Tests.FunctionalTests.ServiceLocation
             Assert.DoesNotThrow(() => _serviceLocator.Resolve<ITestService>(),
                                 "Module has not properly registered service provider");
 
-            Assert.AreEqual(0, ServiceRegistry.GetRegisteredServiceCounter()[typeof (ITestService)],
-                            "Method in service has already been used");
-
-            _moduleLoader.LoadModuleFromFile(_pathToResolving);
-
-            Assert.AreEqual(1, ServiceRegistry.GetRegisteredServiceCounter()[typeof (ITestService)],
-                            "Method in service was not called exactly one time");
+            Assert.DoesNotThrow(() => _moduleLoader.LoadModuleFromFile(_pathToResolving)
+                                , "Dependent module could not resovle the service properly");
         }
 
 

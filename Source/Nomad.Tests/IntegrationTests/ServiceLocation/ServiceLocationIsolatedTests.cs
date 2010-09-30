@@ -51,9 +51,7 @@ namespace Nomad.Tests.IntegrationTests.ServiceLocation
 
 
         [Test]
-        public void
-            attempt_to_register_service_for_interface_that_is_already_registered_results_in_exception
-            ()
+        public void attempt_to_register_service_twice_results_in_exception()
         {
             var mockServiceProvider = new Mock<ITestInterface>();
 
@@ -99,8 +97,5 @@ namespace Nomad.Tests.IntegrationTests.ServiceLocation
             Assert.Throws<ArgumentNullException>(() => _serviceLocator.Register(serviceProvider),
                                                  "The exception should be thrown when passing null as service provider");
         }
-
-
-        //TODO: write test for IDisposable test class which will be disposed during being registered as service
     }
 }

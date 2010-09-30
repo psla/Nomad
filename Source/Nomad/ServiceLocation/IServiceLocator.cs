@@ -1,3 +1,6 @@
+using System;
+using Nomad.Exceptions;
+
 namespace Nomad.ServiceLocation
 {
     /// <summary>
@@ -13,6 +16,8 @@ namespace Nomad.ServiceLocation
         /// <remarks>
         ///     Allows only One Service of the same interface to be registered at the time.
         /// </remarks>
+        /// /// <exception cref="DuplicateServiceException">Raised during attempt to register same interface T as a service for second time.</exception>
+        /// <exception cref="ArgumentNullException">Raised during attempt to pass null as service implantation</exception>
         void Register<T>(T serviceProvider);
 
 
@@ -21,9 +26,7 @@ namespace Nomad.ServiceLocation
         /// </summary>
         /// <typeparam name="T">Interface of the service type.</typeparam>
         /// <returns>Object implementing requested interface</returns>
-        /// <remarks>
-        ///     When no implementation of T is available throws an exception.
-        /// </remarks>
+        /// <exception cref="ServiceNotFoundException">Raised during attempt to resolve service which has not been registered before.</exception>
         T Resolve<T>();
     }
 }

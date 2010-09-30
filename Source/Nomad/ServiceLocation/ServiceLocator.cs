@@ -9,9 +9,6 @@ namespace Nomad.ServiceLocation
     /// <summary>
     ///     Default Nomad implementation of IServiceLocator based on Castle Windsor IoC Container.
     /// </summary>
-    /// <remarks>
-    ///     No clearing is performed for passed container. 
-    /// </remarks>
     public class ServiceLocator : IServiceLocator
     {
         private readonly IWindsorContainer _serviceContainer;
@@ -20,7 +17,7 @@ namespace Nomad.ServiceLocation
         /// <summary>
         ///      Initializes new instance of the <see cref="ServiceLocator"/> class.
         /// </summary>
-        /// <param name="windsorContainer">Passed container will be used as general container for all services.</param>
+        /// <param name="windsorContainer">Passed container will be used as container for all services.</param>
         public ServiceLocator(IWindsorContainer windsorContainer)
         {
             _serviceContainer = windsorContainer;
@@ -29,7 +26,7 @@ namespace Nomad.ServiceLocation
         #region Implementation of IServiceLocator
 
         /// <summary>
-        ///     Registers the new interface T as a service provided by passed instance.
+        ///     Registers passed object as an service implementation of interface T.
         /// </summary>
         /// <typeparam name="T">Type of service</typeparam>
         /// <param name="serviceProvider">Concrete instance that provides the implementation of T</param>
@@ -37,12 +34,14 @@ namespace Nomad.ServiceLocation
         /// <exception cref="ArgumentNullException">Raised during attempt to pass null as service implantation</exception>
         public void Register<T>(T serviceProvider)
         {
+            if(serviceProvider == null)
+                throw new ArgumentNullException("serviceProvider");
+
             if (_serviceContainer.Kernel.HasComponent(typeof (T)))
                 throw new DuplicateServiceException("Service already registered");
 
             _serviceContainer.Register(
-                Component.For<T>()
-                    .Instance(serviceProvider)
+                Component.For<T>().Instance(serviceProvider)
                 );
         }
 
