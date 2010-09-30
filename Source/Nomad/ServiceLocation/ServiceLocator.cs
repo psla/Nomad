@@ -38,7 +38,7 @@ namespace Nomad.ServiceLocation
                 throw new ArgumentNullException("serviceProvider");
 
             if (_serviceContainer.Kernel.HasComponent(typeof (T)))
-                throw new DuplicateServiceException("Service already registered");
+                throw new DuplicateServiceException(typeof(T),"Service already registered");
 
             _serviceContainer.Register(
                 Component.For<T>().Instance(serviceProvider)
@@ -60,7 +60,7 @@ namespace Nomad.ServiceLocation
             }
             catch (ComponentNotFoundException e)
             {
-                throw new ServiceNotFoundException("Service not found", e);
+                throw new ServiceNotFoundException(typeof(T),"Service not found", e);
             }
         }
 

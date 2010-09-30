@@ -7,23 +7,39 @@ namespace Nomad.Exceptions
     /// </summary>
     public class ServiceNotFoundException : Exception
     {
-        /// <summary>
-        ///     Initializes new instance of the <see cref="ServiceNotFoundException"/> class.
-        /// </summary>
-        /// <param name="message">Message to be kept within exception.</param>
-        public ServiceNotFoundException(string message) : base(message)
-        {
-            
-        }
+        private readonly Type _serviceType;
+
 
         /// <summary>
         ///     Initializes new instance of the <see cref="ServiceNotFoundException"/> class.
         /// </summary>
+        /// <param name="serviceType">Type of service which was not found.</param>
+        /// <param name="message">Message to be kept within exception.</param>
+        public ServiceNotFoundException(Type serviceType, string message) : base(message)
+        {
+            _serviceType = serviceType;
+        }
+
+
+        /// <summary>
+        ///     Initializes new instance of the <see cref="ServiceNotFoundException"/> class.
+        /// </summary>
+        /// <param name="serviceType">Type of service which was not found.</param>
         /// <param name="message">Message to be kept within exception.</param>
         /// <param name="innerException">Inner exception, causing this exception to be raised.</param>
-        public ServiceNotFoundException(string message,Exception innerException) : base(message,innerException)
+        public ServiceNotFoundException(Type serviceType, string message, Exception innerException)
+            : base(message, innerException)
         {
-            
+            _serviceType = serviceType;
+        }
+
+
+        /// <summary>
+        /// Gets the type of the service that was marked as an unknown.
+        /// </summary>
+        public Type ServiceType
+        {
+            get { return _serviceType; }
         }
     }
 }
