@@ -1,43 +1,40 @@
-﻿using System;
-using System.IO;
-using System.Reflection;
+using System;
 using System.Linq;
+using System.Reflection;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 
 namespace Nomad.Modules
 {
     /// <summary>
-    /// Module loading logic. 
+    ///     Default implementation of <see cref="IModuleLoader"/>
     /// </summary>
-    public class ModuleLoader
+    public class ModuleLoader : IModuleLoader
     {
         private readonly IWindsorContainer _rootContainer;
+
 
         /// <summary>
         ///     Initializes new instance of the <see cref="ModuleLoader"/> class.
         /// </summary>
-        /// <param name="rootContainer">
-        ///     Windsor container that will be used as a root container for all modules.
-        ///     Modules will be setup using child container of this container.
-        /// </param>
+        /// <param name="rootContainer">Container that will be used as a root container. Module's sub-containers will be created based on this container. Must not be <c>null</c>.</param>
+        /// <exception cref="ArgumentNullException">When <paramref name="rootContainer"/> is <c>null</c></exception>
         public ModuleLoader(IWindsorContainer rootContainer)
         {
+            if (rootContainer == null) throw new ArgumentNullException("rootContainer");
+
             _rootContainer = rootContainer;
         }
 
 
-        /// <summary>
-        /// Loades module from file.
-        /// </summary>
-        /// <param name="s">Path to module</param>
-        public void LoadModuleFromFile(string s)
+        /// <summary>Inherited</summary>
+        public void LoadModule(ModuleInfo moduleInfo)
         {
             IModuleBootstraper bootstraper;
 
             try
             {
-                var assembly = Assembly.LoadFile(s);
+                var assembly = Assembly.LoadFile(moduleInfo.AssemblyPath);
                 var bootstraperTypes =
                     from type in assembly.GetTypes()
                     where type.GetInterfaces().Contains(typeof (IModuleBootstraper))
@@ -69,20 +66,6 @@ namespace Nomad.Modules
                 Component.For<IModuleBootstraper>().ImplementedBy(bootstraperType)
                 );
             return subContainer;
-        }
-
-
-        /// <summary>
-        /// Loades all modules from provided directory path.
-        /// </summary>
-        /// <param name="libraryPaths">Path to directory</param>
-        public void LoadModulesFromDirectory(string libraryPaths)
-        {
-            var files = Directory.GetFiles(libraryPaths);
-            foreach (var file in files)
-            {
-                this.LoadModuleFromFile(file);
-            }
         }
     }
 }

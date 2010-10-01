@@ -9,7 +9,7 @@ using TestsShared;
 
 namespace Nomad.Tests.IntegrationTests.ServiceLocation
 {
-    [IntegrationTest]
+    [IntegrationTests]
     public class ServiceLocationIsolatedTests
     {
         #region Class and interfacces for test purposes

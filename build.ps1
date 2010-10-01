@@ -27,11 +27,26 @@ properties {
 	$functional_tests_category = "FunctionalTests"
 }    
 
-#Directories for handling data for various types of tests
+# Integration tests file system structures
 properties {
-	$functional_data_dir="$source_dir\$product.Tests\$functional_tests_category\Data"
+	$directory_module_discovery_sandbox_dir = "$build_dir\IntegrationTests\DirectoryModuleDiscovery\"
+}
+
+# Module loading functional tests
+properties {
+	$functional_data_dir="$source_dir\$product.Tests\$functional_tests_category\Data" # directory with simple test modules that are used by module loading tests
+	$modules_output_dir="$build_dir\Modules"
+	$all_modules_dir="$modules_output_dir\All\"
 	$integration_data_dir="$source_dir\$product.Tests\$integration_tests_category\Data"
 
+	$module_sets = @{
+		"Simple" = @( "SimplestModulePossible1", "SimplestModulePossible2" );
+		"WithDependencies" = @( "ModuleWithConstructorDependency", "ModuleWithPropertyDependency" );
+		
+		# since tests for service location should not also test dependencies between modules, proper ordering is achieved manually by loading modules from 2 directories
+		"ServiceLocator-Service" = @( "RegistringServiceModule" );
+		"ServiceLocator-Client" = @( "ResolvingServiceModule" );
+	}
 }
 
 include ".\Libraries\PsakeExt\psake-ext.ps1"
@@ -138,12 +153,19 @@ task Compile -depends Init {
     Exec { msbuild "$sln_file"  /p:Configuration=Release /nologo /verbosity:quiet }
 }
 
-task UnitTest -depends Compile, FunctionalDataPrepare {
+task UnitTest -depends Compile {
     tests $unit_tests_category
 }
 
-task IntegrationTest -depends Compile,IntegrationDataPrepare{
-	tests $integration_tests_category
+task IntegrationDataPrepare {
+	New-Item -ItemType directory -Path $directory_module_discovery_sandbox_dir
+	New-Item -ItemType file -Path "$directory_module_discovery_sandbox_dir\a.dll" -Value "a"
+	New-Item -ItemType file -Path "$directory_module_discovery_sandbox_dir\b.dll" -Value "b"
+	New-Item -ItemType file -Path "$directory_module_discovery_sandbox_dir\notanassembly.txt" -Value "c"
+}
+
+task IntegrationTest -depends Compile, IntegrationDataPrepare {
+    tests $integration_tests_category
 }
 
 task FunctionalTest -depends Compile,FunctionalDataPrepare {
@@ -229,40 +251,48 @@ task Documentation -depends Compile, GetProjects -description "Provideds automat
 	}
 }
 
-task IntegrationDataPrepare -depends Compile -description "Data preparations for integration tests"{
-
-}
 
 task FunctionalDataPrepare -depends Compile -description "Data preparations for functional tests" {
-	New-Item $build_dir\Modules\Simple -ItemType directory | Out-Null
-	New-Item $build_dir\Modules\WithDependencies -ItemType directory | Out-Null
-	New-Item $build_dir\Modules\ServiceLocatorEnabled -ItemType directory | Out-Null
-	
-	Push-Location $build_dir\Modules\Simple
-	Exec { & csc.exe /out:SimplestModulePossible1.dll /target:library $functional_data_dir\SimplestModulePossible.cs /reference:$build_dir/Nomad.dll /r:$build_dir/Nomad.Tests.dll}
-	Exec { & csc.exe /out:SimplestModulePossible2.dll /target:library $functional_data_dir\SimplestModulePossible.cs /reference:$build_dir/Nomad.dll /r:$build_dir/Nomad.Tests.dll}
+	# create directory for all modules
+	New-Item $all_modules_dir -ItemType directory | Out-Null
+
+	# compile all modules
+	Push-Location $all_modules_dir
+	$module_sources = Get-Item "$functional_data_dir\*.cs"
+	if($module_sources) {
+		foreach($module_source in $module_sources) {
+			$module_name = [System.IO.Path]::GetFileNameWithoutExtension($module_source)
+			Exec { & csc.exe /out:"$module_name.dll" /target:library $module_source /reference:$build_dir/Nomad.dll /r:$build_dir/Nomad.Tests.dll /nologo}
+		}
+	}	
 	Pop-Location
 	
-	Push-Location $build_dir\Modules\WithDependencies
-	Exec { & csc.exe /out:ModuleWithConstructorDependency.dll /target:library $functional_data_dir\ModuleWithConstructorDependency.cs /reference:$build_dir/Nomad.dll /r:$build_dir/Nomad.Tests.dll}
-	Exec { & csc.exe /out:ModuleWithPropertyDependency.dll /target:library $functional_data_dir\ModuleWithPropertyDependency.cs /reference:$build_dir/Nomad.dll /r:$build_dir/Nomad.Tests.dll}
-	Pop-Location
-	
-	Push-Location $build_dir\Modules\ServiceLocatorEnabled
-	Exec { & csc.exe /out:ResolvingServiceModule.dll /t:library $functional_data_dir\ResolvingServiceModule.cs /r:$build_dir/Nomad.dll /r:$build_dir/Nomad.Tests.dll}
-	Exec { & csc.exe /out:RegistringServiceModule.dll /t:library $functional_data_dir\RegistringServiceModule.cs /r:$build_dir/Nomad.dll /r:$build_dir/Nomad.Tests.dll}
-	Pop-Location
+	if($module_sets) {
+		foreach($module_set_name in $module_sets.Keys) {
+			$module_set_dir = "$modules_output_dir\$module_set_name"
+			New-Item $module_set_dir -ItemType directory | Out-Null
+			foreach($module_name in $module_sets[$module_set_name]) {
+				Copy-Item -Path "$all_modules_dir\$module_name.dll" -Destination "$module_set_dir\$module_name.dll"
+			}
+		}
+	}
 }
 
-task LocalBuild -depends UnitTest, IntegrationTest, FunctionalTest -description "Local build without building documentation"{
+task LocalBuild -depends Compile, UnitTest, IntegrationTest, FunctionalTest -description "Local build without building documentation"{
 
 }
+
 
 task FastBuild -depends UnitTest, IntegrationTest {
 
 }
 
-task SlowBuild -depends FastBuild, FunctionalTest, Documentation, Deploy {
+task Release -depends Compile, UnitTest, IntegrationTest, FunctionalTest, Documentation -description "Fully fledgged build with everything in it" {
+	 
+}
+
+
+task SlowBuild -depends FastBuild, IntegrationTest, FunctionalTest, Documentation, Deploy {
 
 }
 
