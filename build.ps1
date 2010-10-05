@@ -57,7 +57,7 @@ function tests([string] $tests_category)
     }
 }
 
-task default -depends Logo, Release
+task default -depends Logo, LocalBuild
 
 task GetVersion -description "Sets version property according to type of build (local or CI)" {
 	#TODO: fetch version information from environment variables provided by Hudson CI
@@ -128,7 +128,7 @@ task Init -depends Clean, GetProjects {
 				-product $product `
 				-version $version `
 				-company $company `
-				-copyright $copyright
+				-copyright $copyright-
 		}
 	}
 }
@@ -258,11 +258,7 @@ task LocalBuild -depends UnitTest, IntegrationTest, FunctionalTest -description 
 
 }
 
-task Release -depends UnitTest,FunctionalDataPrepare,Documentation -description "Fully fledgged build with everything in it" {
-	 
-}
-
-task FastBuild -depends UnitTest {
+task FastBuild -depends UnitTest, IntegrationTest {
 
 }
 
