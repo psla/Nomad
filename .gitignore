@@ -12,3 +12,6 @@ _ReSharper.*/
 [Bb]in/
 [Oo]bj/
 [Aa]ssembly[Ii]nfo.cs
+*.aux
+*.log
+*.toc
