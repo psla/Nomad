@@ -94,7 +94,7 @@ function remote_tests([string] $tests_category)
 		$pipe = New-Object system.IO.Pipes.NamedPipeClientStream(".","runnerPipe", [System.IO.Pipes.PipeDirection]"InOut") #, PipeDirection.InOut)
 		$pipe.Connect()
 		$sw = New-Object System.IO.StreamWriter($pipe)
-		$sw.AutoFlush = true;
+		$sw.AutoFlush = $TRUE;
 		$sw.WriteLine("$lib_dir\NUnit\nunit-console.exe");
 		$sw.WriteLine("/nologo /include:$tests_category $test_assembly /xml=$results_path");
 		$sw.Flush();
