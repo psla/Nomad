@@ -1,3 +1,5 @@
+[reflection.Assembly]::LoadWithPartialName("system.core")
+
 # Product information
 properties {
 	$version = $Env:BUILDVERSION
@@ -69,6 +71,44 @@ function tests([string] $tests_category)
         
         Write-Host "Executing unit tests from assembly $file_name"
         Exec { & $lib_dir\NUnit\nunit-console.exe /nologo /include:$tests_category $test_assembly /xml=$results_path }
+    }
+}
+
+function remote_tests([string] $tests_category)
+{
+	# find all assemblies that names end with ".Tests.dll"
+    $test_assemblies = Get-Item "$build_dir\*.Tests.dll"
+    
+    if(!$test_assemblies) {
+        Write-Warning "No test assemblies found"
+        return;
+    }
+    
+    # execute tests from each of those libraries
+    foreach($test_assembly in $test_assemblies) {
+        $file_name = $test_assembly.Name
+        $results_file_name = $file_name.Replace(".Tests.dll", ".$tests_category.results.xml")
+		$results_path = Join-Path $build_dir $results_file_name
+        
+        Write-Host "Executing unit tests from assembly $file_name"
+		$pipe = New-Object system.IO.Pipes.NamedPipeClientStream(".","runnerPipe", [System.IO.Pipes.PipeDirection]"InOut") #, PipeDirection.InOut)
+		$pipe.Connect()
+		$sw = New-Object System.IO.StreamWriter($pipe)
+		$sw.AutoFlush = true;
+		$sw.WriteLine("$lib_dir\NUnit\nunit-console.exe");
+		$sw.WriteLine("/nologo /include:$tests_category $test_assembly /xml=$results_path");
+		$sw.Flush();
+		$sr = New-Object System.IO.StreamReader($pipe)
+		$line = $sr.ReadLine();
+
+		$sw.Close();
+		$sw.Dispose();
+		$sr.Close();
+		$sr.Dispose();
+		$pipe.Close();
+		$pipe.Dispose();
+
+		exit $line
     }
 }
 
@@ -169,7 +209,8 @@ task IntegrationTest -depends Compile, IntegrationDataPrepare {
 }
 
 task FunctionalTest -depends Compile,FunctionalDataPrepare {
-	tests $functional_tests_category
+	#tests $functional_tests_category
+	remote_tests $functional_tests_category
 }
 
 task Documentation -depends Compile, GetProjects -description "Provideds automated documentation" {
