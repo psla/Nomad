@@ -108,7 +108,7 @@ function remote_tests([string] $tests_category)
 		$pipe.Close();
 		$pipe.Dispose();
 
-		exit $line
+		#exit $line
     }
 }
 
