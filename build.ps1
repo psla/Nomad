@@ -209,7 +209,10 @@ task IntegrationTest -depends Compile, IntegrationDataPrepare {
 }
 
 task FunctionalTest -depends Compile,FunctionalDataPrepare {
-	#tests $functional_tests_category
+	tests $functional_tests_category
+}
+
+task RemoteFunctionalTest -depends Compile,FunctionalDataPrepare {
 	remote_tests $functional_tests_category
 }
 
@@ -328,12 +331,7 @@ task FastBuild -depends UnitTest, IntegrationTest {
 
 }
 
-task Release -depends Compile, UnitTest, IntegrationTest, FunctionalTest, Documentation -description "Fully fledgged build with everything in it" {
-	 
-}
-
-
-task SlowBuild -depends FastBuild, IntegrationTest, FunctionalTest, Documentation, Deploy {
+task SlowBuild -depends FastBuild, RemoteFunctionalTest, Documentation, Deploy {
 
 }
 
