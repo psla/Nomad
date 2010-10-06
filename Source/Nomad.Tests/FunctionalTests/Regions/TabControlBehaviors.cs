@@ -65,7 +65,7 @@ namespace Nomad.Tests.FunctionalTests.Regions
 
             Wait();
 
-            var whiteTab = WhiteWindow.Get<Tab>("TabControl");
+            var whiteTab = WhiteWindow.Get<White.Core.UIItems.TabItems.Tab>("TabControl");
             Assert.IsNotNull(whiteTab.Pages.Find(obj => obj.Name.Contains("tab1")));
         }
 
