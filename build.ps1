@@ -96,7 +96,7 @@ function remote_tests([string] $tests_category)
 		$sw = New-Object System.IO.StreamWriter($pipe)
 		$sw.AutoFlush = $TRUE;
 		$sw.WriteLine("$lib_dir\NUnit\nunit-console.exe");
-		$sw.WriteLine("/nologo /include:$tests_category '$test_assembly' /xml='$results_path'");
+		$sw.WriteLine(" /nologo /include:$tests_category $test_assembly /xml=$results_path");
 		$sw.Flush();
 		$sr = New-Object System.IO.StreamReader($pipe)
 		$line = $sr.ReadLine();
