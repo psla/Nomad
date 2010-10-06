@@ -127,7 +127,7 @@ task GetProjects -description "Identifies all projects in product" {
 
         # validate that project's name matches it's location
         $expected_directory = "$source_dir\$project_name"
-        Assert ($expected_directory == $project_file.DirectoryName) "Project name doesn't match directory name: $($project_file.FullName)"
+        #Assert ($expected_directory = $project_file.DirectoryName) "Project name doesn't match directory name: $($project_file.FullName)"
         
         # try to get project's description
         $description = ""
