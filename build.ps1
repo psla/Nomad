@@ -127,7 +127,7 @@ task GetProjects -description "Identifies all projects in product" {
 
         # validate that project's name matches it's location
         $expected_directory = "$source_dir\$project_name"
-        #Assert ($expected_directory = $project_file.DirectoryName) "Project name doesn't match directory name: $($project_file.FullName)"
+        Assert ($expected_directory -eq $project_file.DirectoryName) "Project name doesn't match directory name: $($project_file.FullName)"
         
         # try to get project's description
         $description = ""
@@ -340,9 +340,9 @@ task SlowBuild -depends FastBuild, IntegrationTest, FunctionalTest, Documentatio
 task Deploy -depends Compile {
 	#$result_file_name = "Nomad-$version.zip"
 	$result_file_name = "..\${product}.zip"
-	if(Test-Path $result_file_name -eq ) {
-		Remove-Item $result_file_name
-	}
+	#if(Test-Path $result_file_name -eq ) {
+	#	Remove-Item $result_file_name
+	#}
 	Push-Location $release_dir
 	Exec { & ..\Libraries\7za465\7za.exe a ${result_file_name} . }
 	Pop-Location
