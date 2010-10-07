@@ -109,6 +109,7 @@ function remote_tests([string] $tests_category)
 		$pipe.Dispose();
 
 		if($runnerExitCode -ne 0) {
+		    Write-Host "RemoteFunctionalTests failed and exited with code: $runnerExitCode"
 			exit $runnerExitCode
 		}
     }
