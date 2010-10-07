@@ -99,7 +99,7 @@ function remote_tests([string] $tests_category)
 		$sw.WriteLine(" /nologo /include:$tests_category $test_assembly /xml=$results_path");
 		$sw.Flush();
 		$sr = New-Object System.IO.StreamReader($pipe)
-		$line = $sr.ReadLine();
+		$runnerExitCode = $sr.ReadLine();
 
 		$sw.Close();
 		$sw.Dispose();
@@ -108,7 +108,7 @@ function remote_tests([string] $tests_category)
 		$pipe.Close();
 		$pipe.Dispose();
 
-		#exit $line
+		exit $runnerExitCode
     }
 }
 
