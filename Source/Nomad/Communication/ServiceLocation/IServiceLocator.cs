@@ -1,7 +1,7 @@
 using System;
 using Nomad.Exceptions;
 
-namespace Nomad.ServiceLocation
+namespace Nomad.Communication.ServiceLocation
 {
     /// <summary>
     ///     Provides means for registering and resolving Services of the specific interface.

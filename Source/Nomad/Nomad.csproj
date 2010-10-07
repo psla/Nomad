@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{3828EBBD-FFBA-4C30-BF46-D3742BC165F1}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -67,8 +67,8 @@
     <Compile Include="AssemblyLoading\SignedAssemblyLoader.cs" />
     <Compile Include="Core\NomadConfiguration.cs" />
     <Compile Include="Core\NomadKernel.cs" />
-    <Compile Include="EventAggregation\EventAggregator.cs" />
-    <Compile Include="EventAggregation\IEventAggregator.cs" />
+    <Compile Include="Communication\EventAggregation\EventAggregator.cs" />
+    <Compile Include="Communication\EventAggregation\IEventAggregator.cs" />
     <Compile Include="Exceptions\DuplicateServiceException.cs" />
     <Compile Include="Exceptions\ServiceNotFoundException .cs" />
     <Compile Include="Modules\CompositeModuleFilter.cs" />
@@ -100,8 +100,8 @@
     <Compile Include="Regions\RegionManager.cs" />
     <Compile Include="Regions\SingleActiveViewRegion.cs" />
     <Compile Include="Regions\ViewCollection.cs" />
-    <Compile Include="ServiceLocation\IServiceLocator.cs" />
-    <Compile Include="ServiceLocation\ServiceLocator.cs" />
+    <Compile Include="Communication\ServiceLocation\IServiceLocator.cs" />
+    <Compile Include="Communication\ServiceLocation\ServiceLocator.cs" />
     <Compile Include="Signing\FileSignatureVerificator.cs" />
     <Compile Include="Signing\File.cs" />
     <Compile Include="Signing\FileSignature.cs" />

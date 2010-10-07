@@ -1,5 +1,5 @@
 using Castle.MicroKernel.Registration;
-using Nomad.ServiceLocation;
+using Nomad.Communication.ServiceLocation;
 using Nomad.Tests.FunctionalTests.Modules;
 using NUnit.Framework;
 using TestsShared;

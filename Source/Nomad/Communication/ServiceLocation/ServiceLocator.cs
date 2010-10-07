@@ -4,7 +4,7 @@ using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using Nomad.Exceptions;
 
-namespace Nomad.ServiceLocation
+namespace Nomad.Communication.ServiceLocation
 {
     /// <summary>
     ///     Default Nomad implementation of IServiceLocator based on Castle Windsor IoC Container.

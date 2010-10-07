@@ -1,6 +1,6 @@
 using System;
 using Nomad.Tests.FunctionalTests.ServiceLocation;
-using Nomad.ServiceLocation;
+using Nomad.Communication.ServiceLocation;
 
 public class ResolvingServiceModule : Nomad.Modules.IModuleBootstraper
 {

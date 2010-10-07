@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Nomad.EventAggregation
+namespace Nomad.Communication.EventAggregation
 {
     ///<summary>
     /// Provides implementation for <see cref="IEventAggregator"/> based on delegates

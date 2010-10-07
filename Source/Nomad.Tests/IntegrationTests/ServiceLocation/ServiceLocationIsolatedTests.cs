@@ -2,8 +2,8 @@ using System;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using Moq;
+using Nomad.Communication.ServiceLocation;
 using Nomad.Exceptions;
-using Nomad.ServiceLocation;
 using NUnit.Framework;
 using TestsShared;
 

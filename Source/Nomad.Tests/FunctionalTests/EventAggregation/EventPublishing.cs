@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using Nomad.EventAggregation;
+using Nomad.Communication.EventAggregation;
 using NUnit.Framework;
 using TestsShared;
 

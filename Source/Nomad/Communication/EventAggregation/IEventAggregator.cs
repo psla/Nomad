@@ -1,6 +1,6 @@
 using System;
 
-namespace Nomad.EventAggregation
+namespace Nomad.Communication.EventAggregation
 {
     /// <summary>
     /// Provides means for publishing events, where listeners know little or nothing about publishers. Events are dispatched based on event type, not based on origin of the event
