@@ -108,7 +108,7 @@ function remote_tests([string] $tests_category)
 		$pipe.Close();
 		$pipe.Dispose();
 
-		if($runnerExitCode != 0) {
+		if($runnerExitCode -ne 0) {
 			exit $runnerExitCode
 		}
     }
