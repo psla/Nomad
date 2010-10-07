@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Threading;
 using System.Windows.Controls;
 using Moq;
 using Nomad.Regions;
@@ -65,8 +64,12 @@ namespace Nomad.Tests.FunctionalTests.Regions
 
             Wait();
 
-            var whiteTab = WhiteWindow.Get<White.Core.UIItems.TabItems.Tab>("TabControl");
-            Assert.IsNotNull(whiteTab.Pages.Find(obj => obj.Name.Contains("tab1")));
+            var whiteTab = WhiteWindow.Get<Tab>("TabControl");
+            
+            //testing hudson
+            Assert.IsNull(whiteTab.Pages.Find(obj => obj.Name.Contains("tab1")));
+
+            //Assert.IsNotNull(whiteTab.Pages.Find(obj => obj.Name.Contains("tab1")));
         }
 
 
@@ -84,8 +87,6 @@ namespace Nomad.Tests.FunctionalTests.Regions
                         region.AddView("tab3");
                     });
             var whiteTabControl = WhiteWindow.Get<Tab>("TabControl");
-            if (whiteTabControl == null)
-                throw new InvalidStateException("White tab control should not be null");
             whiteTabControl.SelectTabPage("tab1");
             Wait();
 
