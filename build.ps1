@@ -29,6 +29,11 @@ properties {
 	$functional_tests_category = "FunctionalTests"
 }    
 
+# Functional tests file system structures
+properties {
+	$key_generation_dir = "$build_dir\FunctionalTests\Signing\KeyDir\"
+}
+
 # Integration tests file system structures
 properties {
 	$directory_module_discovery_sandbox_dir = "$build_dir\IntegrationTests\DirectoryModuleDiscovery\"
@@ -175,6 +180,7 @@ task Init -depends Clean, GetProjects {
 	New-Item $xmldoc_dir -ItemType directory | Out-Null
 	New-Item $xmldoc_dir\Examples -ItemType directory | Out-Null
 	New-Item $xmldoc_dir\Nomad -ItemType directory | Out-Null
+	New-Item $key_generation_dir  -ItemType directory | Out-Null
     
     # generate assembly infos
 	if($script:projects) {
