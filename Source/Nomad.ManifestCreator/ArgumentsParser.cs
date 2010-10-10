@@ -20,7 +20,15 @@ namespace Nomad.ManifestCreator
             AssemblyName = args[2];
             IssuerName = args[3];
 
+            FormatDirectory();
             ValidateArguments();
+        }
+
+
+        private void FormatDirectory()
+        {
+            if (!Directory.EndsWith(@"\"))
+                Directory += @"\";
         }
 
 

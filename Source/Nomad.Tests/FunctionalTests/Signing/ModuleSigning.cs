@@ -1,7 +1,9 @@
 using System;
 using System.IO;
+using Nomad.Modules;
 using NUnit.Framework;
 using TestsShared;
+using System.Linq;
 
 namespace Nomad.Tests.FunctionalTests.Signing
 {
@@ -14,6 +16,7 @@ namespace Nomad.Tests.FunctionalTests.Signing
         private string _assemblyName;
         private string _issuerName;
         private string _assemblyPath;
+        private string _manifestPath;
 
 
         [TestFixtureSetUp]
@@ -25,6 +28,7 @@ namespace Nomad.Tests.FunctionalTests.Signing
                                @"FunctionalTests\Signing\Module");
             _assemblyName = "sample_module.dll";
             _assemblyPath = Path.Combine(_moduleDirectory, _assemblyName);
+            _manifestPath = _assemblyPath + ".manifest";
             _issuerName = "test-issuer";
             if (File.Exists(_keyFileName))
                 File.Delete(_keyFileName);
@@ -42,16 +46,30 @@ namespace Nomad.Tests.FunctionalTests.Signing
         [Test]
         public void manifest_is_created()
         {
-            var manifestPath = _assemblyPath + ".manifest";
-            Assert.IsTrue(File.Exists(manifestPath), "Manifest does not exist: {0}", manifestPath);
+            Assert.IsTrue(File.Exists(_manifestPath), "Manifest does not exist: {0}", _manifestPath);
         }
 
         [Test]
         public void signature_for_manifest_is_created()
         {
-            var manifestPath = _assemblyPath + ".manifest";
-            var manifestSignature = manifestPath + ".asc";
+            var manifestSignature = _manifestPath + ".asc";
             Assert.IsTrue(File.Exists(manifestSignature), "Manifest signature does not exist: {0}", manifestSignature);
+        }
+
+        [Test]
+        public void is_signature_correct_xml()
+        {
+            Assert.DoesNotThrow(
+                () => XmlSerializerHelper.Deserialize<ModuleManifest>(File.ReadAllBytes(_manifestPath)),
+                "Incorrect signature file");
+        }
+
+        [Test]
+        public void is_signature_module_path_relative()
+        {
+            var moduleManifest =
+                XmlSerializerHelper.Deserialize<ModuleManifest>(File.ReadAllBytes(_manifestPath));
+            Assert.AreEqual(_assemblyName, moduleManifest.SignedFiles.First().FilePath);
         }
     }
 }
