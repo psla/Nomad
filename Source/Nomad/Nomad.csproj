@@ -77,7 +77,6 @@
     <Compile Include="Modules\IModuleDiscovery.cs" />
     <Compile Include="Modules\IModuleFilter.cs" />
     <Compile Include="Modules\IModuleLoader.cs" />
-    <Compile Include="Modules\Manifest\ManifestSignature.cs" />
     <Compile Include="Modules\Manifest\ModuleDependency.cs" />
     <Compile Include="Modules\Manifest\SignedFile.cs" />
     <Compile Include="Modules\Manifest\Version.cs" />
