@@ -16,10 +16,20 @@ namespace Nomad.Modules
     /// When module manifest is missing, then module won't be loaded. 
     /// If some signatures for dll, exe or manifest will be missing, module won't be loaded.
     /// </para>
+    /// <para>
+    /// To verify correctness of manifest, there have to be file AssemblyName.dll.manifest.asc with signature of manifest file. 
+    /// If such file is missing, module won't be loaded.
+    /// </para>
+    /// <para>
+    /// Application defines trusted issuers and their public keys. Name of issuer provided by module manifest must be defined by application.
+    /// </para>
     /// </remarks>
     [Serializable]
     public class ModuleManifest
     {
+        ///<summary>
+        /// Initializes empty module manifest.
+        ///</summary>
         public ModuleManifest()
         {
             ModuleDependencies = new List<ModuleDependency>();
@@ -52,8 +62,7 @@ namespace Nomad.Modules
         /// List of files, which have to be signed.
         ///</summary>
         /// <remarks>
-        /// At least each dll, exe file has to be signed, otherwise Nomad will not accept such module. 
-        /// TODO: Signing manifest (separate file with manifest signature?)
+        /// At least each dll and exe file has to be signed, otherwise Nomad will not accept such module. Manifest signature is in separate file.
         /// </remarks>
         public List<SignedFile> SignedFiles { get; private set; }
     }
