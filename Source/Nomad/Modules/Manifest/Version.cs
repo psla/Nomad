@@ -11,11 +11,34 @@ namespace Nomad.Modules.Manifest
     {
         #region == Version Properties ==
 
+        /// <summary>
+        /// Gets the value of the build component of the version number for the current Version object.
+        /// </summary>
         public int Build { get; set; }
+
+        /// <summary>
+        /// Gets the value of the major component of the version number for the current Version object.
+        /// </summary>
         public int Major { get; set; }
+
+        /// <summary>
+        /// Gets the high 16 bits of the revision number.
+        /// </summary>
         public int MajorRevision { get; set; }
+
+        /// <summary>
+        /// Gets the value of the minor component of the version number for the current Version object.
+        /// </summary>
         public int Minor { get; set; }
+
+        /// <summary>
+        /// Gets the low 16 bits of the revision number.
+        /// </summary>
         public int MinorRevision { get; set; }
+
+        /// <summary>
+        /// Gets the value of the revision component of the version number for the current Version object.
+        /// </summary>
         public int Revision { get; set; }
 
         #endregion

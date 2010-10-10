@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace Nomad.EventAggregation
 {
+    ///<summary>
+    /// Provides implementation for <see cref="IEventAggregator"/> based on delegates
+    ///</summary>
     public class EventAggregator : IEventAggregator
     {
         private readonly IDictionary<Type, Delegate> _dictionary =
@@ -14,8 +17,8 @@ namespace Nomad.EventAggregation
         /// Adds action for execution.
         /// <see cref="IEventAggregator.Subscribe{T}"/>
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="action"></param>
+        /// <typeparam name="T">type of event to subsribe for</typeparam>
+        /// <param name="action">action delegate to fire when type T delivered</param>
         public void Subscribe<T>(Action<T> action) where T : class
         {
             Type type = typeof (T);

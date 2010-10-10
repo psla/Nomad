@@ -13,6 +13,11 @@ namespace Nomad.Modules.Manifest
         /// </summary>
         public string ModuleName { get; set; }
 
-        //TODO: We may want to require minimal version of another module (or other requirements)
+        //TODO: We may want to require not only minimal version of another module (or other requirements), but different validators. Talk about it.
+
+        ///<summary>
+        /// Minimal version of dependent module to cooperate with.
+        ///</summary>
+        public Version MinimalVersion { get; set; }
     }
 }

@@ -7,6 +7,5 @@ namespace TestsShared
     /// </summary>
     public class FunctionalTestsAttribute : CategoryAttribute
     {
-        
     }
 }
