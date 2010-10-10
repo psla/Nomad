@@ -84,7 +84,6 @@
     <Compile Include="FunctionalTests\Modules\LoadingModules.cs" />
     <Compile Include="FunctionalTests\Modules\LoadingModulesWithServiceDependencies.cs" />
     <Compile Include="FunctionalTests\Modules\ModuleLoadingTestFixture.cs" />
-    <Compile Include="FunctionalTests\Modules\VersionConverting.cs" />
     <Compile Include="FunctionalTests\Regions\FakeWindowWithRegions.xaml.cs">
       <DependentUpon>FakeWindowWithRegions.xaml</DependentUpon>
     </Compile>
@@ -100,6 +99,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UnitTests\Modules\CompositeModuleFilterTests.cs" />
     <Compile Include="UnitTests\Modules\ModuleManagerInteractions.cs" />
+    <Compile Include="UnitTests\Modules\VersionConverting.cs" />
     <Compile Include="UnitTests\Regions\Adapters\AdapterContractBase.cs" />
     <Compile Include="UnitTests\Regions\Adapters\TabControlAdapterContract.cs" />
     <Compile Include="UnitTests\Regions\RegionCreation.cs" />

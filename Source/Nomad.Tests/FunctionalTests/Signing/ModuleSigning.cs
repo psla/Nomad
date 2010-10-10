@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using Nomad.Modules;
+using Nomad.Modules.Manifest;
 using NUnit.Framework;
 using TestsShared;
 using System.Linq;

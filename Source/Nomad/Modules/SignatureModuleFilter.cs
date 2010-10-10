@@ -9,6 +9,16 @@ namespace Nomad.Modules
     ///<summary>
     /// Performs signature filtering
     ///</summary>
+    /// <remarks>
+    /// <para>Module Manifest has to be saved as AssemblyName.dll.manifest. 
+    /// When module manifest is missing, then module won't be loaded. 
+    /// If some signatures for dll, exe or manifest will be missing, module won't be loaded.
+    /// </para>
+    /// <para>
+    /// To verify correctness of manifest, there have to be file AssemblyName.dll.manifest.asc with signature of manifest file. 
+    /// If such file is missing, module won't be loaded.
+    /// </para>
+    /// </remarks>
     public class SignatureModuleFilter : IModuleFilter
     {
         private readonly ISignatureProvider _signatureProvider;
