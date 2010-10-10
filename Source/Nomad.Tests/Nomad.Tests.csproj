@@ -84,6 +84,7 @@
     <Compile Include="FunctionalTests\Modules\LoadingModules.cs" />
     <Compile Include="FunctionalTests\Modules\LoadingModulesWithServiceDependencies.cs" />
     <Compile Include="FunctionalTests\Modules\ModuleLoadingTestFixture.cs" />
+    <Compile Include="FunctionalTests\Modules\VersionConverting.cs" />
     <Compile Include="FunctionalTests\Regions\FakeWindowWithRegions.xaml.cs">
       <DependentUpon>FakeWindowWithRegions.xaml</DependentUpon>
     </Compile>

@@ -77,9 +77,13 @@
     <Compile Include="Modules\IModuleDiscovery.cs" />
     <Compile Include="Modules\IModuleFilter.cs" />
     <Compile Include="Modules\IModuleLoader.cs" />
+    <Compile Include="Modules\Manifest\ModuleDependency.cs" />
+    <Compile Include="Modules\Manifest\SignedFile.cs" />
+    <Compile Include="Modules\Manifest\Version.cs" />
     <Compile Include="Modules\ModuleInfo.cs" />
     <Compile Include="Modules\ModuleLoader.cs" />
     <Compile Include="Modules\ModuleManager.cs" />
+    <Compile Include="Modules\Manifest\ModuleManifest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Regions\Adapters\TabControlAdapter.cs" />
     <Compile Include="Regions\Behaviors\ActiveAwareBehavior.cs" />
