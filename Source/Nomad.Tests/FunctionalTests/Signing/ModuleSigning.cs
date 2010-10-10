@@ -28,7 +28,7 @@ namespace Nomad.Tests.FunctionalTests.Signing
                                @"FunctionalTests\Signing\Module");
             _assemblyName = "sample_module.dll";
             _assemblyPath = Path.Combine(_moduleDirectory, _assemblyName);
-            _manifestPath = _assemblyPath + ".manifest";
+            _manifestPath = _assemblyPath + ModuleManifest.ManifestFileNameSuffix;
             _issuerName = "test-issuer";
             if (File.Exists(_keyFileName))
                 File.Delete(_keyFileName);
@@ -52,7 +52,7 @@ namespace Nomad.Tests.FunctionalTests.Signing
         [Test]
         public void signature_for_manifest_is_created()
         {
-            var manifestSignature = _manifestPath + ".asc";
+            var manifestSignature = _manifestPath + ModuleManifest.ManifestSignatureFileNameSuffix;
             Assert.IsTrue(File.Exists(manifestSignature), "Manifest signature does not exist: {0}", manifestSignature);
         }
 

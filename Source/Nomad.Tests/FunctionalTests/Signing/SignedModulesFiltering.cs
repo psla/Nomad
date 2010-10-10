@@ -6,10 +6,12 @@ using Nomad.ManifestCreator;
 using Nomad.Modules;
 using Nomad.Signing;
 using NUnit.Framework;
+using TestsShared;
 using File = System.IO.File;
 
 namespace Nomad.Tests.FunctionalTests.Signing
 {
+    [FunctionalTests]
     public class SignedModulesFiltering
     {
         private string _assemblyName;
@@ -20,21 +22,27 @@ namespace Nomad.Tests.FunctionalTests.Signing
         private string _publicKeyFileName;
         private Mock<ISignatureProvider> _signatureProvider;
         private SignatureModuleFilter _filter;
+        private string _manifestPath;
+        private string _manifestSignature;
 
-
-        [SetUp]
-        public void generate_key_manifest()
+        [TestFixtureSetUp]
+        public void generate_keys()
         {
             _keyFileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
                                         @"Modules\signing-key.xml");
             _publicKeyFileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
                                               @"Modules\public-key.xml");
+            _issuerName = "test-issuer";
+            KeysGeneratorProgram.Main(new[] { _keyFileName, _publicKeyFileName });
+        }
+
+        [SetUp]
+        public void generate_key_manifest()
+        {
             _moduleDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
                                             @"Modules\signing\");
             _assemblyName = "EmptyModule.dll";
-            _issuerName = "test-issuer";
             _modulePath = Path.Combine(_moduleDirectory, _assemblyName);
-            KeysGeneratorProgram.Main(new[] {_keyFileName, _publicKeyFileName});
             ManifestCreatorProgram.Main(new[]
                                             {
                                                 _keyFileName
@@ -49,25 +57,40 @@ namespace Nomad.Tests.FunctionalTests.Signing
                                       new RsaSignatureAlgorithm(File.ReadAllText(_publicKeyFileName))));
 
             _filter = new SignatureModuleFilter(_signatureProvider.Object);
+
+            _manifestPath = _modulePath + ModuleManifest.ManifestFileNameSuffix;
+            _manifestSignature = _manifestPath + ModuleManifest.ManifestSignatureFileNameSuffix;
         }
 
 
         [TearDown]
         public void tear_down()
         {
-            string manifestPath = _modulePath + ".manifest";
-            string manifestSignature = manifestPath + ".asc";
-            if (File.Exists(manifestPath))
-                File.Delete(manifestPath);
-            if (File.Exists(manifestSignature))
-                File.Delete(manifestSignature);
+            if (File.Exists(_manifestPath))
+                File.Delete(_manifestPath);
+            if (File.Exists(_manifestSignature))
+                File.Delete(_manifestSignature);
         }
 
 
         [Test]
         public void filter_accepts_when_structure_and_signatures_are_ok()
         {
-            Assert.IsTrue(_filter.Matches(new ModuleInfo(_modulePath)));
+            Assert.IsTrue(_filter.Matches(new ModuleInfo(_modulePath)), "Expecting to succeed, when all requirements are ok");
+        }
+
+        [Test]
+        public void filter_fails_when_asc_file_missing()
+        {
+            File.Delete(_manifestSignature);
+            Assert.IsFalse(_filter.Matches(new ModuleInfo(_modulePath)), "Expecting to fail if no manifest signature file");
+        }
+
+        [Test]
+        public void filter_fails_when_no_manifest()
+        {
+            File.Delete(_manifestPath);
+            Assert.IsFalse(_filter.Matches(new ModuleInfo(_modulePath)), "Expecting to fail if no manifest signature file");
         }
     }
 }

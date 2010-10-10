@@ -28,6 +28,16 @@ namespace Nomad.Modules
     public class ModuleManifest
     {
         ///<summary>
+        /// Suffix added to AssemblyName to get manifest file
+        ///</summary>
+        public const string ManifestFileNameSuffix = ".manifest";
+
+        ///<summary>
+        /// Suffix added to Manifest File Name to get manifest signature file
+        ///</summary>
+        public const string ManifestSignatureFileNameSuffix = ".asc";
+
+        ///<summary>
         /// Initializes empty module manifest.
         ///</summary>
         public ModuleManifest()
