@@ -105,6 +105,7 @@
     <Compile Include="UnitTests\Regions\SingleActiveViewRegionBehavior.cs" />
     <Compile Include="IntegrationTests\ServiceLocation\ServiceLocationIsolatedTests.cs" />
     <Compile Include="UnitTests\Signing\AssemblyVerification.cs" />
+    <Compile Include="UnitTests\Signing\SignatureContainer.cs" />
     <Compile Include="UnitTests\Signing\SignatureTests.cs" />
   </ItemGroup>
   <ItemGroup>
