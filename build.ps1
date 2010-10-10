@@ -50,7 +50,7 @@ properties {
 	$module_sets = @{
 		"Simple" = @( "SimplestModulePossible1", "SimplestModulePossible2" );
 		"WithDependencies" = @( "ModuleWithConstructorDependency", "ModuleWithPropertyDependency" );
-		
+		"Signing" = @( "EmptyModule" );
 		# since tests for service location should not also test dependencies between modules, proper ordering is achieved manually by loading modules from 2 directories
 		"ServiceLocator-Service" = @( "RegistringServiceModule" );
 		"ServiceLocator-Client" = @( "ResolvingServiceModule" );

@@ -13,11 +13,14 @@ namespace Nomad.KeysGenerator
             _arguments = arguments;
         }
 
+
         public void GenerateSignature()
         {
             // Generate a signing key.
             var key = new RSACryptoServiceProvider();
             File.WriteAllText(_arguments.TargetFile, key.ToXmlString(true));
+            if (_arguments.PublicFile != null)
+                File.WriteAllText(_arguments.PublicFile, key.ToXmlString(false));
         }
     }
 }

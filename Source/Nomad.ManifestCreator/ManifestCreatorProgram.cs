@@ -82,7 +82,10 @@ namespace Nomad.ManifestCreator
                                                   select
                                                       new SignedFile
                                                           {
-                                                              FilePath = file.Substring(_argumentsParser.Directory.Length),
+                                                              FilePath =
+                                                                  file.Substring(
+                                                                      _argumentsParser.Directory.
+                                                                          Length),
                                                               Signature =
                                                                   _signatureAlgorithm.Sign(
                                                                       File.ReadAllBytes(file))
