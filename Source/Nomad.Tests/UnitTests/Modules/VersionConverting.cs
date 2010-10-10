@@ -1,10 +1,10 @@
-using System;
-using Nomad.Modules;
+﻿using Nomad.Modules.Manifest;
 using NUnit.Framework;
-using Version = Nomad.Modules.Manifest.Version;
+using TestsShared;
 
-namespace Nomad.Tests.FunctionalTests.Modules
+namespace Nomad.Tests.UnitTests.Modules
 {
+    [UnitTests]
     public class VersionConverting
     {
         [Test]

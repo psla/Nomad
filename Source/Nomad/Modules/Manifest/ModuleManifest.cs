@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using Nomad.Modules.Manifest;
-using Version = Nomad.Modules.Manifest.Version;
 
-namespace Nomad.Modules
+namespace Nomad.Modules.Manifest
 {
     /// <summary>
     /// Manifest contains additional information about module, especially:
