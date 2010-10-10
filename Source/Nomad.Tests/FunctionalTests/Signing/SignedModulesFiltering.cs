@@ -24,6 +24,8 @@ namespace Nomad.Tests.FunctionalTests.Signing
         private SignatureModuleFilter _filter;
         private string _manifestPath;
         private string _manifestSignature;
+        private byte[] _moduleContent;
+
 
         [TestFixtureSetUp]
         public void generate_keys()
@@ -60,6 +62,8 @@ namespace Nomad.Tests.FunctionalTests.Signing
 
             _manifestPath = _modulePath + ModuleManifest.ManifestFileNameSuffix;
             _manifestSignature = _manifestPath + ModuleManifest.ManifestSignatureFileNameSuffix;
+
+            _moduleContent = File.ReadAllBytes(_modulePath);
         }
 
 
@@ -70,6 +74,7 @@ namespace Nomad.Tests.FunctionalTests.Signing
                 File.Delete(_manifestPath);
             if (File.Exists(_manifestSignature))
                 File.Delete(_manifestSignature);
+            File.WriteAllBytes(_modulePath, _moduleContent);
         }
 
 
@@ -91,6 +96,15 @@ namespace Nomad.Tests.FunctionalTests.Signing
         {
             File.Delete(_manifestPath);
             Assert.IsFalse(_filter.Matches(new ModuleInfo(_modulePath)), "Expecting to fail if no manifest signature file");
+        }
+
+        [Test]
+        public void filter_fails_when_file_content_changed()
+        {
+            var dll = File.ReadAllBytes(_modulePath);
+            dll[0] = (byte) ((dll[0] + 15) % 256);
+            File.WriteAllBytes(_modulePath, dll);
+            Assert.IsFalse(_filter.Matches(new ModuleInfo(_modulePath)), "Expecting to fail when assembly dll has changed");
         }
     }
 }
