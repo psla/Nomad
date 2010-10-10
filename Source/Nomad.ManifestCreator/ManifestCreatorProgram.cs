@@ -1,5 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Security.Cryptography;
+using Nomad.Modules;
+using Nomad.Modules.Manifest;
+using Nomad.Signing;
+using File = System.IO.File;
 
 namespace Nomad.ManifestCreator
 {
@@ -15,21 +22,23 @@ namespace Nomad.ManifestCreator
         /// <param name="args">
         /// first argument contains path to issuer
         /// second argument contains path to directory
-        /// thir argument contains module assembly name
+        /// third argument contains module assembly name
+        /// fourth - issuer name
         /// </param>
-        private static void Main(string[] args)
+        public static void Main(string[] args)
         {
             try
             {
                 var argumentsParser = new ArgumentsParser(args);
                 var manifestCreator = new ManifestCreator(argumentsParser);
+                manifestCreator.Create();
             }
             catch (Exception e)
             {
                 if (args.Length != 3)
                 {
                     Console.WriteLine(
-                        "manifestCreator.exe path_to_issuer_xml path_to_directory assembly_name.dll");
+                        "manifestCreator.exe path_to_issuer_xml path_to_directory assembly_name.dll issuer_name");
                     Console.WriteLine(e.Message);
                     return;
                 }
@@ -40,47 +49,57 @@ namespace Nomad.ManifestCreator
     internal class ManifestCreator
     {
         private readonly ArgumentsParser _argumentsParser;
+        private RSACryptoServiceProvider _key;
+        private ISignatureAlgorithm _signatureAlgorithm;
 
 
         public ManifestCreator(ArgumentsParser argumentsParser)
         {
             _argumentsParser = argumentsParser;
-        }
-    }
-
-    /// <summary>
-    /// Parses arguments provided to <see cref="ManifestCreatorProgram"/>
-    /// </summary>
-    internal class ArgumentsParser
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="args"></param>
-        /// <exception cref="ArgumentException">when provided argument is incorrect</exception>
-        public ArgumentsParser(string[] args)
-        {
-            IssuerXml = args[0];
-            Directory = args[1];
-            AssemblyName = args[2];
-
-            ValidateArguments();
+            LoadKey();
         }
 
 
-        public string IssuerXml { get; private set; }
-        public string Directory { get; private set; }
-        public string AssemblyName { get; private set; }
-
-
-        private void ValidateArguments()
+        private void LoadKey()
         {
-            if (!File.Exists(IssuerXml))
-                throw new ArgumentException("Incorrect issuer xml path");
-            if (!System.IO.Directory.Exists(Directory))
-                throw new ArgumentException("Incorrect directory file path");
-            if (!File.Exists(Path.Combine(Directory, AssemblyName)))
-                throw new ArgumentException("There is no such assembly name");
+            _signatureAlgorithm =
+                new RsaSignatureAlgorithm(File.ReadAllText(_argumentsParser.IssuerXml));
+        }
+
+
+        private string GetAssemblyPath()
+        {
+            return Path.Combine(_argumentsParser.Directory, _argumentsParser.AssemblyName);
+        }
+
+
+        public void Create()
+        {
+            string[] files = Directory.GetFiles(_argumentsParser.Directory, "*",
+                                                SearchOption.AllDirectories);
+
+            IEnumerable<SignedFile> signedFiles = from file in files
+                                                  select
+                                                      new SignedFile
+                                                          {
+                                                              FilePath = file,
+                                                              Signature =
+                                                                  _signatureAlgorithm.Sign(
+                                                                      File.ReadAllBytes(file))
+                                                          };
+            var manifest = new ModuleManifest
+                               {
+                                   Issuer = _argumentsParser.IssuerName,
+                                   ModuleName = _argumentsParser.AssemblyName,
+                                   SignedFiles = signedFiles.ToList()
+                               };
+            byte[] manifestSerialized = XmlSerializerHelper.Serialize(manifest);
+
+            string manifestPath = string.Format("{0}.manifest", GetAssemblyPath());
+
+            File.WriteAllBytes(manifestPath, manifestSerialized);
+            File.WriteAllBytes(manifestPath + ".asc",
+                               _signatureAlgorithm.Sign(File.ReadAllBytes(manifestPath)));
         }
     }
 }

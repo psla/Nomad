@@ -32,6 +32,7 @@ properties {
 # Functional tests file system structures
 properties {
 	$key_generation_dir = "$build_dir\FunctionalTests\Signing\KeyDir\"
+	$module_signing_dir = "$build_dir\FunctionalTests\Signing\Module\"
 }
 
 # Integration tests file system structures
@@ -180,7 +181,9 @@ task Init -depends Clean, GetProjects {
 	New-Item $xmldoc_dir -ItemType directory | Out-Null
 	New-Item $xmldoc_dir\Examples -ItemType directory | Out-Null
 	New-Item $xmldoc_dir\Nomad -ItemType directory | Out-Null
-	New-Item $key_generation_dir  -ItemType directory | Out-Null
+	New-Item $key_generation_dir -ItemType directory | Out-Null
+	New-Item $module_signing_dir -ItemType directory | Out-Null
+	
     
     # generate assembly infos
 	if($script:projects) {

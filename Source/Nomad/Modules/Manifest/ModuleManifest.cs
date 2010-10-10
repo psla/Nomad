@@ -46,17 +46,17 @@ namespace Nomad.Modules
         /// <summary>
         /// Unique for repository module name
         /// </summary>
-        public string ModuleName { get; private set; }
+        public string ModuleName { get; set; }
 
         /// <summary>
         /// Version of module
         /// </summary>
-        public Version ModuleVersion { get; private set; }
+        public Version ModuleVersion { get; set; }
 
         ///<summary>
         /// List of modules this one is dependent on
         ///</summary>
-        public List<ModuleDependency> ModuleDependencies { get; private set; }
+        public List<ModuleDependency> ModuleDependencies { get; set; }
 
         ///<summary>
         /// List of files, which have to be signed.
@@ -64,6 +64,6 @@ namespace Nomad.Modules
         /// <remarks>
         /// At least each dll and exe file has to be signed, otherwise Nomad will not accept such module. Manifest signature is in separate file.
         /// </remarks>
-        public List<SignedFile> SignedFiles { get; private set; }
+        public List<SignedFile> SignedFiles { get; set; }
     }
 }

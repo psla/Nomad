@@ -93,6 +93,7 @@
     <Compile Include="FunctionalTests\ServiceLocation\ServiceLocatorInModules.cs" />
     <Compile Include="FunctionalTests\ServiceLocation\ServiceRegistry.cs" />
     <Compile Include="FunctionalTests\Signing\KeyGenerating.cs" />
+    <Compile Include="FunctionalTests\Signing\ModuleSigning.cs" />
     <Compile Include="GuiNunitHooks.cs" />
     <Compile Include="IntegrationTests\Modules\DirectoryModuleDiscovery.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -113,6 +114,10 @@
     <ProjectReference Include="..\Nomad.KeysGenerator\Nomad.KeysGenerator.csproj">
       <Project>{1F6C3A60-1A3C-4627-A9F3-B71897468E21}</Project>
       <Name>Nomad.KeysGenerator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Nomad.ManifestCreator\Nomad.ManifestCreator.csproj">
+      <Project>{EF5A9D12-B2C4-46E0-B7E9-75868819C4C8}</Project>
+      <Name>Nomad.ManifestCreator</Name>
     </ProjectReference>
     <ProjectReference Include="..\Nomad\Nomad.csproj">
       <Project>{3828EBBD-FFBA-4C30-BF46-D3742BC165F1}</Project>

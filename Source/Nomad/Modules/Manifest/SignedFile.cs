@@ -27,6 +27,6 @@ namespace Nomad.Modules.Manifest
         ///<summary>
         /// Signature of file it will be checked against
         ///</summary>
-        public string Signature { get; set; }
+        public byte[] Signature { get; set; }
     }
 }
