@@ -1,4 +1,5 @@
 ﻿using System;
+using Nomad.Modules;
 
 namespace Nomad.Core
 {
@@ -7,10 +8,19 @@ namespace Nomad.Core
     /// </summary>
     public class NomadKernel
     {
+
         /// <summary>
         /// Provides readonly access to initialized Kernel configuration.
         /// </summary>
         public NomadConfiguration KernelConfiguration { get; private set; }
+
+        /// <summary>
+        /// Provides readonly access to already initialized ModuleManager
+        /// </summary>
+        public ModuleManager ModuleManager
+        {
+            get; private set;
+        }
 
 
         /// <summary>
@@ -28,6 +38,8 @@ namespace Nomad.Core
             }
             nomadConfiguration.Freeze();
             KernelConfiguration = nomadConfiguration;
+
+            ModuleManager = new ModuleManager(KernelConfiguration.ModuleLoader,KernelConfiguration.ModuleFilter);
         }
 
 

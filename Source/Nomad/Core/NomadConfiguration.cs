@@ -1,4 +1,5 @@
 ﻿using System;
+using Nomad.Modules;
 
 namespace Nomad.Core
 {
@@ -8,10 +9,40 @@ namespace Nomad.Core
     /// </summary>
     public class NomadConfiguration
     {
+        #region Configuration
+
+        private IModuleLoader _moduleLoader;
+        private IModuleFilter _moduleFilter;
+
         /// <summary>
-        /// Determines the state of configuration object.
+        /// Implementation of <see cref="IModuleLoader"/> which will be used by Kernel.
         /// </summary>
-        public bool IsFrozen { get; private set; }
+        /// <exception cref="InvalidOperationException">Raised when accessing frozen configuration.</exception>
+        public IModuleLoader ModuleLoader
+        {
+            get { return _moduleLoader; }
+            set
+            {
+                AssertNotFrozen();
+                _moduleLoader = value;
+            }
+        }
+
+        /// <summary>
+        /// Implementation of <see cref="IModuleFilter"/> which will be used by Kernel.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Raised when accessing frozen configuration.</exception>
+        public IModuleFilter ModuleFilter
+        {
+            get { return _moduleFilter; }
+            set
+            {
+                AssertNotFrozen();
+                _moduleFilter = value;
+            }
+        }
+
+        #endregion
 
         /// <summary>
         /// Provides default and user-modifiable configuration for Nomad framework.
@@ -20,11 +51,20 @@ namespace Nomad.Core
         {
             get
             {
-                return new NomadConfiguration()
+                return new NomadConfiguration
                            {
+                               //ModuleFilter = new CompositeModuleFilter(),
+                               //ModuleLoader = new ModuleLoader()
                            };
             }
         }
+
+        #region Freeze Implementation
+
+        /// <summary>
+        /// Determines the state of configuration object.
+        /// </summary>
+        public bool IsFrozen { get; private set; }
 
 
         /// <summary>
@@ -49,5 +89,7 @@ namespace Nomad.Core
         {
             IsFrozen = true;
         }
+
+        #endregion
     }
 }

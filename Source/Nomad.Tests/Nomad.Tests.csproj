@@ -78,7 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FunctionalTests\EventAggregation\EventPublishing.cs" />
-    <Compile Include="IntegrationTests\Kernel\AppDomainManagment.cs" />
+    <Compile Include="IntegrationTests\Kernel\NomadKernelAppDomainManagment.cs" />
     <Compile Include="FunctionalTests\Modules\IInjectableModulesRegistry.cs" />
     <Compile Include="FunctionalTests\Modules\InjectableModulesRegistry.cs" />
     <Compile Include="FunctionalTests\Modules\LoadedModulesRegistry.cs" />
@@ -98,6 +98,8 @@
     <Compile Include="GuiNunitHooks.cs" />
     <Compile Include="IntegrationTests\Modules\DirectoryModuleDiscovery.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="IntegrationTests\Kernel\NomadKernel.cs" />
+    <Compile Include="UnitTests\Kernel\NomadConfigurationTests.cs" />
     <Compile Include="UnitTests\Modules\CompositeModuleFilterTests.cs" />
     <Compile Include="UnitTests\Modules\ModuleManagerInteractions.cs" />
     <Compile Include="UnitTests\Modules\VersionConverting.cs" />
