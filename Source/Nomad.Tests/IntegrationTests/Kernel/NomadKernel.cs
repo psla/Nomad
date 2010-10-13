@@ -14,12 +14,9 @@ namespace Nomad.Tests.IntegrationTests.Kernel
         [Test]
         public void injecting_nomad_configuration()
         {
-            var moduleFilterMock = new Mock<IModuleFilter>(MockBehavior.Loose);
+            var configurationMock = new Mock<NomadConfiguration>(MockBehavior.Loose);
 
-            var configuration = new NomadConfiguration();
-            configuration.ModuleFilter = moduleFilterMock.Object;
-            
-            //TODO: write ijecting into nomad configuratin and check if it really works... if is freezed
+            //TODO: write injecting into nomad configuratin and check if it really works... if is freezed
         }
 
       

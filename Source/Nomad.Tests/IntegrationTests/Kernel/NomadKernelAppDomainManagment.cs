@@ -36,8 +36,8 @@ namespace Nomad.Tests.IntegrationTests.Kernel
             moduleDiscoveryMock.Setup(x => x.GetModules())
                 .Returns(expectedModuleInfos);
 
-            //TODO: wrtie nomad kernel loading...
-            _nomadKernel.ModuleManager.LoadModules(moduleDiscoveryMock.Object);
+            //TODO: write nomad kernel loading... 
+            //_nomadKernel.ModuleManager.LoadModules(moduleDiscoveryMock.Object);
 
         }
 
@@ -45,12 +45,14 @@ namespace Nomad.Tests.IntegrationTests.Kernel
         [Test]
         public void unloading_module_appdomain_upon_unload_request()
         {
+            //TODO: write tests
         }
 
 
         [Test]
         public void verifing_starting_appdomain_to_have_not_module_loading_implementation_loaded()
         {
+            //TODO: write tests
         }
     }
 }

@@ -39,7 +39,7 @@ namespace Nomad.Core
             nomadConfiguration.Freeze();
             KernelConfiguration = nomadConfiguration;
 
-            ModuleManager = new ModuleManager(KernelConfiguration.ModuleLoader,KernelConfiguration.ModuleFilter);
+            //ModuleManager = new ModuleManager(KernelConfiguration.ModuleLoader,KernelConfiguration.ModuleFilter);
         }
 
 
