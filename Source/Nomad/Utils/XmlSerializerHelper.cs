@@ -1,7 +1,7 @@
 using System.IO;
 using System.Xml.Serialization;
 
-namespace Nomad
+namespace Nomad.Utils
 {
     /// <summary>
     /// Class which provides help for xml serialization

@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using Nomad.Modules;
 using Nomad.Modules.Manifest;
 using Nomad.Signing;
+using Nomad.Utils;
 using File = System.IO.File;
 
 namespace Nomad.ManifestCreator
