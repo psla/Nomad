@@ -8,18 +8,18 @@ using TestsShared;
 namespace Nomad.Tests.IntegrationTests.Kernel
 {
     /// <summary>
-    /// Integrates Module, ModuleInfo, Nomad.Kernel -> checks for proper implementation of appDomains.
+    /// Checks about AppDomain proper implementation within Nomad.Kernel.
     /// </summary>
     [IntegrationTests]
-    public class NomadKernelAppDomainManagment
+    public class NomadKernelAppDomainManagmentTests
     {
-        private Core.NomadKernel _nomadKernel;
+        private NomadKernel _nomadKernel;
 
 
         [SetUp]
         public void set_up()
         {
-            _nomadKernel = new Core.NomadKernel();
+            _nomadKernel = new NomadKernel();
         }
 
 

@@ -85,7 +85,7 @@ namespace Nomad.Core
         /// <summary>
         /// Freezes the configuration.
         /// </summary>
-        public void Freeze()
+        public  void Freeze()
         {
             IsFrozen = true;
         }
