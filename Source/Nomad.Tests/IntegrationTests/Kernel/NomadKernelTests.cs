@@ -8,25 +8,25 @@ namespace Nomad.Tests.IntegrationTests.Kernel
     public class NomadKernelTests
     {
         private NomadKernel _nomadKernel;
-     
+
+
         [Test]
         public void injecting_nomad_configuration_freezes_the_configuration()
         {
-            //Use default
-            var configuration = new NomadConfiguration();
-            
+            //Use default configuration
+            NomadConfiguration configuration = NomadConfiguration.Default;
+
             Assert.IsFalse(configuration.IsFrozen);
             _nomadKernel = new NomadKernel(configuration);
             Assert.IsTrue(configuration.IsFrozen);
         }
 
+
         [Test]
         public void injecting_default_nomad_configuration_works_well()
         {
-            //Use default
-            var configuration = new NomadConfiguration();
-            Assert.DoesNotThrow(() => _nomadKernel = new NomadKernel(configuration));
+            //Use default configuration
+            Assert.DoesNotThrow(() => _nomadKernel = new NomadKernel());
         }
-      
     }
 }

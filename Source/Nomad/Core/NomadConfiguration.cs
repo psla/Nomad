@@ -1,18 +1,43 @@
 ﻿using System;
+using Castle.Windsor;
 using Nomad.Modules;
 
 namespace Nomad.Core
 {
     /// <summary>
-    /// Contains all informations concerning <see cref="NomadKernel"/> configuration.
+    /// Contains all information concerning <see cref="NomadKernel"/> configuration.
     /// This class acts as freezable. Also provides default configuration.
     /// </summary>
     public class NomadConfiguration
     {
+        #region Windsor Container
+
+        private IWindsorContainer _windsorContainer;
+
+        /// <summary>
+        ///     Container to be used within Nomad. Compliant with <see cref="IWindsorContainer"/> interface.
+        /// </summary>
+        /// <remarks>
+        ///     This is the highest place with Nomad Framework for IoC Container to be defined. 
+        ///     Other parts of the framework would eventually use container defined in this place.
+        /// </remarks>
+        public IWindsorContainer WindsorContainer
+        {
+            get { return _windsorContainer; }
+            set
+            {
+                AssertNotFrozen();
+                _windsorContainer = value;
+            }
+        }
+
+        #endregion
+
         #region Configuration
 
-        private IModuleLoader _moduleLoader;
         private IModuleFilter _moduleFilter;
+        private IModuleLoader _moduleLoader;
+
 
         /// <summary>
         /// Implementation of <see cref="IModuleLoader"/> which will be used by Kernel.
@@ -51,10 +76,12 @@ namespace Nomad.Core
         {
             get
             {
+                var container = new WindsorContainer();
                 return new NomadConfiguration
                            {
-                               //ModuleFilter = new CompositeModuleFilter(),
-                               //ModuleLoader = new ModuleLoader()
+                               WindsorContainer = container,
+                               ModuleFilter = new CompositeModuleFilter(new IModuleFilter[] {}),
+                               ModuleLoader = new ModuleLoader(container)
                            };
             }
         }
@@ -68,7 +95,7 @@ namespace Nomad.Core
 
 
         /// <summary>
-        /// Checks wheter current instance is already frozen.
+        /// Checks whether current instance is already frozen.
         /// </summary>
         /// <exception cref="InvalidOperationException">
         /// If object is already frozen.
@@ -85,7 +112,7 @@ namespace Nomad.Core
         /// <summary>
         /// Freezes the configuration.
         /// </summary>
-        public  void Freeze()
+        public void Freeze()
         {
             IsFrozen = true;
         }

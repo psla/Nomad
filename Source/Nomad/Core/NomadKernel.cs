@@ -8,20 +8,20 @@ namespace Nomad.Core
     /// </summary>
     public class NomadKernel
     {
+        #region AppDomain Managment
 
-        /// <summary>
-        /// Provides readonly access to initialized Kernel configuration.
-        /// </summary>
-        public NomadConfiguration KernelConfiguration { get; private set; }
-
-        /// <summary>
-        /// Provides readonly access to already initialized ModuleManager
-        /// </summary>
-        public ModuleManager ModuleManager
-        {
-            get; private set;
+        public AppDomain ModuleAppDomain
+        { 
+            get; set;
         }
 
+        public AppDomain KernelAppDomain
+        {
+            get; set;
+        }
+
+
+        #endregion
 
         /// <summary>
         /// Initializes new instance of the <see cref="NomadKernel"/> class.
@@ -39,7 +39,8 @@ namespace Nomad.Core
             nomadConfiguration.Freeze();
             KernelConfiguration = nomadConfiguration;
 
-            ModuleManager = new ModuleManager(KernelConfiguration.ModuleLoader,KernelConfiguration.ModuleFilter);
+            ModuleManager = new ModuleManager(KernelConfiguration.ModuleLoader,
+                                              KernelConfiguration.ModuleFilter);
         }
 
 
@@ -47,8 +48,19 @@ namespace Nomad.Core
         /// Initializes new instance of the <see cref="NomadKernel"/> class.
         /// Uses frozen <see cref="NomadConfiguration.Default"/> as configuration data.
         /// </summary>
-        public NomadKernel(): this(NomadConfiguration.Default)
+        public NomadKernel() : this(NomadConfiguration.Default)
         {
         }
+
+
+        /// <summary>
+        /// Provides readonly access to initialized Kernel configuration.
+        /// </summary>
+        public NomadConfiguration KernelConfiguration { get; private set; }
+
+        /// <summary>
+        /// Provides readonly access to already initialized ModuleManager
+        /// </summary>
+        public ModuleManager ModuleManager { get; private set; }
     }
 }
