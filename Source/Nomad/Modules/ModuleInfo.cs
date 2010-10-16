@@ -7,6 +7,7 @@ namespace Nomad.Modules
     ///     uniquely identifying a module and required to properly load
     ///     and initialize it.
     /// </summary>
+    [Serializable]
     public class ModuleInfo : IEquatable<ModuleInfo>
     {
         private readonly string _assemblyPath;

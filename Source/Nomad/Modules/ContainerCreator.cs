@@ -3,8 +3,7 @@ using Castle.Windsor;
 
 namespace Nomad.Modules
 {
-    [Serializable]
-    public class ContainerCreator
+    public class ContainerCreator : MarshalByRefObject
     {
         private readonly IWindsorContainer _windsorContainer;
         public IWindsorContainer WindsorContainer
