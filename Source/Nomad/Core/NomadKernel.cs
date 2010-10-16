@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 using System.Security.Policy;
 using Nomad.Modules;
 
@@ -11,29 +10,6 @@ namespace Nomad.Core
     public class NomadKernel
     {
         /// <summary>
-        ///     IModuleLoader used for loading the modules by <see cref="ModuleManager"/>. 
-        /// </summary>
-        /// <remarks>
-        ///     Instantiated within constructor in ModuleAppDomain.
-        /// </remarks>
-        private IModuleLoader ModuleLoader
-        {
-            get; set;
-        }
-
-
-        public AppDomain ModuleAppDomain
-        { 
-            get; private set;
-        }
-
-        public AppDomain KernelAppDomain
-        {
-            get; private set;
-        }
-
-
-        /// <summary>
         /// Initializes new instance of the <see cref="NomadKernel"/> class.
         /// </summary>
         /// <param name="nomadConfiguration">
@@ -41,11 +17,11 @@ namespace Nomad.Core
         /// </param>
         /// <remarks>
         ///     <para>
-        ///         Initlializes both LoadedModules AppDomain with IModuleLoader implementation.
+        ///         Initializes both LoadedModules AppDomain with IModuleLoader implementation.
         ///     </para>
         ///     <para>
-        ///         Kernel, by now, uses the Nomad defualt implementation of IModuleLoader( <see cref="ModuleLoader"/> with no possiblity to changing it. 
-        ///         This constraint is made beacause of the depenendcy on the IoC container which should be used for storing information about 
+        ///         Kernel, by now, uses the Nomad default implementation of IModuleLoader( <see cref="ModuleLoader"/> with no possibility to changing it. 
+        ///         This constraint is made because of the dependency on the IoC container which should be used for storing information about 
         ///     </para>
         /// </remarks>
         public NomadKernel(NomadConfiguration nomadConfiguration)
@@ -58,20 +34,18 @@ namespace Nomad.Core
             nomadConfiguration.Freeze();
             KernelConfiguration = nomadConfiguration;
 
-
             KernelAppDomain = AppDomain.CurrentDomain;
             ModuleAppDomain = AppDomain.CreateDomain("Nomad Loaded Modules",
-                new Evidence(AppDomain.CurrentDomain.Evidence), 
-                AppDomain.CurrentDomain.BaseDirectory, 
-                ".", 
-                false);
+                                                     new Evidence(AppDomain.CurrentDomain.Evidence),
+                                                     AppDomain.CurrentDomain.BaseDirectory,
+                                                     ".",
+                                                     false);
 
-
-            var asmName = typeof (ContainerCreator).Assembly.FullName;
-            var typeName = typeof (ContainerCreator).FullName;
+            string asmName = typeof (ContainerCreator).Assembly.FullName;
+            string typeName = typeof (ContainerCreator).FullName;
 
             var moduleLoaderCreator = (ContainerCreator)
-                ModuleAppDomain.CreateInstanceAndUnwrap(asmName, typeName);
+                                      ModuleAppDomain.CreateInstanceAndUnwrap(asmName, typeName);
 
             ModuleLoader = moduleLoaderCreator.CreateModuleLoaderInstance();
 
@@ -84,37 +58,65 @@ namespace Nomad.Core
         /// Initializes new instance of the <see cref="NomadKernel"/> class.
         /// Uses frozen <see cref="NomadConfiguration.Default"/> as configuration data.
         /// </summary>
+        /// <remarks>
+        ///     <para>
+        ///         Initializes both LoadedModules AppDomain with IModuleLoader implementation.
+        ///     </para>
+        ///     <para>
+        ///         Kernel, by now, uses the Nomad default implementation of IModuleLoader( <see cref="ModuleLoader"/> with no possibility to changing it. 
+        ///         This constraint is made because of the dependency on the IoC container which should be used for storing information about 
+        ///     </para>
+        /// </remarks>
         public NomadKernel() : this(NomadConfiguration.Default)
         {
         }
 
 
         /// <summary>
-        /// Provides read only access to initialized Kernel configuration.
+        ///     IModuleLoader used for loading the modules by <see cref="ModuleManager"/>. 
+        /// </summary>
+        /// <remarks>
+        ///     Instantiated within constructor in ModuleAppDomain.
+        /// </remarks>
+        private IModuleLoader ModuleLoader { get; set; }
+
+        /// <summary>
+        ///     AppDomain handler for AppDomain used for storing all loaded modules.
+        /// </summary>
+        public AppDomain ModuleAppDomain { get; private set; }
+
+        /// <summary>
+        ///     AppDomain handler for AppDomain representing appDomain for <see cref="NomadKernel"/> instance.
+        /// </summary>
+        public AppDomain KernelAppDomain { get; private set; }
+
+
+        /// <summary>
+        ///     Provides read only access to initialized Kernel configuration.
         /// </summary>
         public NomadConfiguration KernelConfiguration { get; private set; }
 
         /// <summary>
-        /// Provides read only access to already initialized ModuleManager
+        ///     Provides read only access to already initialized ModuleManager
         /// </summary>
         public ModuleManager ModuleManager { get; private set; }
 
 
         /// <summary>
-        ///     Unloades the whole ModuleAppDomain.
+        ///     Unloads the whole ModuleAppDomain.
         /// </summary>
         /// <remarks>
-        ///     New AppDomain with the same evidance settings and entry point is set after unloading.
+        ///     New AppDomain with the same evidence settings and entry point is set after unloading.
         /// </remarks>
         public void UnloadModules()
         {
             AppDomain.Unload(ModuleAppDomain);
 
             ModuleAppDomain = AppDomain.CreateDomain("Nomad Loaded Modules",
-                new Evidence(AppDomain.CurrentDomain.Evidence),
-                AppDomain.CurrentDomain.BaseDirectory,
-                ".",
-                false);
+                                                     new Evidence(AppDomain.CurrentDomain.Evidence),
+                                                     AppDomain.CurrentDomain.BaseDirectory,
+                                                     ".",
+                                                     false);
         }
     }
 }
