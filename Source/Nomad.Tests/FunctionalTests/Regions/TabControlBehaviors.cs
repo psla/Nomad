@@ -88,7 +88,7 @@ namespace Nomad.Tests.FunctionalTests.Regions
 
             Assert.Contains("tab1", (ICollection) region.ActiveViews);
         }
-
+        
 
         [Test]
         public void synchronizes_active_item_when_program_activates()

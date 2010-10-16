@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Security.Policy;
 using Nomad.Modules;
 
 namespace Nomad.Core
@@ -59,7 +60,7 @@ namespace Nomad.Core
 
 
             KernelAppDomain = AppDomain.CurrentDomain;
-            ModuleAppDomain = AppDomain.CreateDomain("Nomad Loaded Modules");
+            ModuleAppDomain = AppDomain.CreateDomain("Nomad Loaded Modules", new Evidence(AppDomain.CurrentDomain.Evidence), AppDomain.CurrentDomain.BaseDirectory, ".", false);
 
 
             var asmName = typeof (ContainerCreator).Assembly.FullName;
