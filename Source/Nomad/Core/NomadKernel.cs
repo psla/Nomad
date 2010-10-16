@@ -104,11 +104,17 @@ namespace Nomad.Core
         ///     Unloades the whole ModuleAppDomain.
         /// </summary>
         /// <remarks>
-        ///     TODO: check if the new ModuleAppDomain should be initialized with this method.
+        ///     New AppDomain with the same evidance settings and entry point is set after unloading.
         /// </remarks>
         public void UnloadModules()
         {
-            throw new NotImplementedException();
+            AppDomain.Unload(ModuleAppDomain);
+
+            ModuleAppDomain = AppDomain.CreateDomain("Nomad Loaded Modules",
+                new Evidence(AppDomain.CurrentDomain.Evidence),
+                AppDomain.CurrentDomain.BaseDirectory,
+                ".",
+                false);
         }
     }
 }
