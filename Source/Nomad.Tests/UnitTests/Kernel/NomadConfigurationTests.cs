@@ -10,7 +10,6 @@ namespace Nomad.Tests.UnitTests.Kernel
     public class NomadConfigurationTests
     {
         private Mock<IModuleFilter> _moduleFilterMock;
-        private Mock<IModuleLoader> _moduleLoaderMock;
 
         private Core.NomadConfiguration _configuration;
 
@@ -20,10 +19,6 @@ namespace Nomad.Tests.UnitTests.Kernel
             _moduleFilterMock = new Mock<IModuleFilter>(MockBehavior.Loose);
             _moduleFilterMock.Setup( x => x.Matches(It.IsAny<ModuleInfo>()))
                 .Verifiable("Matches was not invoked during test");
-
-            _moduleLoaderMock = new Mock<IModuleLoader>(MockBehavior.Loose);
-            _moduleLoaderMock.Setup(x => x.LoadModule(It.IsAny<ModuleInfo>()))
-               .Verifiable("LoadModule was not invoked during test");
         }
 
         [Test]
@@ -40,16 +35,12 @@ namespace Nomad.Tests.UnitTests.Kernel
         {
             _configuration = new Core.NomadConfiguration();
             _configuration.ModuleFilter = _moduleFilterMock.Object;
-            _configuration.ModuleLoader = _moduleLoaderMock.Object;
 
             Assert.AreSame(_moduleFilterMock.Object, _configuration.ModuleFilter, "IModuleFilter was not set");
-            Assert.AreSame(_moduleLoaderMock.Object, _configuration.ModuleLoader, "IModuleLoader was not set");
 
             _configuration.ModuleFilter = null;
-            _configuration.ModuleLoader = null;
 
             Assert.IsNull(_configuration.ModuleFilter);
-            Assert.IsNull(_configuration.ModuleLoader);
 
         }
 
@@ -58,12 +49,10 @@ namespace Nomad.Tests.UnitTests.Kernel
         {
             _configuration = new Core.NomadConfiguration();
             _configuration.ModuleFilter = _moduleFilterMock.Object;
-            _configuration.ModuleLoader = _moduleLoaderMock.Object;
 
             _configuration.Freeze();
 
             Assert.AreSame(_moduleFilterMock.Object,_configuration.ModuleFilter,"Freezing changed IModuleFilter service provider");
-            Assert.AreSame(_moduleLoaderMock.Object, _configuration.ModuleLoader, "Freezing changed IModuleLoader service provider");
         }
 
         [Test]

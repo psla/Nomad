@@ -1,5 +1,4 @@
 ﻿using System;
-using Castle.Windsor;
 using Nomad.Modules;
 
 namespace Nomad.Core
@@ -10,48 +9,9 @@ namespace Nomad.Core
     /// </summary>
     public class NomadConfiguration
     {
-        #region Windsor Container
-
-        private IWindsorContainer _windsorContainer;
-
-        /// <summary>
-        ///     Container to be used within Nomad. Compliant with <see cref="IWindsorContainer"/> interface.
-        /// </summary>
-        /// <remarks>
-        ///     This is the highest place with Nomad Framework for IoC Container to be defined. 
-        ///     Other parts of the framework would eventually use container defined in this place.
-        /// </remarks>
-        public IWindsorContainer WindsorContainer
-        {
-            get { return _windsorContainer; }
-            set
-            {
-                AssertNotFrozen();
-                _windsorContainer = value;
-            }
-        }
-
-        #endregion
-
         #region Configuration
 
         private IModuleFilter _moduleFilter;
-        private IModuleLoader _moduleLoader;
-
-
-        /// <summary>
-        /// Implementation of <see cref="IModuleLoader"/> which will be used by Kernel.
-        /// </summary>
-        /// <exception cref="InvalidOperationException">Raised when accessing frozen configuration.</exception>
-        public IModuleLoader ModuleLoader
-        {
-            get { return _moduleLoader; }
-            set
-            {
-                AssertNotFrozen();
-                _moduleLoader = value;
-            }
-        }
 
         /// <summary>
         /// Implementation of <see cref="IModuleFilter"/> which will be used by Kernel.
@@ -76,12 +36,9 @@ namespace Nomad.Core
         {
             get
             {
-                var container = new WindsorContainer();
                 return new NomadConfiguration
                            {
-                               WindsorContainer = container,
                                ModuleFilter = new CompositeModuleFilter(new IModuleFilter[] {}),
-                               ModuleLoader = new ModuleLoader(container)
                            };
             }
         }

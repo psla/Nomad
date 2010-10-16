@@ -9,7 +9,7 @@ namespace Nomad.Modules
     /// <summary>
     ///     Default implementation of <see cref="IModuleLoader"/>
     /// </summary>
-    public class ModuleLoader : IModuleLoader
+    public class ModuleLoader : MarshalByRefObject,IModuleLoader
     {
         private readonly IWindsorContainer _rootContainer;
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using Nomad.Modules;
 
 namespace Nomad.Core
@@ -8,20 +9,28 @@ namespace Nomad.Core
     /// </summary>
     public class NomadKernel
     {
-        #region AppDomain Managment
-
-        public AppDomain ModuleAppDomain
-        { 
-            get; set;
-        }
-
-        public AppDomain KernelAppDomain
+        /// <summary>
+        ///     IModuleLoader used for loading the modules by <see cref="ModuleManager"/>. 
+        /// </summary>
+        /// <remarks>
+        ///     Instantiated within constructor in ModuleAppDomain.
+        /// </remarks>
+        private IModuleLoader ModuleLoader
         {
             get; set;
         }
 
 
-        #endregion
+        public AppDomain ModuleAppDomain
+        { 
+            get; private set;
+        }
+
+        public AppDomain KernelAppDomain
+        {
+            get; private set;
+        }
+
 
         /// <summary>
         /// Initializes new instance of the <see cref="NomadKernel"/> class.
@@ -29,6 +38,15 @@ namespace Nomad.Core
         /// <param name="nomadConfiguration">
         /// <see cref="NomadConfiguration"/> used to initialize kernel modules.
         /// </param>
+        /// <remarks>
+        ///     <para>
+        ///         Initlializes both LoadedModules AppDomain with IModuleLoader implementation.
+        ///     </para>
+        ///     <para>
+        ///         Kernel, by now, uses the Nomad defualt implementation of IModuleLoader( <see cref="ModuleLoader"/> with no possiblity to changing it. 
+        ///         This constraint is made beacause of the depenendcy on the IoC container which should be used for storing information about 
+        ///     </para>
+        /// </remarks>
         public NomadKernel(NomadConfiguration nomadConfiguration)
         {
             if (nomadConfiguration == null)
@@ -39,7 +57,20 @@ namespace Nomad.Core
             nomadConfiguration.Freeze();
             KernelConfiguration = nomadConfiguration;
 
-            ModuleManager = new ModuleManager(KernelConfiguration.ModuleLoader,
+
+            KernelAppDomain = AppDomain.CurrentDomain;
+            ModuleAppDomain = AppDomain.CreateDomain("Nomad Loaded Modules");
+
+
+            var asmName = typeof (ContainerCreator).Assembly.FullName;
+            var typeName = typeof (ContainerCreator).FullName;
+
+            var moduleLoaderCreator = (ContainerCreator)
+                ModuleAppDomain.CreateInstanceAndUnwrap(asmName, typeName);
+
+            ModuleLoader = moduleLoaderCreator.CreateModuleLoaderInstance();
+
+            ModuleManager = new ModuleManager(ModuleLoader,
                                               KernelConfiguration.ModuleFilter);
         }
 
@@ -54,13 +85,25 @@ namespace Nomad.Core
 
 
         /// <summary>
-        /// Provides readonly access to initialized Kernel configuration.
+        /// Provides read only access to initialized Kernel configuration.
         /// </summary>
         public NomadConfiguration KernelConfiguration { get; private set; }
 
         /// <summary>
-        /// Provides readonly access to already initialized ModuleManager
+        /// Provides read only access to already initialized ModuleManager
         /// </summary>
         public ModuleManager ModuleManager { get; private set; }
+
+
+        /// <summary>
+        ///     Unloades the whole ModuleAppDomain.
+        /// </summary>
+        /// <remarks>
+        ///     TODO: check if the new ModuleAppDomain should be initialized with this method.
+        /// </remarks>
+        public void UnloadModules()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
