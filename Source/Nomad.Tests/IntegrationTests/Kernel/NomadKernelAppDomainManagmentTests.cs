@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Security.Policy;
 using Moq;
 using Nomad.Core;
 using Nomad.Modules;
@@ -14,18 +15,20 @@ namespace Nomad.Tests.IntegrationTests.Kernel
     /// Checks about AppDomain proper implementation within Nomad.Kernel.
     /// </summary>
     [IntegrationTests]
-    public class NomadKernelAppDomainManagmentTests
+    public class NomadKernelAppDomainManagmentTests : MarshalByRefObject
     {
         private const string AssemblyFullName = @"SimplestModulePossible1";
         private const string AssemblyFullName2 = @"SimplestModulePossible2";
 
-        private const string AssemblyPath = @"SimplestModulePossible1";
-        private const string AssemblyPath2 = @"SimplestModulePossible2";
+        private const string AssemblyPath =  @"Modules\Simple\SimplestModulePossible1.dll";
+        private const string AssemblyPath2 = @"Modules\Simple\SimplestModulePossible2.dll";
 
         private string _assemblyFullPath;
         private string _assemblyFullPath2;
         private NomadKernel _nomadKernel;
         private Mock<IModuleDiscovery> _moduleDiscoveryMock;
+        private AppDomain _testAppDomain;
+
 
         private void SetUpModuleDiscovery(IEnumerable<ModuleInfo> moduleInfos)
         {
@@ -43,12 +46,17 @@ namespace Nomad.Tests.IntegrationTests.Kernel
             _nomadKernel = new NomadKernel();
             _assemblyFullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, AssemblyPath);
             _assemblyFullPath2 = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, AssemblyPath2);
-
+            _testAppDomain = AppDomain.CreateDomain("My Domain", new Evidence(AppDomain.CurrentDomain.Evidence), AppDomain.CurrentDomain.BaseDirectory, ".", false);
+            
         }
-
 
         [Test]
         public void loading_module_into_module_appdomain()
+        {
+            _testAppDomain.DoCallBack(loading_module_into_module_appdomain_callback);
+        }
+        
+        public void loading_module_into_module_appdomain_callback()
         {
             var expectedModuleInfos = new[]
                                           {
