@@ -1,0 +1,38 @@
+\section{Wykorzystane technologie}
+\subsection{Git}
+\textbf{Git} to rozproszony system kontroli wersji. Zyskujemy dzięki niemu
+\begin{itemize}
+ \item Pełną kopię pracy na dwóch serwerach
+ \item Udogodnienia dotyczące współpracy programistów \begin{itemize}
+  \item Wersjonowanie kodu
+  \item Łatwą wymianę kodu i pracy
+  \item Możliwość rozwiązywania konfliktów
+  \item Możliwość tworzenia lokalnych kopii pracy bez dostępu do internetu
+  \end{itemize}
+ \item Kontrolę jakości kodu znajdującego się w repozytorium
+\end{itemize}
+
+\subsection{Hudson}
+Hudson to narzędzie wspomagające ciągłą integrację. W naszym przypadku, ciągła integracja oznacza przede wszystkim
+\begin{itemize}
+ \item Kontrola jakości kodu w skład której wchodzi: \begin{itemize}
+  \item Weryfikacja poprawności składniowej kodu umieszczonego w repozytorium (automatyczne uruchomienie kompilacji)
+  \item Weryfikację jakości kodu umieszczonego w repozytorium (kompletność dokumentacji, zgodność z kanonem kodowania)
+  \item Uruchomienie testów \begin{itemize}
+   \item Jednostkowych
+   \item Funkcjonalnych
+   \item Integracyjnych
+   \end{itemize}
+  \end{itemize}
+ \item Wygenerowanie dokumentacji na podstawie adnotacji w kodzie
+ \item Codzienne przygotowanie pakietu dla programistów zawierających wszystkie pliki niezbędne do rozpoczęcia współpracy z frameworkiem
+\end{itemize}
+
+\subsection{WebServices}
+Mechanizm aktualizacji modułów pozwala na pobieranie ich aktualizacji z tzw. repozytorium modułów. Żeby uprościć schemat komunikacji zdecydowaliśmy, iż repozytorium będzie obsługiwało metody webservice'owe, takie jak wskazanie listy znanych modułów (i ich wersji), wystawienie archiwum z modułem, etc. Dzięki temu unikamy parsowania plików htmlowych czy xmlowych - całość realizowana jest w ramach protokołu SOAP.
+
+\subsection{Platforma .NET}
+Całość naszej pracy wykorzystuje technologię Microsoft .NET. Oznacza to w praktyce, że żeby napisać moduły do aplikacji, można posłużyć się jednym z wielu języków wspieranych przez tę platformę, m.in. C\#, C++, F\#, J\# i wiele, wiele innych. W szczególności wykorzystywane jest technologia \textbf{WPF} -- Windows Presentation Foundation, która odpowiada za zarządzanie oknami aplikacji.
+
+Dzięki technologii WPF możemy pozwolić programiście aplikacji udostępnić fragmenty widoków bezpośrednio dla modułów. Ma na to wpływ jedna z własności tej technologii - bindingi, które umożliwiają wiązanie modelu wprost z widokiem. Model nie wie nic o swoim widoku, widok zaś posiada wiedzę na temat elementów modelu. Taki model nazywany jest w literaturze \textit{ViewModelem}.
+
