@@ -45,7 +45,7 @@ namespace Nomad.Core
             //setup.PrivateBinPathProbe = ".";
             //setup.DisallowBindingRedirects = false;
             //setup.DisallowCodeDownload = false;
-            //setup.ShadowCopyFiles = "true";
+            //setup.ShadowCopyFiles = "false";
 
             //ModuleAppDomain = AppDomain.CreateDomain(name, new Evidence(AppDomain.CurrentDomain.Evidence), setup);	
             ModuleAppDomain = AppDomain.CreateDomain("Modules AppDomain",
@@ -53,6 +53,8 @@ namespace Nomad.Core
                                                      AppDomain.CurrentDomain.BaseDirectory,
                                                      AppDomain.CurrentDomain.BaseDirectory,
                                                      true);
+            
+            //ModuleAppDomain = AppDomain.CurrentDomain;
 
             string asmName = typeof (ContainerCreator).Assembly.FullName;
             string typeName = typeof (ContainerCreator).FullName;

@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Castle.MicroKernel.Registration;
@@ -34,8 +35,14 @@ namespace Nomad.Modules
 
             try
             {
+                //hardcoding module into one place
+                var moduleName = Path.GetFileName(moduleInfo.AssemblyPath);
+                if(File.Exists(moduleName))
+                    File.Delete(moduleName);
+                File.Copy(moduleInfo.AssemblyPath,Path.Combine(AppDomain.CurrentDomain.BaseDirectory,moduleName));
+
                 //var assembly = Assembly.LoadFile(moduleInfo.AssemblyPath);
-                AssemblyName asmName = AssemblyName.GetAssemblyName(moduleInfo.AssemblyPath);
+                AssemblyName asmName = AssemblyName.GetAssemblyName(moduleName);
                 var assembly = AppDomain.CurrentDomain.Load(asmName);
                 var bootstraperTypes =
                     from type in assembly.GetTypes()

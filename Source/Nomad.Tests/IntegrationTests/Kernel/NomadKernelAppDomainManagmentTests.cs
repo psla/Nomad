@@ -91,15 +91,16 @@ namespace Nomad.Tests.IntegrationTests.Kernel
             }
 
             // check if module has been loaded in moduleAppDomain
-            //bool hasBeenLoaded = false;
+            bool hasBeenLoaded = false;
 
-            //foreach (var moduleAsm in _nomadKernel.ModuleAppDomain.GetAssemblies())
-            //{
-            //    if (AssemblyFullName.Equals(moduleAsm.FullName))
-            //        hasBeenLoaded = true;
-            //}
+            foreach (var moduleAsm in _nomadKernel.ModuleAppDomain.GetAssemblies())
+            {
+                if (AssemblyFullName.Equals(moduleAsm.GetName().Name))
+                    hasBeenLoaded = true;
+            }
 
-            //Assert.IsTrue(hasBeenLoaded, "Module has not been loaded at all");
+
+            Assert.IsTrue(hasBeenLoaded, "Module has not been loaded at all");
         }
 
 
