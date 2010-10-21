@@ -53,7 +53,7 @@ namespace Nomad.Modules
             {
                 //TODO: fix this issue
                 //_logger.WarnException("Couldn't load assembly", e);
-                //throw;
+                throw;
                 return;
             }
 

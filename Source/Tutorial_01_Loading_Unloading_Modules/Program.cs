@@ -4,6 +4,7 @@ using Nomad.Modules.Discovery;
 
 namespace Tutorial_01_LoadingModules
 {
+    
     internal class Program
     {
         private static void Main(string[] args)
@@ -12,7 +13,7 @@ namespace Tutorial_01_LoadingModules
             var kernel = new NomadKernel();
 
             // loading modules using directory module discovery pattern
-            var discovery = new DirectoryModuleDiscovery(@"..\..\Modules\Simple\");
+            var discovery = new DirectoryModuleDiscovery(@".\Modules\");
 
             // subscribing for load/unload events
             kernel.ModuleAppDomain.AssemblyLoad +=
