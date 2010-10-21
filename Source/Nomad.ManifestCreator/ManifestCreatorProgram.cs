@@ -99,7 +99,8 @@ namespace Nomad.ManifestCreator
                                };
             byte[] manifestSerialized = XmlSerializerHelper.Serialize(manifest);
 
-            string manifestPath = string.Format("{0}{1}", GetAssemblyPath(), ModuleManifest.ManifestFileNameSuffix);
+            string manifestPath = string.Format("{0}{1}", GetAssemblyPath(),
+                                                ModuleManifest.ManifestFileNameSuffix);
 
             File.WriteAllBytes(manifestPath, manifestSerialized);
             File.WriteAllBytes(manifestPath + ModuleManifest.ManifestSignatureFileNameSuffix,

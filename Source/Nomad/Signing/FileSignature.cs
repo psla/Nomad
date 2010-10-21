@@ -11,7 +11,7 @@ namespace Nomad.Signing
         /// <summary>
         /// Name of Issuer
         /// </summary>
-        public string IssuerName { get; set;}
+        public string IssuerName { get; set; }
 
         /// <summary>
         /// Signature of file

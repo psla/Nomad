@@ -154,7 +154,7 @@ namespace Nomad.Tests.FunctionalTests.EventAggregation
             public const int ListenerThreadsNumber = 100; //this value may be any number
 
             private const int publisher_threads = 1;
-                              //this value cannot be changed without changing in test
+            //this value cannot be changed without changing in test
 
             private readonly IEventAggregator _eventAggregator;
 
@@ -177,7 +177,8 @@ namespace Nomad.Tests.FunctionalTests.EventAggregation
             /// <summary>
             /// Events invoked at the end of each listener thread. When all set, then all threads finished their operations.
             /// </summary>
-            public ManualResetEvent[] EndSynchronization = new ManualResetEvent[ListenerThreadsNumber];
+            public ManualResetEvent[] EndSynchronization =
+                new ManualResetEvent[ListenerThreadsNumber];
 
 
             public ThreadingTestHelper(IEventAggregator eventAggregator)

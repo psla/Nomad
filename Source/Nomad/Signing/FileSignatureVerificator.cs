@@ -28,8 +28,10 @@ namespace Nomad.Signing
     /// </summary>
     public class FileSignatureVerificator : IFileSignatureVerificator
     {
-        private readonly IDictionary<string, IssuerInformation> _issuers = new Dictionary<string, IssuerInformation>();
-        
+        private readonly IDictionary<string, IssuerInformation> _issuers =
+            new Dictionary<string, IssuerInformation>();
+
+
         /// <summary>
         /// Trust specified issuer
         /// </summary>
@@ -38,6 +40,7 @@ namespace Nomad.Signing
         {
             _issuers.Add(issuerInformation.IssuerName, issuerInformation);
         }
+
 
         /// <summary>
         /// Check if specified file is trusted
@@ -48,7 +51,7 @@ namespace Nomad.Signing
         public bool VerifyFile(File file, FileSignature signature)
         {
             IssuerInformation information = null;
-            if(_issuers.TryGetValue(signature.IssuerName, out information))
+            if (_issuers.TryGetValue(signature.IssuerName, out information))
             {
                 return information.IssuerAlgorithm.Verify(file.Data, signature.Signature)
                        && file.FileName == signature.FileName;

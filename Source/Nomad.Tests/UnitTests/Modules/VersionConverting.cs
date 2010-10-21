@@ -17,16 +17,22 @@ namespace Nomad.Tests.UnitTests.Modules
             Assert.AreEqual(78, version.Revision, "Major number is not correctly parsed");
         }
 
+
         [Test]
         public void creates_valid_version_from_system_version()
         {
             System.Version version = new System.Version(78, 56, 34, 12);
             Version serializableVersion = new Version(version);
-            Assert.AreEqual(version.Major, serializableVersion.Major, "Major number was not correctly parsed");
-            Assert.AreEqual(version.Minor, serializableVersion.Minor, "Minor number was not correctly parsed");
-            Assert.AreEqual(version.Build, serializableVersion.Build, "Build number was not correctly parsed");
-            Assert.AreEqual(version.Revision, serializableVersion.Revision, "Revision number was not correctly parsed");
+            Assert.AreEqual(version.Major, serializableVersion.Major,
+                            "Major number was not correctly parsed");
+            Assert.AreEqual(version.Minor, serializableVersion.Minor,
+                            "Minor number was not correctly parsed");
+            Assert.AreEqual(version.Build, serializableVersion.Build,
+                            "Build number was not correctly parsed");
+            Assert.AreEqual(version.Revision, serializableVersion.Revision,
+                            "Revision number was not correctly parsed");
         }
+
 
         [Test]
         public void returns_valid_system_version()

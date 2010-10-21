@@ -16,9 +16,9 @@ namespace Nomad.Modules.Manifest
         ///</summary>
         public SignedFile()
         {
-
         }
-        
+
+
         /// <summary>
         /// Relative path to file
         /// </summary>

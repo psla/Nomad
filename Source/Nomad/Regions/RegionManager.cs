@@ -42,7 +42,7 @@ namespace Nomad.Regions
         public IRegion AttachRegion(string regionName, DependencyObject view)
         {
             if (view == null) throw new ArgumentNullException("view");
-            
+
             ValidateRegionName(regionName);
             if (ContainsRegion(regionName))
             {

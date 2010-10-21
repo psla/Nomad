@@ -13,18 +13,18 @@ namespace Nomad.Tests.IntegrationTests.Modules
         [Test]
         public void discovers_all_modules_from_given_directory_and_ignores_other_files()
         {
-            var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"IntegrationTests\DirectoryModuleDiscovery\");
+            var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+                                    @"IntegrationTests\DirectoryModuleDiscovery\");
             var expectedModules = new[]
                                       {
                                           new ModuleInfo(Path.Combine(path, "a.dll")),
                                           new ModuleInfo(Path.Combine(path, "b.dll"))
                                       };
 
-            
             var discovery = new Nomad.Modules.DirectoryModuleDiscovery(path);
 
             Assert.That(discovery.GetModules().ToArray(), Is.EquivalentTo(expectedModules),
-                "Discovered modules differ from expected");
+                        "Discovered modules differ from expected");
         }
     }
 }

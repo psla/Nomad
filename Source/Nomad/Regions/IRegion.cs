@@ -43,6 +43,7 @@ namespace Nomad.Regions
         /// </exception>
         void AddView(object view);
 
+
         /// <summary>
         ///     Marks <paramref name="view"/> as active.
         /// </summary>
@@ -63,6 +64,7 @@ namespace Nomad.Regions
         /// <param name="view">View to be activated</param>
         /// <exception cref="ArgumentNullException">When <paramref name="view"/> is null</exception>
         void Activate(object view);
+
 
         /// <summary>
         ///     Marks <paramref name="view"/> as not active

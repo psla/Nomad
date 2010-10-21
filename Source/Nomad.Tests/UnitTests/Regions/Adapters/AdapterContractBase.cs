@@ -6,9 +6,10 @@ using NUnit.Framework;
 namespace Nomad.Tests.UnitTests.Regions.Adapters
 {
     [TestFixture]
-    public abstract class AdapterContractBase<T> where T: IRegionAdapter
+    public abstract class AdapterContractBase<T> where T : IRegionAdapter
     {
         protected T Adapter;
+
 
         [SetUp]
         public void SetUp()
@@ -18,6 +19,7 @@ namespace Nomad.Tests.UnitTests.Regions.Adapters
 
 
         protected abstract T GetAdapter();
+
 
         protected virtual DependencyObject GetUnsupportedView()
         {
@@ -40,10 +42,11 @@ namespace Nomad.Tests.UnitTests.Regions.Adapters
                 );
         }
 
+
         [Test]
         public void get_type_should_not_or_throw_nor_return_null()
         {
-            Type type = null;  
+            Type type = null;
             Assert.DoesNotThrow(() => type = Adapter.SupportedType);
             Assert.IsNotNull(type);
         }

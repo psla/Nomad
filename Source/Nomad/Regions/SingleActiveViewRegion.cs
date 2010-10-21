@@ -60,7 +60,7 @@ namespace Nomad.Regions
         public void Activate(object view)
         {
             if (view == null) throw new ArgumentNullException("view");
-            if(_activeViews.Count > 0)
+            if (_activeViews.Count > 0)
                 _activeViews.RemoveAt(0);
             _activeViews.Add(view);
         }

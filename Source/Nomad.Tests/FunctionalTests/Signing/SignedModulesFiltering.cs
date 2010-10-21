@@ -36,8 +36,9 @@ namespace Nomad.Tests.FunctionalTests.Signing
             _publicKeyFileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
                                               @"Modules\public-key.xml");
             _issuerName = "test-issuer";
-            KeysGeneratorProgram.Main(new[] { _keyFileName, _publicKeyFileName });
+            KeysGeneratorProgram.Main(new[] {_keyFileName, _publicKeyFileName});
         }
+
 
         [SetUp]
         public void generate_key_manifest()
@@ -82,22 +83,28 @@ namespace Nomad.Tests.FunctionalTests.Signing
         [Test]
         public void filter_accepts_when_structure_and_signatures_are_ok()
         {
-            Assert.IsTrue(_filter.Matches(new ModuleInfo(_modulePath)), "Expecting to succeed, when all requirements are ok");
+            Assert.IsTrue(_filter.Matches(new ModuleInfo(_modulePath)),
+                          "Expecting to succeed, when all requirements are ok");
         }
+
 
         [Test]
         public void filter_fails_when_asc_file_missing()
         {
             File.Delete(_manifestSignature);
-            Assert.IsFalse(_filter.Matches(new ModuleInfo(_modulePath)), "Expecting to fail if no manifest signature file");
+            Assert.IsFalse(_filter.Matches(new ModuleInfo(_modulePath)),
+                           "Expecting to fail if no manifest signature file");
         }
+
 
         [Test]
         public void filter_fails_when_no_manifest()
         {
             File.Delete(_manifestPath);
-            Assert.IsFalse(_filter.Matches(new ModuleInfo(_modulePath)), "Expecting to fail if no manifest signature file");
+            Assert.IsFalse(_filter.Matches(new ModuleInfo(_modulePath)),
+                           "Expecting to fail if no manifest signature file");
         }
+
 
         [Test]
         public void filter_fails_when_file_content_changed()
@@ -105,7 +112,8 @@ namespace Nomad.Tests.FunctionalTests.Signing
             var dll = File.ReadAllBytes(_modulePath);
             dll[0] = (byte) ((dll[0] + 15) % 256);
             File.WriteAllBytes(_modulePath, dll);
-            Assert.IsFalse(_filter.Matches(new ModuleInfo(_modulePath)), "Expecting to fail when assembly dll has changed");
+            Assert.IsFalse(_filter.Matches(new ModuleInfo(_modulePath)),
+                           "Expecting to fail when assembly dll has changed");
         }
     }
 }

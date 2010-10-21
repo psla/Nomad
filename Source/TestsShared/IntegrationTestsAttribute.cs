@@ -4,6 +4,5 @@ namespace TestsShared
 {
     public class IntegrationTestsAttribute : CategoryAttribute
     {
-        
     }
 }

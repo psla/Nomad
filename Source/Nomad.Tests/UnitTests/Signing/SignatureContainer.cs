@@ -25,6 +25,7 @@ namespace Nomad.Tests.UnitTests.Signing
                            "Incorrect issuer returned");
         }
 
+
         [Test]
         public void returns_correct_issuer_when_two_registered()
         {
@@ -40,13 +41,15 @@ namespace Nomad.Tests.UnitTests.Signing
                            "Incorrect issuer returned");
         }
 
+
         [Test]
         public void returns_issuer_with_null_signature_algorithm_if_issuer_not_found()
         {
             var issuerName = "notExistingIssuer";
             var issuer = _signatureProvider.GetIssuer(issuerName);
             Assert.AreEqual(issuerName, issuer.IssuerName, "Incorrect issuer name in returned class");
-            Assert.IsInstanceOf(typeof(NullSignatureAlgorithm), issuer.IssuerAlgorithm, "Incorrect issuer algorithm");
+            Assert.IsInstanceOf(typeof (NullSignatureAlgorithm), issuer.IssuerAlgorithm,
+                                "Incorrect issuer algorithm");
         }
     }
 }

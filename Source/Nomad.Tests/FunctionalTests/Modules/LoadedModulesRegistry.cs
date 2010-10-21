@@ -5,12 +5,14 @@ namespace Nomad.Tests.FunctionalTests.Modules
 {
     public static class LoadedModulesRegistry
     {
-        private readonly static List<Type> _types = new List<Type>();
+        private static readonly List<Type> _types = new List<Type>();
+
 
         public static void Register(Type bootstraperType)
         {
             _types.Add(bootstraperType);
         }
+
 
         public static IList<Type> GetRegisteredModules()
         {

@@ -27,6 +27,7 @@ namespace Nomad.Modules.Manifest
         ///</summary>
         public const string ManifestSignatureFileNameSuffix = ".asc";
 
+
         ///<summary>
         /// Initializes empty module manifest.
         ///</summary>

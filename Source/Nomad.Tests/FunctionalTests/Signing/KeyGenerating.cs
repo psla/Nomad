@@ -17,12 +17,14 @@ namespace Nomad.Tests.FunctionalTests.Signing
         public void setup()
         {
             _keyFileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-                                           @"FunctionalTests\Signing\KeyDir\key.xml");
+                                        @"FunctionalTests\Signing\KeyDir\key.xml");
             _publicKeyFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-                                                         @"FunctionalTests\Signing\KeyDir\public_key.xml");
-            if(File.Exists(_keyFileName))
+                                          @"FunctionalTests\Signing\KeyDir\public_key.xml");
+            if (File.Exists(_keyFileName))
                 File.Delete(_keyFileName);
         }
+
+
         [Test]
         public void generates_non_empty_key_file()
         {
@@ -33,6 +35,7 @@ namespace Nomad.Tests.FunctionalTests.Signing
                 );
             File.Exists(_keyFileName);
         }
+
 
         [Test]
         public void generates_public_key_file_if_asked()

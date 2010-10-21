@@ -32,7 +32,7 @@ namespace Nomad.Tests.UnitTests.Signing
 
             #endregion
         }
-        
+
         private FileSignatureVerificator _fileSignatureVerificator;
 
 
@@ -45,38 +45,64 @@ namespace Nomad.Tests.UnitTests.Signing
             _fileSignatureVerificator.AddTrustedIssuer(issuerInformation);
         }
 
+
         [Test]
         public void verification_against_trusted_issuer()
         {
             var signature = new FileSignature()
-                                { FileName = "Nomad.dll", IssuerName = "Nomad", Signature = new byte[] {65, 64, 63, 62, 61}};
+                                {
+                                    FileName = "Nomad.dll",
+                                    IssuerName = "Nomad",
+                                    Signature = new byte[] {65, 64, 63, 62, 61}
+                                };
             var file = new File()
                            {FileName = "Nomad.dll", Data = new byte[] {65, 64, 63, 62, 61, 60}};
             Assert.IsTrue(_fileSignatureVerificator.VerifyFile(file, signature));
         }
 
+
         [Test]
         public void verification_against_untrusted_issuer()
         {
-            var signature = new FileSignature() { FileName = "Nomad.dll", IssuerName = "Nomad2", Signature = new byte[] { 65, 64, 63, 62, 61 } };
-            var file = new File() { FileName = "Nomad.dll", Data = new byte[] { 65, 64, 63, 62, 61, 60 } };
+            var signature = new FileSignature()
+                                {
+                                    FileName = "Nomad.dll",
+                                    IssuerName = "Nomad2",
+                                    Signature = new byte[] {65, 64, 63, 62, 61}
+                                };
+            var file = new File()
+                           {FileName = "Nomad.dll", Data = new byte[] {65, 64, 63, 62, 61, 60}};
 
             Assert.IsFalse(_fileSignatureVerificator.VerifyFile(file, signature));
         }
+
 
         [Test]
         public void verification_against_trusted_issuer_with_incorrect_file()
         {
-            var signature = new FileSignature() { FileName = "Nomad.dll", IssuerName = "Nomad", Signature = new byte[] { 65, 64, 63, 62, 61 } };
-            var file = new File() { FileName = "Nomad.dll", Data = new byte[] { 65, 64, 63, 62, 60, 60 } };
+            var signature = new FileSignature()
+                                {
+                                    FileName = "Nomad.dll",
+                                    IssuerName = "Nomad",
+                                    Signature = new byte[] {65, 64, 63, 62, 61}
+                                };
+            var file = new File()
+                           {FileName = "Nomad.dll", Data = new byte[] {65, 64, 63, 62, 60, 60}};
             Assert.IsFalse(_fileSignatureVerificator.VerifyFile(file, signature));
         }
+
 
         [Test]
         public void verification_against_trusted_issuer_with_incorrect_filename()
         {
-            var signature = new FileSignature() { FileName = "Nomad2.dll", IssuerName = "Nomad", Signature = new byte[] { 65, 64, 63, 62, 61 } };
-            var file = new File() { FileName = "Nomad.dll", Data = new byte[] { 65, 64, 63, 62, 61, 60 } };
+            var signature = new FileSignature()
+                                {
+                                    FileName = "Nomad2.dll",
+                                    IssuerName = "Nomad",
+                                    Signature = new byte[] {65, 64, 63, 62, 61}
+                                };
+            var file = new File()
+                           {FileName = "Nomad.dll", Data = new byte[] {65, 64, 63, 62, 61, 60}};
             Assert.IsFalse(_fileSignatureVerificator.VerifyFile(file, signature));
         }
     }

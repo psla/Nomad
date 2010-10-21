@@ -7,6 +7,5 @@ namespace Nomad.Regions
     /// </summary>
     public class ViewCollection : ObservableCollection<object>, IViewCollection
     {
-
     }
 }

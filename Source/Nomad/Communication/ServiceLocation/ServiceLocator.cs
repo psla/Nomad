@@ -34,11 +34,11 @@ namespace Nomad.Communication.ServiceLocation
         /// <exception cref="ArgumentNullException">Raised during attempt to pass null as service implantation</exception>
         public void Register<T>(T serviceProvider)
         {
-            if(serviceProvider == null)
+            if (serviceProvider == null)
                 throw new ArgumentNullException("serviceProvider");
 
             if (_serviceContainer.Kernel.HasComponent(typeof (T)))
-                throw new DuplicateServiceException(typeof(T),"Service already registered");
+                throw new DuplicateServiceException(typeof (T), "Service already registered");
 
             _serviceContainer.Register(
                 Component.For<T>().Instance(serviceProvider)
@@ -60,7 +60,7 @@ namespace Nomad.Communication.ServiceLocation
             }
             catch (ComponentNotFoundException e)
             {
-                throw new ServiceNotFoundException(typeof(T),"Service not found", e);
+                throw new ServiceNotFoundException(typeof (T), "Service not found", e);
             }
         }
 

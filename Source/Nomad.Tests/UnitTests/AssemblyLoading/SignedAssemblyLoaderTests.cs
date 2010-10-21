@@ -19,8 +19,10 @@ namespace Nomad.Tests.UnitTests.AssemblyLoading
         public void SetUp()
         {
             _fileSignatureVerificator = new FileSignatureVerificator();
-            _assemblyLoader = new SignedAssemblyLoader(new Mock<IAssemblyLoader>().Object, _fileSignatureVerificator);
+            _assemblyLoader = new SignedAssemblyLoader(new Mock<IAssemblyLoader>().Object,
+                                                       _fileSignatureVerificator);
         }
+
 
         [Test]
         public void throws_exception_when_none_file_exists()

@@ -75,7 +75,7 @@ namespace Nomad.Communication.EventAggregation
             {
                 if (_dictionary.TryGetValue(typeof (T), out actions))
                 {
-                    if(actions != null)
+                    if (actions != null)
                         actions.DynamicInvoke(message);
                 }
             }

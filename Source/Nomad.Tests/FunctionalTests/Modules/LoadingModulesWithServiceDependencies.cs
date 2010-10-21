@@ -16,7 +16,8 @@ namespace Nomad.Tests.FunctionalTests.Modules
         public void module_loader_discovers_and_loads_all_simple_modules()
         {
             LoadModulesFromDirectory(@"Modules\WithDependencies\");
-            AssertModulesLoadedAreEqualTo("ModuleWithConstructorDependency", "ModuleWithPropertyDependency");
+            AssertModulesLoadedAreEqualTo("ModuleWithConstructorDependency",
+                                          "ModuleWithPropertyDependency");
         }
     }
 }

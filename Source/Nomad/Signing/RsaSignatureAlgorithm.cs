@@ -9,6 +9,7 @@ namespace Nomad.Signing
     {
         private readonly RSACryptoServiceProvider _crypto;
 
+
         /// <summary>
         /// 
         /// </summary>
@@ -38,6 +39,7 @@ namespace Nomad.Signing
         {
             return _crypto.SignData(data, new SHA1CryptoServiceProvider());
         }
+
 
         /// <summary>
         /// Verifies the data signatures

@@ -16,7 +16,7 @@ namespace Nomad.KeysGenerator
                 keyGenerator.GenerateSignature();
                 Console.WriteLine("Successfuly generated signature file");
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine("KeysGenerator.exe path_to_non_existing_xml");
                 Console.WriteLine(e.Message);

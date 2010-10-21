@@ -29,11 +29,13 @@ namespace Nomad.Tests.FunctionalTests.Modules
             _manager = new ModuleManager(new ModuleLoader(Container), new CompositeModuleFilter());
         }
 
+
         protected void LoadModulesFromDirectory(string moduleDirectory)
         {
             var fullDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, moduleDirectory);
             _manager.LoadModules(new DirectoryModuleDiscovery(fullDirectory));
         }
+
 
         protected void AssertModulesLoadedAreEqualTo(params string[] expectedModuleNames)
         {

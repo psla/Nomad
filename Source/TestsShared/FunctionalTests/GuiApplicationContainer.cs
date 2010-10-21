@@ -63,6 +63,7 @@ namespace TestsShared.FunctionalTests
                 throw new InvalidStateException("whiteWindow cannot be null");
         }
 
+
         /// <summary>
         ///     Shutdowns test application. 
         /// </summary>
@@ -122,7 +123,6 @@ namespace TestsShared.FunctionalTests
     {
         public InvalidStateException(string message) : base(message)
         {
-            
         }
     }
 }

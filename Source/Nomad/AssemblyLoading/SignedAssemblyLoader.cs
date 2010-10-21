@@ -15,6 +15,7 @@ namespace Nomad.AssemblyLoading
         private readonly IFileSignatureVerificator _fileVerificator;
         private readonly IAssemblyLoader _properLoader;
 
+
         /// <summary>
         /// Creates loader which verifies 
         /// </summary>
@@ -38,7 +39,7 @@ namespace Nomad.AssemblyLoading
         {
             string signatureName = string.Format("{0}.sig", name);
             FileSignature fileSignature = null;
-            
+
             if (!System.IO.File.Exists(name))
                 throw new InvalidCredentialException(string.Format("Missing assembly file for {0}",
                                                                    name));
@@ -62,11 +63,12 @@ namespace Nomad.AssemblyLoading
                 var exception = new InvalidCredentialException("Invalid signature file", e);
             }
 
-            if(_fileVerificator.VerifyFile(file, fileSignature))
+            if (_fileVerificator.VerifyFile(file, fileSignature))
                 _properLoader.LoadAssembly(name);
             else
             {
-                throw new InvalidCredentialException(string.Format("Invalid signature for assembly {0}", name));
+                throw new InvalidCredentialException(
+                    string.Format("Invalid signature for assembly {0}", name));
             }
         }
 

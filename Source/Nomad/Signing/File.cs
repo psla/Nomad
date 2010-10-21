@@ -14,6 +14,7 @@ namespace Nomad.Signing
         {
         }
 
+
         /// <summary>
         /// Creates file structure filled with data from according filepath
         /// </summary>
@@ -23,6 +24,7 @@ namespace Nomad.Signing
             Data = System.IO.File.ReadAllBytes(filePath);
             FileName = Path.GetFileName(filePath);
         }
+
 
         /// <summary>
         /// Filename corresponding to <see cref="Data"/>

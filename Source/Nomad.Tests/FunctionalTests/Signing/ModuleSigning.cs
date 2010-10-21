@@ -10,7 +10,6 @@ using System.Linq;
 namespace Nomad.Tests.FunctionalTests.Signing
 {
     [FunctionalTests]
-    
     public class ModuleSigning
     {
         private string _keyFileName;
@@ -25,9 +24,9 @@ namespace Nomad.Tests.FunctionalTests.Signing
         public void setup()
         {
             _keyFileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-                               @"FunctionalTests\Signing\KeyDir\manifest-key.xml");
+                                        @"FunctionalTests\Signing\KeyDir\manifest-key.xml");
             _moduleDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-                               @"FunctionalTests\Signing\Module");
+                                            @"FunctionalTests\Signing\Module");
             _assemblyName = "sample_module.dll";
             _assemblyPath = Path.Combine(_moduleDirectory, _assemblyName);
             _manifestPath = _assemblyPath + ModuleManifest.ManifestFileNameSuffix;
@@ -45,26 +44,32 @@ namespace Nomad.Tests.FunctionalTests.Signing
                                                             });
         }
 
+
         [Test]
         public void manifest_is_created()
         {
             Assert.IsTrue(File.Exists(_manifestPath), "Manifest does not exist: {0}", _manifestPath);
         }
 
+
         [Test]
         public void signature_for_manifest_is_created()
         {
             var manifestSignature = _manifestPath + ModuleManifest.ManifestSignatureFileNameSuffix;
-            Assert.IsTrue(File.Exists(manifestSignature), "Manifest signature does not exist: {0}", manifestSignature);
+            Assert.IsTrue(File.Exists(manifestSignature), "Manifest signature does not exist: {0}",
+                          manifestSignature);
         }
+
 
         [Test]
         public void is_signature_correct_xml()
         {
             Assert.DoesNotThrow(
-                () => XmlSerializerHelper.Deserialize<ModuleManifest>(File.ReadAllBytes(_manifestPath)),
+                () =>
+                XmlSerializerHelper.Deserialize<ModuleManifest>(File.ReadAllBytes(_manifestPath)),
                 "Incorrect signature file");
         }
+
 
         [Test]
         public void is_signature_module_path_relative()

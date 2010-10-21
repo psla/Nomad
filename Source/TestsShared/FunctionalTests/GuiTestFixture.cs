@@ -3,7 +3,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
 using NUnit.Framework;
-using WhiteWindow=White.Core.UIItems.WindowItems.Window;
+using WhiteWindow = White.Core.UIItems.WindowItems.Window;
 
 namespace TestsShared.FunctionalTests
 {
@@ -30,7 +30,10 @@ namespace TestsShared.FunctionalTests
         /// <summary>
         ///     Gets dispatcher used by application
         /// </summary>
-        public Dispatcher Dispatcher { get { return Window.Dispatcher; } }
+        public Dispatcher Dispatcher
+        {
+            get { return Window.Dispatcher; }
+        }
 
 
         /// <summary>

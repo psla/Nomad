@@ -12,6 +12,15 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Functional Data", "Functional Data", "{6B0366F8-104B-4B8B-A38C-F03BC6504B90}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{A3991F62-5131-4901-AE6D-4F027BD6EFF0}"
+	ProjectSection(SolutionItems) = preProject
+		Nomad.Tests\FunctionalTests\Data\EmptyModule.cs = Nomad.Tests\FunctionalTests\Data\EmptyModule.cs
+		Nomad.Tests\FunctionalTests\Data\ModuleWithConstructorDependency.cs = Nomad.Tests\FunctionalTests\Data\ModuleWithConstructorDependency.cs
+		Nomad.Tests\FunctionalTests\Data\ModuleWithPropertyDependency.cs = Nomad.Tests\FunctionalTests\Data\ModuleWithPropertyDependency.cs
+		Nomad.Tests\FunctionalTests\Data\RegistringServiceModule.cs = Nomad.Tests\FunctionalTests\Data\RegistringServiceModule.cs
+		Nomad.Tests\FunctionalTests\Data\ResolvingServiceModule.cs = Nomad.Tests\FunctionalTests\Data\ResolvingServiceModule.cs
+		Nomad.Tests\FunctionalTests\Data\SimplestModulePossible1.cs = Nomad.Tests\FunctionalTests\Data\SimplestModulePossible1.cs
+		Nomad.Tests\FunctionalTests\Data\SimplestModulePossible2.cs = Nomad.Tests\FunctionalTests\Data\SimplestModulePossible2.cs
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nomad.KeysGenerator", "Nomad.KeysGenerator\Nomad.KeysGenerator.csproj", "{1F6C3A60-1A3C-4627-A9F3-B71897468E21}"
 EndProject

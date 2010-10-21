@@ -40,7 +40,6 @@ namespace Nomad.Tests.FunctionalTests.ServiceLocation
             Assert.AreEqual(0, ServiceRegistry.GetRegisteredServiceCounter()[typeof (ITestService)],
                             "Method in service has already been used");
 
-
             LoadModulesFromDirectory(PathToResolving);
 
             Assert.AreEqual(1, ServiceRegistry.GetRegisteredServiceCounter()[typeof (ITestService)],

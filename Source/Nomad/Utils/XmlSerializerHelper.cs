@@ -24,6 +24,7 @@ namespace Nomad.Utils
             }
         }
 
+
         /// <summary>
         /// Tries to deserialize object of type <see cref="T"/> from provided array.
         /// </summary>

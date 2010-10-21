@@ -8,6 +8,5 @@ namespace Nomad.Regions
     /// </summary>
     public interface IViewCollection : IList<object>, INotifyCollectionChanged
     {
-        
     }
 }

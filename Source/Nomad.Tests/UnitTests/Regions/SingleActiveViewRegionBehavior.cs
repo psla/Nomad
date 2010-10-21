@@ -15,11 +15,13 @@ namespace Nomad.Tests.UnitTests.Regions
             _region = new SingleActiveViewRegion();
         }
 
+
         [Test]
         public void new_region_has_no_views()
         {
             Assert.IsEmpty((ICollection) _region.Views);
         }
+
 
         [Test]
         public void can_add_view()
