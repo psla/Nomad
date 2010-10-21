@@ -6,6 +6,7 @@ using System.Security.Policy;
 using Moq;
 using Nomad.Core;
 using Nomad.Modules;
+using Nomad.Modules.Discovery;
 using NUnit.Framework;
 using TestsShared;
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Security.Policy;
 using Nomad.Modules;
+using Nomad.Modules.Discovery;
 
 namespace Nomad.Core
 {

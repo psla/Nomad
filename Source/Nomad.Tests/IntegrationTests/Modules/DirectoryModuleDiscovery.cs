@@ -21,7 +21,7 @@ namespace Nomad.Tests.IntegrationTests.Modules
                                           new ModuleInfo(Path.Combine(path, "b.dll"))
                                       };
 
-            var discovery = new Nomad.Modules.DirectoryModuleDiscovery(path);
+            var discovery = new Nomad.Modules.Discovery.DirectoryModuleDiscovery(path);
 
             Assert.That(discovery.GetModules().ToArray(), Is.EquivalentTo(expectedModules),
                         "Discovered modules differ from expected");

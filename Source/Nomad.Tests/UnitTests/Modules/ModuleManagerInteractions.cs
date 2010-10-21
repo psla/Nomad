@@ -1,5 +1,7 @@
 using Moq;
 using Nomad.Modules;
+using Nomad.Modules.Discovery;
+using Nomad.Modules.Filters;
 using NUnit.Framework;
 
 namespace Nomad.Tests.UnitTests.Modules

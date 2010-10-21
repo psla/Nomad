@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Nomad.Utils;
+using Version = Nomad.Utils.Version;
 
 namespace Nomad.Modules.Manifest
 {

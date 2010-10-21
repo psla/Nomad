@@ -1,4 +1,5 @@
 ﻿using Nomad.Modules.Manifest;
+using Nomad.Utils;
 using NUnit.Framework;
 using TestsShared;
 

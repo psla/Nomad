@@ -1,5 +1,6 @@
 ﻿using System;
 using Nomad.Modules;
+using Nomad.Modules.Filters;
 
 namespace Nomad.Core
 {

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Nomad.Modules.Discovery;
+using Nomad.Modules.Filters;
 
 namespace Nomad.Modules
 {

@@ -4,6 +4,7 @@ using Moq;
 using Nomad.KeysGenerator;
 using Nomad.ManifestCreator;
 using Nomad.Modules;
+using Nomad.Modules.Filters;
 using Nomad.Modules.Manifest;
 using Nomad.Signing;
 using NUnit.Framework;

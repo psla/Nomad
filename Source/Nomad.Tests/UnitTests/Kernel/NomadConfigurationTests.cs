@@ -1,6 +1,7 @@
 using System;
 using Moq;
 using Nomad.Modules;
+using Nomad.Modules.Filters;
 using NUnit.Framework;
 using TestsShared;
 

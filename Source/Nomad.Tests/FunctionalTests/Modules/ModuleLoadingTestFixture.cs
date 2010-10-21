@@ -4,6 +4,8 @@ using System.Linq;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using Nomad.Modules;
+using Nomad.Modules.Discovery;
+using Nomad.Modules.Filters;
 using NUnit.Framework;
 
 namespace Nomad.Tests.FunctionalTests.Modules

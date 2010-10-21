@@ -1,4 +1,5 @@
 ﻿using System;
+using Version = Nomad.Utils.Version;
 
 namespace Nomad.Modules.Manifest
 {
