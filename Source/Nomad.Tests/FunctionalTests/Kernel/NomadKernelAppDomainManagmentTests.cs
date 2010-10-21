@@ -89,18 +89,6 @@ namespace Nomad.Tests.FunctionalTests.Kernel
                 Assert.AreNotEqual(AssemblyFullName, kernelAsm.FullName,
                                    "The module assembly has been loaded into KernelAppDomain.");
             }
-
-            // check if module has been loaded in moduleAppDomain
-            bool hasBeenLoaded = false;
-
-            foreach (var moduleAsm in _nomadKernel.ModuleAppDomain.GetAssemblies())
-            {
-                if (AssemblyFullName.Equals(moduleAsm.GetName().Name))
-                    hasBeenLoaded = true;
-            }
-
-
-            Assert.IsTrue(hasBeenLoaded, "Module has not been loaded at all");
         }
 
 
