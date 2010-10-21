@@ -35,9 +35,8 @@ namespace Nomad.Modules
 
             try
             {
-                //var assembly = Assembly.LoadFile(moduleInfo.AssemblyPath);
-                AssemblyName asmName = AssemblyName.GetAssemblyName(moduleInfo.AssemblyPath);
-                var assembly = AppDomain.CurrentDomain.Load(asmName);
+                var assembly = Assembly.LoadFile(moduleInfo.AssemblyPath);
+
                 var bootstraperTypes =
                     from type in assembly.GetTypes()
                     where type.GetInterfaces().Contains(typeof (IModuleBootstraper))
