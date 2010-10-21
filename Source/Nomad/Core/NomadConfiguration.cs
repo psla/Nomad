@@ -38,6 +38,7 @@ namespace Nomad.Core
             {
                 return new NomadConfiguration
                            {
+                               //TODO: Review the idea of default implementation.
                                ModuleFilter = new CompositeModuleFilter(new IModuleFilter[] {}),
                            };
             }

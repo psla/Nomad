@@ -50,7 +50,6 @@ namespace Nomad.Communication.EventAggregation
         /// <exception cref="ArgumentException"></exception>
         public void Unsubsribe<T>(Action<T> action) where T : class
         {
-            Delegate actions = null;
             var type = typeof (T);
             //two parts of methods prevents stopping another thread for waiting to the end of the lock
             lock (_dictionary)

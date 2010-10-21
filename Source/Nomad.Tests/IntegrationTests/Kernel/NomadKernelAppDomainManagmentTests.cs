@@ -76,7 +76,7 @@ namespace Nomad.Tests.IntegrationTests.Kernel
                                                       FullName,
                                                   "The module has not been loaded into Module AppDomain");
 
-            _nomadKernel.ModuleManager.LoadModules(_moduleDiscoveryMock.Object);
+            _nomadKernel.LoadModules(_moduleDiscoveryMock.Object);
 
             //Check for not loading asm into kernel appDomain
             foreach (Assembly kernelAsm in _nomadKernel.KernelAppDomain.GetAssemblies())
@@ -127,19 +127,15 @@ namespace Nomad.Tests.IntegrationTests.Kernel
 
             SetUpModuleDiscovery(expectedModuleInfos);
 
-            _nomadKernel.ModuleAppDomain.AssemblyLoad += (sender, args) =>
-                                                             {
-                                                                 //Check for loading modules
-                                                                 Assert.That(
-                                                                     args.LoadedAssembly.FullName.
-                                                                         Equals(AssemblyFullName)
-                                                                     ||
-                                                                     args.LoadedAssembly.FullName.
-                                                                         Equals(AssemblyFullName2)
-                                                                     );
-                                                             };
+            _nomadKernel.ModuleAppDomain.AssemblyLoad += (sender, args) => Assert.That(
+                args.LoadedAssembly.FullName.
+                    Equals(AssemblyFullName)
+                ||
+                args.LoadedAssembly.FullName.
+                    Equals(AssemblyFullName2)
+                                                                               );
 
-            _nomadKernel.ModuleManager.LoadModules(_moduleDiscoveryMock.Object);
+            _nomadKernel.LoadModules(_moduleDiscoveryMock.Object);
 
             //Check for not loading asm into kernel appDomain);););
             foreach (
@@ -173,7 +169,7 @@ namespace Nomad.Tests.IntegrationTests.Kernel
 
             SetUpModuleDiscovery(expectedModuleInfos);
 
-            _nomadKernel.ModuleManager.LoadModules(_moduleDiscoveryMock.Object);
+            _nomadKernel.LoadModules(_moduleDiscoveryMock.Object);
 
             _nomadKernel.UnloadModules();
 

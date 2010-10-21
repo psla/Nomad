@@ -26,9 +26,9 @@ namespace Nomad.Utils
 
 
         /// <summary>
-        /// Tries to deserialize object of type <see cref="T"/> from provided array.
+        /// Tries to deserialize object of type <typeparamref name="T"/> from provided array.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">Type of object to be deserialized</typeparam>
         /// <param name="serialized"></param>
         /// <returns>null if deserialization succeeds, but casting fails</returns>
         /// <exception>when backing deserializer fails</exception>

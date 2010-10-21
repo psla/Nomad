@@ -27,7 +27,7 @@ namespace Nomad.Communication.EventAggregation
 
 
         /// <summary>
-        /// Notifies all subscribed members about passes <see cref="message"/>
+        /// Notifies all subscribed members about passes <paramref name="message"/>
         /// </summary>
         /// <typeparam name="T">Type of message to send</typeparam>
         /// <param name="message">Message to send</param>

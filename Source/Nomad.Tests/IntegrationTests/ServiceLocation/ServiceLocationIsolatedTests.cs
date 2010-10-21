@@ -57,7 +57,7 @@ namespace Nomad.Tests.IntegrationTests.ServiceLocation
 
             _serviceLocator.Register(mockServiceProvider.Object);
 
-            Assert.Throws<DuplicateServiceException>(
+            Assert.Throws<NomadDuplicateServiceException>(
                 () => _serviceLocator.Register(mockServiceProvider.Object),
                 "No exception thrown during second attempt to register already registered service");
         }
@@ -72,7 +72,7 @@ namespace Nomad.Tests.IntegrationTests.ServiceLocation
 
             _serviceLocator.Register(mockServiceProvider.Object);
 
-            Assert.Throws<DuplicateServiceException>(
+            Assert.Throws<NomadDuplicateServiceException>(
                 () => _serviceLocator.Register(mockServiceProvider2.Object),
                 "No exception thrown during second attempt to register already registered service");
 
@@ -84,7 +84,7 @@ namespace Nomad.Tests.IntegrationTests.ServiceLocation
         [Test]
         public void attempt_to_resolve_unregistered_service_results_in_exception()
         {
-            Assert.Throws<ServiceNotFoundException>(
+            Assert.Throws<NomadServiceNotFoundException>(
                 () => _serviceLocator.Resolve<ITestInterface>(),
                 "The exception should be thrown during resolving unknown service");
         }

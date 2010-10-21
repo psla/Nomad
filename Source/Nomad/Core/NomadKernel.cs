@@ -20,8 +20,8 @@ namespace Nomad.Core
         ///         Initializes both LoadedModules AppDomain with IModuleLoader implementation.
         ///     </para>
         ///     <para>
-        ///         Kernel, by now, uses the Nomad default implementation of IModuleLoader( <see cref="ModuleLoader"/> with no possibility to changing it. 
-        ///         This constraint is made because of the dependency on the IoC container which should be used for storing information about 
+        ///         Kernel, by now, uses the Nomad's default implementation of IModuleLoader( <see cref="ModuleLoader"/> with no ability to change it. 
+        ///         This constraint is made on behalf of the dependency on the IoC container which should be used for storing information about loaded modules. 
         ///     </para>
         /// </remarks>
         public NomadKernel(NomadConfiguration nomadConfiguration)
@@ -35,7 +35,7 @@ namespace Nomad.Core
             KernelConfiguration = nomadConfiguration;
 
             KernelAppDomain = AppDomain.CurrentDomain;
-            ModuleAppDomain = AppDomain.CreateDomain("Nomad Loaded Modules",
+            ModuleAppDomain = AppDomain.CreateDomain("Modules AppDomain",
                                                      new Evidence(AppDomain.CurrentDomain.Evidence),
                                                      AppDomain.CurrentDomain.BaseDirectory,
                                                      ".",
@@ -49,7 +49,7 @@ namespace Nomad.Core
 
             ModuleLoader = moduleLoaderCreator.CreateModuleLoaderInstance();
 
-            ModuleManager = new ModuleManager(ModuleLoader,
+            _moduleManager = new ModuleManager(ModuleLoader,
                                               KernelConfiguration.ModuleFilter);
         }
 
@@ -73,7 +73,7 @@ namespace Nomad.Core
 
 
         /// <summary>
-        ///     IModuleLoader used for loading the modules by <see cref="ModuleManager"/>. 
+        ///     IModuleLoader used for loading the modules by <see cref="_moduleManager"/>. 
         /// </summary>
         /// <remarks>
         ///     Instantiated within constructor in ModuleAppDomain.
@@ -96,10 +96,8 @@ namespace Nomad.Core
         /// </summary>
         public NomadConfiguration KernelConfiguration { get; private set; }
 
-        /// <summary>
-        ///     Provides read only access to already initialized ModuleManager
-        /// </summary>
-        public ModuleManager ModuleManager { get; private set; }
+
+        private ModuleManager _moduleManager;
 
 
         /// <summary>
@@ -117,6 +115,15 @@ namespace Nomad.Core
                                                      AppDomain.CurrentDomain.BaseDirectory,
                                                      ".",
                                                      false);
+        }
+
+        /// <summary>
+        /// Loads modules into their domain.
+        /// </summary>
+        /// <param name="moduleDiscovery">ModuleDiscovery specifying modules to be loaded.</param>
+        public void LoadModules(IModuleDiscovery moduleDiscovery)
+        {
+            _moduleManager.LoadModules(moduleDiscovery);
         }
     }
 }

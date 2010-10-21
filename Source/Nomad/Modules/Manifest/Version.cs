@@ -9,7 +9,7 @@ namespace Nomad.Modules.Manifest
     [Serializable]
     public sealed class Version
     {
-        #region == Version Properties ==
+        #region Version Properties
 
         /// <summary>
         /// Gets the value of the build component of the version number for the current Version object.
@@ -75,7 +75,7 @@ namespace Nomad.Modules.Manifest
         /// <exception cref="ArgumentException">when provided string is not properly formatted</exception>
         public Version(string version)
         {
-            StringToVersion(version);
+            Parse(version);
         }
 
 
@@ -111,13 +111,17 @@ namespace Nomad.Modules.Manifest
 
         #endregion
 
+        /// <summary>
+        /// Inherited from object.
+        /// </summary>
+        /// <returns>Returns string complaint with<see cref="System.Version"/>.</returns>
         public override string ToString()
         {
             return string.Format("{0}.{1}.{2}.{3}", Major, Minor, Build, Revision);
         }
 
-
-        private void StringToVersion(string inputString)
+        //TODO: Why wrap it? set it static
+        private void Parse(string inputString)
         {
             var regex =
                 new Regex(@"^(?<major>\d+)\.(?<minor>\d+)\.(?<build>\d+)\.(?<revision>\d+)$");
