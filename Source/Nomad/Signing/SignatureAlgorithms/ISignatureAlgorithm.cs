@@ -1,4 +1,4 @@
-﻿namespace Nomad.Signing
+﻿namespace Nomad.Signing.SignatureAlgorithms
 {
     /// <summary>
     /// Responsible for signing and verifying signature 

@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Reflection;
 using Nomad.Signing;
+using Nomad.Signing.FileUtils;
+using Nomad.Signing.SignatureAlgorithms;
 using NUnit.Framework;
 using TestsShared;
 using System.Linq;

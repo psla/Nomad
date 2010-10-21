@@ -3,7 +3,8 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Authentication;
 using Nomad.Signing;
-using File = Nomad.Signing.File;
+using Nomad.Signing.FileUtils;
+using File = Nomad.Signing.FileUtils.File;
 
 namespace Nomad.AssemblyLoading
 {

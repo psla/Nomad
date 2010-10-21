@@ -6,7 +6,7 @@ namespace Nomad.ManifestCreator
     /// <summary>
     /// Parses arguments provided to <see cref="ManifestCreatorProgram"/>
     /// </summary>
-    internal class ArgumentsParser
+    public class ArgumentsParser
     {
         /// <summary>
         /// 

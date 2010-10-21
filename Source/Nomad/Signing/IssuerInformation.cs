@@ -1,4 +1,6 @@
-﻿namespace Nomad.Signing
+﻿using Nomad.Signing.SignatureAlgorithms;
+
+namespace Nomad.Signing
 {
     /// <summary>
     /// Information structure about issuer

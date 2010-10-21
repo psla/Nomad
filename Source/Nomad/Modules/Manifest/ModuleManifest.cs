@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Nomad.Signing.FileUtils;
 using Nomad.Utils;
 using Version = Nomad.Utils.Version;
 

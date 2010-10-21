@@ -7,6 +7,8 @@ using Nomad.Modules;
 using Nomad.Modules.Filters;
 using Nomad.Modules.Manifest;
 using Nomad.Signing;
+using Nomad.Signing.SignatureAlgorithms;
+using Nomad.Signing.SignatureProviders;
 using NUnit.Framework;
 using TestsShared;
 using File = System.IO.File;

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Nomad.Signing
+namespace Nomad.Signing.FileUtils
 {
     /// <summary>
     /// File signature structure to store information about assembly

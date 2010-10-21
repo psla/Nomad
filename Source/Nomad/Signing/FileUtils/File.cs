@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Nomad.Signing
+namespace Nomad.Signing.FileUtils
 {
     /// <summary>
     /// Structure describing file. It's filename and data it contains.

@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography;
 
-namespace Nomad.Signing
+namespace Nomad.Signing.SignatureAlgorithms
 {
     /// <summary>
     /// Signature algorithm implementation with RSA encryption

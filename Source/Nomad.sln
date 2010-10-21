@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nomad", "Nomad\Nomad.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nomad.Tests", "Nomad.Tests\Nomad.Tests.csproj", "{18AC8400-37F4-4473-9BEB-204B0C9D9ABE}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{795BD409-5B1D-47E3-BC98-1ABFECB7D046}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestsData", "TestsData", "{795BD409-5B1D-47E3-BC98-1ABFECB7D046}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Functional Data", "Functional Data", "{6B0366F8-104B-4B8B-A38C-F03BC6504B90}"
 EndProject
@@ -25,6 +25,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nomad.KeysGenerator", "Nomad.KeysGenerator\Nomad.KeysGenerator.csproj", "{1F6C3A60-1A3C-4627-A9F3-B71897468E21}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nomad.ManifestCreator", "Nomad.ManifestCreator\Nomad.ManifestCreator.csproj", "{EF5A9D12-B2C4-46E0-B7E9-75868819C4C8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utils", "Utils", "{0DC7A9CF-DB4C-47D3-95C2-51FEEA924FB0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{7658FD92-7978-4772-A530-CAD32A656DC0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,5 +63,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{6B0366F8-104B-4B8B-A38C-F03BC6504B90} = {795BD409-5B1D-47E3-BC98-1ABFECB7D046}
 		{A3991F62-5131-4901-AE6D-4F027BD6EFF0} = {6B0366F8-104B-4B8B-A38C-F03BC6504B90}
+		{EF5A9D12-B2C4-46E0-B7E9-75868819C4C8} = {0DC7A9CF-DB4C-47D3-95C2-51FEEA924FB0}
+		{1F6C3A60-1A3C-4627-A9F3-B71897468E21} = {0DC7A9CF-DB4C-47D3-95C2-51FEEA924FB0}
 	EndGlobalSection
 EndGlobal

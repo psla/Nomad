@@ -1,4 +1,6 @@
 using Nomad.Signing;
+using Nomad.Signing.SignatureAlgorithms;
+using Nomad.Signing.SignatureProviders;
 using NUnit.Framework;
 
 namespace Nomad.Tests.UnitTests.Signing

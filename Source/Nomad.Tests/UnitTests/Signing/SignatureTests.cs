@@ -1,4 +1,5 @@
 using Nomad.Signing;
+using Nomad.Signing.SignatureAlgorithms;
 using NUnit.Framework;
 using TestsShared;
 

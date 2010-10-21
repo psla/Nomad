@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Nomad.Signing.FileUtils;
 
 namespace Nomad.Signing
 {

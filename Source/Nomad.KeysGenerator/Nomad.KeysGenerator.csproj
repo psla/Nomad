@@ -46,7 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArgumentsParser.cs" />
-    <Compile Include="KeysGenerator.cs" />
+    <Compile Include="RsaKeyFilesGenerator.cs" />
     <Compile Include="KeysGeneratorProgram.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

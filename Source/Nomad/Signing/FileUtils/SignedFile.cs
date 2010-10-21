@@ -1,7 +1,7 @@
 using System;
 using Nomad.Modules.Manifest;
 
-namespace Nomad.Utils
+namespace Nomad.Signing.FileUtils
 {
     /// <summary>
     /// Informs about signed file

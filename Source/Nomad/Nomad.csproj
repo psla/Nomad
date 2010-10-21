@@ -79,7 +79,7 @@
     <Compile Include="Modules\Filters\IModuleFilter.cs" />
     <Compile Include="Modules\IModuleLoader.cs" />
     <Compile Include="Modules\Manifest\ModuleDependency.cs" />
-    <Compile Include="Utils\SignedFile.cs" />
+    <Compile Include="Signing\FileUtils\SignedFile.cs" />
     <Compile Include="Utils\Version.cs" />
     <Compile Include="Modules\ModuleInfo.cs" />
     <Compile Include="Modules\ModuleLoader.cs" />
@@ -104,14 +104,14 @@
     <Compile Include="Communication\ServiceLocation\IServiceLocator.cs" />
     <Compile Include="Communication\ServiceLocation\ServiceLocator.cs" />
     <Compile Include="Signing\FileSignatureVerificator.cs" />
-    <Compile Include="Signing\File.cs" />
-    <Compile Include="Signing\FileSignature.cs" />
-    <Compile Include="Signing\ISignatureAlgorithm.cs" />
-    <Compile Include="Signing\ISignatureProvider.cs" />
+    <Compile Include="Signing\FileUtils\File.cs" />
+    <Compile Include="Signing\FileUtils\FileSignature.cs" />
+    <Compile Include="Signing\SignatureAlgorithms\ISignatureAlgorithm.cs" />
+    <Compile Include="Signing\SignatureProviders\ISignatureProvider.cs" />
     <Compile Include="Signing\IssuerInformation.cs" />
-    <Compile Include="Signing\NullSignatureAlgorithm.cs" />
-    <Compile Include="Signing\RsaSignatureAlgorithm.cs" />
-    <Compile Include="Signing\SignatureProvider.cs" />
+    <Compile Include="Signing\SignatureAlgorithms\NullSignatureAlgorithm.cs" />
+    <Compile Include="Signing\SignatureAlgorithms\RsaSignatureAlgorithm.cs" />
+    <Compile Include="Signing\SignatureProviders\SignatureProvider.cs" />
     <Compile Include="Utils\XmlSerializerHelper.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

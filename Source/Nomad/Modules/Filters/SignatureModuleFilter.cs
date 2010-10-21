@@ -2,6 +2,8 @@ using System;
 using System.IO;
 using Nomad.Modules.Manifest;
 using Nomad.Signing;
+using Nomad.Signing.FileUtils;
+using Nomad.Signing.SignatureProviders;
 using Nomad.Utils;
 using File = System.IO.File;
 
