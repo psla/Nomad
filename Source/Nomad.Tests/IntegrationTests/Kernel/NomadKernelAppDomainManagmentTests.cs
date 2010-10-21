@@ -77,7 +77,11 @@ namespace Nomad.Tests.IntegrationTests.Kernel
                                                       FullName,
                                                   "The module has not been loaded into Module AppDomain");
 
+            _nomadKernel.ModuleAppDomain.UnhandledException += (sender, args) => Assert.Fail("Exception has been thrown" + args.ToString());
+
             _nomadKernel.LoadModules(_moduleDiscoveryMock.Object);
+
+          
 
             //Check for not loading asm into kernel appDomain
             foreach (Assembly kernelAsm in _nomadKernel.KernelAppDomain.GetAssemblies())
@@ -85,6 +89,17 @@ namespace Nomad.Tests.IntegrationTests.Kernel
                 Assert.AreNotEqual(AssemblyFullName, kernelAsm.FullName,
                                    "The module assembly has been loaded into KernelAppDomain.");
             }
+
+            // check if module has been loaded in moduleAppDomain
+            //bool hasBeenLoaded = false;
+
+            //foreach (var moduleAsm in _nomadKernel.ModuleAppDomain.GetAssemblies())
+            //{
+            //    if (AssemblyFullName.Equals(moduleAsm.FullName))
+            //        hasBeenLoaded = true;
+            //}
+
+            //Assert.IsTrue(hasBeenLoaded, "Module has not been loaded at all");
         }
 
 

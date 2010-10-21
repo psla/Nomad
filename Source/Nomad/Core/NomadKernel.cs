@@ -36,11 +36,23 @@ namespace Nomad.Core
             KernelConfiguration = nomadConfiguration;
 
             KernelAppDomain = AppDomain.CurrentDomain;
+
+            //var setup = new AppDomainSetup();
+            //var name = "Modules App Domain";
+            //setup.ApplicationName = name;
+            //setup.ApplicationBase = AppDomain.CurrentDomain.BaseDirectory;
+            //setup.PrivateBinPath = ".";
+            //setup.PrivateBinPathProbe = ".";
+            //setup.DisallowBindingRedirects = false;
+            //setup.DisallowCodeDownload = false;
+            //setup.ShadowCopyFiles = "true";
+
+            //ModuleAppDomain = AppDomain.CreateDomain(name, new Evidence(AppDomain.CurrentDomain.Evidence), setup);	
             ModuleAppDomain = AppDomain.CreateDomain("Modules AppDomain",
                                                      new Evidence(AppDomain.CurrentDomain.Evidence),
                                                      AppDomain.CurrentDomain.BaseDirectory,
-                                                     ".",
-                                                     false);
+                                                     AppDomain.CurrentDomain.BaseDirectory,
+                                                     true);
 
             string asmName = typeof (ContainerCreator).Assembly.FullName;
             string typeName = typeof (ContainerCreator).FullName;

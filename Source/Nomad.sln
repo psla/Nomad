@@ -30,6 +30,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utils", "Utils", "{0DC7A9CF
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{7658FD92-7978-4772-A530-CAD32A656DC0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tutorial_01_Loading_Unloading_Modules", "Tutorial_01_Loading_Unloading_Modules\Tutorial_01_Loading_Unloading_Modules.csproj", "{EDB3E0D1-A7AD-46EC-9620-13FE3C5A661B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -56,6 +58,10 @@ Global
 		{EF5A9D12-B2C4-46E0-B7E9-75868819C4C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF5A9D12-B2C4-46E0-B7E9-75868819C4C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF5A9D12-B2C4-46E0-B7E9-75868819C4C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDB3E0D1-A7AD-46EC-9620-13FE3C5A661B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDB3E0D1-A7AD-46EC-9620-13FE3C5A661B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDB3E0D1-A7AD-46EC-9620-13FE3C5A661B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDB3E0D1-A7AD-46EC-9620-13FE3C5A661B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -65,5 +71,6 @@ Global
 		{A3991F62-5131-4901-AE6D-4F027BD6EFF0} = {6B0366F8-104B-4B8B-A38C-F03BC6504B90}
 		{EF5A9D12-B2C4-46E0-B7E9-75868819C4C8} = {0DC7A9CF-DB4C-47D3-95C2-51FEEA924FB0}
 		{1F6C3A60-1A3C-4627-A9F3-B71897468E21} = {0DC7A9CF-DB4C-47D3-95C2-51FEEA924FB0}
+		{EDB3E0D1-A7AD-46EC-9620-13FE3C5A661B} = {7658FD92-7978-4772-A530-CAD32A656DC0}
 	EndGlobalSection
 EndGlobal
