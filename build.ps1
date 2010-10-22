@@ -203,7 +203,7 @@ task Init -depends Clean, GetProjects {
  
 task Compile -depends Init {
     # execute msbuild - it is added to path by PSake
-    Exec { msbuild "$sln_file"  /p:Configuration=Release /nologo /verbosity:minimal }
+    Exec { msbuild "$sln_file"  /p:Configuration=Release /nologo /verbosity:normal }
 }
 
 task UnitTest -depends Compile {
