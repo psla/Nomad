@@ -1,5 +1,8 @@
 ﻿using System;
+using Castle.MicroKernel.Registration;
 using Castle.Windsor;
+using Nomad.Communication.EventAggregation;
+using Nomad.Communication.ServiceLocation;
 using Nomad.Core;
 
 namespace Nomad.Modules
@@ -18,6 +21,8 @@ namespace Nomad.Modules
     /// </remarks>
     public class ContainerCreator : MarshalByRefObject
     {
+        private readonly IEventAggregator _eventAggregator;
+        private readonly IServiceLocator _serviceLocator;
         private readonly IWindsorContainer _windsorContainer;
 
 
@@ -30,6 +35,12 @@ namespace Nomad.Modules
         public ContainerCreator()
         {
             _windsorContainer = new WindsorContainer();
+
+            _serviceLocator = new ServiceLocator(_windsorContainer);
+            _windsorContainer.Register(Component.For<IServiceLocator>().Instance(_serviceLocator));
+
+            _eventAggregator = new EventAggregator();
+            _windsorContainer.Register(Component.For<IEventAggregator>().Instance(_eventAggregator));
         }
 
 

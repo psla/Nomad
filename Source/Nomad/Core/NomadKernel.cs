@@ -10,6 +10,9 @@ namespace Nomad.Core
     /// </summary>
     public class NomadKernel
     {
+        private readonly ModuleManager _moduleManager;
+
+
         /// <summary>
         /// Initializes new instance of the <see cref="NomadKernel"/> class.
         /// </summary>
@@ -37,24 +40,11 @@ namespace Nomad.Core
 
             KernelAppDomain = AppDomain.CurrentDomain;
 
-            //var setup = new AppDomainSetup();
-            //var name = "Modules App Domain";
-            //setup.ApplicationName = name;
-            //setup.ApplicationBase = AppDomain.CurrentDomain.BaseDirectory;
-            //setup.PrivateBinPath = ".";
-            //setup.PrivateBinPathProbe = ".";
-            //setup.DisallowBindingRedirects = false;
-            //setup.DisallowCodeDownload = false;
-            //setup.ShadowCopyFiles = "false";
-
-            //ModuleAppDomain = AppDomain.CreateDomain(name, new Evidence(AppDomain.CurrentDomain.Evidence), setup);	
             ModuleAppDomain = AppDomain.CreateDomain("Modules AppDomain",
                                                      new Evidence(AppDomain.CurrentDomain.Evidence),
                                                      AppDomain.CurrentDomain.BaseDirectory,
                                                      AppDomain.CurrentDomain.BaseDirectory,
                                                      true);
-            
-            //ModuleAppDomain = AppDomain.CurrentDomain;
 
             string asmName = typeof (ContainerCreator).Assembly.FullName;
             string typeName = typeof (ContainerCreator).FullName;
@@ -65,7 +55,7 @@ namespace Nomad.Core
             ModuleLoader = moduleLoaderCreator.CreateModuleLoaderInstance();
 
             _moduleManager = new ModuleManager(ModuleLoader,
-                                              KernelConfiguration.ModuleFilter);
+                                               KernelConfiguration.ModuleFilter);
         }
 
 
@@ -112,9 +102,6 @@ namespace Nomad.Core
         public NomadConfiguration KernelConfiguration { get; private set; }
 
 
-        private ModuleManager _moduleManager;
-
-
         /// <summary>
         ///     Unloads the whole ModuleAppDomain.
         /// </summary>
@@ -131,6 +118,7 @@ namespace Nomad.Core
                                                      ".",
                                                      false);
         }
+
 
         /// <summary>
         /// Loads modules into their domain.
