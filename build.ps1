@@ -136,9 +136,17 @@ task GetProjects -description "Identifies all projects in product" {
 
         # validate that project's name matches it's location
 		# TODO:  What to do with tutorials?
-        # $expected_directory = "$source_dir\$project_name"
-        # Assert ($expected_directory -eq $project_file.DirectoryName) "Project name doesn't match directory name: $($project_file.FullName)"
-        
+		if($project_file.FullName -match "Nomad.Tutorials")
+		{
+			$expected_directory = "$source_dir\Nomad.Tutorials\$project_name"
+		}
+		else
+		{
+			$expected_directory = "$source_dir\$project_name"
+		}
+		
+        Assert ($expected_directory -eq $project_file.DirectoryName) "Project name doesn't match directory name: $($project_file.FullName)"
+		
         # try to get project's description
         $description = ""
         $readme_file = $project_file.DirectoryName + "\readme.txt"
@@ -146,7 +154,7 @@ task GetProjects -description "Identifies all projects in product" {
             $description = Get-Content $readme_file -TotalCount 1
         }
         
-        $project = New-Object PSObject -Property @{Name = $project_name; Description = $description}
+        $project = New-Object PSObject -Property @{Name = $project_name; Description = $description; Path = $project_file.DirectoryName}
         $script:projects = $script:projects + $project
     }
 }
@@ -189,7 +197,15 @@ task Init -depends Clean, GetProjects {
     # generate assembly infos
 	if($script:projects) {
 		foreach($project in $script:projects) {
-			$file = "$source_dir\$($project.Name)\Properties\AssemblyInfo.cs"
+			if($project.Path -match "Nomad.Tutorials")
+			{
+				$file = "$source_dir\Nomad.Tutorials\$($project.Name)\Properties\AssemblyInfo.cs"
+			}
+			else
+			{
+				$file = "$source_dir\$($project.Name)\Properties\AssemblyInfo.cs"
+			}
+			
 			Generate-AssemblyInfo -file $file `
 				-title $project.Name `
 				-description $project.Description `

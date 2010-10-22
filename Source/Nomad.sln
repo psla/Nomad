@@ -34,7 +34,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tutorial_01_LoadingUnloadin
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tutorial_02_ServiceLocator", "Tutorial_02_ServiceLocator", "{24940CF6-1C5F-4E26-97F0-019F5A3A53CF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloNomad_Module", "Nomad.Tutorials\Example_Module\HelloNomad_Module.csproj", "{53900961-4836-42AD-B71E-301A2434596F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example_Module", "Nomad.Tutorials\Example_Module\Example_Module.csproj", "{53900961-4836-42AD-B71E-301A2434596F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loading_Unloading_Modules_Program", "Nomad.Tutorials\Loading_Unloading_Modules_Program\Loading_Unloading_Modules_Program.csproj", "{EDB3E0D1-A7AD-46EC-9620-13FE3C5A661B}"
 EndProject
