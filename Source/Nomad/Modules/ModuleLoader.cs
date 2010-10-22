@@ -1,5 +1,5 @@
 using System;
-using System.IO;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Castle.MicroKernel.Registration;
@@ -27,6 +27,7 @@ namespace Nomad.Modules
             _rootContainer = rootContainer;
         }
 
+        #region IModuleLoader Members
 
         /// <summary>Inherited</summary>
         public void LoadModule(ModuleInfo moduleInfo)
@@ -35,17 +36,16 @@ namespace Nomad.Modules
 
             try
             {
-                //var assembly = Assembly.LoadFile(moduleInfo.AssemblyPath);
                 AssemblyName asmName = AssemblyName.GetAssemblyName(moduleInfo.AssemblyPath);
-                var assembly = AppDomain.CurrentDomain.Load(asmName);
-                var bootstraperTypes =
+                Assembly assembly = Assembly.Load(asmName);
+                IEnumerable<Type> bootstraperTypes =
                     from type in assembly.GetTypes()
                     where type.GetInterfaces().Contains(typeof (IModuleBootstraper))
                     select type;
 
-                var bootstraperType = bootstraperTypes.SingleOrDefault();
+                Type bootstraperType = bootstraperTypes.SingleOrDefault();
 
-                var subContainer = CreateSubContainerConfiguredFor(bootstraperType);
+                IWindsorContainer subContainer = CreateSubContainerConfiguredFor(bootstraperType);
                 bootstraper = subContainer.Resolve<IModuleBootstraper>();
                 bootstraper.Initialize();
             }
@@ -56,10 +56,9 @@ namespace Nomad.Modules
                 throw;
                 return;
             }
-
-            
         }
 
+        #endregion
 
         private IWindsorContainer CreateSubContainerConfiguredFor(Type bootstraperType)
         {
