@@ -135,8 +135,9 @@ task GetProjects -description "Identifies all projects in product" {
         $project_name = $project_file.Name.Substring(0, $project_file.Name.Length - ".csproj".Length)
 
         # validate that project's name matches it's location
-        $expected_directory = "$source_dir\$project_name"
-        Assert ($expected_directory -eq $project_file.DirectoryName) "Project name doesn't match directory name: $($project_file.FullName)"
+		# TODO:  What to do with tutorials?
+        # $expected_directory = "$source_dir\$project_name"
+        # Assert ($expected_directory -eq $project_file.DirectoryName) "Project name doesn't match directory name: $($project_file.FullName)"
         
         # try to get project's description
         $description = ""
