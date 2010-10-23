@@ -1,1 +1,1 @@
-﻿<%@ ServiceHost Language="C#" Debug="true" Service="Nomad.ModulesRepository.Service1" CodeBehind="ModulesRepository.svc.cs" %>
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="Nomad.ModulesRepository.ModulesRepository" CodeBehind="ModulesRepository.svc.cs" %>
