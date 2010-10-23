@@ -7,7 +7,7 @@ namespace Nomad.Utils
     /// Serializable implementation of version
     /// </summary>
     [Serializable]
-    public sealed class Version
+    public sealed class Version : IEquatable<Version>
     {
         #region Version Properties
 
@@ -110,6 +110,25 @@ namespace Nomad.Utils
         }
 
         #endregion
+
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as Version;
+            if (other != null)
+                return Equals(other);
+            return base.Equals(obj);
+        }
+        public bool Equals(Version other)
+        {
+            return other.Build == Build &&
+                   other.Major == Major &&
+                   other.Minor == Minor &&
+                   other.Revision == Revision &&
+                   other.MajorRevision == MajorRevision &&
+                   other.MinorRevision == MinorRevision;
+        }
+
 
         /// <summary>
         /// Inherited from object.

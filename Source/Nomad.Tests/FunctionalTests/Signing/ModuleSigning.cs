@@ -1,11 +1,13 @@
 using System;
 using System.IO;
+using System.Reflection;
 using Nomad.Modules;
 using Nomad.Modules.Manifest;
 using Nomad.Utils;
 using NUnit.Framework;
 using TestsShared;
 using System.Linq;
+using Version = Nomad.Utils.Version;
 
 namespace Nomad.Tests.FunctionalTests.Signing
 {
@@ -77,6 +79,16 @@ namespace Nomad.Tests.FunctionalTests.Signing
             var moduleManifest =
                 XmlSerializerHelper.Deserialize<ModuleManifest>(File.ReadAllBytes(_manifestPath));
             Assert.AreEqual(_assemblyName, moduleManifest.SignedFiles.First().FilePath);
+        }
+
+        [Test]
+        public void does_signature_contains_proper_module_name_and_version()
+        {
+            var moduleManifest =
+                XmlSerializerHelper.Deserialize<ModuleManifest>(File.ReadAllBytes(_manifestPath));
+            Assert.AreEqual(moduleManifest.ModuleName, "sample_module.dll");
+            var expectedVersion = new Version("0.0.0.0");
+            Assert.AreEqual(expectedVersion, moduleManifest.ModuleVersion);
         }
     }
 }

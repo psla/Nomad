@@ -28,6 +28,7 @@ namespace Nomad.ManifestCreator
             }
             catch (Exception e)
             {
+                Console.WriteLine(e.Message);
                 if (args.Length != 3)
                 {
                     Console.WriteLine(

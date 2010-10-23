@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Security.Cryptography;
 using Nomad.Modules.Manifest;
 using Nomad.Signing;
@@ -8,6 +10,7 @@ using Nomad.Signing.FileUtils;
 using Nomad.Signing.SignatureAlgorithms;
 using Nomad.Utils;
 using File = System.IO.File;
+using Version = Nomad.Utils.Version;
 
 namespace Nomad.ManifestCreator
 {
@@ -55,10 +58,22 @@ namespace Nomad.ManifestCreator
                                                                   _signatureAlgorithm.Sign(
                                                                       File.ReadAllBytes(file))
                                                           };
+            Version version = null;
+            try
+            {
+                version = new Version(AssemblyName.GetAssemblyName(GetAssemblyPath()).Version);
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("Cannot infer assembly version from assembly. {0}", e.Message);
+            }
+            if(version==null)
+                version = new Version("0.0.0.0");
             var manifest = new ModuleManifest
                                {
                                    Issuer = _argumentsParser.IssuerName,
                                    ModuleName = _argumentsParser.AssemblyName,
+                                   ModuleVersion = version,
                                    SignedFiles = signedFiles.ToList()
                                };
             byte[] manifestSerialized = XmlSerializerHelper.Serialize(manifest);
