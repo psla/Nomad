@@ -73,6 +73,27 @@ namespace Nomad.Updater
             EventHandler<UpdatesReadyEventArgs> handler = UpdatesReady;
             if (handler != null) handler(this, e);
         }
+
+
+        /// <summary>
+        /// Prepares update for available updates
+        /// </summary>
+        /// <param name="availableUpdates"></param>
+        public void PrepareUpdate(AvailableUpdatesEventArgs availableUpdates)
+        {
+            //TODO: do not download file agains
+            IDictionary<string, ModulePackage> modulePackages = new Dictionary<string, ModulePackage>();
+            foreach (var availableUpdate in availableUpdates.AvailableUpdates)
+            {
+                foreach (var moduleDependency in availableUpdate.ModuleDependencies)
+                {
+                    modulePackages[moduleDependency.ModuleName] = _modulesRepository.GetModule(moduleDependency.ModuleName);
+                }
+                modulePackages[availableUpdate.ModuleName] =
+                    _modulesRepository.GetModule(availableUpdate.ModuleName);
+            }
+            InvokeUpdatesReady(new UpdatesReadyEventArgs(modulePackages.Select(x=>x.Value).ToList()));
+        }
     }
 
 
@@ -93,5 +114,18 @@ namespace Nomad.Updater
 
     public class UpdatesReadyEventArgs : EventArgs
     {
+        private readonly List<ModulePackage> _modulePackages;
+
+
+        public UpdatesReadyEventArgs(List<ModulePackage> modulePackages)
+        {
+            _modulePackages = modulePackages;
+        }
+
+
+        public IList<ModulePackage> ModulePackages
+        {
+            get { return _modulePackages.AsReadOnly(); }
+        }
     }
 }

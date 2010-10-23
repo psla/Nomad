@@ -109,5 +109,49 @@ namespace Nomad.Tests.GettingModules
             Assert.AreEqual(0, payload.AvailableUpdates.Count, "There should be no updates");
         }
 
+        [Test]
+        public void adds_dependencies_which_are_not_installed_during_update()
+        {
+            UpdatesReadyEventArgs payload = null;
+            var moduleName = "test_module.dll";
+            var dependencyModuleName = "other_module.dll";
+            
+            var updateManifest = new ModuleManifest()
+                                     {
+                                         ModuleName = moduleName,
+                                         ModuleVersion = new Version("0.0.0.1"),
+                                         ModuleDependencies = new List<ModuleDependency>()
+                                                                  {
+                                                                      new ModuleDependency()
+                                                                          {
+                                                                              MinimalVersion = new Version("0.0.0.0"),
+                                                                              ModuleName = dependencyModuleName
+                                                                          }
+                                                                  }
+                                     };
+            ModuleManifest dependencyModuleManifest = new ModuleManifest() { ModuleName = dependencyModuleName };
+            var availableUpdates =
+                new AvailableUpdatesEventArgs(new List<ModuleManifest>() {updateManifest});
+
+            /*_modulesRepository.Setup(x => x.GetAvailableModules()).
+                Returns(new AvailableModules()
+                            {Manifests = new List<ModuleManifest> {updateManifest}});
+             */
+
+            _modulesRepository.Setup(x => x.GetModule(It.Is<string>(y => y == moduleName))).Returns(
+                new ModulePackage() {ModuleManifest = updateManifest});
+            
+            _modulesRepository.Setup(x => x.GetModule(It.Is<string>(y => y == dependencyModuleName)))
+                .Returns(
+                    new ModulePackage()
+                        {ModuleManifest = dependencyModuleManifest});
+
+            _updateClient.UpdatesReady += (x, y) => payload = y;
+            _updateClient.PrepareUpdate(availableUpdates);
+
+            Assert.AreEqual(2, payload.ModulePackages.Count, "There should be two modules to update. Module, and module dependency");
+            Assert.Contains(updateManifest, payload.ModulePackages.Select(x=>x.ModuleManifest).ToList());
+            Assert.Contains(dependencyModuleManifest, payload.ModulePackages.Select(x=>x.ModuleManifest).ToList());
+        }
     }
 }
