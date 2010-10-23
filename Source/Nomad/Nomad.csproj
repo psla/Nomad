@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="AssemblyLoading\IAssemblyLoader.cs" />
     <Compile Include="AssemblyLoading\SignedAssemblyLoader.cs" />
+    <Compile Include="Core\IModulesOperations.cs" />
     <Compile Include="Modules\ContainerCreator.cs" />
     <Compile Include="Core\NomadConfiguration.cs" />
     <Compile Include="Core\NomadKernel.cs" />
@@ -79,7 +80,9 @@
     <Compile Include="Modules\Discovery\IModuleDiscovery.cs" />
     <Compile Include="Modules\Filters\IModuleFilter.cs" />
     <Compile Include="Modules\IModuleLoader.cs" />
+    <Compile Include="Modules\Manifest\IModuleManifestFactory.cs" />
     <Compile Include="Modules\Manifest\ModuleDependency.cs" />
+    <Compile Include="Modules\Manifest\ModuleManifestFactory.cs" />
     <Compile Include="Signing\FileUtils\SignedFile.cs" />
     <Compile Include="Utils\Version.cs" />
     <Compile Include="Modules\ModuleInfo.cs" />

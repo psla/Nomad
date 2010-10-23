@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Nomad.Signing.FileUtils;
 using Nomad.Utils;
+using File = System.IO.File;
 using Version = Nomad.Utils.Version;
 
 namespace Nomad.Modules.Manifest
@@ -39,7 +40,6 @@ namespace Nomad.Modules.Manifest
             ModuleDependencies = new List<ModuleDependency>();
             SignedFiles = new List<SignedFile>();
         }
-
 
         ///<summary>
         /// Unique issuer name. Application contains defined key for such issuer and validates all signatures against this key.

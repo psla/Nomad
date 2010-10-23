@@ -67,7 +67,7 @@ namespace Nomad.Modules.Filters
                 IssuerInformation issuer = _signatureProvider.GetIssuer(manifest.Issuer);
 
                 //verify signature of manifest
-                //TODO: Would we like to inform user, while module loading failed?
+                //TODO: Would we like to inform user when module loading fails?
                 if (!File.Exists(manifestSig))
                     return false;
                 if (!issuer.IssuerAlgorithm.Verify(File.ReadAllBytes(manifestPath),

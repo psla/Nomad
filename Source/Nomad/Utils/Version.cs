@@ -111,14 +111,13 @@ namespace Nomad.Utils
 
         #endregion
 
+        #region IEquatable<Version> Members
 
-        public override bool Equals(object obj)
-        {
-            var other = obj as Version;
-            if (other != null)
-                return Equals(other);
-            return base.Equals(obj);
-        }
+        /// <summary>
+        /// Verifies version equality, based on 6 properies
+        /// </summary>
+        /// <param name="other">other version object</param>
+        /// <returns>true if versions are equal</returns>
         public bool Equals(Version other)
         {
             return other.Build == Build &&
@@ -127,6 +126,24 @@ namespace Nomad.Utils
                    other.Revision == Revision &&
                    other.MajorRevision == MajorRevision &&
                    other.MinorRevision == MinorRevision;
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Verifies version equality, based on 6 properies
+        /// </summary>
+        /// <remarks>
+        /// Compares two instances of version, otherwise uses base.Equals implementation
+        /// </remarks>
+        /// <param name="obj">other version object</param>
+        /// <returns>true if versions are equal</returns>
+        public override bool Equals(object obj)
+        {
+            var other = obj as Version;
+            if (other != null)
+                return Equals(other);
+            return base.Equals(obj);
         }
 
 
@@ -138,6 +155,7 @@ namespace Nomad.Utils
         {
             return string.Format("{0}.{1}.{2}.{3}", Major, Minor, Build, Revision);
         }
+
 
         //TODO: Why wrap it? set it static
         private void Parse(string inputString)
@@ -156,6 +174,24 @@ namespace Nomad.Utils
             {
                 throw new ArgumentException("Cannot match the String to Version");
             }
+        }
+
+        public static bool operator >(Version version1, Version version2)
+        {
+            return version1.GetSystemVersion() > version2.GetSystemVersion();
+            /*if(version2.Build > version1.Build)
+                return true;
+            if(version2.Build == version1.Build)
+            {
+                if (version2.Major > version1.Major)
+                    return true;
+                if(version2.Major=version1.Major)
+            }*/
+        }
+
+        public static bool operator <(Version version1, Version version2)
+        {
+            return version1.GetSystemVersion() < version2.GetSystemVersion();
         }
     }
 }

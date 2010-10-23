@@ -8,7 +8,7 @@ namespace Nomad.Core
     /// <summary>
     /// Nomad's entry point. Presents Nomad's features to the developer.
     /// </summary>
-    public class NomadKernel
+    public class NomadKernel : IModulesOperations
     {
         private readonly ModuleManager _moduleManager;
 
