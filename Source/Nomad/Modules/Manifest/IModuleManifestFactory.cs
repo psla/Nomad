@@ -11,5 +11,6 @@ namespace Nomad.Modules.Manifest
         ///<param name="moduleInfo">module info to get manifest for</param>
         ///<returns><see cref="ModuleManifest"/> for <see cref="ModuleInfo"/></returns>
         ModuleManifest GetManifest(ModuleInfo moduleInfo);
+
     }
 }

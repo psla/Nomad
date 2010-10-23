@@ -69,6 +69,10 @@
       <Project>{35F65D21-8966-49D9-91A0-0C6D25FB8BF7}</Project>
       <Name>Nomad.ModulesRepository.Data</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Nomad\Nomad.csproj">
+      <Project>{3828EBBD-FFBA-4C30-BF46-D3742BC165F1}</Project>
+      <Name>Nomad</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

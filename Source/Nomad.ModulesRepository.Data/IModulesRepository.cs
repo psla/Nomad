@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.ServiceModel;
 using Nomad.Modules.Manifest;
@@ -23,12 +24,19 @@ namespace Nomad.ModulesRepository.Data
     [DataContract]
     public class AvailableModules
     {
+        public AvailableModules()
+        {
+            
+        }
+
+        public AvailableModules(List<ModuleManifest> manifests)
+        {
+            Manifests = manifests;
+        }
+
+
         [DataMember]
         public List<ModuleManifest> Manifests { get; set; }
-    }
-
-    public class ModuleManifestDto
-    {
     }
 
 
