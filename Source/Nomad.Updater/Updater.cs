@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using Ionic.Zip;
 using Nomad.Core;
 using Nomad.Modules.Discovery;
 using Nomad.Modules.Manifest;
@@ -11,14 +13,16 @@ namespace Nomad.Updater
 {
     public class Updater 
     {
+        private readonly string _targetDirectory;
         private readonly IModulesRepository _modulesRepository;
         private readonly IModulesOperations _modulesOperations;
         private readonly IModuleDiscovery _moduleDiscovery;
         private readonly IModuleManifestFactory _moduleManifestFactory;
 
 
-        public Updater(IModulesRepository modulesRepository, IModulesOperations modulesOperations, IModuleDiscovery moduleDiscovery, IModuleManifestFactory moduleManifestFactory)
+        public Updater(string targetDirectory, IModulesRepository modulesRepository, IModulesOperations modulesOperations, IModuleDiscovery moduleDiscovery, IModuleManifestFactory moduleManifestFactory)
         {
+            _targetDirectory = targetDirectory;
             _modulesRepository = modulesRepository;
             _modulesOperations = modulesOperations;
             _moduleDiscovery = moduleDiscovery;
@@ -93,6 +97,23 @@ namespace Nomad.Updater
                     _modulesRepository.GetModule(availableUpdate.ModuleName);
             }
             InvokeUpdatesReady(new UpdatesReadyEventArgs(modulePackages.Select(x=>x.Value).ToList()));
+        }
+
+
+        public void PerformUpdates(List<ModulePackage> modulePackages)
+        {
+            _modulesOperations.UnloadModules();
+
+            foreach (var modulePackage in modulePackages)
+            {
+
+                using (var file = ZipFile.Read(modulePackage.ModuleZip))
+                {
+                    file.ExtractAll(_targetDirectory, ExtractExistingFileAction.OverwriteSilently);
+                }
+            }
+
+            _modulesOperations.LoadModules(_moduleDiscovery);
         }
     }
 

@@ -13,7 +13,7 @@ namespace Nomad.ModulesRepository.Data
         /// Contains package with all files of module. In zip there should also be contained manifest.
         /// </summary>
         [DataMember]
-        public byte[] ModuleZip { get; set; }
+        public byte[] ModuleZip { get; set; } //TODO: This might eat a lot of memory when big big huge modules
 
         /// <summary>
         /// Contains module manifest, accessible without decompressing zip
