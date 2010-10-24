@@ -7,7 +7,6 @@ using Nomad.Core;
 using Nomad.Modules;
 using Nomad.Modules.Discovery;
 using Nomad.Modules.Manifest;
-using Nomad.ModulesRepository.Data;
 using Nomad.Updater;
 using NUnit.Framework;
 using TestsShared;
@@ -156,7 +155,7 @@ namespace Nomad.Tests.GettingModules
                 .Returns(
                     new ModulePackage {ModuleManifest = dependencyModuleManifest});
 
-            _updateClient.UpdatesReady += (x, y) => payload = y;
+            _updateClient.UpdatePackagesReady += (x, y) => payload = y;
             _updateClient.PrepareUpdate(availableUpdates);
 
             Assert.AreEqual(2, payload.ModulePackages.Count,

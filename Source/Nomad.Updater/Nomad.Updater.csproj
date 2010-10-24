@@ -55,14 +55,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UpdateArguments.cs" />
-    <Compile Include="Updater.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Nomad.ModulesRepository.Data\Nomad.ModulesRepository.Data.csproj">
-      <Project>{35F65D21-8966-49D9-91A0-0C6D25FB8BF7}</Project>
-      <Name>Nomad.ModulesRepository.Data</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Nomad.ModulesRepository\Nomad.ModulesRepository.csproj">
       <Project>{69CE733D-8F4E-4183-B5C9-4A6B1B42B843}</Project>
       <Name>Nomad.ModulesRepository</Name>

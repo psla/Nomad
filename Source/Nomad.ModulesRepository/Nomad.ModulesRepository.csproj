@@ -30,6 +30,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Ionic.Zip.Reduced, Version=1.9.1.5, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Libraries\DotNetZip\Ionic.Zip.Reduced.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core">
@@ -65,10 +69,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Nomad.ModulesRepository.Data\Nomad.ModulesRepository.Data.csproj">
-      <Project>{35F65D21-8966-49D9-91A0-0C6D25FB8BF7}</Project>
-      <Name>Nomad.ModulesRepository.Data</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Nomad\Nomad.csproj">
       <Project>{3828EBBD-FFBA-4C30-BF46-D3742BC165F1}</Project>
       <Name>Nomad</Name>

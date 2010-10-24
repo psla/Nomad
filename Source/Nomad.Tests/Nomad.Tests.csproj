@@ -125,10 +125,6 @@
       <Project>{EF5A9D12-B2C4-46E0-B7E9-75868819C4C8}</Project>
       <Name>Nomad.ManifestCreator</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Nomad.ModulesRepository.Data\Nomad.ModulesRepository.Data.csproj">
-      <Project>{35F65D21-8966-49D9-91A0-0C6D25FB8BF7}</Project>
-      <Name>Nomad.ModulesRepository.Data</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Nomad.ModulesRepository\Nomad.ModulesRepository.csproj">
       <Project>{69CE733D-8F4E-4183-B5C9-4A6B1B42B843}</Project>
       <Name>Nomad.ModulesRepository</Name>

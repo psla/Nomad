@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.ServiceModel;
 using Nomad.Modules.Manifest;
 
-namespace Nomad.ModulesRepository.Data
+namespace Nomad.Updater
 {
     // NOTE: If you change the interface name "IModulesRepository" here, you must also update the reference to "IModulesRepository" in Web.config.
     [ServiceContract]

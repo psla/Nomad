@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.ServiceModel;
-using System.Text;
 using Nomad.Modules.Manifest;
-using Nomad.ModulesRepository.Data;
+using Nomad.Updater;
 using Nomad.Utils;
 
 namespace Nomad.ModulesRepository

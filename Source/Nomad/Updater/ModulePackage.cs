@@ -1,7 +1,7 @@
 ﻿using System.Runtime.Serialization;
 using Nomad.Modules.Manifest;
 
-namespace Nomad.ModulesRepository.Data
+namespace Nomad.Updater
 {
     /// <summary>
     /// Information about package in repository.

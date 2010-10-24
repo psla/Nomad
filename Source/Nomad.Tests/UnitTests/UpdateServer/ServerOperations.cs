@@ -1,6 +1,6 @@
 using System.IO;
 using Nomad.Modules.Manifest;
-using Nomad.ModulesRepository.Data;
+using Nomad.Updater;
 using Nomad.Utils;
 using NUnit.Framework;
 using TestsShared;
