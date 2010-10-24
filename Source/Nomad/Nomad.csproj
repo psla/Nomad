@@ -73,8 +73,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyLoading\IAssemblyLoader.cs" />
-    <Compile Include="AssemblyLoading\SignedAssemblyLoader.cs" />
     <Compile Include="Core\IModulesOperations.cs" />
     <Compile Include="Modules\ContainerCreator.cs" />
     <Compile Include="Core\NomadConfiguration.cs" />

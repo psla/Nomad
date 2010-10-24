@@ -108,7 +108,6 @@
     <Compile Include="UnitTests\Regions\Adapters\TabControlAdapterContract.cs" />
     <Compile Include="UnitTests\Regions\RegionCreation.cs" />
     <Compile Include="UnitTests\Regions\RegionManagement.cs" />
-    <Compile Include="UnitTests\AssemblyLoading\SignedAssemblyLoaderTests.cs" />
     <Compile Include="UnitTests\Regions\SingleActiveViewRegionBehavior.cs" />
     <Compile Include="IntegrationTests\ServiceLocation\ServiceLocationIsolatedTests.cs" />
     <Compile Include="UnitTests\Signing\AssemblyVerification.cs" />
