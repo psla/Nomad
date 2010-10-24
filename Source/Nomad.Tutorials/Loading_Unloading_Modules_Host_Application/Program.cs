@@ -2,7 +2,7 @@
 using Nomad.Core;
 using Nomad.Modules.Discovery;
 
-namespace Tutorial_01_LoadingModules
+namespace Loading_Unloading_Modules_Host_Application
 {
     
     internal class Program
