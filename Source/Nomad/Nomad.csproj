@@ -94,6 +94,7 @@
     <Compile Include="Modules\Manifest\ModuleDependency.cs" />
     <Compile Include="Modules\Manifest\ModuleManifestFactory.cs" />
     <Compile Include="Signing\FileUtils\SignedFile.cs" />
+    <Compile Include="Updater\AvailableModules.cs" />
     <Compile Include="Updater\AvailableUpdatesEventArgs.cs" />
     <Compile Include="Updater\IModulesRepository.cs" />
     <Compile Include="Updater\ModulePackage.cs" />
