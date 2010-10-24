@@ -41,14 +41,14 @@ namespace Nomad.Communication.EventAggregation
         //TODO: Unsubsribing new lambda won't work!
         /// <summary>
         /// Removes event from collection. Thread safe.
-        /// <see cref="IEventAggregator.Unsubsribe{T}"/>
+        /// <see cref="IEventAggregator.Unsubscribe{T}"/>
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="action"></param>
         /// <exception cref="KeyNotFoundException">when unsubscribing from type which was no subsription ever</exception>
         /// <exception cref="MemberAccessException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        public void Unsubsribe<T>(Action<T> action) where T : class
+        public void Unsubscribe<T>(Action<T> action) where T : class
         {
             var type = typeof (T);
             //two parts of methods prevents stopping another thread for waiting to the end of the lock

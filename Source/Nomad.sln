@@ -57,6 +57,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Controlling_Publisher_Modul
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple_Publisher_Module", "Nomad.Tutorials\Simple_Publisher_Module\Simple_Publisher_Module.csproj", "{DD8DFE4B-BF87-4C8A-95A4-EFAA3F6EABD7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventAggregatorCommunicationTypes", "Nomad.Tutorials\EventAggregatorCommunicationTypes\EventAggregatorCommunicationTypes.csproj", "{2B0A0CD6-FD57-48F0-A163-F39073981934}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -127,6 +129,10 @@ Global
 		{DD8DFE4B-BF87-4C8A-95A4-EFAA3F6EABD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD8DFE4B-BF87-4C8A-95A4-EFAA3F6EABD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DD8DFE4B-BF87-4C8A-95A4-EFAA3F6EABD7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B0A0CD6-FD57-48F0-A163-F39073981934}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B0A0CD6-FD57-48F0-A163-F39073981934}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B0A0CD6-FD57-48F0-A163-F39073981934}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B0A0CD6-FD57-48F0-A163-F39073981934}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -150,5 +156,6 @@ Global
 		{8DA40355-D458-4EE6-9FD9-E1406C73E5EB} = {A7F38696-7175-4258-B853-BAF3EC649A4E}
 		{609956AE-F9B0-489C-AE90-EC9D6068055F} = {A7F38696-7175-4258-B853-BAF3EC649A4E}
 		{DD8DFE4B-BF87-4C8A-95A4-EFAA3F6EABD7} = {A7F38696-7175-4258-B853-BAF3EC649A4E}
+		{2B0A0CD6-FD57-48F0-A163-F39073981934} = {A7F38696-7175-4258-B853-BAF3EC649A4E}
 	EndGlobalSection
 EndGlobal

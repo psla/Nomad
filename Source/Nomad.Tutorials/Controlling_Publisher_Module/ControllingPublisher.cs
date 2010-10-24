@@ -1,4 +1,5 @@
 ﻿using System;
+using EventAggregatorCommunicationTypes;
 using Nomad.Communication.EventAggregation;
 using Nomad.Modules;
 
@@ -42,38 +43,8 @@ namespace Controlling_Publisher_Module
             // publishing the terminate message
             _eventAggregator.Publish(new StopPublishingMessageType("Counter reached desired number."));
             //Unsubscribing from the CounterMessage
-            _eventAggregator.Unsubsribe<CounterMessageType>(CheckCounter);
+            _eventAggregator.Unsubscribe<CounterMessageType>(CheckCounter);
             Console.WriteLine("Unsubscribing from counter Events");
         }
-
-        #region Nested type: CounterMessageType
-
-        private class CounterMessageType
-        {
-            public CounterMessageType(int counter)
-            {
-                Counter = counter;
-            }
-
-
-            public int Counter { get; private set; }
-        }
-
-        #endregion
-
-        #region Nested type: StopPublishingMessageType
-
-        private class StopPublishingMessageType
-        {
-            public readonly string Message;
-
-
-            public StopPublishingMessageType(string message)
-            {
-                Message = message;
-            }
-        }
-
-        #endregion
     }
 }

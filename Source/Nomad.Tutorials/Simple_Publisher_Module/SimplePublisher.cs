@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using EventAggregatorCommunicationTypes;
 using Nomad.Communication.EventAggregation;
 using Nomad.Modules;
 
@@ -44,43 +45,7 @@ namespace Simple_Publisher_Module
             _keepPublishing = false;
             Console.WriteLine("Received termination event: {0}", message.Message);
             // unsubscrbing from event
-            _eventAggregator.Unsubsribe<StopPublishingMessageType>(StopPublishing);
+            _eventAggregator.Unsubscribe<StopPublishingMessageType>(StopPublishing);
         }
-
-        #region Nested type: CounterMessageType
-
-        /// <summary>
-        /// Simple counter message class
-        /// </summary>
-        private class CounterMessageType
-        {
-            public CounterMessageType(int counter)
-            {
-                Counter = counter;
-            }
-
-
-            public int Counter { get; private set; }
-        }
-
-        #endregion
-
-        #region Nested type: StopPublishingMessageType
-
-        /// <summary>
-        /// Example of a control message
-        /// </summary>
-        private class StopPublishingMessageType
-        {
-            public readonly string Message;
-
-
-            public StopPublishingMessageType(string message)
-            {
-                Message = message;
-            }
-        }
-
-        #endregion
     }
 }

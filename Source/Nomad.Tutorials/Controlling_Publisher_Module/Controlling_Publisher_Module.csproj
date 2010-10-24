@@ -54,6 +54,10 @@
       <Name>Nomad</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\EventAggregatorCommunicationTypes\EventAggregatorCommunicationTypes.csproj">
+      <Project>{2B0A0CD6-FD57-48F0-A163-F39073981934}</Project>
+      <Name>EventAggregatorCommunicationTypes</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -23,7 +23,7 @@ namespace Nomad.Communication.EventAggregation
         /// </remarks>
         /// <typeparam name="T">type of message we are stopping to listen</typeparam>
         /// <param name="action"></param>
-        void Unsubsribe<T>(Action<T> action) where T : class;
+        void Unsubscribe<T>(Action<T> action) where T : class;
 
 
         /// <summary>
