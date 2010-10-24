@@ -1,3 +1,5 @@
+using System;
+
 namespace Nomad.Modules.Manifest
 {
     ///<summary>

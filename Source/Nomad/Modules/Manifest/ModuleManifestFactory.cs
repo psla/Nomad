@@ -7,6 +7,7 @@ namespace Nomad.Modules.Manifest
     ///<summary>
     /// Returns module manifest from real directory
     ///</summary>
+    [Serializable]
     public class ModuleManifestFactory : IModuleManifestFactory
     {
         /// <summary>
