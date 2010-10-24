@@ -94,8 +94,8 @@
     <Compile Include="FunctionalTests\ServiceLocation\ServiceRegistry.cs" />
     <Compile Include="FunctionalTests\Signing\KeyGenerating.cs" />
     <Compile Include="FunctionalTests\Signing\ModuleSigning.cs" />
-    <Compile Include="FunctionalTests\Signing\SignedModulesFiltering.cs" />
-    <Compile Include="GettingModules\UpdatingClient.cs" />
+    <Compile Include="FunctionalTests\Modules\Filters\SignedModulesFiltering.cs" />
+    <Compile Include="UnitTests\GettingModules\UpdatingClient.cs" />
     <Compile Include="GuiNunitHooks.cs" />
     <Compile Include="IntegrationTests\Modules\DirectoryModuleDiscovery.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

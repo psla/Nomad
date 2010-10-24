@@ -12,7 +12,7 @@ using NUnit.Framework;
 using TestsShared;
 using Version = Nomad.Utils.Version;
 
-namespace Nomad.Tests.GettingModules
+namespace Nomad.Tests.UnitTests.GettingModules
 {
     [UnitTests]
     public class UpdatingClient

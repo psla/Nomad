@@ -11,9 +11,8 @@ using Nomad.Signing.SignatureAlgorithms;
 using Nomad.Signing.SignatureProviders;
 using NUnit.Framework;
 using TestsShared;
-using File = System.IO.File;
 
-namespace Nomad.Tests.FunctionalTests.Signing
+namespace Nomad.Tests.FunctionalTests.Modules.Filters
 {
     [FunctionalTests]
     public class SignedModulesFiltering
