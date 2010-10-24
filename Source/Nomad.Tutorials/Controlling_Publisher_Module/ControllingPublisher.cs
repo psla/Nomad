@@ -4,6 +4,9 @@ using Nomad.Modules;
 
 namespace Controlling_Publisher_Module
 {
+    /// <summary>
+    /// Simple module that listens to the counter module and stops him.
+    /// </summary>
     public class ControllingPublisher : IModuleBootstraper
     {
         private readonly IEventAggregator _eventAggregator;
@@ -18,6 +21,7 @@ namespace Controlling_Publisher_Module
 
         public void Initialize()
         {
+            // subscribing to the CounterMessage
             _eventAggregator.Subscribe<CounterMessageType>(CheckCounter);
         }
 
@@ -28,8 +32,6 @@ namespace Controlling_Publisher_Module
             Console.WriteLine("Received counter message with: {0}", obj.Counter);
             if (obj.Counter >= 5)
             {
-                _eventAggregator.Unsubsribe<CounterMessageType>(CheckCounter);
-                Console.WriteLine("Unsubscribing from counter Events");
                 TerminateCounterModule();
             }
         }
@@ -37,7 +39,11 @@ namespace Controlling_Publisher_Module
 
         private void TerminateCounterModule()
         {
+            // publishing the terminate message
             _eventAggregator.Publish(new StopPublishingMessageType("Counter reached desired number."));
+            //Unsubscribing from the CounterMessage
+            _eventAggregator.Unsubsribe<CounterMessageType>(CheckCounter);
+            Console.WriteLine("Unsubscribing from counter Events");
         }
 
         #region Nested type: CounterMessageType
