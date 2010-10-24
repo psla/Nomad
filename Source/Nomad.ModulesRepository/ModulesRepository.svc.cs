@@ -39,10 +39,10 @@ namespace Nomad.ModulesRepository
         }
 
 
-        public ModulePackage GetModule(string module)
+        public ModulePackage GetModule(string moduleUniqeName)
         {
-            var zipPath = GetZipPath(module);
-            var manifestPath = GetManifestPath(module);
+            var zipPath = GetZipPath(moduleUniqeName);
+            var manifestPath = GetManifestPath(moduleUniqeName);
             var manifest =
                 XmlSerializerHelper.Deserialize<ModuleManifest>(File.ReadAllBytes(manifestPath));
             return new ModulePackage()

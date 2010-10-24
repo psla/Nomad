@@ -114,7 +114,7 @@ namespace Nomad.Utils
         #region IEquatable<Version> Members
 
         /// <summary>
-        /// Verifies version equality, based on 6 properies
+        /// Verifies version equality, based on 6 properties
         /// </summary>
         /// <param name="other">other version object</param>
         /// <returns>true if versions are equal</returns>
@@ -131,7 +131,7 @@ namespace Nomad.Utils
         #endregion
 
         /// <summary>
-        /// Verifies version equality, based on 6 properies
+        /// Verifies version equality, based on 6 properties
         /// </summary>
         /// <remarks>
         /// Compares two instances of version, otherwise uses base.Equals implementation
@@ -176,19 +176,31 @@ namespace Nomad.Utils
             }
         }
 
+
+
+        /// <summary>
+        ///     Checks if the <paramref name="version1"/> is latter than <paramref name="version2"/>. 
+        /// </summary>
+        /// <remarks>
+        ///     The condition uses <see cref="System.Version"/> type of greater than.
+        /// </remarks>
+        /// <param name="version1"></param>
+        /// <param name="version2"></param>
+        /// <returns>True if condition is valid</returns>
         public static bool operator >(Version version1, Version version2)
         {
             return version1.GetSystemVersion() > version2.GetSystemVersion();
-            /*if(version2.Build > version1.Build)
-                return true;
-            if(version2.Build == version1.Build)
-            {
-                if (version2.Major > version1.Major)
-                    return true;
-                if(version2.Major=version1.Major)
-            }*/
         }
 
+        /// <summary>
+        ///     Checks if the <paramref name="version1"/> is earlier than <paramref name="version2"/>. 
+        /// </summary>
+        /// <remarks>
+        ///     The condition uses <see cref="System.Version"/> type of greater than.
+        /// </remarks>
+        /// <param name="version1"></param>
+        /// <param name="version2"></param>
+        /// <returns>True if condition is valid</returns>
         public static bool operator <(Version version1, Version version2)
         {
             return version1.GetSystemVersion() < version2.GetSystemVersion();

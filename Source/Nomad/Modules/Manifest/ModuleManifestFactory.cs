@@ -9,6 +9,9 @@ namespace Nomad.Modules.Manifest
     ///</summary>
     public class ModuleManifestFactory : IModuleManifestFactory
     {
+        /// <summary>
+        /// Inherited.
+        /// </summary>
         public ModuleManifest GetManifest(ModuleInfo moduleInfo)
         {
             var manifestPath = string.Format("{0}{1}", moduleInfo.AssemblyPath,

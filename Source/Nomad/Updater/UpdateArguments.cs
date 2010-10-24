@@ -10,8 +10,14 @@ namespace Nomad.Updater
     /// </summary>
     public class UpdateArguments
     {
+        /// <summary>
+        ///     Path to plugins.
+        /// </summary>
         public string PluginsPath { get; private set; }
 
+        /// <summary>
+        ///     Collection of unique names of modules.
+        /// </summary>
         public ICollection<string> ModulesToUpdate { get; set; }
 
         public UpdateArguments(string[] args) : this(args[0], args.Skip(1))

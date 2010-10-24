@@ -10,7 +10,7 @@ using Nomad.Modules.Manifest;
 namespace Nomad.Updater
 {
     /// <summary>
-    /// Handles updates & install operations, especially - 
+    /// Handles updates and install operations, especially - 
     /// verifying if there is any update for any module, 
     /// installing module taking dependencies into account
     /// </summary>
