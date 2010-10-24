@@ -47,6 +47,10 @@ namespace Nomad.Modules.Filters
         /// Secondly, it verifies that manifest matches it signatures.
         /// Than it verifies, that each file mentioned in manifest is present and matches its signature.
         /// </para>
+        /// <para>
+        ///     There is also asumption that module assembly provided by <see cref="ModuleInfo.AssemblyPath"/>
+        ///     is in the same directory as the manifest file and manifest signature file.
+        /// </para>
         /// </remarks>
         /// <param name="moduleInfo">module to verify</param>
         /// <returns>true if all conditions are fullfilled, otherwise false - preventing module from loading</returns>
@@ -59,9 +63,8 @@ namespace Nomad.Modules.Filters
 
             try
             {
-                //firstly - deserialize manifest
-                var manifest =
-                    XmlSerializerHelper.Deserialize<ModuleManifest>(File.ReadAllBytes(manifestPath));
+                //get manifest
+                var manifest = moduleInfo.Manifest;
 
                 //get current issuer
                 IssuerInformation issuer = _signatureProvider.GetIssuer(manifest.Issuer);

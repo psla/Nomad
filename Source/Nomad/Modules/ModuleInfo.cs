@@ -4,7 +4,7 @@ using Nomad.Modules.Manifest;
 namespace Nomad.Modules
 {
     /// <summary>
-    ///     Represents single module's manifest - all the information
+    ///     Represents single module - all the information
     ///     uniquely identifying a module and required to properly load
     ///     and initialize it.
     /// </summary>
@@ -31,8 +31,11 @@ namespace Nomad.Modules
         /// </summary>
         /// <param name="assemblyPath">Full or relative path to the assembly file containing module's code</param>
         /// <param name="manifest">Module Manifest connected with assembly file defined in <paramref name="assemblyPath"/>. Can be null.</param>
-        /// <param name="factory">IModuleManifest factory that connects the concrete implementation of ModuleManifest with in program ModuleManifest</param>
-        /// <exception cref="ArgumentException">When <paramref name="assemblyPath"/> is <c>null</c> or empty.</exception>
+        /// <param name="factory">IModuleManifest factory that connects the concrete implementation of ModuleManifest with in program ModuleManifest. Can be null</param>
+        /// <exception cref="ArgumentException">
+        /// When <paramref name="assemblyPath"/> is <c>null</c> or empty. 
+        /// When <paramref name="manifest"/> or <paramref name="factory"/> is <c>null</c>.
+        /// </exception>
         public ModuleInfo(string assemblyPath, ModuleManifest manifest,
                           IModuleManifestFactory factory)
         {
