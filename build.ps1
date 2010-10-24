@@ -226,7 +226,7 @@ task UnitTest -depends Compile {
     tests $unit_tests_category
 }
 
-task IntegrationDataPrepare {
+task IntegrationDataPrepare -depends Compile {
 	New-Item -ItemType directory -Path $directory_module_discovery_sandbox_dir
 	New-Item -ItemType file -Path "$directory_module_discovery_sandbox_dir\a.dll" -Value "a"
 	New-Item -ItemType file -Path "$directory_module_discovery_sandbox_dir\b.dll" -Value "b"
@@ -355,6 +355,8 @@ task LocalBuild -depends Compile, UnitTest, IntegrationTest, FunctionalTest -des
 
 }
 
+task DataPrepare -depends IntegrationDataPrepare,FunctionalDataPrepare {
+}
 
 task FastBuild -depends UnitTest, IntegrationTest {
 
