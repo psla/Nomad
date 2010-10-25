@@ -4,7 +4,9 @@ using Nomad.Modules.Discovery;
 
 namespace Loading_Unloading_Modules_Host_Application
 {
-    
+    /// <summary>
+    ///     Nomad's thin client that starts the whole framework based application.
+    /// </summary>
     internal class Program
     {
         private static void Main(string[] args)
@@ -15,23 +17,16 @@ namespace Loading_Unloading_Modules_Host_Application
             // loading modules using directory module discovery pattern
             var discovery = new DirectoryModuleDiscovery(@".\Modules\");
 
-            // subscribing for load/unload events
-            kernel.ModuleAppDomain.AssemblyLoad +=
-                (sender, moduleArgs) =>
-                Console.WriteLine(String.Format("Module Loaded: {0}",
-                                                moduleArgs.LoadedAssembly.FullName));
-
-            kernel.ModuleAppDomain.DomainUnload +=
-                (sender, domainArgs) => Console.WriteLine("Domain Unloaded");
-
-            // loading items
+            // loading discovered modules
             kernel.LoadModules(discovery);
 
+            //wait for input
             Console.ReadLine();
 
-            // unloading events
+            // unloading all modules
             kernel.UnloadModules();
 
+            //wait for input
             Console.ReadLine();
         }
     }

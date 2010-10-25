@@ -4,6 +4,9 @@ using Nomad.Modules.Discovery;
 
 namespace ServiceLocator_Host_Application
 {
+    /// <summary>
+    ///     Nomad's thin client that starts the whole framework based application.
+    /// </summary>
     internal class Program
     {
         private static void Main(string[] args)
@@ -12,7 +15,6 @@ namespace ServiceLocator_Host_Application
             var kernel = new NomadKernel();
 
             // loading modules using single module discovery pattern
-
             var registeringModuleDiscovery =
                 new SingleModuleDiscovery(@".\Modules\Registering_within_ServiceLocator_Module.dll");
             kernel.LoadModules(registeringModuleDiscovery);
@@ -21,6 +23,7 @@ namespace ServiceLocator_Host_Application
                 new SingleModuleDiscovery(@".\Modules\ServiceLocator_dependent_Module.dll");
             kernel.LoadModules(serviceDependentModuleDiscovery);
 
+            //wait
             Console.ReadLine();
         }
     }

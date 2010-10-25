@@ -7,7 +7,7 @@ using Nomad.Modules;
 namespace Simple_Publisher_Module
 {
     /// <summary>
-    /// Simple module that uses EventAggregation Scheme in Nomad
+    ///     Simple module that uses EventAggregation Scheme in Nomad
     /// </summary>
     public class SimplePublisher : IModuleBootstraper
     {
@@ -15,6 +15,12 @@ namespace Simple_Publisher_Module
         private bool _keepPublishing;
 
 
+        /// <summary>
+        ///     Initializes the instance of the module.
+        /// </summary>
+        /// <param name="eventAggregator">
+        ///     Nomad's <see cref="IEventAggregator"/> object which will be provided by framework.
+        /// </param>
         public SimplePublisher(IEventAggregator eventAggregator)
         {
             _eventAggregator = eventAggregator;
@@ -24,15 +30,19 @@ namespace Simple_Publisher_Module
 
         public void Initialize()
         {
-            // subscribing to an event in Nomad
+            // subscribing to an event (Stop Publishing) in Nomad
             _eventAggregator.Subscribe<StopPublishingMessageType>(StopPublishing);
+           
             _keepPublishing = true;
             int count = 0;
             while (_keepPublishing)
             {
                 count++;
-                //publishing a new message into Nomad
+
+                //  publishing a new message into Nomad
                 _eventAggregator.Publish(new CounterMessageType(count));
+                
+                // user experience
                 Console.WriteLine("Published: {0}", count);
                 Thread.Sleep(500);
             }
@@ -43,8 +53,10 @@ namespace Simple_Publisher_Module
         private void StopPublishing(StopPublishingMessageType message)
         {
             _keepPublishing = false;
+
             Console.WriteLine("Received termination event: {0}", message.Message);
-            // unsubscrbing from event
+            
+            // unsubscribing from event
             _eventAggregator.Unsubscribe<StopPublishingMessageType>(StopPublishing);
         }
     }

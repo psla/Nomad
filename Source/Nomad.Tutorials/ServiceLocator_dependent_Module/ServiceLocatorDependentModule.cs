@@ -5,7 +5,7 @@ using SimpleCommunicationServiceInterface;
 namespace ServiceLocator_dependent_Module
 {
     /// <summary>
-    /// Simple module that uses <see cref="ISimpleCommunicationService"/> loaded into the application.
+    ///     Simple Nomad compliant module that uses <see cref="ISimpleCommunicationService"/> loaded into the application.
     /// </summary>
     public class ServiceLocatorDependentModule : IModuleBootstraper
     {
@@ -13,6 +13,12 @@ namespace ServiceLocator_dependent_Module
         private ISimpleCommunicationService _simpleCommunicationService;
 
 
+        /// <summary>
+        ///     Initializes the instance of the module.
+        /// </summary>
+        /// <param name="serviceLocator"><see cref="IServiceLocator"/>
+        ///     Nomad's IServieLocator which will be provided (injected by framework) to module. 
+        /// </param>
         public ServiceLocatorDependentModule(IServiceLocator serviceLocator)
         {
             _serviceLocator = serviceLocator;
@@ -24,6 +30,7 @@ namespace ServiceLocator_dependent_Module
         {
             // resolving object that provides implementation of ISimpleCommunicationService
             _simpleCommunicationService = _serviceLocator.Resolve<ISimpleCommunicationService>();
+            //performing operation on interface
             _simpleCommunicationService.Execute();
         }
 

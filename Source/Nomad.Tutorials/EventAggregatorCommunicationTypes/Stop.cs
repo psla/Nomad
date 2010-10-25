@@ -1,8 +1,11 @@
 namespace EventAggregatorCommunicationTypes
 {
     /// <summary>
-    /// Example of a control message
+    ///     Example of a control message.
     /// </summary>
+    /// <remarks>
+    ///     In this tutorial this class will be used as simple control message carrier.
+    /// </remarks>
     public class StopPublishingMessageType
     {
         public readonly string Message;

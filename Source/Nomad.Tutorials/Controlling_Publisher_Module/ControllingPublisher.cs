@@ -6,13 +6,19 @@ using Nomad.Modules;
 namespace Controlling_Publisher_Module
 {
     /// <summary>
-    /// Simple module that listens to the counter module and stops him.
+    ///     Simple module that listens to the counter module and stops him.
     /// </summary>
     public class ControllingPublisher : IModuleBootstraper
     {
         private readonly IEventAggregator _eventAggregator;
 
-
+        
+        /// <summary>
+        ///     Initializes the instance of the module.
+        /// </summary>
+        /// <param name="eventAggregator">
+        ///     Nomad's <see cref="IEventAggregator"/> object which will be provied by framework.
+        /// </param>
         public ControllingPublisher(IEventAggregator eventAggregator)
         {
             _eventAggregator = eventAggregator;
@@ -40,9 +46,10 @@ namespace Controlling_Publisher_Module
 
         private void TerminateCounterModule()
         {
-            // publishing the terminate message
+            //  publishing the terminate message
             _eventAggregator.Publish(new StopPublishingMessageType("Counter reached desired number."));
-            //Unsubscribing from the CounterMessage
+
+            //  Unsubscribing from the CounterMessage
             _eventAggregator.Unsubscribe<CounterMessageType>(CheckCounter);
             Console.WriteLine("Unsubscribing from counter Events");
         }
