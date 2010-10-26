@@ -1,4 +1,5 @@
-﻿using Nomad.Communication.ServiceLocation;
+﻿using System;
+using Nomad.Communication.ServiceLocation;
 using Nomad.Modules;
 using SimpleCommunicationServiceInterface;
 
@@ -24,14 +25,20 @@ namespace ServiceLocator_dependent_Module
             _serviceLocator = serviceLocator;
         }
 
-        #region IModuleBootstraper Members
+        #region Implementation of IModuleBootstraper
 
-        public void Initialize()
+        public void OnLoad()
         {
-            // resolving object that provides implementation of ISimpleCommunicationService
+               // resolving object that provides implementation of ISimpleCommunicationService
             _simpleCommunicationService = _serviceLocator.Resolve<ISimpleCommunicationService>();
             //performing operation on interface
             _simpleCommunicationService.Execute();
+        }
+
+
+        public void OnUnLoad()
+        {
+            ;
         }
 
         #endregion

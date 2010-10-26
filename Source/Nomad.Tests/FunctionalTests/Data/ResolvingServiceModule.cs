@@ -11,10 +11,14 @@ public class ResolvingServiceModule : Nomad.Modules.IModuleBootstraper
         _serviceLocator = serviceLocator;
 	}
 
-    public void Initialize()
+    public void OnLoad()
     {
         var serviceProvider = _serviceLocator.Resolve<ITestService>();
         serviceProvider.Execute();
+    }
+
+    public void OnUnLoad()
+    {
     }
 
 }

@@ -31,10 +31,16 @@ namespace Registering_within_ServiceLocator_Module
 
         #region IModuleBootstraper Members
 
-        public void Initialize()
+        public void OnLoad()
         {
             // registering service in Nomad's ServiceLocator
             _serviceLocator.Register<ISimpleCommunicationService>(_myOfferedService);
+        }
+
+
+        public void OnUnLoad()
+        {
+            ;
         }
 
         #endregion

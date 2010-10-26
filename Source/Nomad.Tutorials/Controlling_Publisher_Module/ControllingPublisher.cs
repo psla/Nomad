@@ -26,10 +26,17 @@ namespace Controlling_Publisher_Module
 
         #region IModuleBootstraper Members
 
-        public void Initialize()
+        public void OnLoad()
         {
             // subscribing to the CounterMessage
             _eventAggregator.Subscribe<CounterMessageType>(CheckCounter);
+        }
+
+
+        public void OnUnLoad()
+        {
+            //nothing to do on unload
+            ;
         }
 
         #endregion

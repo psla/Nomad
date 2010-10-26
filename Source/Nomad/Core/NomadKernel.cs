@@ -110,6 +110,7 @@ namespace Nomad.Core
         /// </remarks>
         public void UnloadModules()
         {
+            
             AppDomain.Unload(ModuleAppDomain);
 
             ModuleAppDomain = AppDomain.CreateDomain("Nomad Loaded Modules",

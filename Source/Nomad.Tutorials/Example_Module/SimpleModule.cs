@@ -13,9 +13,15 @@ namespace Tutorial_01_Example_Module
         /// <summary>
         ///     Method that is called after successfully loading this module.
         /// </summary>
-        public void Initialize()
+        public void OnLoad()
         {
-            Console.WriteLine("Hello Nomad!");
+            Console.WriteLine("Hello Nomad Loaded!");
+        }
+
+
+        public void OnUnLoad()
+        {
+            Console.WriteLine("Hello Nomad Unloaded");
         }
 
         #endregion

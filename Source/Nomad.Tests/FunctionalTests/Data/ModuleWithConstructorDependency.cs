@@ -8,8 +8,12 @@ public class ModuleWithConstructorDependency : Nomad.Modules.IModuleBootstraper
         _registry = registry;
     }
 
-    public void Initialize()
+    public void OnLoad()
     {
         _registry.Register(typeof(ModuleWithConstructorDependency));
+    }
+
+    public void OnUnLoad()
+    {
     }
 }

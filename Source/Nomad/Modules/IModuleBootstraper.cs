@@ -1,7 +1,7 @@
 namespace Nomad.Modules
 {
     /// <summary>
-    /// Can be started by <see cref="ModuleManager"/>. 
+    ///     Can be used by <see cref="ModuleManager"/>. 
     /// </summary>
     /// <remarks>
     /// Implementation of this interface is must have requirement for using assembly as module.
@@ -9,11 +9,25 @@ namespace Nomad.Modules
     public interface IModuleBootstraper
     {
         /// <summary>
-        /// Executed during module loading by <see cref="ModuleManager"/>
+        ///     Executed during module loading by <see cref="ModuleManager"/>
         /// </summary>
         /// <remarks>
-        ///     Executed after being loaded into CLR library space.
+        ///     <para>
+        ///         Executed after being loaded into CLR library space.
+        ///     </para>
+        ///     <para>
+        ///         Any dependencies on the other modules will not be resolved earlier.
+        ///     </para>
         /// </remarks>
-        void Initialize();
+        void OnLoad();
+
+
+        /// <summary>
+        ///     Executed before unloading module.
+        /// </summary>
+        /// <remarks>
+        ///     This method is executed in random sequence.
+        /// </remarks>
+        void OnUnLoad();
     }
 }

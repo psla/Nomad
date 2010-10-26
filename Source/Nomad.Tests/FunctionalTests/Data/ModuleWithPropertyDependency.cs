@@ -7,8 +7,12 @@ public class ModuleWithPropertyDependency : Nomad.Modules.IModuleBootstraper
     {
     }
 
-    public void Initialize()
+    public void OnLoad()
     {
         Registry.Register(typeof(ModuleWithPropertyDependency));
+    }
+
+    public void OnUnLoad()
+    {
     }
 }

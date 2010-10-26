@@ -2,8 +2,12 @@
 
 public class SimplestModulePossible2 : Nomad.Modules.IModuleBootstraper
 {
-    public void Initialize()
+    public void OnLoad()
     {
         Nomad.Tests.FunctionalTests.Modules.LoadedModulesRegistry.Register(typeof(SimplestModulePossible2));
+    }
+
+    public void OnUnLoad()
+    {
     }
 }

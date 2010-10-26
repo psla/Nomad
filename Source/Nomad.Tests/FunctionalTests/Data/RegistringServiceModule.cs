@@ -11,10 +11,14 @@ public class RegistringServiceModule : Nomad.Modules.IModuleBootstraper
        _serviceLocator = serviceLocator;
     }
 
-    public void Initialize()
+    public void OnLoad()
     {
         var serviceProvider = new TestServiceFromModule();
         _serviceLocator.Register<ITestService>(serviceProvider);
+    }
+
+    public void OnUnLoad()
+    {
     }
 
     class TestServiceFromModule : ITestService

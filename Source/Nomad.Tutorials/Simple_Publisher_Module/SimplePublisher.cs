@@ -28,7 +28,7 @@ namespace Simple_Publisher_Module
 
         #region IModuleBootstraper Members
 
-        public void Initialize()
+        public void OnLoad()
         {
             // subscribing to an event (Stop Publishing) in Nomad
             _eventAggregator.Subscribe<StopPublishingMessageType>(StopPublishing);
@@ -46,6 +46,13 @@ namespace Simple_Publisher_Module
                 Console.WriteLine("Published: {0}", count);
                 Thread.Sleep(500);
             }
+        }
+
+
+        public void OnUnLoad()
+        {
+            // nothing to on unload 
+            ;            
         }
 
         #endregion

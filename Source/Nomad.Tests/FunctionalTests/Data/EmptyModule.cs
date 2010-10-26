@@ -2,8 +2,13 @@
 
 public class EmptyModule : Nomad.Modules.IModuleBootstraper
 {
-    public void Initialize()
+    public void OnLoad()
     {
-        
+		;
     }
+	
+	public void OnUnLoad()
+	{
+		;
+	}
 }

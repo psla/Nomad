@@ -47,7 +47,7 @@ namespace Nomad.Modules
 
                 IWindsorContainer subContainer = CreateSubContainerConfiguredFor(bootstraperType);
                 bootstraper = subContainer.Resolve<IModuleBootstraper>();
-                bootstraper.Initialize();
+                bootstraper.OnLoad();
             }
             catch (Exception e)
             {
