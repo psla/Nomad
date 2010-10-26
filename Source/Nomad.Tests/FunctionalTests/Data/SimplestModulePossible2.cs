@@ -9,5 +9,6 @@ public class SimplestModulePossible2 : Nomad.Modules.IModuleBootstraper
 
     public void OnUnLoad()
     {
+        Nomad.Tests.FunctionalTests.Modules.LoadedModulesRegistry.UnRegister(typeof(SimplestModulePossible2));
     }
 }

@@ -13,6 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Functional Data", "Function
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{A3991F62-5131-4901-AE6D-4F027BD6EFF0}"
 	ProjectSection(SolutionItems) = preProject
+		Nomad.Tests\FunctionalTests\Data\EmptyModule.cs = Nomad.Tests\FunctionalTests\Data\EmptyModule.cs
 		Nomad.Tests\FunctionalTests\Data\ModuleWithConstructorDependency.cs = Nomad.Tests\FunctionalTests\Data\ModuleWithConstructorDependency.cs
 		Nomad.Tests\FunctionalTests\Data\ModuleWithPropertyDependency.cs = Nomad.Tests\FunctionalTests\Data\ModuleWithPropertyDependency.cs
 		Nomad.Tests\FunctionalTests\Data\RegistringServiceModule.cs = Nomad.Tests\FunctionalTests\Data\RegistringServiceModule.cs

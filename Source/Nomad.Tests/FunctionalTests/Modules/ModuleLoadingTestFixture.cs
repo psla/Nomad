@@ -31,6 +31,19 @@ namespace Nomad.Tests.FunctionalTests.Modules
             _manager = new ModuleManager(new ModuleLoader(Container), new CompositeModuleFilter());
         }
 
+        protected void InvokeUnloadMethod()
+        {
+            _manager.InvokeUnloadCallback();
+        }
+
+        protected void AssertInvokeUnloadMethodsWasInvoked(params string[] expectedModuleNames)
+        {
+            var unloadedModuleNames = LoadedModulesRegistry.GetUnRegisteredModules()
+                .Select(type => type.Name)
+                .ToArray();
+
+            Assert.That(unloadedModuleNames,Is.EqualTo(expectedModuleNames));
+        }
 
         protected void LoadModulesFromDirectory(string moduleDirectory)
         {

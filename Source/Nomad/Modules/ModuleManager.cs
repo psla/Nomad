@@ -68,5 +68,16 @@ namespace Nomad.Modules
             foreach (var moduleInfo in filteredModules)
                 LoadSingleModule(moduleInfo);
         }
+
+        /// <summary>
+        ///     Invokes the <see cref="IModuleBootstraper.OnUnLoad"/> method from each of the loaded modules.
+        /// </summary>
+        /// <remarks>
+        ///     This method will attepmt to execute this method on <c>all</c> loaded modules from IoC container.
+        /// </remarks>
+        public void InvokeUnloadCallback()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

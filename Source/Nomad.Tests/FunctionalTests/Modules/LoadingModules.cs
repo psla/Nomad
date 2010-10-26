@@ -12,5 +12,13 @@ namespace Nomad.Tests.FunctionalTests.Modules
             LoadModulesFromDirectory(@"Modules\Simple\");
             AssertModulesLoadedAreEqualTo("SimplestModulePossible1", "SimplestModulePossible2");
         }
+
+        [Test]
+        public void module_loader_invokes_onUnLoad_method_in_modules()
+        {
+            LoadModulesFromDirectory(@"Modules\Simple\");
+            InvokeUnloadMethod();
+            AssertInvokeUnloadMethodsWasInvoked("SimplestModulePossible1", "SimplestModulePossible2");
+        }
     }
 }

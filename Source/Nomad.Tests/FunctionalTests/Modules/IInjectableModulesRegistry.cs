@@ -4,6 +4,6 @@ namespace Nomad.Tests.FunctionalTests.Modules
 {
     public interface IInjectableModulesRegistry
     {
-        void Register(Type bootstraperType);
+        void Register(Type bootstraperType);        
     }
 }
