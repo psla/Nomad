@@ -73,11 +73,12 @@ namespace Nomad.Modules
         ///     Invokes the <see cref="IModuleBootstraper.OnUnLoad"/> method from each of the loaded modules.
         /// </summary>
         /// <remarks>
-        ///     This method will attepmt to execute this method on <c>all</c> loaded modules from IoC container.
+        ///     This method will attempt to execute this method on <c>all</c> loaded modules from IoC container.
+        ///     Thus, in current Nomad implementation, only forwarding to <see cref="MarshalByRefObject"/> - <see cref="IModuleLoader"/> class is done.
         /// </remarks>
         public void InvokeUnloadCallback()
         {
-            throw new NotImplementedException();
+            _moduleLoader.InvokeUnload();
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Nomad.Modules
     public class ModuleLoader : MarshalByRefObject, IModuleLoader
     {
         private readonly IWindsorContainer _rootContainer;
-
+        private List<IModuleBootstraper> _loadedModules = new List<IModuleBootstraper>();
 
         /// <summary>
         ///     Initializes new instance of the <see cref="ModuleLoader"/> class.
@@ -38,16 +38,13 @@ namespace Nomad.Modules
             {
                 AssemblyName asmName = AssemblyName.GetAssemblyName(moduleInfo.AssemblyPath);
                 Assembly assembly = Assembly.Load(asmName);
-                IEnumerable<Type> bootstraperTypes =
-                    from type in assembly.GetTypes()
-                    where type.GetInterfaces().Contains(typeof (IModuleBootstraper))
-                    select type;
 
-                Type bootstraperType = bootstraperTypes.SingleOrDefault();
+                Type bootstraperType = GetBootstrapperType(assembly);
 
                 IWindsorContainer subContainer = CreateSubContainerConfiguredFor(bootstraperType);
                 bootstraper = subContainer.Resolve<IModuleBootstraper>();
                 bootstraper.OnLoad();
+                _loadedModules.Add(bootstraper);
             }
             catch (Exception e)
             {
@@ -58,11 +55,67 @@ namespace Nomad.Modules
             }
         }
 
+
+        /// <summary>
+        ///     Tries to invoke <see cref="IModuleBootstraper.OnUnLoad"/>  method on each module bootstrapper from set.
+        /// </summary>
+        /// <remarks>
+        ///     Unloads all modules from those having been registered in IoC container.
+        /// </remarks>
+        public void InvokeUnload()
+        {
+            //FIXME: find how to iterate through child containers to avoid iterating through assemblies.
+            //_rootContainer.`
+            //foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+            //{
+            //    //search in this assembly for IBootstrapper
+            //    try
+            //    {
+            //        Type bootstraperType = GetBootstrapperType(assembly);
+
+            //        //  is not a module
+            //        if (bootstraperType == null)
+            //            continue;
+
+            //        //  search containers
+                    
+            //    }
+            //    catch (Exception)
+            //    {
+            //        //TODO: provide logging facility
+            //        //throw;
+            //    }
+            //}
+            foreach (var moduleBootstraper in _loadedModules)
+            {
+                moduleBootstraper.OnUnLoad();
+            }
+
+            //var containers = _rootContainer.ResolveAll<IWindsorContainer>();
+            //foreach (var container in containers)
+            //{
+            //    var module = container.Resolve<IModuleBootstraper>();
+            //    module.OnUnLoad();
+            //}
+            
+        }
+
         #endregion
+
+        private static Type GetBootstrapperType(Assembly assembly)
+        {
+            IEnumerable<Type> bootstraperTypes =
+                from type in assembly.GetTypes()
+                where type.GetInterfaces().Contains(typeof (IModuleBootstraper))
+                select type;
+
+            return bootstraperTypes.SingleOrDefault();
+        }
+
 
         private IWindsorContainer CreateSubContainerConfiguredFor(Type bootstraperType)
         {
-            var subContainer = new WindsorContainer();
+            IWindsorContainer subContainer = new WindsorContainer();
             _rootContainer.AddChildContainer(subContainer);
 
             subContainer.Register(

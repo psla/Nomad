@@ -39,5 +39,10 @@ namespace Nomad.Modules
          * 
          * This can be implemented as a ModuleFilter, though
          * */
+
+        /// <summary>
+        ///     Tries to invoke <see cref="IModuleBootstraper.OnUnLoad"/>  method on each module bootstraper from set.
+        /// </summary>
+        void InvokeUnload();
     }
 }
