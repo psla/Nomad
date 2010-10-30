@@ -39,7 +39,7 @@ namespace Nomad.Modules
             _serviceLocator = new ServiceLocator(_windsorContainer);
             _windsorContainer.Register(Component.For<IServiceLocator>().Instance(_serviceLocator));
 
-            _eventAggregator = new EventAggregator();
+            _eventAggregator = new EventAggregator(new WpfGuiThreadProvider()); //TODO: Use factory / container
             _windsorContainer.Register(Component.For<IEventAggregator>().Instance(_eventAggregator));
         }
 

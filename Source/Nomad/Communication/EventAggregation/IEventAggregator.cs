@@ -10,9 +10,24 @@ namespace Nomad.Communication.EventAggregation
         ///<summary>
         /// Subscribes for events of specific type
         ///</summary>
+        /// <remarks>
+        /// Assumes delivery in any thread
+        /// </remarks>
         ///<param name="action">Action to invoke when specific event is sent</param>
         ///<typeparam name="T">type of message we want to listen</typeparam>
+        /// <returns>ticket of subscription. Needed for unsubscription</returns>
         IEventAggregatorTicket<T> Subscribe<T>(Action<T> action) where T : class;
+
+
+        ///<summary>
+        /// Subscribes for events of specific type, which should be delivered in specific way
+        /// </summary>
+        ///<param name="action">Action to invoke when specific type of event is sent</param>
+        ///<param name="deliveryMethod">Way to deliver the message</param>
+        ///<typeparam name="T">type of message we want to listens</typeparam>
+        ///<returns>ticket of subscription. Needed for unsubscription</returns>
+        IEventAggregatorTicket<T> Subscribe<T>(Action<T> action, DeliveryMethod deliveryMethod)
+            where T : class;
 
 
         /// <summary>

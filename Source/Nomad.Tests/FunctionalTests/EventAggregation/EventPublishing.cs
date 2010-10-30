@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
+using Moq;
 using Nomad.Communication.EventAggregation;
 using NUnit.Framework;
 using TestsShared;
@@ -13,12 +15,14 @@ namespace Nomad.Tests.FunctionalTests.EventAggregation
         private const string NameToSend = "testname";
 
         private IEventAggregator _eventAggregator;
+        private Mock<IGuiThreadProvider> _guiThread;
 
 
         [SetUp]
         public void Setup()
         {
-            _eventAggregator = new EventAggregator();
+            _guiThread = new Mock<IGuiThreadProvider>();
+            _eventAggregator = new EventAggregator(_guiThread.Object);
         }
 
 
@@ -96,7 +100,7 @@ namespace Nomad.Tests.FunctionalTests.EventAggregation
         public void after_calling_unsubscribe_handler_is_not_called_when_event_is_published()
         {
             Action<MessageType> myAction = x => { Assert.Fail("Delegate was not removed"); };
-            var ticket = _eventAggregator.Subscribe(myAction);
+            IEventAggregatorTicket<MessageType> ticket = _eventAggregator.Subscribe(myAction);
             _eventAggregator.Unsubscribe(ticket);
             _eventAggregator.Publish(new MessageType(NameToSend));
         }
@@ -106,7 +110,7 @@ namespace Nomad.Tests.FunctionalTests.EventAggregation
         public void after_unsubscribing_subscribing_again_results_in_working_event()
         {
             Action<MessageType> myAction = x => { Assert.Fail("Delegate was not removed"); };
-            var ticket = _eventAggregator.Subscribe(myAction);
+            IEventAggregatorTicket<MessageType> ticket = _eventAggregator.Subscribe(myAction);
             _eventAggregator.Unsubscribe(ticket);
             _eventAggregator.Subscribe<MessageType>(x => { });
             Assert.DoesNotThrow(() => _eventAggregator.Publish(new MessageType(NameToSend)),
@@ -122,11 +126,58 @@ namespace Nomad.Tests.FunctionalTests.EventAggregation
             _eventAggregator.Subscribe<MessageType>(payload => receivedPayload = payload);
 
             Action<MessageType> myAction = x => { };
-            var ticket = _eventAggregator.Subscribe(myAction);
+            IEventAggregatorTicket<MessageType> ticket = _eventAggregator.Subscribe(myAction);
             _eventAggregator.Unsubscribe(ticket);
 
             _eventAggregator.Publish(sentPayload);
             Assert.AreSame(sentPayload, receivedPayload);
+        }
+
+
+        [Test]
+        public void subscribing_for_action_in_gui_is_called_in_gui()
+        {
+            var sentPayload = new MessageType(NameToSend);
+            Action<MessageType> @delegate = (x) => { };
+            _eventAggregator.Subscribe(@delegate, DeliveryMethod.GuiThread);
+
+            _eventAggregator.Publish(sentPayload);
+            _guiThread.Verify(
+                x => x.RunInGui(It.Is<Delegate>(y => y.GetInvocationList().Contains(@delegate))),
+                Times.Exactly(1));
+        }
+
+
+        [Test]
+        public void subscribing_for_action_in_any_thread_is_not_invoked_in_gui()
+        {
+            var sentPayload = new MessageType(NameToSend);
+            Action<MessageType> @delegate = (x) => { };
+            _eventAggregator.Subscribe(@delegate, DeliveryMethod.AnyThread);
+
+            _eventAggregator.Publish(sentPayload);
+            _guiThread.Verify(
+                x => x.RunInGui(It.Is<Delegate>(y => y.GetInvocationList().Contains(@delegate))),
+                Times.Exactly(0));
+        }
+
+
+        [Test]
+        public void having_action_in_gui_and_not_in_gui_results_in_both_properly_invoked()
+        {
+            var sentPayload = new MessageType(NameToSend);
+            MessageType anyThreadPayload = null;
+            _eventAggregator.Subscribe<MessageType>((payload) => anyThreadPayload = payload,
+                                                    DeliveryMethod.AnyThread);
+            Action<MessageType> guiDelegate = payload => { };
+            _eventAggregator.Subscribe(guiDelegate, DeliveryMethod.GuiThread);
+
+            _eventAggregator.Publish(sentPayload);
+
+            Assert.AreSame(anyThreadPayload, sentPayload);
+            _guiThread.Verify(
+                x => x.RunInGui(It.Is<Delegate>(y => y.GetInvocationList().Contains(guiDelegate))),
+                Times.Exactly(1));
         }
 
         #region Nested type: MessageType
@@ -165,6 +216,12 @@ namespace Nomad.Tests.FunctionalTests.EventAggregation
             private readonly List<Thread> threads = new List<Thread>();
 
             /// <summary>
+            /// Events invoked at the end of each listener thread. When all set, then all threads finished their operations.
+            /// </summary>
+            public ManualResetEvent[] EndSynchronization =
+                new ManualResetEvent[ListenerThreadsNumber];
+
+            /// <summary>
             /// If any exception was thrown in any thread, it is stored in this field
             /// </summary>
             public Exception Exception;
@@ -173,12 +230,6 @@ namespace Nomad.Tests.FunctionalTests.EventAggregation
             /// verifies if each event was invoked (if each was subscribed properly). All values should be true
             /// </summary>
             public bool[] Invoked = new bool[100];
-
-            /// <summary>
-            /// Events invoked at the end of each listener thread. When all set, then all threads finished their operations.
-            /// </summary>
-            public ManualResetEvent[] EndSynchronization =
-                new ManualResetEvent[ListenerThreadsNumber];
 
 
             public ThreadingTestHelper(IEventAggregator eventAggregator)
