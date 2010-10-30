@@ -19,7 +19,7 @@ namespace Nomad.Communication.EventAggregation
         /// </summary>
         /// <typeparam name="T">type of event to subsribe for</typeparam>
         /// <param name="action">action delegate to fire when type T delivered</param>
-        public void Subscribe<T>(Action<T> action) where T : class
+        public IEventAggregatorTicket<T> Subscribe<T>(Action<T> action) where T : class
         {
             Type type = typeof (T);
             Delegate events = null;
@@ -27,7 +27,6 @@ namespace Nomad.Communication.EventAggregation
             {
                 if (_dictionary.TryGetValue(type, out events))
                 {
-                    //events.Add(action);
                     _dictionary[type] = Delegate.Combine(events, action);
                 }
                 else
@@ -35,6 +34,7 @@ namespace Nomad.Communication.EventAggregation
                     _dictionary[type] = action;
                 }
             }
+            return new EventAggregatorTicket<T>(action);
         }
 
 
@@ -44,17 +44,17 @@ namespace Nomad.Communication.EventAggregation
         /// <see cref="IEventAggregator.Unsubscribe{T}"/>
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="action"></param>
+        /// <param name="ticket"></param>
         /// <exception cref="KeyNotFoundException">when unsubscribing from type which was no subsription ever</exception>
         /// <exception cref="MemberAccessException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        public void Unsubscribe<T>(Action<T> action) where T : class
+        public void Unsubscribe<T>(IEventAggregatorTicket<T> ticket) where T : class
         {
             var type = typeof (T);
             //two parts of methods prevents stopping another thread for waiting to the end of the lock
             lock (_dictionary)
             {
-                _dictionary[type] = Delegate.Remove(_dictionary[type], action);
+                _dictionary[type] = Delegate.Remove(_dictionary[type], ticket.Action);
             }
         }
 
@@ -81,5 +81,16 @@ namespace Nomad.Communication.EventAggregation
         }
 
         #endregion
+    }
+
+    public class EventAggregatorTicket<T> : IEventAggregatorTicket<T>
+    {
+        public EventAggregatorTicket(Action<T> action)
+        {
+            Action = action;
+        }
+
+
+        public Action<T> Action { get; private set; }
     }
 }

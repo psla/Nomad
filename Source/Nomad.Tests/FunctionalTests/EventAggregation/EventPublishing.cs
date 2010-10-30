@@ -96,8 +96,8 @@ namespace Nomad.Tests.FunctionalTests.EventAggregation
         public void after_calling_unsubscribe_handler_is_not_called_when_event_is_published()
         {
             Action<MessageType> myAction = x => { Assert.Fail("Delegate was not removed"); };
-            _eventAggregator.Subscribe(myAction);
-            _eventAggregator.Unsubscribe(myAction);
+            var ticket = _eventAggregator.Subscribe(myAction);
+            _eventAggregator.Unsubscribe(ticket);
             _eventAggregator.Publish(new MessageType(NameToSend));
         }
 
@@ -106,8 +106,8 @@ namespace Nomad.Tests.FunctionalTests.EventAggregation
         public void after_unsubscribing_subscribing_again_results_in_working_event()
         {
             Action<MessageType> myAction = x => { Assert.Fail("Delegate was not removed"); };
-            _eventAggregator.Subscribe(myAction);
-            _eventAggregator.Unsubscribe(myAction);
+            var ticket = _eventAggregator.Subscribe(myAction);
+            _eventAggregator.Unsubscribe(ticket);
             _eventAggregator.Subscribe<MessageType>(x => { });
             Assert.DoesNotThrow(() => _eventAggregator.Publish(new MessageType(NameToSend)),
                                 "After subscribing and unsubscribing an event we can no longer use event of this type");
@@ -122,8 +122,8 @@ namespace Nomad.Tests.FunctionalTests.EventAggregation
             _eventAggregator.Subscribe<MessageType>(payload => receivedPayload = payload);
 
             Action<MessageType> myAction = x => { };
-            _eventAggregator.Subscribe(myAction);
-            _eventAggregator.Unsubscribe(myAction);
+            var ticket = _eventAggregator.Subscribe(myAction);
+            _eventAggregator.Unsubscribe(ticket);
 
             _eventAggregator.Publish(sentPayload);
             Assert.AreSame(sentPayload, receivedPayload);

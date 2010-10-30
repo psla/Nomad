@@ -12,7 +12,7 @@ namespace Nomad.Communication.EventAggregation
         ///</summary>
         ///<param name="action">Action to invoke when specific event is sent</param>
         ///<typeparam name="T">type of message we want to listen</typeparam>
-        void Subscribe<T>(Action<T> action) where T : class;
+        IEventAggregatorTicket<T> Subscribe<T>(Action<T> action) where T : class;
 
 
         /// <summary>
@@ -22,8 +22,8 @@ namespace Nomad.Communication.EventAggregation
         /// Two same lambdas may not be equal. Use method group instead.
         /// </remarks>
         /// <typeparam name="T">type of message we are stopping to listen</typeparam>
-        /// <param name="action"></param>
-        void Unsubscribe<T>(Action<T> action) where T : class;
+        /// <param name="ticket"></param>
+        void Unsubscribe<T>(IEventAggregatorTicket<T> ticket) where T : class;
 
 
         /// <summary>

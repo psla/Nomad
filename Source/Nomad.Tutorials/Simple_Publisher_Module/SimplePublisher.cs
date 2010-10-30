@@ -13,6 +13,7 @@ namespace Simple_Publisher_Module
     {
         private readonly IEventAggregator _eventAggregator;
         private bool _keepPublishing;
+        private IEventAggregatorTicket<StopPublishingMessageType> _subscriptionTicket;
 
 
         /// <summary>
@@ -31,7 +32,7 @@ namespace Simple_Publisher_Module
         public void OnLoad()
         {
             // subscribing to an event (Stop Publishing) in Nomad
-            _eventAggregator.Subscribe<StopPublishingMessageType>(StopPublishing);
+            _subscriptionTicket = _eventAggregator.Subscribe<StopPublishingMessageType>(StopPublishing);
            
             _keepPublishing = true;
             int count = 0;
@@ -64,7 +65,7 @@ namespace Simple_Publisher_Module
             Console.WriteLine("Received termination event: {0}", message.Message);
             
             // unsubscribing from event
-            _eventAggregator.Unsubscribe<StopPublishingMessageType>(StopPublishing);
+            _eventAggregator.Unsubscribe<StopPublishingMessageType>(_subscriptionTicket);
         }
     }
 }

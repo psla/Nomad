@@ -11,8 +11,9 @@ namespace Controlling_Publisher_Module
     public class ControllingPublisher : IModuleBootstraper
     {
         private readonly IEventAggregator _eventAggregator;
+        private IEventAggregatorTicket<CounterMessageType> _subscriptionTicket;
 
-        
+
         /// <summary>
         ///     Initializes the instance of the module.
         /// </summary>
@@ -29,7 +30,7 @@ namespace Controlling_Publisher_Module
         public void OnLoad()
         {
             // subscribing to the CounterMessage
-            _eventAggregator.Subscribe<CounterMessageType>(CheckCounter);
+            _subscriptionTicket = _eventAggregator.Subscribe<CounterMessageType>(CheckCounter);
         }
 
 
@@ -57,7 +58,7 @@ namespace Controlling_Publisher_Module
             _eventAggregator.Publish(new StopPublishingMessageType("Counter reached desired number."));
 
             //  Unsubscribing from the CounterMessage
-            _eventAggregator.Unsubscribe<CounterMessageType>(CheckCounter);
+            _eventAggregator.Unsubscribe(_subscriptionTicket);
             Console.WriteLine("Unsubscribing from counter Events");
         }
     }
