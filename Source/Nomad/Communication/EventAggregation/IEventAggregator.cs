@@ -31,17 +31,6 @@ namespace Nomad.Communication.EventAggregation
 
 
         /// <summary>
-        /// Unsubsribes specified action. 
-        /// </summary>
-        /// <remarks>Be carefull when using lambda! 
-        /// Two same lambdas may not be equal. Use method group instead.
-        /// </remarks>
-        /// <typeparam name="T">type of message we are stopping to listen</typeparam>
-        /// <param name="ticket"></param>
-        //void Unsubscribe<T>(IEventAggregatorTicket<T> ticket) where T : class;
-
-
-        /// <summary>
         /// Notifies all subscribed members about passes <paramref name="message"/>
         /// </summary>
         /// <typeparam name="T">Type of message to send</typeparam>

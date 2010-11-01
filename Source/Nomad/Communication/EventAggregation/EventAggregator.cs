@@ -72,7 +72,7 @@ namespace Nomad.Communication.EventAggregation
         }
 
         
-        void TicketDisposed(object sender, TicketDisposedArgs e)
+        private void TicketDisposed(object sender, TicketDisposedArgs e)
         {
             var ticket = sender as IEventAggregatorTicket;
             ticket.TicketDisposed -= TicketDisposed;
@@ -82,13 +82,13 @@ namespace Nomad.Communication.EventAggregation
 
         //TODO: Unsubsribing new lambda won't work!
         /// <summary>
+        /// Unsubsribes specified action. 
         /// Removes event from collection. Thread safe.
         /// <see cref="IEventAggregator.Unsubscribe{T}"/>
         /// </summary>
         /// <param name="ticket">ticket have to be <see cref="EventAggregatorTicket{T}"/></param>
         /// <exception cref="KeyNotFoundException">when unsubscribing from type which was no subsription ever</exception>
         /// <exception cref="MemberAccessException"></exception>
-        /// <exception cref="ArgumentException">when ticket is not proper ticket</exception>
         private void Unsubscribe(IEventAggregatorTicket ticket)
         {
             Type type = ticket.ActionType;
