@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Moq;
+using Nomad.Communication.EventAggregation;
 using Nomad.Core;
 using Nomad.Modules;
 using Nomad.Modules.Discovery;
@@ -23,6 +24,7 @@ namespace Nomad.Tests.UnitTests.GettingModules
         private Mock<IModulesRepository> _modulesRepository;
         private string _pluginsDir;
         private Updater.Updater _updateClient;
+        private EventAggregator _eventAggregator;
 
 
         [SetUp]
@@ -32,6 +34,7 @@ namespace Nomad.Tests.UnitTests.GettingModules
             _modulesOperations = new Mock<IModulesOperations>();
             _moduleDiscovery = new Mock<IModuleDiscovery>();
             _moduleManifestFactory = new Mock<IModuleManifestFactory>();
+            _eventAggregator = new EventAggregator(null);
             _pluginsDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "UpdateTests");
 
             if (Directory.Exists(_pluginsDir))
@@ -41,7 +44,7 @@ namespace Nomad.Tests.UnitTests.GettingModules
             _updateClient = new Updater.Updater(_pluginsDir, _modulesRepository.Object,
                                                 _modulesOperations.Object,
                                                 _moduleDiscovery.Object,
-                                                _moduleManifestFactory.Object);
+                                                _moduleManifestFactory.Object, _eventAggregator);
         }
 
 
@@ -75,7 +78,7 @@ namespace Nomad.Tests.UnitTests.GettingModules
                                 Manifests = new List<ModuleManifest> {updateManifest}
                             });
 
-            _updateClient.AvailableUpdates += (x, y) => payload = y;
+            _eventAggregator.Subscribe<AvailableUpdatesEventArgs>(x => payload = x);
             _updateClient.CheckUpdates();
 
             Assert.AreEqual(1, payload.AvailableUpdates.Count,
@@ -114,7 +117,7 @@ namespace Nomad.Tests.UnitTests.GettingModules
                                 Manifests = new List<ModuleManifest> {updateManifest}
                             });
 
-            _updateClient.AvailableUpdates += (x, y) => payload = y;
+            _eventAggregator.Subscribe<AvailableUpdatesEventArgs>(x => payload = x);
             _updateClient.CheckUpdates();
 
             Assert.AreEqual(0, payload.AvailableUpdates.Count, "There should be no updates");
@@ -155,7 +158,7 @@ namespace Nomad.Tests.UnitTests.GettingModules
                 .Returns(
                     new ModulePackage {ModuleManifest = dependencyModuleManifest});
 
-            _updateClient.UpdatePackagesReady += (x, y) => payload = y;
+            _eventAggregator.Subscribe<UpdatesReadyEventArgs>(x => payload = x);
             _updateClient.PrepareUpdate(availableUpdates);
 
             Assert.AreEqual(2, payload.ModulePackages.Count,

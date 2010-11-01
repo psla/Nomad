@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Ionic.Zip;
+using Nomad.Communication.EventAggregation;
 using Nomad.Core;
 using Nomad.Modules;
 using Nomad.Modules.Discovery;
@@ -14,10 +15,25 @@ namespace Nomad.Updater
     /// verifying if there is any update for any module, 
     /// installing module taking dependencies into account
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Updater provides two event types via EventAggregator
+    /// </para>
+    /// <para>
+    /// <see cref="AvailableUpdatesEventArgs"/>
+    /// Informs about available updates.
+    /// Passing the result to <see cref="PrepareUpdate"/> will result in download.
+    /// Event passes <see cref="ModuleManifest"/> of the available upgrades.
+    /// </para>
+    /// <para>
+    /// <see cref="UpdatesReadyEventArgs"/> - Invoked when update is ready to install. Whole data has been downloaded.
+    /// </para>
+    /// </remarks>
     public class Updater
     {
         private readonly IModuleDiscovery _moduleDiscovery;
         private readonly IModuleManifestFactory _moduleManifestFactory;
+        private readonly IEventAggregator _eventAggregator;
         private readonly IModulesOperations _modulesOperations;
         private readonly IModulesRepository _modulesRepository;
         private readonly string _targetDirectory;
@@ -31,15 +47,17 @@ namespace Nomad.Updater
         /// <param name="modulesOperations">backend used to unload / load modules</param>
         /// <param name="moduleDiscovery">backend used for discovering of modules</param>
         /// <param name="moduleManifestFactory">factory which creates <see cref="ModuleManifest"/> based on <see cref="ModuleInfo"/></param>
+        /// <param name="eventAggregator">event aggregator for providing events</param>
         public Updater(string targetDirectory, IModulesRepository modulesRepository,
                        IModulesOperations modulesOperations, IModuleDiscovery moduleDiscovery,
-                       IModuleManifestFactory moduleManifestFactory)
+                       IModuleManifestFactory moduleManifestFactory, IEventAggregator eventAggregator)
         {
             _targetDirectory = targetDirectory;
             _modulesRepository = modulesRepository;
             _modulesOperations = modulesOperations;
             _moduleDiscovery = moduleDiscovery;
             _moduleManifestFactory = moduleManifestFactory;
+            _eventAggregator = eventAggregator;
         }
 
 
@@ -81,26 +99,28 @@ namespace Nomad.Updater
         /// <remarks>
         /// Event passes <see cref="ModuleManifest"/> of the available upgrades.
         /// </remarks>
-        public event EventHandler<AvailableUpdatesEventArgs> AvailableUpdates;
+        //public event EventHandler<AvailableUpdatesEventArgs> AvailableUpdates;
 
 
         private void InvokeAvailableUpdates(AvailableUpdatesEventArgs e)
         {
-            EventHandler<AvailableUpdatesEventArgs> handler = AvailableUpdates;
-            if (handler != null) handler(this, e);
+            //EventHandler<AvailableUpdatesEventArgs> handler = AvailableUpdates;
+            _eventAggregator.Publish(e);
+            //if (handler != null) handler(this, e);
         }
 
 
         /// <summary>
         /// Invoked when update is ready to install. Whole data has been downloaded.
         /// </summary>
-        public event EventHandler<UpdatesReadyEventArgs> UpdatePackagesReady;
+        //public event EventHandler<UpdatesReadyEventArgs> UpdatePackagesReady;
 
 
         private void InvokeUpdatePackagesReady(UpdatesReadyEventArgs e)
         {
-            EventHandler<UpdatesReadyEventArgs> handler = UpdatePackagesReady;
-            if (handler != null) handler(this, e);
+            //EventHandler<UpdatesReadyEventArgs> handler = UpdatePackagesReady;
+            _eventAggregator.Publish(e);
+            //if (handler != null) handler(this, e);
         }
 
 
@@ -113,19 +133,18 @@ namespace Nomad.Updater
         /// <param name="availableUpdates">modules to install. </param>
         public void PrepareUpdate(AvailableUpdatesEventArgs availableUpdates)
         {
-            IDictionary<string, ModulePackage> modulePackages =
-                new Dictionary<string, ModulePackage>();
+            var modulePackages = new Dictionary<string, ModulePackage>();
             foreach (ModuleManifest availableUpdate in availableUpdates.AvailableUpdates)
             {
                 foreach (ModuleDependency moduleDependency in availableUpdate.ModuleDependencies)
                 {
                     // preventing getting the same file twice
                     if ( ! modulePackages.ContainsKey(moduleDependency.ModuleName))
-                        modulePackages[moduleDependency.ModuleName] =
-                            _modulesRepository.GetModule(moduleDependency.ModuleName);
+                        modulePackages[moduleDependency.ModuleName] = _modulesRepository.GetModule(moduleDependency.ModuleName);
                 }
-                modulePackages[availableUpdate.ModuleName] =
-                    _modulesRepository.GetModule(availableUpdate.ModuleName);
+                // preventing getting the same file twice
+                if (!modulePackages.ContainsKey(availableUpdate.ModuleName))
+                    modulePackages[availableUpdate.ModuleName] = _modulesRepository.GetModule(availableUpdate.ModuleName);
             }
             InvokeUpdatePackagesReady(
                 new UpdatesReadyEventArgs(modulePackages.Select(x => x.Value).ToList()));
