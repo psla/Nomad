@@ -36,20 +36,27 @@ namespace Nomad.Tests.IntegrationTests.Updater
                                          ".",
                                          true);
             
-            //_appdomain.Load(("Nomad.dll"));
         }
 
+        private void SetupUpdater()
+        {
+            var asmName = typeof(Operations).Assembly.FullName;
+            var typeName = typeof(Operations).FullName; 
+            var instance = Activator.CreateInstance(_appdomain, asmName, typeName);
+            _updater = (instance.Unwrap() as Operations).Updater;
+        }
 
         [Test]
         public void resolve_updater_cross_domain()
         {
-            //Assert.DoesNotThrow(() => _appdomain.DoCallBack(Operations.CreateUpdater), "Updater should support cross domain working");
-            var asmName = typeof (Operations).Assembly.FullName;
-            var typeName = typeof (Operations).FullName;
-            Assert.DoesNotThrow(() => { var instance = Activator.CreateInstance(_appdomain, asmName, typeName);
-                                          _updater = (instance.Unwrap() as Operations).Updater;
-            },
-                                "Updater should support cross domain working");
+            Assert.DoesNotThrow(SetupUpdater, "Updater should support cross domain working");
+        }
+
+        [Test]
+        public void update_event_is_cross_domain()
+        {
+            SetupUpdater();
+            _updater.CheckUpdates();
         }
 
         [TearDown]
