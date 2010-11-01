@@ -16,7 +16,7 @@ using Version = Nomad.Utils.Version;
 namespace Nomad.Tests.UnitTests.GettingModules
 {
     [UnitTests]
-    public class UpdatingClient
+    public class UpdatingClient 
     {
         private Mock<IModuleDiscovery> _moduleDiscovery;
         private Mock<IModuleManifestFactory> _moduleManifestFactory;

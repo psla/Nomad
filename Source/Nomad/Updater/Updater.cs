@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Ionic.Zip;
 using Nomad.Communication.EventAggregation;
@@ -28,7 +29,7 @@ namespace Nomad.Updater
     /// <see cref="UpdatesReadyEventArgs"/> - Invoked when update is ready to install. Whole data has been downloaded.
     /// </para>
     /// </remarks>
-    public class Updater
+    public class Updater : MarshalByRefObject
     {
         private readonly IEventAggregator _eventAggregator;
         private readonly IModuleDiscovery _moduleDiscovery;
