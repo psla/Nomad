@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Ionic.Zip;
 using Nomad.Communication.EventAggregation;
@@ -31,9 +30,9 @@ namespace Nomad.Updater
     /// </remarks>
     public class Updater
     {
+        private readonly IEventAggregator _eventAggregator;
         private readonly IModuleDiscovery _moduleDiscovery;
         private readonly IModuleManifestFactory _moduleManifestFactory;
-        private readonly IEventAggregator _eventAggregator;
         private readonly IModulesOperations _modulesOperations;
         private readonly IModulesRepository _modulesRepository;
         private readonly string _targetDirectory;
@@ -50,7 +49,8 @@ namespace Nomad.Updater
         /// <param name="eventAggregator">event aggregator for providing events</param>
         public Updater(string targetDirectory, IModulesRepository modulesRepository,
                        IModulesOperations modulesOperations, IModuleDiscovery moduleDiscovery,
-                       IModuleManifestFactory moduleManifestFactory, IEventAggregator eventAggregator)
+                       IModuleManifestFactory moduleManifestFactory,
+                       IEventAggregator eventAggregator)
         {
             _targetDirectory = targetDirectory;
             _modulesRepository = modulesRepository;
@@ -92,35 +92,15 @@ namespace Nomad.Updater
         }
 
 
-        /// <summary>
-        /// Informs about available updates.
-        /// Passing the result to <see cref="PrepareUpdate"/> will result in download.
-        /// </summary>
-        /// <remarks>
-        /// Event passes <see cref="ModuleManifest"/> of the available upgrades.
-        /// </remarks>
-        //public event EventHandler<AvailableUpdatesEventArgs> AvailableUpdates;
-
-
         private void InvokeAvailableUpdates(AvailableUpdatesEventArgs e)
         {
-            //EventHandler<AvailableUpdatesEventArgs> handler = AvailableUpdates;
             _eventAggregator.Publish(e);
-            //if (handler != null) handler(this, e);
         }
-
-
-        /// <summary>
-        /// Invoked when update is ready to install. Whole data has been downloaded.
-        /// </summary>
-        //public event EventHandler<UpdatesReadyEventArgs> UpdatePackagesReady;
 
 
         private void InvokeUpdatePackagesReady(UpdatesReadyEventArgs e)
         {
-            //EventHandler<UpdatesReadyEventArgs> handler = UpdatePackagesReady;
             _eventAggregator.Publish(e);
-            //if (handler != null) handler(this, e);
         }
 
 
@@ -139,16 +119,19 @@ namespace Nomad.Updater
                 foreach (ModuleDependency moduleDependency in availableUpdate.ModuleDependencies)
                 {
                     // preventing getting the same file twice
-                    if ( ! modulePackages.ContainsKey(moduleDependency.ModuleName))
-                        modulePackages[moduleDependency.ModuleName] = _modulesRepository.GetModule(moduleDependency.ModuleName);
+                    if (! modulePackages.ContainsKey(moduleDependency.ModuleName))
+                        modulePackages[moduleDependency.ModuleName] =
+                            _modulesRepository.GetModule(moduleDependency.ModuleName);
                 }
                 // preventing getting the same file twice
-                if (!modulePackages.ContainsKey(availableUpdate.ModuleName))
-                    modulePackages[availableUpdate.ModuleName] = _modulesRepository.GetModule(availableUpdate.ModuleName);
+                if (! modulePackages.ContainsKey(availableUpdate.ModuleName))
+                    modulePackages[availableUpdate.ModuleName] =
+                        _modulesRepository.GetModule(availableUpdate.ModuleName);
             }
             InvokeUpdatePackagesReady(
-                new UpdatesReadyEventArgs(modulePackages.Select(x => x.Value).ToList()));
+                new UpdatesReadyEventArgs(modulePackages.Values.ToList()));
         }
+
 
         /// <summary>
         /// Starts update process
@@ -164,7 +147,7 @@ namespace Nomad.Updater
 
             foreach (ModulePackage modulePackage in modulePackages)
             {
-                using (var file = ZipFile.Read(modulePackage.ModuleZip))
+                using (ZipFile file = ZipFile.Read(modulePackage.ModuleZip))
                 {
                     file.ExtractAll(_targetDirectory, ExtractExistingFileAction.OverwriteSilently);
                 }
