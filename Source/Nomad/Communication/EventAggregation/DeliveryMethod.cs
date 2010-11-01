@@ -10,8 +10,15 @@
         /// </summary>
         GuiThread,
         /// <summary>
-        /// Delivers event in any other thread
+        /// Delivers event in any other thread.
         /// </summary>
-        AnyThread
+        /// <remarks>
+        /// Assumes, that execution of task is quick. Does not create new thread during invokation. 
+        /// </remarks>
+        AnyThread,
+        /// <summary>
+        /// Creates separate, independent thread for execution.
+        /// </summary>
+        SeparateThread
     }
 }

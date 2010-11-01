@@ -9,28 +9,25 @@ namespace Nomad.Communication.EventAggregation
     public class EventAggregator : IEventAggregator
     {
         private readonly IGuiThreadProvider _guiThreadProvider;
+        /*private readonly IGuiThreadProvider _guiThreadProvider;
 
         private readonly IDictionary<DeliveryMethod, IDictionary<Type, Delegate>> _subscriptions =
             new Dictionary<DeliveryMethod, IDictionary<Type, Delegate>>();
-
+        */
         /*private readonly IDictionary<Type, Delegate> _guiThreadSubscriptions =
             new Dictionary<Type, Delegate>();
 
         private readonly IDictionary<Type, Delegate> _anyThreadSubscriptions =
             new Dictionary<Type, Delegate>();*/
-
+        public IDictionary<Type, HashSet<IEventAggregatorTicket>> _subscriptions = new Dictionary<Type, HashSet<IEventAggregatorTicket>>();
 
         ///<summary>
         /// Initializes <see cref="EventAggregator"/> with provided <see cref="guiThreadProvider"/>.
         ///</summary>
-        ///<param name="guiThreadProvider">implementation of gui thread</param>
+        
         public EventAggregator(IGuiThreadProvider guiThreadProvider)
         {
             _guiThreadProvider = guiThreadProvider;
-            foreach (object deliveryMethod in Enum.GetValues(typeof (DeliveryMethod)))
-            {
-                _subscriptions[(DeliveryMethod) deliveryMethod] = new Dictionary<Type, Delegate>();
-            }
         }
 
         #region Implementation of IEventAggregator
@@ -54,20 +51,23 @@ namespace Nomad.Communication.EventAggregation
                                                       DeliveryMethod deliveryMethod) where T : class
         {
             Type type = typeof (T);
-            Delegate events = null;
+            var ticket = new EventAggregatorTicket<T>(action, deliveryMethod, _guiThreadProvider);
+            HashSet<IEventAggregatorTicket> tickets = null;
             lock (_subscriptions)
             {
-                IDictionary<Type, Delegate> subsriptionsForDelivery = _subscriptions[deliveryMethod];
-                if (subsriptionsForDelivery.TryGetValue(type, out events))
+                if(!_subscriptions.TryGetValue(type, out tickets))
                 {
-                    subsriptionsForDelivery[type] = Delegate.Combine(events, action);
-                }
-                else
-                {
-                    subsriptionsForDelivery[type] = action;
+                    tickets = new HashSet<IEventAggregatorTicket>();
+                    _subscriptions[type] = tickets;
                 }
             }
-            return new EventAggregatorTicket<T>(action, deliveryMethod);
+
+            lock (tickets)
+            {
+                tickets.Add(ticket);
+            }
+
+            return ticket;
         }
 
 
@@ -84,16 +84,14 @@ namespace Nomad.Communication.EventAggregation
         public void Unsubscribe<T>(IEventAggregatorTicket<T> ticket) where T : class
         {
             Type type = typeof (T);
-            var castedTicket = ticket as EventAggregatorTicket<T>;
-            if (castedTicket == null)
-                throw new ArgumentException();
-            //two parts of methods prevents stopping another thread for waiting to the end of the lock
-            IDictionary<Type, Delegate> subsriptionsForDelivery =
-                _subscriptions[ticket.DeliveryMethod];
-            lock (_subscriptions)
+            HashSet<IEventAggregatorTicket> tickets = null;
+            lock(_subscriptions)
             {
-                subsriptionsForDelivery[type] = Delegate.Remove(subsriptionsForDelivery[type],
-                                                                ticket.Action);
+                tickets = _subscriptions[type];
+            }
+            lock (tickets)
+            {
+                tickets.Remove(ticket);
             }
         }
 
@@ -106,23 +104,28 @@ namespace Nomad.Communication.EventAggregation
         /// <param name="message"></param>
         public void Publish<T>(T message) where T : class
         {
-            Delegate actionsInAnyThread;
-            Delegate actionsInGui;
-            //dictionary implementation may enter race condition if tryget is not in critical section
+            Type type = typeof (T);
+            HashSet<IEventAggregatorTicket> tickets = null;
             lock (_subscriptions)
             {
-                if (_subscriptions[DeliveryMethod.AnyThread].TryGetValue(typeof (T),
-                                                                         out actionsInAnyThread))
-                    ;
-
-                if (_subscriptions[DeliveryMethod.GuiThread].TryGetValue(typeof (T),
-                                                                         out actionsInGui))
-                    ;
+                _subscriptions.TryGetValue(type, out tickets);
             }
-            if (actionsInAnyThread != null)
-                actionsInAnyThread.DynamicInvoke(message);
-            if (actionsInGui != null)
-                _guiThreadProvider.RunInGui(actionsInGui);
+
+            //prevention from throwing exception
+            if (tickets == null)
+                return;
+
+            List<IEventAggregatorTicket> ticketsList = null;
+            lock (tickets)
+            {
+                ticketsList = new List<IEventAggregatorTicket>(tickets);
+            }
+
+            foreach (var ticket in ticketsList)
+            {
+                ticket.Execute(message);
+            }
+
         }
 
         #endregion
