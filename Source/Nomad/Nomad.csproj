@@ -98,6 +98,7 @@
     <Compile Include="Communication\EventAggregation\EventAggregatorTicket.cs" />
     <Compile Include="Communication\EventAggregation\IEventAggregatorTicket.cs" />
     <Compile Include="Communication\EventAggregation\IGuiThreadProvider.cs" />
+    <Compile Include="Communication\EventAggregation\TicketDisposedArgs.cs" />
     <Compile Include="Communication\EventAggregation\WpfGuiThreadProvider.cs" />
     <Compile Include="Core\IModulesOperations.cs" />
     <Compile Include="Modules\ContainerCreator.cs" />

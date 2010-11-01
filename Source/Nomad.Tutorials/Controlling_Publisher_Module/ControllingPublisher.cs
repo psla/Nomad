@@ -58,7 +58,7 @@ namespace Controlling_Publisher_Module
             _eventAggregator.Publish(new StopPublishingMessageType("Counter reached desired number."));
 
             //  Unsubscribing from the CounterMessage
-            _eventAggregator.Unsubscribe(_subscriptionTicket);
+            _subscriptionTicket.Dispose();
             Console.WriteLine("Unsubscribing from counter Events");
         }
     }

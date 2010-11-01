@@ -38,7 +38,7 @@ namespace Nomad.Communication.EventAggregation
         /// </remarks>
         /// <typeparam name="T">type of message we are stopping to listen</typeparam>
         /// <param name="ticket"></param>
-        void Unsubscribe<T>(IEventAggregatorTicket<T> ticket) where T : class;
+        //void Unsubscribe<T>(IEventAggregatorTicket<T> ticket) where T : class;
 
 
         /// <summary>

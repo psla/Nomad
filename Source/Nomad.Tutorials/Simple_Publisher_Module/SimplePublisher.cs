@@ -65,7 +65,7 @@ namespace Simple_Publisher_Module
             Console.WriteLine("Received termination event: {0}", message.Message);
             
             // unsubscribing from event
-            _eventAggregator.Unsubscribe(_subscriptionTicket);
+            _subscriptionTicket.Dispose();
         }
     }
 }

@@ -9,22 +9,14 @@ namespace Nomad.Communication.EventAggregation
     public class EventAggregator : IEventAggregator
     {
         private readonly IGuiThreadProvider _guiThreadProvider;
-        /*private readonly IGuiThreadProvider _guiThreadProvider;
 
-        private readonly IDictionary<DeliveryMethod, IDictionary<Type, Delegate>> _subscriptions =
-            new Dictionary<DeliveryMethod, IDictionary<Type, Delegate>>();
-        */
-        /*private readonly IDictionary<Type, Delegate> _guiThreadSubscriptions =
-            new Dictionary<Type, Delegate>();
+        private readonly IDictionary<Type, HashSet<IEventAggregatorTicket>> _subscriptions =
+            new Dictionary<Type, HashSet<IEventAggregatorTicket>>();
 
-        private readonly IDictionary<Type, Delegate> _anyThreadSubscriptions =
-            new Dictionary<Type, Delegate>();*/
-        public IDictionary<Type, HashSet<IEventAggregatorTicket>> _subscriptions = new Dictionary<Type, HashSet<IEventAggregatorTicket>>();
 
         ///<summary>
         /// Initializes <see cref="EventAggregator"/> with provided <see cref="guiThreadProvider"/>.
         ///</summary>
-        
         public EventAggregator(IGuiThreadProvider guiThreadProvider)
         {
             _guiThreadProvider = guiThreadProvider;
@@ -47,6 +39,13 @@ namespace Nomad.Communication.EventAggregation
         }
 
 
+        /// <summary>
+        /// Subscribes action for specific event type.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="action"></param>
+        /// <param name="deliveryMethod"></param>
+        /// <returns></returns>
         public IEventAggregatorTicket<T> Subscribe<T>(Action<T> action,
                                                       DeliveryMethod deliveryMethod) where T : class
         {
@@ -55,7 +54,7 @@ namespace Nomad.Communication.EventAggregation
             HashSet<IEventAggregatorTicket> tickets = null;
             lock (_subscriptions)
             {
-                if(!_subscriptions.TryGetValue(type, out tickets))
+                if (!_subscriptions.TryGetValue(type, out tickets))
                 {
                     tickets = new HashSet<IEventAggregatorTicket>();
                     _subscriptions[type] = tickets;
@@ -67,7 +66,17 @@ namespace Nomad.Communication.EventAggregation
                 tickets.Add(ticket);
             }
 
+            ticket.TicketDisposed += TicketDisposed;
+
             return ticket;
+        }
+
+        
+        void TicketDisposed(object sender, TicketDisposedArgs e)
+        {
+            var ticket = sender as IEventAggregatorTicket;
+            ticket.TicketDisposed -= TicketDisposed;
+            Unsubscribe(ticket);
         }
 
 
@@ -76,16 +85,15 @@ namespace Nomad.Communication.EventAggregation
         /// Removes event from collection. Thread safe.
         /// <see cref="IEventAggregator.Unsubscribe{T}"/>
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="ticket">ticket have to be <see cref="EventAggregatorTicket{T}"/></param>
         /// <exception cref="KeyNotFoundException">when unsubscribing from type which was no subsription ever</exception>
         /// <exception cref="MemberAccessException"></exception>
         /// <exception cref="ArgumentException">when ticket is not proper ticket</exception>
-        public void Unsubscribe<T>(IEventAggregatorTicket<T> ticket) where T : class
+        private void Unsubscribe(IEventAggregatorTicket ticket)
         {
-            Type type = typeof (T);
+            Type type = ticket.ActionType;
             HashSet<IEventAggregatorTicket> tickets = null;
-            lock(_subscriptions)
+            lock (_subscriptions)
             {
                 tickets = _subscriptions[type];
             }
@@ -105,7 +113,7 @@ namespace Nomad.Communication.EventAggregation
         public void Publish<T>(T message) where T : class
         {
             Type type = typeof (T);
-            HashSet<IEventAggregatorTicket> tickets = null;
+            HashSet<IEventAggregatorTicket> tickets;
             lock (_subscriptions)
             {
                 _subscriptions.TryGetValue(type, out tickets);
@@ -115,17 +123,16 @@ namespace Nomad.Communication.EventAggregation
             if (tickets == null)
                 return;
 
-            List<IEventAggregatorTicket> ticketsList = null;
+            List<IEventAggregatorTicket> ticketsList;
             lock (tickets)
             {
                 ticketsList = new List<IEventAggregatorTicket>(tickets);
             }
 
-            foreach (var ticket in ticketsList)
+            foreach (IEventAggregatorTicket ticket in ticketsList)
             {
                 ticket.Execute(message);
             }
-
         }
 
         #endregion
