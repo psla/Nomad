@@ -1,15 +1,24 @@
 using System;
 using System.IO;
 
-public class DependencyModule1 : Nomad.Modules.IModuleBootstraper
+namespace DependencyModule
 {
-    public void OnLoad()
+    public class DependencyModule1 : Nomad.Modules.IModuleBootstraper
     {
-        Nomad.Tests.FunctionalTests.Modules.LoadedModulesRegistry.Register(typeof(DependencyModule1));
+        public void OnLoad()
+        {
+            Nomad.Tests.FunctionalTests.Modules.LoadedModulesRegistry.Register(typeof(DependencyModule1));
+        }
+
+        public void OnUnLoad()
+        {
+            // nothing
+        }
+
+        public void Execute()
+        {
+            ;
+        }
     }
 
-    public void OnUnLoad()
-    {
-        // nothing
-    }
 }

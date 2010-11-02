@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using Nomad.Exceptions;
 using NUnit.Framework;
 using TestsShared;
@@ -20,6 +21,7 @@ namespace Nomad.Tests.FunctionalTests.Modules
         public void loading_one_module_dependent_on_one_another()
         {
             const string dir = @"Modules\Dependent1\";
+            
 
             _moduleCompiler.OutputDirectory = dir;
             _moduleCompiler.GenerateModuleFromCode(@"..\Source\Nomad.Tests\FunctionalTests\Data\DependencyModule1.cs");
