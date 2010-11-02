@@ -54,6 +54,7 @@ properties {
 		# since tests for service location should not also test dependencies between modules, proper ordering is achieved manually by loading modules from 2 directories
 		"ServiceLocator-Service" = @( "RegistringServiceModule" );
 		"ServiceLocator-Client" = @( "ResolvingServiceModule" );
+		
 	}
 }
 
@@ -219,7 +220,7 @@ task Init -depends Clean, GetProjects {
  
 task Compile -depends Init {
     # execute msbuild - it is added to path by PSake
-    Exec { msbuild "$sln_file"  /p:Configuration=Release /nologo /verbosity:normal }
+    Exec { msbuild "$sln_file"  /p:Configuration=Release /nologo /verbosity:quiet }
 }
 
 task UnitTest -depends Compile {
@@ -338,8 +339,14 @@ task FunctionalDataPrepare -depends Compile -description "Data preparations for 
 			Exec { & csc.exe /out:"$module_name.dll" /target:library $module_source /reference:$build_dir/Nomad.dll /r:$build_dir/Nomad.Tests.dll /nologo}
 		}
 	}	
+	
+	#complie depenendent modules with nice dependencies with it
+	
+	#execute manifest generation in some folders
+	
 	Pop-Location
 	
+	#coping to folders with accurate names
 	if($module_sets) {
 		foreach($module_set_name in $module_sets.Keys) {
 			$module_set_dir = "$modules_output_dir\$module_set_name"
@@ -348,7 +355,9 @@ task FunctionalDataPrepare -depends Compile -description "Data preparations for 
 				Copy-Item -Path "$all_modules_dir\$module_name.dll" -Destination "$module_set_dir\$module_name.dll"
 			}
 		}
-	}
+	}	
+	
+	
 }
 
 task LocalBuild -depends Compile, UnitTest, IntegrationTest, FunctionalTest -description "Local build without building documentation"{

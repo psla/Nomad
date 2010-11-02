@@ -7,7 +7,7 @@ namespace Nomad.Modules.Discovery
     /// </summary>
     /// <remarks>
     ///     Does not check for manifest file neither completeness of the resources or other files. 
-    /// Discovery simply provides the mean for loading pinpointed file.
+    ///     Discovery simply provides the mean for loading pinpointed file.
     /// </remarks>
     public class SingleModuleDiscovery : IModuleDiscovery
     {
@@ -15,7 +15,7 @@ namespace Nomad.Modules.Discovery
 
 
         /// <summary>
-        /// Initializes the instance of  <see cref="SingleModuleDiscovery"/> class.
+        ///     Initializes the instance of  <see cref="SingleModuleDiscovery"/> class.
         /// </summary>
         /// <param name="path">Path to the assembly to be loaded.</param>
         public SingleModuleDiscovery(string path)
@@ -26,7 +26,7 @@ namespace Nomad.Modules.Discovery
         #region IModuleDiscovery Members
 
         /// <summary>
-        /// Inherited from <see cref="IModuleDiscovery"/>
+        ///     Inherited from <see cref="IModuleDiscovery"/>
         /// </summary>
         public IEnumerable<ModuleInfo> GetModules()
         {

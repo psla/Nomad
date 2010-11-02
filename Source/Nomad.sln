@@ -60,6 +60,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple_Publisher_Module", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventAggregatorCommunicationTypes", "Nomad.Tutorials\EventAggregatorCommunicationTypes\EventAggregatorCommunicationTypes.csproj", "{2B0A0CD6-FD57-48F0-A163-F39073981934}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DependentModules", "DependentModules", "{F57CD6F9-607D-4A0F-9E59-5DA478D6E405}"
+	ProjectSection(SolutionItems) = preProject
+		Nomad.Tests\FunctionalTests\Data\DependencyModule1.cs = Nomad.Tests\FunctionalTests\Data\DependencyModule1.cs
+		Nomad.Tests\FunctionalTests\Data\ModuleWithDependency.cs = Nomad.Tests\FunctionalTests\Data\ModuleWithDependency.cs
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -141,6 +147,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{6B0366F8-104B-4B8B-A38C-F03BC6504B90} = {795BD409-5B1D-47E3-BC98-1ABFECB7D046}
 		{A3991F62-5131-4901-AE6D-4F027BD6EFF0} = {6B0366F8-104B-4B8B-A38C-F03BC6504B90}
+		{F57CD6F9-607D-4A0F-9E59-5DA478D6E405} = {6B0366F8-104B-4B8B-A38C-F03BC6504B90}
 		{1F6C3A60-1A3C-4627-A9F3-B71897468E21} = {0DC7A9CF-DB4C-47D3-95C2-51FEEA924FB0}
 		{EF5A9D12-B2C4-46E0-B7E9-75868819C4C8} = {0DC7A9CF-DB4C-47D3-95C2-51FEEA924FB0}
 		{69CE733D-8F4E-4183-B5C9-4A6B1B42B843} = {0DC7A9CF-DB4C-47D3-95C2-51FEEA924FB0}

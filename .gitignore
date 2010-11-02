@@ -9,6 +9,8 @@ _ReSharper.*/
 *.user
 *.suo
 *.cache
+*.ndproj
+NDependOut/
 [Bb]in/
 [Oo]bj/
 [Aa]ssembly[Ii]nfo.cs

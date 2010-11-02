@@ -21,6 +21,7 @@ namespace Nomad.Modules.Manifest
     [Serializable]
     public class ModuleManifest
     {
+        #region Manifest File System Extensions
         ///<summary>
         /// Suffix added to AssemblyName to get manifest file
         ///</summary>
@@ -31,6 +32,7 @@ namespace Nomad.Modules.Manifest
         ///</summary>
         public const string ManifestSignatureFileNameSuffix = ".asc";
 
+        #endregion
 
         ///<summary>
         /// Initializes empty module manifest.

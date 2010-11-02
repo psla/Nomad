@@ -35,7 +35,7 @@ namespace  Nomad.Modules.Discovery
         }
 
 
-        /// <summary>Inherited</summary>
+        /// <summary>Inherited.</summary>
         public IEnumerable<ModuleInfo> GetModules()
         {
             var dllsInDirectory = Directory.GetFiles(_directoryPath, "*.dll");

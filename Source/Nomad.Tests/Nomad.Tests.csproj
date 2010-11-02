@@ -108,7 +108,9 @@
     <Compile Include="FunctionalTests\Modules\InjectableModulesRegistry.cs" />
     <Compile Include="FunctionalTests\Modules\LoadedModulesRegistry.cs" />
     <Compile Include="FunctionalTests\Modules\LoadingModules.cs" />
+    <Compile Include="FunctionalTests\Modules\LoadingModulesWithDependencies.cs" />
     <Compile Include="FunctionalTests\Modules\LoadingModulesWithServiceDependencies.cs" />
+    <Compile Include="FunctionalTests\Modules\ModuleCompiler.cs" />
     <Compile Include="FunctionalTests\Modules\ModuleLoadingTestFixture.cs" />
     <Compile Include="FunctionalTests\Regions\FakeWindowWithRegions.xaml.cs">
       <DependentUpon>FakeWindowWithRegions.xaml</DependentUpon>
@@ -121,7 +123,8 @@
     <Compile Include="FunctionalTests\Signing\KeyGenerating.cs" />
     <Compile Include="FunctionalTests\Signing\ModuleSigning.cs" />
     <Compile Include="FunctionalTests\Modules\Filters\SignedModulesFiltering.cs" />
-    <Compile Include="IntegrationTests\Updater\AppDomainBoundariesUpdaterTests.cs" />
+	<Compile Include="IntegrationTests\Updater\AppDomainBoundariesUpdaterTests.cs" />
+	<Compile Include="IntegrationTests\Modules\LoadingModulesWithDependencies.cs" />
     <Compile Include="UnitTests\GettingModules\UpdatingClient.cs" />
     <Compile Include="GuiNunitHooks.cs" />
     <Compile Include="IntegrationTests\Modules\DirectoryModuleDiscovery.cs" />
