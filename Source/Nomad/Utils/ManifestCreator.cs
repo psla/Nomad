@@ -6,21 +6,40 @@ using System.Reflection;
 using Nomad.Modules.Manifest;
 using Nomad.Signing.FileUtils;
 using Nomad.Signing.SignatureAlgorithms;
-using Nomad.Utils;
 using File = System.IO.File;
-using Version = Nomad.Utils.Version;
 
-namespace Nomad.ManifestCreator
+namespace Nomad.Utils
 {
+    /// <summary>
+    ///     Tool for creating Nomad compliant manifests for existing assemblies.
+    /// </summary>
     public class ManifestCreator
     {
-        private readonly ArgumentsParser _argumentsParser;
+        private readonly string _assemblyName;
+        private readonly string _directory;
+        private readonly string _issuerName;
+        private readonly string _issuerXmlPath;
+
+
+        private RSACryptoServiceProvider _key;
         private ISignatureAlgorithm _signatureAlgorithm;
 
 
-        public ManifestCreator(ArgumentsParser argumentsParser)
+        /// <summary>
+        ///     Initializes the new instance of <see cref="ManifestCreator"/> class.
+        /// </summary>
+        /// <param name="issuerName">Name of the issuer of the signing.</param>
+        /// <param name="issuerXmlPath">Path to the file with issuer.</param>
+        /// <param name="assemblyName">Name of the assembly for which manifest is going to be created.</param>
+        /// <param name="directory">Directory within this assembly.</param>
+        public ManifestCreator(string issuerName, string issuerXmlPath, string assemblyName,
+                               string directory)
         {
-            _argumentsParser = argumentsParser;
+            _issuerName = issuerName;
+            _issuerXmlPath = issuerXmlPath;
+            _assemblyName = assemblyName;
+            _directory = directory;
+
             LoadKey();
         }
 
@@ -38,13 +57,15 @@ namespace Nomad.ManifestCreator
 
         private string GetAssemblyPath()
         {
-            return Path.Combine(_argumentsParser.Directory, _argumentsParser.AssemblyName);
+            return Path.Combine(_directory, _assemblyName);
         }
 
-
+        /// <summary>
+        ///     Generates the manifest based on passed parameters.
+        /// </summary>
         public void Create()
         {
-            string[] files = Directory.GetFiles(_argumentsParser.Directory, "*",
+            string[] files = Directory.GetFiles(_directory, "*",
                                                 SearchOption.AllDirectories);
 
             IEnumerable<SignedFile> signedFiles = from file in files
@@ -53,7 +74,7 @@ namespace Nomad.ManifestCreator
                                                           {
                                                               FilePath =
                                                                   file.Substring(
-                                                                      _argumentsParser.Directory.
+                                                                      _directory.
                                                                           Length),
                                                               Signature =
                                                                   _signatureAlgorithm.Sign(
@@ -64,16 +85,16 @@ namespace Nomad.ManifestCreator
             {
                 version = new Version(AssemblyName.GetAssemblyName(GetAssemblyPath()).Version);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine("Cannot infer assembly version from assembly. {0}", e.Message);
             }
-            if(version==null)
+            if (version == null)
                 version = new Version("0.0.0.0");
             var manifest = new ModuleManifest
                                {
-                                   Issuer = _argumentsParser.IssuerName,
-                                   ModuleName = _argumentsParser.AssemblyName,
+                                   Issuer = _issuerName,
+                                   ModuleName = _assemblyName,
                                    ModuleVersion = version,
                                    SignedFiles = signedFiles.ToList()
                                };

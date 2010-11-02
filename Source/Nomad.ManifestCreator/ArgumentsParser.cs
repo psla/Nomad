@@ -4,7 +4,7 @@ using System.IO;
 namespace Nomad.ManifestCreator
 {
     /// <summary>
-    /// Parses arguments provided to <see cref="ManifestCreatorProgram"/>
+    ///     Parses arguments provided to <see cref="ManifestCreatorProgram"/> and initializes the instance of <see cref="Nomad.ManifestCreator"/> class.
     /// </summary>
     public class ArgumentsParser
     {
@@ -28,6 +28,7 @@ namespace Nomad.ManifestCreator
             FormatDirectory();
             ValidateArguments();
         }
+
 
 
         /// <summary>
@@ -56,6 +57,13 @@ namespace Nomad.ManifestCreator
         public string KeyPassword { get; private set; }
 
 
+        private void FormatDirectory()
+        {
+            if (!Directory.EndsWith(@"\"))
+                Directory += @"\";
+        }
+
+
         private void ValidateArguments()
         {
             if (!File.Exists(IssuerXml))
@@ -64,6 +72,12 @@ namespace Nomad.ManifestCreator
                 throw new ArgumentException("Incorrect directory file path");
             if (!File.Exists(Path.Combine(Directory, AssemblyName)))
                 throw new ArgumentException("There is no such assembly name");
+        }
+
+
+        public Utils.ManifestCreator GetManifestCreator()
+        {
+            return new Utils.ManifestCreator(IssuerName, IssuerXml, AssemblyName, Directory);
         }
     }
 }

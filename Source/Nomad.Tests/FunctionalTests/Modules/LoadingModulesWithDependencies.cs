@@ -21,12 +21,19 @@ namespace Nomad.Tests.FunctionalTests.Modules
         public void loading_one_module_dependent_on_one_another()
         {
             const string dir = @"Modules\Dependent1\";
-            
+            string modulePath = string.Empty;
 
             _moduleCompiler.OutputDirectory = dir;
-            _moduleCompiler.GenerateModuleFromCode(@"..\Source\Nomad.Tests\FunctionalTests\Data\DependencyModule1.cs");
-            _moduleCompiler.GenerateModuleFromCode(@"..\Source\Nomad.Tests\FunctionalTests\Data\ModuleWithDependency.cs",
+            modulePath = _moduleCompiler.GenerateModuleFromCode(@"..\Source\Nomad.Tests\FunctionalTests\Data\DependencyModule1.cs");
+            
+            _moduleCompiler.GenerateManifestForModule(modulePath);
+
+            modulePath = _moduleCompiler.GenerateModuleFromCode(@"..\Source\Nomad.Tests\FunctionalTests\Data\ModuleWithDependency.cs",
                                                      "DependencyModule1.dll");
+
+            _moduleCompiler.GenerateManifestForModule(modulePath);
+
+            
 
 
             LoadModulesFromDirectory(dir);

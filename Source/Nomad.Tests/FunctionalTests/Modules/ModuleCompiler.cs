@@ -14,9 +14,9 @@ namespace Nomad.Tests.FunctionalTests.Modules
     /// </remarks>
     public class ModuleCompiler
     {
-        public static string NomadAssembly = AppDomain.CurrentDomain.BaseDirectory + @"\Nomad.dll";
+        public static readonly string NomadAssembly = AppDomain.CurrentDomain.BaseDirectory + @"\Nomad.dll";
 
-        public static string NomadTestAssembly = AppDomain.CurrentDomain.BaseDirectory +
+        public static readonly string NomadTestAssembly = AppDomain.CurrentDomain.BaseDirectory +
                                                  @"\Nomad.Tests.dll";
 
         private readonly CodeDomProvider _provider;
@@ -47,7 +47,8 @@ namespace Nomad.Tests.FunctionalTests.Modules
             {
                 if (!string.IsNullOrEmpty(value))
                 {
-                    Directory.CreateDirectory(value);
+                    if(!Directory.Exists(value))
+                        Directory.CreateDirectory(value);
                 }
                 _outputDirectory = value;
             }
@@ -59,7 +60,8 @@ namespace Nomad.Tests.FunctionalTests.Modules
         /// </summary>
         /// <param name="sourceFilePath">ource file </param>
         /// <param name="dependeciesAssembliesPath">Array of the dependecies (assemblies) to be the following assembly dependent on.</param>
-        public void GenerateModuleFromCode(string sourceFilePath,
+        /// <returns>The path to the compiled assembly.</returns>
+        public string GenerateModuleFromCode(string sourceFilePath,
                                            params string[] dependeciesAssembliesPath)
         {
             var asmReferences = dependeciesAssembliesPath.ToList()
@@ -71,13 +73,15 @@ namespace Nomad.Tests.FunctionalTests.Modules
                                                          NomadTestAssembly
                                                      });
 
-            _parameters = new CompilerParameters(asmReferences.ToArray());
+            _parameters = new CompilerParameters(asmReferences.ToArray())
+                              {
+                                  GenerateExecutable = false,
+                                  TreatWarningsAsErrors = false,
+                                  OutputAssembly = Path.Combine(OutputDirectory,
+                                                                Path.GetFileNameWithoutExtension(
+                                                                    sourceFilePath) + ".dll")
+                              };
 
-            _parameters.GenerateExecutable = false;
-            _parameters.TreatWarningsAsErrors = false;
-            _parameters.OutputAssembly = Path.Combine(OutputDirectory,
-                                                      Path.GetFileNameWithoutExtension(
-                                                          sourceFilePath) + ".dll");
             string srcPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, sourceFilePath);
             _results = _provider.CompileAssemblyFromFile(_parameters, srcPath);
 
@@ -89,6 +93,14 @@ namespace Nomad.Tests.FunctionalTests.Modules
                 }
                 throw new Exception("Compilation exception during compiling modules");
             }
+
+            return _parameters.OutputAssembly;
+        }
+
+
+        public string GenerateManifestForModule(string modulePath)
+        {
+            throw new NotImplementedException();
         }
     }
 }

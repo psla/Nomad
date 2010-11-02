@@ -4,7 +4,7 @@ using Nomad.Modules;
 namespace Nomad.ManifestCreator
 {
     /// <summary>
-    ///Application responsible for creating manifest for all files in provided directory
+    ///     Application responsible for creating manifest for all files in provided directory
     /// </summary>
     /// 
     public class ManifestCreatorProgram
@@ -23,7 +23,8 @@ namespace Nomad.ManifestCreator
             try
             {
                 var argumentsParser = new ArgumentsParser(args);
-                var manifestCreator = new ManifestCreator(argumentsParser);
+                var manifestCreator = argumentsParser.GetManifestCreator();
+
                 manifestCreator.Create();
             }
             catch (Exception e)
