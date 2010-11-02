@@ -69,6 +69,7 @@ namespace Nomad.Utils
             Version version = GetVersion();
             IEnumerable<SignedFile> signedFiles = GetSignedFiles();
             IEnumerable<ModuleDependency> dependencyModules = GetDependencyModules();
+            //IEnumerable<ModuleDependency> dependencyModules = new List<ModuleDependency>();
 
             //  create manifest
             var manifest = new ModuleManifest
@@ -96,7 +97,7 @@ namespace Nomad.Utils
 
         private IEnumerable<ModuleDependency> GetDependencyModules()
         {
-            Assembly asm = Assembly.ReflectionOnlyLoadFrom(_assemblyName);
+            Assembly asm = Assembly.ReflectionOnlyLoadFrom(GetAssemblyPath());
 
             return
                 asm.GetReferencedAssemblies().Select(
@@ -134,7 +135,18 @@ namespace Nomad.Utils
 
         private Version GetVersion()
         {
-            var version = new Version(AssemblyName.GetAssemblyName(GetAssemblyPath()).Version);
+            Version version = null;
+
+            try
+            {
+                version = new Version(AssemblyName.GetAssemblyName(GetAssemblyPath()).Version);
+            }
+            catch (System.Exception)
+            {
+                //TODO: this cannot be done ! this way
+                version = new Version("0.0.0.0");
+            }
+
             return version;
         }
     }

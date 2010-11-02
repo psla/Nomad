@@ -51,6 +51,11 @@ namespace Nomad.Tests.FunctionalTests.Modules
             _manager.LoadModules(new DirectoryModuleDiscovery(fullDirectory));
         }
 
+        protected void LoadModulesFromDiscovery(IModuleDiscovery discovery)
+        {
+            _manager.LoadModules(discovery);
+        }
+
 
         protected void AssertModulesLoadedAreEqualTo(params string[] expectedModuleNames)
         {

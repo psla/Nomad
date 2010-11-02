@@ -16,10 +16,11 @@ namespace Nomad.Tests.FunctionalTests.Modules
     /// </remarks>
     public class ModuleCompiler
     {
-        public static readonly string NomadAssembly = AppDomain.CurrentDomain.BaseDirectory + @"\Nomad.dll";
+        public static readonly string NomadAssembly = AppDomain.CurrentDomain.BaseDirectory +
+                                                      @"\Nomad.dll";
 
         public static readonly string NomadTestAssembly = AppDomain.CurrentDomain.BaseDirectory +
-                                                 @"\Nomad.Tests.dll";
+                                                          @"\Nomad.Tests.dll";
 
         private readonly CodeDomProvider _provider;
         private string _outputDirectory;
@@ -49,7 +50,7 @@ namespace Nomad.Tests.FunctionalTests.Modules
             {
                 if (!string.IsNullOrEmpty(value))
                 {
-                    if(!Directory.Exists(value))
+                    if (!Directory.Exists(value))
                         Directory.CreateDirectory(value);
                 }
                 _outputDirectory = value;
@@ -64,16 +65,14 @@ namespace Nomad.Tests.FunctionalTests.Modules
         /// <param name="dependeciesAssembliesPath">Array of the dependecies (assemblies) to be the following assembly dependent on.</param>
         /// <returns>The path to the compiled assembly.</returns>
         public string GenerateModuleFromCode(string sourceFilePath,
-                                           params string[] dependeciesAssembliesPath)
+                                             params string[] dependeciesAssembliesPath)
         {
-            var asmReferences = dependeciesAssembliesPath.ToList()
-                .Select(x => Path.Combine(OutputDirectory, x));
-
-            asmReferences = asmReferences.Concat(new List<string>
-                                                     {
-                                                         NomadAssembly,
-                                                         NomadTestAssembly
-                                                     });
+            IEnumerable<string> asmReferences =
+                dependeciesAssembliesPath.ToList().Concat(new List<string>
+                                                              {
+                                                                  NomadAssembly,
+                                                                  NomadTestAssembly
+                                                              });
 
             _parameters = new CompilerParameters(asmReferences.ToArray())
                               {
@@ -102,7 +101,10 @@ namespace Nomad.Tests.FunctionalTests.Modules
 
         public string GenerateManifestForModule(string modulePath)
         {
-            var builder = new ManifestBuilder("ALAMAKOTA","ALAMAKOTA",modulePath,Path.GetFullPath(Path.GetDirectoryName(modulePath)));
+            string directory = Path.GetFullPath(Path.GetDirectoryName(modulePath));
+            var builder = new ManifestBuilder("ALAMAKOTA",
+                                              @"FunctionalTests\Signing\KeyDir\manifest-key.xml",
+                                              Path.GetFileName(modulePath), directory);
             builder.Create();
 
             return modulePath + ModuleManifest.ManifestFileNameSuffix;

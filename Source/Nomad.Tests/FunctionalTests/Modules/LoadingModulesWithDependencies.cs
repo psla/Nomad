@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using Nomad.Exceptions;
+using Nomad.Modules.Discovery;
 using NUnit.Framework;
 using TestsShared;
 
@@ -20,23 +21,33 @@ namespace Nomad.Tests.FunctionalTests.Modules
         [Test]
         public void loading_one_module_dependent_on_one_another()
         {
-            const string dir = @"Modules\Dependent1\";
+            const string dir = @"Modules\Dependent1\ModuleA\";
+            const string dir2 = @"Modules\Dependent1\ModuleB\";
+
             string modulePath = string.Empty;
 
+            // modules generation
             _moduleCompiler.OutputDirectory = dir;
             modulePath = _moduleCompiler.GenerateModuleFromCode(@"..\Source\Nomad.Tests\FunctionalTests\Data\Dependencies\DependencyModule1.cs");
             
             _moduleCompiler.GenerateManifestForModule(modulePath);
 
+            _moduleCompiler.OutputDirectory = dir2;
             modulePath = _moduleCompiler.GenerateModuleFromCode(@"..\Source\Nomad.Tests\FunctionalTests\Data\Dependencies\ModuleWithDependency.cs",
-                                                     "DependencyModule1.dll");
+                                                     dir + "DependencyModule1.dll");
 
             _moduleCompiler.GenerateManifestForModule(modulePath);
 
-            
+            // define discovery
+            var discovery = new CompositeModuleDiscovery(new IModuleDiscovery[]
+                                                             {
+                                                                 new DirectoryModuleDiscovery(dir2),
+                                                                 new DirectoryModuleDiscovery(dir),
+                                                             });
 
-            LoadModulesFromDirectory(dir);
-            AssertModulesLoadedAreEqualTo("ModuleWithDependency", "DependencyModule1");
+            // perform test and assert
+            LoadModulesFromDiscovery(discovery);
+            AssertModulesLoadedAreEqualTo("DependencyModule1", "ModuleWithDependency");
         }
 
 
