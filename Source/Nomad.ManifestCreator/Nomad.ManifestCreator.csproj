@@ -68,7 +68,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArgumentsParser.cs" />
-    <Compile Include="ManifestCreator.cs" />
     <Compile Include="ManifestCreatorProgram.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

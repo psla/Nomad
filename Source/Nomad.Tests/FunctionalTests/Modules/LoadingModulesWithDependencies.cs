@@ -24,17 +24,16 @@ namespace Nomad.Tests.FunctionalTests.Modules
             string modulePath = string.Empty;
 
             _moduleCompiler.OutputDirectory = dir;
-            modulePath = _moduleCompiler.GenerateModuleFromCode(@"..\Source\Nomad.Tests\FunctionalTests\Data\DependencyModule1.cs");
+            modulePath = _moduleCompiler.GenerateModuleFromCode(@"..\Source\Nomad.Tests\FunctionalTests\Data\Dependencies\DependencyModule1.cs");
             
             _moduleCompiler.GenerateManifestForModule(modulePath);
 
-            modulePath = _moduleCompiler.GenerateModuleFromCode(@"..\Source\Nomad.Tests\FunctionalTests\Data\ModuleWithDependency.cs",
+            modulePath = _moduleCompiler.GenerateModuleFromCode(@"..\Source\Nomad.Tests\FunctionalTests\Data\Dependencies\ModuleWithDependency.cs",
                                                      "DependencyModule1.dll");
 
             _moduleCompiler.GenerateManifestForModule(modulePath);
 
             
-
 
             LoadModulesFromDirectory(dir);
             AssertModulesLoadedAreEqualTo("ModuleWithDependency", "DependencyModule1");
