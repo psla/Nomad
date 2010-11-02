@@ -4,7 +4,7 @@ using System.IO;
 namespace Nomad.ManifestCreator
 {
     /// <summary>
-    ///     Parses arguments provided to <see cref="ManifestCreatorProgram"/> and initializes the instance of <see cref="Nomad.ManifestCreator"/> class.
+    ///     Parses arguments provided to <see cref="Program"/> and initializes the instance of <see cref="Nomad.ProgramManifestCreator"/> class.
     /// </summary>
     public class ArgumentsParser
     {
@@ -75,9 +75,9 @@ namespace Nomad.ManifestCreator
         }
 
 
-        public Utils.ManifestCreator GetManifestCreator()
+        public Utils.ManifestBuilder GetManifestCreator()
         {
-            return new Utils.ManifestCreator(IssuerName, IssuerXml, AssemblyName, Directory);
+            return new Utils.ManifestBuilder(IssuerName, IssuerXml, AssemblyName, Directory);
         }
     }
 }

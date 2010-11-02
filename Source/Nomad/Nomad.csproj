@@ -129,7 +129,7 @@
     <Compile Include="Updater\UpdateArguments.cs" />
     <Compile Include="Updater\Updater.cs" />
     <Compile Include="Updater\UpdatesReadyEventArgs.cs" />
-    <Compile Include="Utils\ManifestCreator.cs" />
+    <Compile Include="Utils\ManifestBuilder.cs" />
     <Compile Include="Utils\Version.cs" />
     <Compile Include="Modules\ModuleInfo.cs" />
     <Compile Include="Modules\ModuleLoader.cs" />

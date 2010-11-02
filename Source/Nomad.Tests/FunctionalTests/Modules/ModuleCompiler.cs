@@ -3,6 +3,8 @@ using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Nomad.Modules.Manifest;
+using Nomad.Utils;
 
 namespace Nomad.Tests.FunctionalTests.Modules
 {
@@ -100,7 +102,10 @@ namespace Nomad.Tests.FunctionalTests.Modules
 
         public string GenerateManifestForModule(string modulePath)
         {
-            throw new NotImplementedException();
+            var builder = new ManifestBuilder("ALAMAKOTA","ALAMAKOTA",modulePath,Path.GetFullPath(Path.GetDirectoryName(modulePath)));
+            builder.Create();
+
+            return modulePath + ModuleManifest.ManifestFileNameSuffix;
         }
     }
 }

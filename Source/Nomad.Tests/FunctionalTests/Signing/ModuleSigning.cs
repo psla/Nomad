@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using Nomad.ManifestCreator;
 using Nomad.Modules;
 using Nomad.Modules.Manifest;
 using Nomad.Utils;
@@ -39,7 +40,7 @@ namespace Nomad.Tests.FunctionalTests.Signing
 
             File.WriteAllText(_assemblyPath, "test assembly");
 
-            ManifestCreator.ManifestCreatorProgram.Main(new[]
+            Program.Main(new[]
                                                             {
                                                                 "rsa",
                                                                 _keyFileName, _moduleDirectory,

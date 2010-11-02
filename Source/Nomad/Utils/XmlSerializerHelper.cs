@@ -6,7 +6,7 @@ namespace Nomad.Utils
     /// <summary>
     /// Class which provides help for xml serialization
     /// </summary>
-    public class XmlSerializerHelper
+    public static class XmlSerializerHelper
     {
         /// <summary>
         /// Serializes provided object and returns byte array with serialized data

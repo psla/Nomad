@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using Version = Nomad.Utils.Version;
 
 namespace Nomad.Modules.Manifest
@@ -20,5 +21,10 @@ namespace Nomad.Modules.Manifest
         /// Minimal version of dependent module to cooperate with.
         ///</summary>
         public Version MinimalVersion { get; set; }
+
+        /// <summary>
+        ///     Target processor architecture of the module.
+        /// </summary>
+        public ProcessorArchitecture ProcessorArchitecture { get; set; }
     }
 }

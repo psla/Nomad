@@ -1,5 +1,4 @@
 using System;
-using Nomad.Modules;
 
 namespace Nomad.ManifestCreator
 {
@@ -7,7 +6,7 @@ namespace Nomad.ManifestCreator
     ///     Application responsible for creating manifest for all files in provided directory
     /// </summary>
     /// 
-    public class ManifestCreatorProgram
+    public class Program
     {
         /// <summary>
         /// 
