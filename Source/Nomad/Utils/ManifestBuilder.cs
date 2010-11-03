@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -69,7 +70,6 @@ namespace Nomad.Utils
             Version version = GetVersion();
             IEnumerable<SignedFile> signedFiles = GetSignedFiles();
             IEnumerable<ModuleDependency> dependencyModules = GetDependencyModules();
-            //IEnumerable<ModuleDependency> dependencyModules = new List<ModuleDependency>();
 
             //  create manifest
             var manifest = new ModuleManifest
@@ -97,7 +97,29 @@ namespace Nomad.Utils
 
         private IEnumerable<ModuleDependency> GetDependencyModules()
         {
-            Assembly asm = Assembly.ReflectionOnlyLoadFrom(GetAssemblyPath());
+            Assembly asm = null;
+            try
+            {
+                asm = Assembly.ReflectionOnlyLoadFrom(GetAssemblyPath());
+            }
+            catch (FileLoadException)
+            {
+                // mostly the asm has already been loaded 
+                AssemblyName asmName = AssemblyName.GetAssemblyName(GetAssemblyPath());
+
+                Func<Assembly, bool> predicate = x => x.FullName.Equals(asmName.FullName);
+
+                IEnumerable<Assembly> asms =
+                    AppDomain.CurrentDomain.ReflectionOnlyGetAssemblies()
+                        .Where(predicate);
+
+                asm = asms.SingleOrDefault();
+            }
+            catch(Exception)
+            {
+                return  new List<ModuleDependency>();
+                //TODO: log the information
+            }
 
             return
                 asm.GetReferencedAssemblies().Select(
@@ -141,7 +163,7 @@ namespace Nomad.Utils
             {
                 version = new Version(AssemblyName.GetAssemblyName(GetAssemblyPath()).Version);
             }
-            catch (System.Exception)
+            catch (Exception)
             {
                 //TODO: this cannot be done ! this way
                 version = new Version("0.0.0.0");

@@ -99,11 +99,11 @@ namespace Nomad.Tests.FunctionalTests.Modules
         }
 
 
-        public string GenerateManifestForModule(string modulePath)
+        public string GenerateManifestForModule(string modulePath,string keyLocation)
         {
             string directory = Path.GetFullPath(Path.GetDirectoryName(modulePath));
             var builder = new ManifestBuilder("ALAMAKOTA",
-                                              @"FunctionalTests\Signing\KeyDir\manifest-key.xml",
+                                              keyLocation,
                                               Path.GetFileName(modulePath), directory);
             builder.Create();
 

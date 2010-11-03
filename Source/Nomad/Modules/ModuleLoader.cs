@@ -12,8 +12,9 @@ namespace Nomad.Modules
     /// </summary>
     public class ModuleLoader : MarshalByRefObject, IModuleLoader
     {
+        private readonly List<IModuleBootstraper> _loadedModules = new List<IModuleBootstraper>();
         private readonly IWindsorContainer _rootContainer;
-        private List<IModuleBootstraper> _loadedModules = new List<IModuleBootstraper>();
+
 
         /// <summary>
         ///     Initializes new instance of the <see cref="ModuleLoader"/> class.
@@ -64,40 +65,10 @@ namespace Nomad.Modules
         /// </remarks>
         public void InvokeUnload()
         {
-            //FIXME: find how to iterate through child containers to avoid iterating through assemblies.
-            //_rootContainer.`
-            //foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
-            //{
-            //    //search in this assembly for IBootstrapper
-            //    try
-            //    {
-            //        Type bootstraperType = GetBootstrapperType(assembly);
-
-            //        //  is not a module
-            //        if (bootstraperType == null)
-            //            continue;
-
-            //        //  search containers
-                    
-            //    }
-            //    catch (Exception)
-            //    {
-            //        //TODO: provide logging facility
-            //        //throw;
-            //    }
-            //}
-            foreach (var moduleBootstraper in _loadedModules)
+            foreach (IModuleBootstraper moduleBootstraper in _loadedModules)
             {
                 moduleBootstraper.OnUnLoad();
             }
-
-            //var containers = _rootContainer.ResolveAll<IWindsorContainer>();
-            //foreach (var container in containers)
-            //{
-            //    var module = container.Resolve<IModuleBootstraper>();
-            //    module.OnUnLoad();
-            //}
-            
         }
 
         #endregion

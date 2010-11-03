@@ -10,7 +10,7 @@ using NUnit.Framework;
 
 namespace Nomad.Tests.FunctionalTests.Modules
 {
-    public abstract class ModuleLoadingTestFixture
+    public abstract class ModuleLoadingTestFixture : MarshalByRefObject
     {
         private InjectableModulesRegistry _registry;
         private ModuleManager _manager;
