@@ -123,8 +123,8 @@
     <Compile Include="FunctionalTests\Signing\KeyGenerating.cs" />
     <Compile Include="FunctionalTests\Signing\ModuleSigning.cs" />
     <Compile Include="FunctionalTests\Modules\Filters\SignedModulesFiltering.cs" />
-	<Compile Include="IntegrationTests\Updater\AppDomainBoundariesUpdaterTests.cs" />
-	<Compile Include="IntegrationTests\Modules\LoadingModulesWithDependencies.cs" />
+    <Compile Include="IntegrationTests\Updater\AppDomainBoundariesUpdaterTests.cs" />
+    <Compile Include="IntegrationTests\Modules\LoadingModulesWithDependencies.cs" />
     <Compile Include="UnitTests\GettingModules\UpdatingClient.cs" />
     <Compile Include="GuiNunitHooks.cs" />
     <Compile Include="IntegrationTests\Modules\DirectoryModuleDiscovery.cs" />
@@ -157,10 +157,6 @@
     <ProjectReference Include="..\Nomad.ModulesRepository\Nomad.ModulesRepository.csproj">
       <Project>{69CE733D-8F4E-4183-B5C9-4A6B1B42B843}</Project>
       <Name>Nomad.ModulesRepository</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Nomad.Updater\Nomad.Updater.csproj">
-      <Project>{072A3DCA-2D0F-42D7-A02F-02498B7791FB}</Project>
-      <Name>Nomad.Updater</Name>
     </ProjectReference>
     <ProjectReference Include="..\Nomad\Nomad.csproj">
       <Project>{3828EBBD-FFBA-4C30-BF46-D3742BC165F1}</Project>
