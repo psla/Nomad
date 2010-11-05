@@ -110,10 +110,12 @@
     <Compile Include="Communication\EventAggregation\IEventAggregator.cs" />
     <Compile Include="Exceptions\NomadDuplicateServiceException.cs" />
     <Compile Include="Exceptions\NomadServiceNotFoundException .cs" />
+    <Compile Include="Modules\DependencyChecker.cs" />
     <Compile Include="Modules\Discovery\CompositeModuleDiscovery.cs" />
     <Compile Include="Modules\Discovery\SingleModuleDiscovery.cs" />
     <Compile Include="Modules\Filters\CompositeModuleFilter.cs" />
     <Compile Include="Modules\Discovery\DirectoryModuleDiscovery.cs" />
+    <Compile Include="Modules\IDependencyChecker.cs" />
     <Compile Include="Modules\IModuleBootstraper.cs" />
     <Compile Include="Modules\Discovery\IModuleDiscovery.cs" />
     <Compile Include="Modules\Filters\IModuleFilter.cs" />
