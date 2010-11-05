@@ -21,5 +21,8 @@ namespace Nomad.Tests.FunctionalTests.Modules
             AssertModulesLoadedAreEqualTo("ModuleWithConstructorDependency",
                                           "ModuleWithPropertyDependency");
         }
+
+        // TODO: ServiceLocator, EventAggregator and further Nomad Services loading order tests.
+
     }
 }

@@ -102,11 +102,6 @@ namespace Nomad.Tests.FunctionalTests.Modules
         }
 
 
-        public void loading_two_modules_dependent_on_each_other_throws_an_exception()
-        {
-            //TODO: think about this test
-        }
-
 
         [Test]
         public void loading_module_with_dependency_with_no_dependency_present_results_in_exception()

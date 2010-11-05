@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Nomad.Modules.Discovery;
 using Nomad.Modules.Filters;
@@ -13,6 +12,7 @@ namespace Nomad.Modules
     {
         private readonly IModuleLoader _moduleLoader;
         private readonly IModuleFilter _moduleFilter;
+        private IDependencyChecker _dependencyChecker;
 
 
         /// <summary>
@@ -26,6 +26,9 @@ namespace Nomad.Modules
             if (moduleLoader == null) throw new ArgumentNullException("moduleLoader");
             _moduleLoader = moduleLoader;
             _moduleFilter = moduleFilter;
+
+            // TODO: make this dependency checker service injected by constructor, not instanizated heres
+            _dependencyChecker = new DependencyChecker();
         }
 
 
@@ -63,9 +66,14 @@ namespace Nomad.Modules
         {
             if (moduleDiscovery == null) throw new ArgumentNullException("moduleDiscovery");
 
+            // pass to filtering 
             var allModules = moduleDiscovery.GetModules();
             var filteredModules = allModules.Where(module => _moduleFilter.Matches(module));
-            foreach (var moduleInfo in filteredModules)
+
+            // pass to dependency checker 
+            var dependencyCheckedModules = _dependencyChecker.SortModules(filteredModules);
+
+            foreach (var moduleInfo in dependencyCheckedModules)
                 LoadSingleModule(moduleInfo);
         }
 
