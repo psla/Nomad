@@ -108,10 +108,11 @@
     <Compile Include="FunctionalTests\Modules\InjectableModulesRegistry.cs" />
     <Compile Include="FunctionalTests\Modules\LoadedModulesRegistry.cs" />
     <Compile Include="FunctionalTests\Modules\LoadingModules.cs" />
-    <Compile Include="FunctionalTests\Modules\LoadingModulesWithDependencies.cs" />
+    <Compile Include="FunctionalTests\Modules\LoadingModulesWithReferenceDependencies.cs" />
     <Compile Include="FunctionalTests\Modules\LoadingModulesWithServiceDependencies.cs" />
     <Compile Include="FunctionalTests\Modules\ModuleCompiler.cs" />
     <Compile Include="FunctionalTests\Modules\ModuleLoadingTestFixture.cs" />
+    <Compile Include="FunctionalTests\Modules\ModuleLoadingWithCompilerTestFixture.cs" />
     <Compile Include="FunctionalTests\Regions\FakeWindowWithRegions.xaml.cs">
       <DependentUpon>FakeWindowWithRegions.xaml</DependentUpon>
     </Compile>

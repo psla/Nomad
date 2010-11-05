@@ -58,14 +58,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple_Publisher_Module", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventAggregatorCommunicationTypes", "Nomad.Tutorials\EventAggregatorCommunicationTypes\EventAggregatorCommunicationTypes.csproj", "{2B0A0CD6-FD57-48F0-A163-F39073981934}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DependeciesModules", "DependeciesModules", "{F57CD6F9-607D-4A0F-9E59-5DA478D6E405}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OneToMany", "OneToMany", "{F57CD6F9-607D-4A0F-9E59-5DA478D6E405}"
 	ProjectSection(SolutionItems) = preProject
 		Nomad.Tests\FunctionalTests\Data\Dependencies\DependencyModule1.cs = Nomad.Tests\FunctionalTests\Data\Dependencies\DependencyModule1.cs
 		Nomad.Tests\FunctionalTests\Data\Dependencies\DependencyModule2.cs = Nomad.Tests\FunctionalTests\Data\Dependencies\DependencyModule2.cs
 		Nomad.Tests\FunctionalTests\Data\Dependencies\ModuleWithDependency.cs = Nomad.Tests\FunctionalTests\Data\Dependencies\ModuleWithDependency.cs
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DependenciesChain", "DependenciesChain", "{CF8312A2-4569-4BF7-812A-A84ED9CBCDD3}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Chain", "Chain", "{CF8312A2-4569-4BF7-812A-A84ED9CBCDD3}"
 	ProjectSection(SolutionItems) = preProject
 		Nomad.Tests\FunctionalTests\Data\ChainDependencies\DependencyModule1.cs = Nomad.Tests\FunctionalTests\Data\ChainDependencies\DependencyModule1.cs
 		Nomad.Tests\FunctionalTests\Data\ChainDependencies\DependencyModule2.cs = Nomad.Tests\FunctionalTests\Data\ChainDependencies\DependencyModule2.cs
@@ -74,13 +74,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DependenciesChain", "Depend
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dependencies", "Dependencies", "{223E9D5F-91DD-4920-9F66-2355ACA86F8B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DependenciesErrorInitialize", "DependenciesErrorInitialize", "{6DB81550-DFDC-4701-A687-C2517D6533C2}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ErrorInitialize", "ErrorInitialize", "{6DB81550-DFDC-4701-A687-C2517D6533C2}"
 	ProjectSection(SolutionItems) = preProject
 		Nomad.Tests\FunctionalTests\Data\ErrorInitialize\DependencyModule1.cs = Nomad.Tests\FunctionalTests\Data\ErrorInitialize\DependencyModule1.cs
 		Nomad.Tests\FunctionalTests\Data\ErrorInitialize\ModuleWithDependency.cs = Nomad.Tests\FunctionalTests\Data\ErrorInitialize\ModuleWithDependency.cs
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DependenciesErrorLoad", "DependenciesErrorLoad", "{B6E2706F-EBED-4FEA-B048-E8E0C9FD6D30}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ErrorLoad", "ErrorLoad", "{B6E2706F-EBED-4FEA-B048-E8E0C9FD6D30}"
+	ProjectSection(SolutionItems) = preProject
+		Nomad.Tests\FunctionalTests\Data\ErrorLoad\DependencyModule1.cs = Nomad.Tests\FunctionalTests\Data\ErrorLoad\DependencyModule1.cs
+		Nomad.Tests\FunctionalTests\Data\ErrorLoad\ModuleWithDependency.cs = Nomad.Tests\FunctionalTests\Data\ErrorLoad\ModuleWithDependency.cs
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
