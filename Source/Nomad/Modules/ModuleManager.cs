@@ -12,7 +12,7 @@ namespace Nomad.Modules
     {
         private readonly IModuleLoader _moduleLoader;
         private readonly IModuleFilter _moduleFilter;
-        private IDependencyChecker _dependencyChecker;
+        private readonly IDependencyChecker _dependencyChecker;
 
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace Nomad.Modules
             _moduleLoader = moduleLoader;
             _moduleFilter = moduleFilter;
 
-            // TODO: make this dependency checker service injected by constructor, not instanizated heres
+            // TODO: make this dependency checker service injected by constructor, not instantiated 
             _dependencyChecker = new DependencyChecker();
         }
 

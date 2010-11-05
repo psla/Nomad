@@ -3,11 +3,8 @@
 namespace Nomad.Modules
 {
     /// <summary>
-    ///     Provides means for checking the dependnencies between modules. 
+    ///     Provides means for checking the dependencies between modules. 
     /// </summary>
-    /// <remarks>
-    ///     
-    /// </remarks>
     public interface IDependencyChecker
     {        
 
@@ -15,7 +12,7 @@ namespace Nomad.Modules
         ///     Sorts the given assemblies (modules) set in a dependency resolved loading order.
         /// </summary>
         /// <param name="modules">Assemblies set of modules to be sorted.</param>
-        /// <returns>Properly ordeded set of modules for module loading purpose.</returns>
+        /// <returns>Properly ordered set of modules for module loading purpose.</returns>
         IEnumerable<ModuleInfo> SortModules(IEnumerable<ModuleInfo> modules);
 
         /// <summary>
@@ -25,7 +22,7 @@ namespace Nomad.Modules
         /// <param name="loadedModules">Set of modules available in the application.</param>
         /// <param name="newModules"> List of modules to be added into the application or replace loaded modules.</param>
         /// <param name="nonValidModules">List of modules that cannot be loaded.</param>
-        /// <returns>True on sucessful dependency resolution.</returns>
+        /// <returns>True on successful dependency resolution.</returns>
         bool CheckModules(IEnumerable<ModuleInfo> loadedModules, IEnumerable<ModuleInfo> newModules,
                           out IEnumerable<ModuleInfo> nonValidModules);
     }

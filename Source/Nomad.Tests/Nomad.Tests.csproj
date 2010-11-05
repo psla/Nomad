@@ -133,6 +133,7 @@
     <Compile Include="IntegrationTests\Kernel\NomadKernelTests.cs" />
     <Compile Include="UnitTests\Kernel\NomadConfigurationTests.cs" />
     <Compile Include="UnitTests\Modules\CompositeModuleFilterTests.cs" />
+    <Compile Include="UnitTests\Modules\DependencyCheckerTests.cs" />
     <Compile Include="UnitTests\Modules\ModuleManagerInteractions.cs" />
     <Compile Include="UnitTests\Modules\VersionConverting.cs" />
     <Compile Include="UnitTests\Regions\Adapters\AdapterContractBase.cs" />
