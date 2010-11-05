@@ -1,5 +1,8 @@
 using System;
+using System.IO;
 using System.Security.Policy;
+using Nomad.Exceptions;
+using Nomad.KeysGenerator;
 using Nomad.Modules.Discovery;
 using NUnit.Framework;
 using TestsShared;
@@ -9,25 +12,28 @@ namespace Nomad.Tests.FunctionalTests.Modules
     [FunctionalTests]
     public class LoadingModulesWithDependencies : ModuleLoadingTestFixture
     {
-        private ModuleCompiler _moduleCompiler;
-        private AppDomain _domain;
         private const string KeyFile = @"alaMaKota.xml";
+        private AppDomain _domain;
+        private ModuleCompiler _moduleCompiler;
+
 
         [TestFixtureSetUp]
         public void set_up_fixture()
         {
             _moduleCompiler = new ModuleCompiler();
-            KeysGenerator.KeysGeneratorProgram.Main(new[] { KeyFile });
+            KeysGeneratorProgram.Main(new[] {KeyFile});
         }
+
 
         [SetUp]
         public void set_up()
         {
             _domain = AppDomain.CreateDomain("TEST DOMAIN",
-                                            new Evidence(AppDomain.CurrentDomain.Evidence),
-                                            AppDomain.CurrentDomain.BaseDirectory, ".",
-                                            true);  
+                                             new Evidence(AppDomain.CurrentDomain.Evidence),
+                                             AppDomain.CurrentDomain.BaseDirectory, ".",
+                                             true);
         }
+
 
         private void SetUpModuleWithManifest(string outputDirectory, string srcPath,
                                              params string[] references)
@@ -36,7 +42,7 @@ namespace Nomad.Tests.FunctionalTests.Modules
 
             string modulePath = string.Empty;
             modulePath = _moduleCompiler.GenerateModuleFromCode(srcPath, references);
-            _moduleCompiler.GenerateManifestForModule(modulePath,KeyFile);
+            _moduleCompiler.GenerateManifestForModule(modulePath, KeyFile);
         }
 
 
@@ -83,11 +89,13 @@ namespace Nomad.Tests.FunctionalTests.Modules
                                           "ModuleWithDependency");
         }
 
+
         [Test]
         public void loading_chain_of_depenedent_modules()
         {
             _domain.DoCallBack(loading_chain_of_depenedent_modules_callback);
         }
+
 
         /// <summary>
         ///     ModuleWithDependency -> DependencyModule2 -> DependencyModule1
@@ -136,21 +144,76 @@ namespace Nomad.Tests.FunctionalTests.Modules
         [Test]
         public void loading_module_with_dependency_with_no_dependency_present_results_in_exception()
         {
-            throw new NotImplementedException();
+            _domain.DoCallBack(
+                loading_module_with_dependency_with_no_dependency_present_results_in_exception_callback);
+        }
+
+
+        /// <summary>
+        ///     Chain loading with missing dependency in it.
+        /// </summary>
+        private void
+            loading_module_with_dependency_with_no_dependency_present_results_in_exception_callback()
+        {
+            const string dir = @"Modules\Dependent3\ModuleA\";
+            const string dir2 = @"Modules\Dependent3\ModuleB\";
+            const string dir3 = @"Modules\Dependent3\ModuleC\";
+
+            // dependant module generation
+            SetUpModuleWithManifest(dir,
+                                    @"..\Source\Nomad.Tests\FunctionalTests\Data\ChainDependencies\DependencyModule1.cs");
+
+            // second dependent module generation
+            SetUpModuleWithManifest(dir3,
+                                    @"..\Source\Nomad.Tests\FunctionalTests\Data\ChainDependencies\DependencyModule2.cs",
+                                    dir + "DependencyModule1.dll");
+
+            // third dependent module generation
+            SetUpModuleWithManifest(dir2,
+                                    @"..\Source\Nomad.Tests\FunctionalTests\Data\ChainDependencies\ModuleWithDependency.cs",
+                                    dir3 + "DependencyModule2.dll");
+            // remove dependency
+            Directory.Delete(dir3, true);
+
+            // define discovery sequence
+            var discovery = new CompositeModuleDiscovery(new IModuleDiscovery[]
+                                                             {
+                                                                 new DirectoryModuleDiscovery(dir2),
+                                                                 new DirectoryModuleDiscovery(dir),
+                                                                 new DirectoryModuleDiscovery(dir3),
+                                                             });
+
+            // perform test and assert
+            Assert.Throws<NomadCouldNotLoadModuleException>(
+                () => LoadModulesFromDiscovery(discovery));
         }
 
 
         [Test]
         public void loading_module_fails_during_initialization_phase_throws_an_exception()
         {
-            throw new NotImplementedException();
+            _domain.DoCallBack(
+                loading_module_fails_during_initialization_phase_throws_an_exception_callback);
+        }
+
+
+        private void loading_module_fails_during_initialization_phase_throws_an_exception_callback()
+        {
+            //TODO : implement
         }
 
 
         [Test]
         public void loading_module_fails_during_loading_assembly_phase_throws_an_exception()
         {
-            throw new NotImplementedException();
+            _domain.DoCallBack(
+                loading_module_fails_during_loading_assembly_phase_throws_an_exception_calback);
+        }
+
+
+        private void loading_module_fails_during_loading_assembly_phase_throws_an_exception_calback()
+        {
+            //TODO : implement
         }
     }
 }
