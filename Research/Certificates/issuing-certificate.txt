@@ -5,3 +5,6 @@ makecert -sv SubjectNamePrivate.pvk -iv NomadFakeCAPrivateKey.pvk -n "CN=Subject
 
 3. utworzenie pfxa
 pvk2pfx -pvk SignedByCA.pvk -pi abc123 -spc SignedByCA.cer -pfx SignedByCA.pfx
+
+4. utworzenie revocation listy
+makecert -crl -n "CN=Nomad Fake CA" -r -sv NomadFakeCa.pvk NomadFakeCa.crl

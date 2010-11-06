@@ -172,7 +172,22 @@
     <None Include="App.config" />
     <None Include="FunctionalTests\.gitignore" />
     <None Include="IntegrationTests\.gitignore" />
+    <None Include="res\pki\NomadInvalidCa.cer">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="res\pki\NomadInvalidCa.crl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="res\pki\signed_with_untrusted_cert\sample_module.dll.manifest">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="res\pki\signed_with_untrusted_cert\sample_module.dll.manifest.asc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="res\pki\SignedByCA.pfx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="res\pki\SignedByInvalidCA.pfx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="res\test.zip">
