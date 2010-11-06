@@ -51,6 +51,7 @@ namespace Nomad.Tests.FunctionalTests.Modules.Filters
             _modulePath = Path.Combine(_moduleDirectory, _assemblyName);
             ManifestCreatorProgram.Main(new[]
                                             {
+                                                "rsa",
                                                 _keyFileName
                                                 , _moduleDirectory,
                                                 _assemblyName, _issuerName
