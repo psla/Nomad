@@ -117,6 +117,7 @@
     <Compile Include="FunctionalTests\ServiceLocation\ITestService.cs" />
     <Compile Include="FunctionalTests\ServiceLocation\ServiceLocatorInModules.cs" />
     <Compile Include="FunctionalTests\ServiceLocation\ServiceRegistry.cs" />
+    <Compile Include="FunctionalTests\Signing\PKIModuleSigning.cs" />
     <Compile Include="FunctionalTests\Signing\KeyGenerating.cs" />
     <Compile Include="FunctionalTests\Signing\ModuleSigning.cs" />
     <Compile Include="FunctionalTests\Modules\Filters\SignedModulesFiltering.cs" />
@@ -171,6 +172,9 @@
     <None Include="App.config" />
     <None Include="FunctionalTests\.gitignore" />
     <None Include="IntegrationTests\.gitignore" />
+    <None Include="res\pki\SignedByCA.pfx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="res\test.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

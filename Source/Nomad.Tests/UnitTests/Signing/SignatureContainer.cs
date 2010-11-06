@@ -1,3 +1,4 @@
+using Moq;
 using Nomad.Signing;
 using Nomad.Signing.SignatureAlgorithms;
 using Nomad.Signing.SignatureProviders;
@@ -52,6 +53,17 @@ namespace Nomad.Tests.UnitTests.Signing
             Assert.AreEqual(issuerName, issuer.IssuerName, "Incorrect issuer name in returned class");
             Assert.IsInstanceOf(typeof (NullSignatureAlgorithm), issuer.IssuerAlgorithm,
                                 "Incorrect issuer algorithm");
+        }
+
+        [Test]
+        public void returns_default_provider_when_issuer_provider_not_specified()
+        {
+            var defaultAlgorithm = new Mock<ISignatureAlgorithm>();
+            var signatureProvider = new SignatureProvider(defaultAlgorithm.Object);
+            
+            var provider = _signatureProvider.GetIssuer("someone");
+
+            Assert.AreSame(defaultAlgorithm.Object, provider, "When no vendor algorithm provided, default should be returned");
         }
     }
 }

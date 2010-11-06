@@ -15,14 +15,28 @@ namespace Nomad.ManifestCreator
         /// <exception cref="ArgumentException">when provided argument is incorrect</exception>
         public ArgumentsParser(string[] args)
         {
-            IssuerXml = args[0];
-            Directory = args[1];
-            AssemblyName = args[2];
-            IssuerName = args[3];
+            KeyStore = args[0];
+            IssuerXml = args[1];
+            Directory = args[2];
+            AssemblyName = args[3];
+            IssuerName = args[4];
+            
+            KeyPassword = null;
+            if(args.Length == 6)
+                KeyPassword = args[5];
 
             FormatDirectory();
             ValidateArguments();
         }
+
+
+        /// <summary>
+        /// Contains Algorithm Type
+        /// </summary>
+        /// <remarks>
+        /// May be: RSA or PKI
+        /// </remarks>
+        public string KeyStore { get; private set; }
 
 
         private void FormatDirectory()
@@ -38,6 +52,8 @@ namespace Nomad.ManifestCreator
         public string IssuerXml { get; private set; }
         public string Directory { get; private set; }
         public string AssemblyName { get; private set; }
+
+        public string KeyPassword { get; private set; }
 
 
         private void ValidateArguments()

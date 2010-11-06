@@ -78,6 +78,7 @@
     <Reference Include="System.Runtime.Serialization">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Security" />
     <Reference Include="System.ServiceModel">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -119,6 +120,7 @@
     <Compile Include="Modules\Manifest\ModuleDependency.cs" />
     <Compile Include="Modules\Manifest\ModuleManifestFactory.cs" />
     <Compile Include="Signing\FileUtils\SignedFile.cs" />
+    <Compile Include="Signing\SignatureAlgorithms\PkiSignatureAlgorithm.cs" />
     <Compile Include="Updater\AvailableModules.cs" />
     <Compile Include="Updater\AvailableUpdatesEventArgs.cs" />
     <Compile Include="Updater\IModulesRepository.cs" />

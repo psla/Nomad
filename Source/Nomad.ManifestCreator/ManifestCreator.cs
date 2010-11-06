@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Security.Cryptography;
 using Nomad.Modules.Manifest;
-using Nomad.Signing;
 using Nomad.Signing.FileUtils;
 using Nomad.Signing.SignatureAlgorithms;
 using Nomad.Utils;
@@ -17,7 +15,6 @@ namespace Nomad.ManifestCreator
     public class ManifestCreator
     {
         private readonly ArgumentsParser _argumentsParser;
-        private RSACryptoServiceProvider _key;
         private ISignatureAlgorithm _signatureAlgorithm;
 
 
@@ -30,8 +27,12 @@ namespace Nomad.ManifestCreator
 
         private void LoadKey()
         {
-            _signatureAlgorithm =
-                new RsaSignatureAlgorithm(File.ReadAllText(_argumentsParser.IssuerXml));
+            if (_argumentsParser.KeyStore.ToLower() == "rsa")
+                _signatureAlgorithm =
+                    new RsaSignatureAlgorithm(File.ReadAllText(_argumentsParser.IssuerXml));
+            else
+                _signatureAlgorithm =
+                    new PkiSignatureAlgorithm(File.ReadAllBytes(_argumentsParser.IssuerXml), _argumentsParser.KeyPassword);
         }
 
 

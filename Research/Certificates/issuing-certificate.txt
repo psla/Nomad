@@ -1,0 +1,7 @@
+1. Utworzenie certyfikatu CA (self-signed)
+makecert -n "CN=Nomad Fake CA" -r -sv NomadFakeCAPrivateKey.pvk NomadFakeCa.cer
+2. Utworzenie certyfikatu instytucji (+podpisanie go)
+makecert -sv SubjectNamePrivate.pvk -iv NomadFakeCAPrivateKey.pvk -n "CN=SubjectName" -ic NomadFakeCa.cer SignedByCA.cer -sr currentuser -ss My
+
+3. utworzenie pfxa
+pvk2pfx -pvk SignedByCA.pvk -pi abc123 -spc SignedByCA.cer -pfx SignedByCA.pfx

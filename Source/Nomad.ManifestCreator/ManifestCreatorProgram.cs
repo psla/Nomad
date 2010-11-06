@@ -29,13 +29,14 @@ namespace Nomad.ManifestCreator
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-                if (args.Length != 3)
+                if (args.Length != 5)
                 {
                     Console.WriteLine(
                         "manifestCreator.exe path_to_issuer_xml path_to_directory assembly_name.dll issuer_name");
                     Console.WriteLine(e.Message);
                     return;
                 }
+                throw;
             }
         }
     }

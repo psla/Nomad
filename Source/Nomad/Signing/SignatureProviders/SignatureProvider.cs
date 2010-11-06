@@ -9,8 +9,29 @@ namespace Nomad.Signing.SignatureProviders
     ///</summary>
     public class SignatureProvider : ISignatureProvider
     {
+        private readonly ISignatureAlgorithm _defaultSignatureAlgorithm;
+
         private readonly IDictionary<string, IssuerInformation> _issuers =
             new Dictionary<string, IssuerInformation>();
+
+        /// <summary>
+        /// Initializes <see cref="SignatureProvider"/> with <see cref="NullSignatureAlgorithm"/>
+        /// </summary>
+        /// <remarks>
+        /// Such initialization assumes, that if no vendor-specific algorithm provided, signature check will not pass
+        /// </remarks>
+        public SignatureProvider() : this(new NullSignatureAlgorithm())
+        {
+            
+        }
+        /// <summary>
+        /// Initializes <see cref="SignatureProvider"/> with default algorithm
+        /// </summary>
+        /// <param name="defaultSignatureAlgorithm">When no algorithm for issuer specified, check with provided one</param>
+        public SignatureProvider(ISignatureAlgorithm defaultSignatureAlgorithm)
+        {
+            _defaultSignatureAlgorithm = defaultSignatureAlgorithm;
+        }
 
         #region ISignatureProvider Members
 
@@ -37,7 +58,7 @@ namespace Nomad.Signing.SignatureProviders
             IssuerInformation issuerInformation;
             if (_issuers.TryGetValue(issuerName, out issuerInformation))
                 return issuerInformation;
-            return new IssuerInformation(issuerName, new NullSignatureAlgorithm());
+            return new IssuerInformation(issuerName, _defaultSignatureAlgorithm);
         }
 
         #endregion

@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System;
+using System.Security.Cryptography;
 
 namespace Nomad.Signing.SignatureAlgorithms
 {
@@ -11,7 +12,7 @@ namespace Nomad.Signing.SignatureAlgorithms
 
 
         /// <summary>
-        /// 
+        /// Creates instance of SignatureAlgorithm based on provided keys
         /// </summary>
         /// <param name="keys">XML with keys (public for verification, public and private for signing) 
         /// <example>This example shows initialization of <see cref="RsaSignatureAlgorithm"/>
@@ -26,6 +27,16 @@ namespace Nomad.Signing.SignatureAlgorithms
         {
             _crypto = new RSACryptoServiceProvider();
             _crypto.FromXmlString(keys);
+        }
+
+
+        ///<summary>
+        /// Initializes RsaSignatureAlgorithm with provided <see cref="RSACryptoServiceProvider"/>
+        ///</summary>
+        ///<param name="cryptoServiceProvider"></param>
+        public RsaSignatureAlgorithm(RSACryptoServiceProvider cryptoServiceProvider)
+        {
+            _crypto = cryptoServiceProvider;
         }
 
         #region Implementation of ISignatureAlgorithm

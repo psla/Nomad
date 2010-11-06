@@ -41,6 +41,7 @@ namespace Nomad.Tests.FunctionalTests.Signing
 
             ManifestCreator.ManifestCreatorProgram.Main(new[]
                                                             {
+                                                                "rsa",
                                                                 _keyFileName, _moduleDirectory,
                                                                 _assemblyName, _issuerName
                                                             });
