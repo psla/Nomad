@@ -2,23 +2,37 @@ using Moq;
 using Nomad.Modules;
 using Nomad.Modules.Discovery;
 using Nomad.Modules.Filters;
+using Nomad.Modules.Manifest;
 using NUnit.Framework;
 
 namespace Nomad.Tests.UnitTests.Modules
 {
     public class ModuleManagerInteractions
     {
+        private Mock<IModuleManifestFactory> _moduleManifestMock;
+        private ModuleManifest _simpleManifest;
+
+
+        [SetUp]
+        public void set_up()
+        {
+             _simpleManifest = new ModuleManifest();
+            _moduleManifestMock = new Mock<IModuleManifestFactory>(MockBehavior.Loose);
+            _moduleManifestMock.Setup(x => x.GetManifest(It.IsAny<ModuleInfo>())).Returns(
+                _simpleManifest);
+        }
+
         [Test]
         public void manager_delegates_module_loading_to_module_loader()
         {
             const string moduleAssemblyName = "module assembly name";
-            var expectedModuleInfo = new ModuleInfo(moduleAssemblyName);
+            var expectedModuleInfo = new ModuleInfo(moduleAssemblyName,_moduleManifestMock.Object);
             var loaderMock = new Mock<IModuleLoader>(MockBehavior.Strict);
             loaderMock.Setup(loader => loader.LoadModule(expectedModuleInfo))
                 .Verifiable("Loader was not told to load requested module");
 
             var manager = new ModuleManager(loaderMock.Object, new CompositeModuleFilter());
-            manager.LoadSingleModule(new ModuleInfo(moduleAssemblyName));
+            manager.LoadSingleModule(new ModuleInfo(moduleAssemblyName,_moduleManifestMock.Object));
 
             loaderMock.Verify();
         }
@@ -29,8 +43,8 @@ namespace Nomad.Tests.UnitTests.Modules
         {
             var expectedModuleInfos = new[]
                                           {
-                                              new ModuleInfo("a"),
-                                              new ModuleInfo("b")
+                                              new ModuleInfo("a",_moduleManifestMock.Object),
+                                              new ModuleInfo("b",_moduleManifestMock.Object)
                                           };
 
             var discoveryMock = new Mock<IModuleDiscovery>(MockBehavior.Loose);
@@ -53,10 +67,11 @@ namespace Nomad.Tests.UnitTests.Modules
         [Test]
         public void load_modules_only_loads_modules_that_pass_filter()
         {
+            
             var expectedModuleInfos = new[]
                                           {
-                                              new ModuleInfo("a"),
-                                              new ModuleInfo("b")
+                                              new ModuleInfo("a",_moduleManifestMock.Object),
+                                              new ModuleInfo("b",_moduleManifestMock.Object)
                                           };
 
             var discoveryMock = new Mock<IModuleDiscovery>(MockBehavior.Loose);

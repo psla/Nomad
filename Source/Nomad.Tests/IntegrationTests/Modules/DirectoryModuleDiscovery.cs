@@ -13,6 +13,7 @@ namespace Nomad.Tests.IntegrationTests.Modules
         [Test]
         public void discovers_all_modules_from_given_directory_and_ignores_other_files()
         {
+
             var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
                                     @"IntegrationTests\DirectoryModuleDiscovery\");
             var expectedModules = new[]

@@ -124,6 +124,7 @@
     <Compile Include="FunctionalTests\Signing\KeyGenerating.cs" />
     <Compile Include="FunctionalTests\Signing\ModuleSigning.cs" />
     <Compile Include="FunctionalTests\Modules\Filters\SignedModulesFiltering.cs" />
+    <Compile Include="IntegrationTests\Modules\DependencyChecker\SoftLinkeDependencyCheckerTests.cs" />
     <Compile Include="IntegrationTests\Updater\AppDomainBoundariesUpdaterTests.cs" />
     <Compile Include="IntegrationTests\Modules\LoadingModulesWithDependencies.cs" />
     <Compile Include="UnitTests\GettingModules\UpdatingClient.cs" />
@@ -133,7 +134,7 @@
     <Compile Include="IntegrationTests\Kernel\NomadKernelTests.cs" />
     <Compile Include="UnitTests\Kernel\NomadConfigurationTests.cs" />
     <Compile Include="UnitTests\Modules\CompositeModuleFilterTests.cs" />
-    <Compile Include="IntegrationTests\Modules\DependencyCheckerTests.cs" />
+    <Compile Include="IntegrationTests\Modules\DependencyChecker\SimpleDependencyCheckerTests.cs" />
     <Compile Include="UnitTests\Modules\ModuleManagerInteractions.cs" />
     <Compile Include="UnitTests\Modules\VersionConverting.cs" />
     <Compile Include="UnitTests\Regions\Adapters\AdapterContractBase.cs" />

@@ -21,7 +21,7 @@ namespace Nomad.Modules
         /// </summary>
         /// <param name="assemblyPath">Full or relative path to the assembly file containing module's code</param>
         /// <exception cref="ArgumentException">When <paramref name="assemblyPath"/> is <c>null</c> or empty.</exception>
-        public ModuleInfo(string assemblyPath) : this(assemblyPath, null,ModuleInfo.DefaultFactory)
+        public ModuleInfo(string assemblyPath) : this(assemblyPath, null, DefaultFactory)
         {
         }
 
@@ -49,6 +49,7 @@ namespace Nomad.Modules
             _manifest = manifest;
             _moduleManifestFactory = factory;
         }
+
 
         /// <summary>
         ///     Initializes new instance of the <see cref="ModuleInfo"/> class.
@@ -103,14 +104,20 @@ namespace Nomad.Modules
             get { return _assemblyPath; }
         }
 
+        #region IEquatable<ModuleInfo> Members
 
         public bool Equals(ModuleInfo other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return Equals(other._assemblyPath, _assemblyPath);
+            
+            //TODO : add equality by version, watch out for getting Manifest ;)
+
+            return Equals(other.Manifest.ModuleName, Manifest.ModuleName) &&
+                   Equals(other._assemblyPath, _assemblyPath);
         }
 
+        #endregion
 
         public override bool Equals(object obj)
         {
@@ -123,7 +130,11 @@ namespace Nomad.Modules
 
         public override int GetHashCode()
         {
-            return (_assemblyPath != null ? _assemblyPath.GetHashCode() : 0);
+            unchecked
+            {
+                return ((_manifest != null ? _manifest.GetHashCode() : 0) * 397) ^
+                       (_assemblyPath != null ? _assemblyPath.GetHashCode() : 0);
+            }
         }
 
 
@@ -131,7 +142,5 @@ namespace Nomad.Modules
         {
             return string.Format("Assembly Path {0}", AssemblyPath);
         }
-
-
     }
 }
