@@ -74,10 +74,10 @@ namespace Nomad.Tests.IntegrationTests.Modules.DependencyChecker
             _expectedModules = new List<ModuleInfo>
                                    {
                                        x,
-                                       e,
-                                       d,
                                        c,
                                        b,
+                                       e,
+                                       d,
                                        a
                                    };
 
@@ -111,7 +111,7 @@ namespace Nomad.Tests.IntegrationTests.Modules.DependencyChecker
                            };
             _expectedModules = null;
 
-            // perform test , TODO: change the type of exception or the wway  the sorting is done.
+            // perform test , TODO: change the type of exception or the way the sorting is done.
             Assert.Throws<Exception>(() => _dependencyChecker.SortModules(_modules));
         }
 
@@ -156,7 +156,7 @@ namespace Nomad.Tests.IntegrationTests.Modules.DependencyChecker
             const string modulePath = @"MODULE_PATH";
 
             List<ModuleDependency> listOfDependecies =
-                dependenciesNames.Select(SetUpModuleDependencyWithNameOnly).ToList();
+                dependenciesNames.Select( x => SetUpModuleDependencyWithNameOnly(x)).ToList();
 
             Mock<IModuleManifestFactory> mockModuleManifestFactory =
                 SetUpManifestFactory(moduleName, listOfDependecies, new Version());
