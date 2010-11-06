@@ -21,14 +21,12 @@ namespace Nomad.Modules
         /// <param name="moduleLoader">A module loader service, that will load individual modules. May not be <c>null</c>.</param>
         /// <param name="moduleFilter">A filter to selected modules that will actually be loaded</param>
         /// <exception cref="ArgumentNullException">When <paramref name="moduleLoader"/> is <c>null</c></exception>
-        public ModuleManager(IModuleLoader moduleLoader, IModuleFilter moduleFilter)
+        public ModuleManager(IModuleLoader moduleLoader, IModuleFilter moduleFilter,IDependencyChecker dependencyChecker)
         {
             if (moduleLoader == null) throw new ArgumentNullException("moduleLoader");
             _moduleLoader = moduleLoader;
             _moduleFilter = moduleFilter;
-
-            // TODO: make this dependency checker service injected by constructor, not instantiated 
-            _dependencyChecker = new DependencyChecker();
+            _dependencyChecker = dependencyChecker;
         }
 
 

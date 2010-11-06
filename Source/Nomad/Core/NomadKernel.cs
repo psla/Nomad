@@ -55,7 +55,8 @@ namespace Nomad.Core
             ModuleLoader = moduleLoaderCreator.CreateModuleLoaderInstance();
 
             _moduleManager = new ModuleManager(ModuleLoader,
-                                               KernelConfiguration.ModuleFilter);
+                                               KernelConfiguration.ModuleFilter,
+                                               KernelConfiguration.DependencyChecker);
         }
 
 
@@ -101,6 +102,7 @@ namespace Nomad.Core
         /// </summary>
         public NomadConfiguration KernelConfiguration { get; private set; }
 
+        #region IModulesOperations Members
 
         /// <summary>
         ///     Unloads the whole ModuleAppDomain.
@@ -110,7 +112,6 @@ namespace Nomad.Core
         /// </remarks>
         public void UnloadModules()
         {
-            
             AppDomain.Unload(ModuleAppDomain);
 
             ModuleAppDomain = AppDomain.CreateDomain("Nomad Loaded Modules",
@@ -129,5 +130,7 @@ namespace Nomad.Core
         {
             _moduleManager.LoadModules(moduleDiscovery);
         }
+
+        #endregion
     }
 }

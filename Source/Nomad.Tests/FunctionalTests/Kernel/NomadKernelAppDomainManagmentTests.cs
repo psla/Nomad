@@ -26,9 +26,10 @@ namespace Nomad.Tests.FunctionalTests.Kernel
 
         private string _assemblyFullPath;
         private string _assemblyFullPath2;
-        private NomadKernel _nomadKernel;
         private Mock<IModuleDiscovery> _moduleDiscoveryMock;
+        private NomadKernel _nomadKernel;
         private AppDomain _testAppDomain;
+        private NomadConfiguration _configuration;
 
 
         private void SetUpModuleDiscovery(IEnumerable<ModuleInfo> moduleInfos)
@@ -49,6 +50,13 @@ namespace Nomad.Tests.FunctionalTests.Kernel
                                                     new Evidence(AppDomain.CurrentDomain.Evidence),
                                                     AppDomain.CurrentDomain.BaseDirectory, ".",
                                                     false);
+
+            //TODO : maye we should test fully equipped version of nomad kernel (with defailt implementation)
+            _configuration = NomadConfiguration.Default;
+            var dependencyMock = new Mock<IDependencyChecker>(MockBehavior.Loose);
+            dependencyMock.Setup(x => x.SortModules(It.IsAny<IEnumerable<ModuleInfo>>()))
+                .Returns<IEnumerable<ModuleInfo>>(e => e);
+            _configuration.DependencyChecker = dependencyMock.Object;
         }
 
 
@@ -61,7 +69,8 @@ namespace Nomad.Tests.FunctionalTests.Kernel
 
         private void loading_module_into_module_appdomain_callback()
         {
-            _nomadKernel = new NomadKernel();
+           
+            _nomadKernel = new NomadKernel(_configuration);
 
             var expectedModuleInfos = new[]
                                           {
@@ -77,11 +86,10 @@ namespace Nomad.Tests.FunctionalTests.Kernel
                                                       FullName,
                                                   "The module has not been loaded into Module AppDomain");
 
-            _nomadKernel.ModuleAppDomain.UnhandledException += (sender, args) => Assert.Fail("Exception has been thrown" + args.ToString());
+            _nomadKernel.ModuleAppDomain.UnhandledException +=
+                (sender, args) => Assert.Fail("Exception has been thrown" + args.ToString());
 
             _nomadKernel.LoadModules(_moduleDiscoveryMock.Object);
-
-          
 
             //Check for not loading asm into kernel appDomain
             foreach (Assembly kernelAsm in _nomadKernel.KernelAppDomain.GetAssemblies())
@@ -103,7 +111,7 @@ namespace Nomad.Tests.FunctionalTests.Kernel
         private void
             verifing_starting_appdomain_to_have_not_module_loading_implementation_loaded_callback()
         {
-            _nomadKernel = new NomadKernel();
+            _nomadKernel = new NomadKernel(_configuration);
 
             foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
             {
@@ -121,7 +129,7 @@ namespace Nomad.Tests.FunctionalTests.Kernel
 
         private void loading_more_than_one_module_into_module_appdomain_callback()
         {
-            _nomadKernel = new NomadKernel();
+            _nomadKernel = new NomadKernel(_configuration);
 
             var expectedModuleInfos = new[]
                                           {
@@ -163,7 +171,7 @@ namespace Nomad.Tests.FunctionalTests.Kernel
 
         private void unloading_modules_upon_request_callback()
         {
-            _nomadKernel = new NomadKernel();
+            _nomadKernel = new NomadKernel(_configuration);
 
             var expectedModuleInfos = new[]
                                           {
@@ -179,7 +187,7 @@ namespace Nomad.Tests.FunctionalTests.Kernel
             _nomadKernel.UnloadModules();
 
             //Aseert modules unloaded
-            foreach (var moduleAsm in _nomadKernel.ModuleAppDomain.GetAssemblies())
+            foreach (Assembly moduleAsm in _nomadKernel.ModuleAppDomain.GetAssemblies())
             {
                 Assert.AreNotEqual(AssemblyFullName, moduleAsm.FullName,
                                    "The module assembly 1 has been loaded into KernelAppDomain.");

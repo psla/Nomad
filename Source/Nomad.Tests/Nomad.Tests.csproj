@@ -126,7 +126,6 @@
     <Compile Include="FunctionalTests\Modules\Filters\SignedModulesFiltering.cs" />
     <Compile Include="IntegrationTests\Modules\DependencyChecker\SoftLinkeDependencyCheckerTests.cs" />
     <Compile Include="IntegrationTests\Updater\AppDomainBoundariesUpdaterTests.cs" />
-    <Compile Include="IntegrationTests\Modules\LoadingModulesWithDependencies.cs" />
     <Compile Include="UnitTests\GettingModules\UpdatingClient.cs" />
     <Compile Include="GuiNunitHooks.cs" />
     <Compile Include="IntegrationTests\Modules\DirectoryModuleDiscovery.cs" />

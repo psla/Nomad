@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
+using Moq;
 using Nomad.Modules;
 using Nomad.Modules.Discovery;
 using Nomad.Modules.Filters;
@@ -12,9 +14,9 @@ namespace Nomad.Tests.FunctionalTests.Modules
 {
     public abstract class ModuleLoadingTestFixture : MarshalByRefObject
     {
+        protected WindsorContainer Container;
+        protected ModuleManager Manager;
         private InjectableModulesRegistry _registry;
-        private ModuleManager _manager;
-        public WindsorContainer Container;
 
 
         [SetUp]
@@ -28,38 +30,48 @@ namespace Nomad.Tests.FunctionalTests.Modules
                 Component.For<IInjectableModulesRegistry>().Instance(_registry)
                 );
 
-            _manager = new ModuleManager(new ModuleLoader(Container), new CompositeModuleFilter());
+            var dependencyCheckerMock = new Mock<IDependencyChecker>(MockBehavior.Loose);
+            dependencyCheckerMock.Setup(x => x.SortModules(It.IsAny<IEnumerable<ModuleInfo>>()))
+                .Returns<IEnumerable<ModuleInfo>>(e => e);
+
+            Manager = new ModuleManager(new ModuleLoader(Container), new CompositeModuleFilter(),
+                                        dependencyCheckerMock.Object);
         }
+
 
         protected void InvokeUnloadMethod()
         {
-            _manager.InvokeUnloadCallback();
+            Manager.InvokeUnloadCallback();
         }
+
 
         protected void AssertInvokeUnloadMethodsWasInvoked(params string[] expectedModuleNames)
         {
-            var unloadedModuleNames = LoadedModulesRegistry.GetUnRegisteredModules()
+            string[] unloadedModuleNames = LoadedModulesRegistry.GetUnRegisteredModules()
                 .Select(type => type.Name)
                 .ToArray();
 
-            Assert.That(unloadedModuleNames,Is.EqualTo(expectedModuleNames));
+            Assert.That(unloadedModuleNames, Is.EqualTo(expectedModuleNames));
         }
+
 
         protected void LoadModulesFromDirectory(string moduleDirectory)
         {
-            var fullDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, moduleDirectory);
-            _manager.LoadModules(new DirectoryModuleDiscovery(fullDirectory));
+            string fullDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+                                                moduleDirectory);
+            Manager.LoadModules(new DirectoryModuleDiscovery(fullDirectory));
         }
+
 
         protected void LoadModulesFromDiscovery(IModuleDiscovery discovery)
         {
-            _manager.LoadModules(discovery);
+            Manager.LoadModules(discovery);
         }
 
 
         protected void AssertModulesLoadedAreEqualTo(params string[] expectedModuleNames)
         {
-            var loadedModulesNames = LoadedModulesRegistry.GetRegisteredModules()
+            string[] loadedModulesNames = LoadedModulesRegistry.GetRegisteredModules()
                 .Concat(_registry.GetRegisteredModules())
                 .Select(type => type.Name)
                 .ToArray();

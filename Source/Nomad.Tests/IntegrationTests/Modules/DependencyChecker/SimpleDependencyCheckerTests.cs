@@ -111,8 +111,8 @@ namespace Nomad.Tests.IntegrationTests.Modules.DependencyChecker
                            };
             _expectedModules = null;
 
-            // perform test , TODO: change the type of exception or the way the sorting is done.
-            Assert.Throws<Exception>(() => _dependencyChecker.SortModules(_modules));
+            // perform test 
+            Assert.Throws<ArgumentException>(() => _dependencyChecker.SortModules(_modules));
         }
 
         #region SetUp of ModuleInfo

@@ -2,6 +2,8 @@ using System;
 using System.IO;
 using System.Security.Policy;
 using Nomad.KeysGenerator;
+using Nomad.Modules;
+using Nomad.Modules.Filters;
 using NUnit.Framework;
 
 namespace Nomad.Tests.FunctionalTests.Modules
@@ -28,6 +30,9 @@ namespace Nomad.Tests.FunctionalTests.Modules
         [SetUp]
         public void set_up()
         {
+            Manager = new ModuleManager(new ModuleLoader(Container), new CompositeModuleFilter(),
+                                       new DependencyChecker());
+
             Domain = AppDomain.CreateDomain("TEST DOMAIN",
                                             new Evidence(AppDomain.CurrentDomain.Evidence),
                                             AppDomain.CurrentDomain.BaseDirectory, ".",
