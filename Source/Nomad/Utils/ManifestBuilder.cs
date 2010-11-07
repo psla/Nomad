@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using Nomad.Modules.Manifest;
 using Nomad.Signing.FileUtils;
 using Nomad.Signing.SignatureAlgorithms;
@@ -59,6 +60,10 @@ namespace Nomad.Utils
             return Path.Combine(_directory, _assemblyName);
         }
 
+        private string GetAssemblyName()
+        {
+            return AssemblyName.GetAssemblyName(GetAssemblyPath()).Name;
+        }
 
         /// <summary>
         ///     Generates the manifest based on passed parameters.
@@ -69,13 +74,14 @@ namespace Nomad.Utils
             // get the content of manifest
             Version version = GetVersion();
             IEnumerable<SignedFile> signedFiles = GetSignedFiles();
-            IEnumerable<ModuleDependency> dependencyModules = GetDependencyModules();
+            //IEnumerable<ModuleDependency> dependencyModules = GetDependencyModules();
+            IEnumerable<ModuleDependency> dependencyModules = GetDependencyModules2();
 
             //  create manifest
             var manifest = new ModuleManifest
                                {
                                    Issuer = _issuerName,
-                                   ModuleName = _assemblyName,
+                                   ModuleName = GetAssemblyName(),
                                    ModuleVersion = version,
                                    SignedFiles = signedFiles.ToList(),
                                    ModuleDependencies = dependencyModules.ToList()
@@ -95,42 +101,53 @@ namespace Nomad.Utils
         }
 
 
-        private IEnumerable<ModuleDependency> GetDependencyModules()
+        private IEnumerable<ModuleDependency> GetDependencyModules2()
         {
-            Assembly asm = null;
-            try
+            var dependencies = new List<ModuleDependency>();
+
+            // read the directory 
+            IEnumerable<string> files = Directory.GetFiles(_directory, "*.dll",
+                                                           SearchOption.AllDirectories).Concat(
+                                                               Directory.GetFiles(_directory,
+                                                                                  "*.exe",
+                                                                                  SearchOption.
+                                                                                      AllDirectories));
+            // mine module
+            string myAsm = GetAssemblyName();
+
+            // foreach assembly in this collection, try resolving its, name version and so on.)
+            foreach (string file in files)
             {
-                asm = Assembly.ReflectionOnlyLoadFrom(GetAssemblyPath());
+                AssemblyName asmName = null;
+                try
+                {
+                    asmName = AssemblyName.GetAssemblyName(file);
+                }
+                catch (BadImageFormatException)
+                {
+                    // nothing happens
+                    continue;
+                }
+                catch(Exception e)
+                {
+                    throw new InvalidOperationException("Access to file is somewhat corrupted",e);
+                }
+
+                // do not add itself
+                if(asmName.Name.Equals(myAsm))
+                    continue;
+
+                dependencies.Add(new ModuleDependency()
+                                     {
+                                         ModuleName = asmName.Name,
+                                         MinimalVersion = new Version(asmName.Version),
+                                         ProcessorArchitecture =  asmName.ProcessorArchitecture,
+                                         //TODO: implement recogniction of isServiceProvider ability
+                                         HasLoadingOrderPriority = false,
+                                     });
             }
-            catch (FileLoadException)
-            {
-                // mostly the asm has already been loaded 
-                AssemblyName asmName = AssemblyName.GetAssemblyName(GetAssemblyPath());
 
-                Func<Assembly, bool> predicate = x => x.FullName.Equals(asmName.FullName);
-
-                IEnumerable<Assembly> asms =
-                    AppDomain.CurrentDomain.ReflectionOnlyGetAssemblies()
-                        .Where(predicate);
-
-                asm = asms.SingleOrDefault();
-            }
-            catch(Exception)
-            {
-                return  new List<ModuleDependency>();
-                //TODO: log the information
-            }
-
-            return
-                asm.GetReferencedAssemblies().Select(
-                    refAsm =>
-                    new ModuleDependency
-                        {
-                            MinimalVersion = new Version(refAsm.Version),
-                            ProcessorArchitecture = refAsm.ProcessorArchitecture,
-                            ModuleName = refAsm.Name
-                        })
-                    .ToList();
+            return dependencies;
         }
 
 
@@ -165,7 +182,7 @@ namespace Nomad.Utils
             }
             catch (Exception)
             {
-                //TODO: this cannot be done ! this way
+                //TODO: this cannot be done ! this way. Implement the proper way of logging this exception
                 version = new Version("0.0.0.0");
             }
 

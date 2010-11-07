@@ -10,7 +10,7 @@ namespace Nomad.Modules
     /// </summary>
     /// <remarks>
     ///     Checks for dependencies using <see cref="ModuleManifest"/> using topology sorting algorithm. 
-    ///     O(n^2) where the <c>n</c> is number of passed modules.
+    ///     O(n^2) / Theta(n+m) where the <c>n</c> is number of passed modules and <c>m</c> is average number of dependencies per module.
     /// </remarks>
     public class DependencyChecker : IDependencyChecker
     {
@@ -44,8 +44,6 @@ namespace Nomad.Modules
                                                                        Visited = false
                                                                    };
             }
-
-            // TODO: switch arrows -> O(n^2)
 
             // run DFS through graph O(n)
             foreach (var moduleInfo in modules)

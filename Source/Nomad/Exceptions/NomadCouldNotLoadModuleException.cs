@@ -7,6 +7,16 @@ namespace Nomad.Exceptions
     /// </summary>
     public class NomadCouldNotLoadModuleException : Exception
     {
-        //TODO: insert informations about this exception
+        /// <summary>
+        ///     Initializes the instance of <see cref="NomadCouldNotLoadModuleException"/> class.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="innerException"></param>
+        public NomadCouldNotLoadModuleException(string message, Exception innerException) : base(message,innerException)
+        {
+            
+        }
+
+        //TODO: insert information about this exception
     }
 }

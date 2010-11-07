@@ -51,7 +51,7 @@ namespace Nomad.Tests.FunctionalTests.Kernel
                                                     AppDomain.CurrentDomain.BaseDirectory, ".",
                                                     false);
 
-            //TODO : maye we should test fully equipped version of nomad kernel (with defailt implementation)
+            //TODO : maye we should test fully equipped version of nomad kernel (with default implementation)
             _configuration = NomadConfiguration.Default;
             var dependencyMock = new Mock<IDependencyChecker>(MockBehavior.Loose);
             dependencyMock.Setup(x => x.SortModules(It.IsAny<IEnumerable<ModuleInfo>>()))

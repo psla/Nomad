@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Nomad.Exceptions;
 using Nomad.Modules.Discovery;
 using Nomad.Modules.Filters;
 
@@ -68,11 +70,28 @@ namespace Nomad.Modules
             var allModules = moduleDiscovery.GetModules();
             var filteredModules = allModules.Where(module => _moduleFilter.Matches(module));
 
-            // pass to dependency checker 
-            var dependencyCheckedModules = _dependencyChecker.SortModules(filteredModules);
+            // perform fail safe dependency checking
 
-            foreach (var moduleInfo in dependencyCheckedModules)
-                LoadSingleModule(moduleInfo);
+            IEnumerable<ModuleInfo> dependencyCheckedModules;
+            try
+            {
+                dependencyCheckedModules = _dependencyChecker.SortModules(filteredModules);
+            }
+            catch (Exception e)
+            {
+                throw new NomadCouldNotLoadModuleException("Dependency resolving failed",e);
+            }
+
+            // perform fail safe loading
+            try
+            {
+                foreach (var moduleInfo in dependencyCheckedModules)
+                    LoadSingleModule(moduleInfo);
+            }
+            catch (Exception e)
+            {
+                throw new NomadCouldNotLoadModuleException("Loading one of modules failed",e);
+            }
         }
 
         /// <summary>

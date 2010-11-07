@@ -47,7 +47,21 @@ namespace Nomad.Tests.FunctionalTests.Modules
 
             string modulePath = string.Empty;
             modulePath = _moduleCompiler.GenerateModuleFromCode(srcPath, references);
+            
+            // copy the references into folder with 
+            foreach (var reference in references)
+            {
+                File.Copy(reference, Path.Combine(outputDirectory,Path.GetFileName(reference)));
+            }
+            
+
             _moduleCompiler.GenerateManifestForModule(modulePath, KeyFile);
+
+            // remove those references
+            foreach (var reference in references)
+            {
+                File.Delete(Path.Combine(outputDirectory,Path.GetFileName(reference)));
+            }
         }
     }
 }

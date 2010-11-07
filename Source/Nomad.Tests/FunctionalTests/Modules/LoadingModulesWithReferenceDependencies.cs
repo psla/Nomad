@@ -1,8 +1,5 @@
-using System;
 using System.IO;
-using System.Security.Policy;
 using Nomad.Exceptions;
-using Nomad.KeysGenerator;
 using Nomad.Modules.Discovery;
 using NUnit.Framework;
 using TestsShared;
@@ -12,18 +9,11 @@ namespace Nomad.Tests.FunctionalTests.Modules
     [FunctionalTests]
     public class LoadingModulesWithReferenceDependencies : ModuleLoadingWithCompilerTestFixture
     {
- 
-        [Test]
-        public void loading_one_module_dependent_on_others()
-        {
-            Domain.DoCallBack(loading_one_module_dependent_on_others_callback);
-        }
-
-
         /// <summary>
         ///     ModuleWithDependency -> DependencyModule1 + DependencyModule2
         /// </summary>
-        private void loading_one_module_dependent_on_others_callback()
+        [Test]
+        public void loading_one_module_dependent_on_others_callback()
         {
             const string dir = @"Modules\Dependent1\ModuleA\";
             const string dir2 = @"Modules\Dependent1\ModuleB\";
@@ -57,17 +47,11 @@ namespace Nomad.Tests.FunctionalTests.Modules
         }
 
 
-        [Test]
-        public void loading_chain_of_depenedent_modules()
-        {
-            Domain.DoCallBack(loading_chain_of_depenedent_modules_callback);
-        }
-
-
         /// <summary>
         ///     ModuleWithDependency -> DependencyModule2 -> DependencyModule1
         /// </summary>
-        private void loading_chain_of_depenedent_modules_callback()
+        [Test]
+        public void loading_chain_of_depenedent_modules_callback()
         {
             const string dir = @"Modules\Dependent2\ModuleA\";
             const string dir2 = @"Modules\Dependent2\ModuleB\";
@@ -102,19 +86,11 @@ namespace Nomad.Tests.FunctionalTests.Modules
         }
 
 
-
-        [Test]
-        public void loading_module_with_dependency_with_no_dependency_present_results_in_exception()
-        {
-            Domain.DoCallBack(
-                loading_module_with_dependency_with_no_dependency_present_results_in_exception_callback);
-        }
-
-
         /// <summary>
         ///     Chain loading with missing dependency in it.
         /// </summary>
-        private void
+        [Test]
+        public void
             loading_module_with_dependency_with_no_dependency_present_results_in_exception_callback()
         {
             const string dir = @"Modules\Dependent3\ModuleA\";
@@ -135,7 +111,11 @@ namespace Nomad.Tests.FunctionalTests.Modules
                                     @"..\Source\Nomad.Tests\FunctionalTests\Data\ChainDependencies\ModuleWithDependency.cs",
                                     dir3 + "DependencyModule2.dll");
             // remove dependency
-            Directory.Delete(dir3, true);
+            string[] files = Directory.GetFiles(dir3);
+            foreach (string file in files)
+            {
+                File.Delete(file);
+            }
 
             // define discovery sequence
             var discovery = new CompositeModuleDiscovery(new IModuleDiscovery[]
@@ -152,14 +132,7 @@ namespace Nomad.Tests.FunctionalTests.Modules
 
 
         [Test]
-        public void loading_module_fails_during_initialization_phase_throws_an_exception()
-        {
-            Domain.DoCallBack(
-                loading_module_fails_during_initialization_phase_throws_an_exception_callback);
-        }
-
-
-        private void loading_module_fails_during_initialization_phase_throws_an_exception_callback()
+        public void loading_module_fails_during_initialization_phase_throws_an_exception_callback()
         {
             const string dir1 = @"Modules\Dependent4\ModuleA\";
             const string dir2 = @"Modules\Dependent4\ModuleB\";
@@ -167,7 +140,6 @@ namespace Nomad.Tests.FunctionalTests.Modules
             // dependant module generation
             SetUpModuleWithManifest(dir1,
                                     @"..\Source\Nomad.Tests\FunctionalTests\Data\ErrorInitialize\DependencyModule1.cs");
-
 
             // second dependent module generation
             SetUpModuleWithManifest(dir2,
@@ -188,14 +160,7 @@ namespace Nomad.Tests.FunctionalTests.Modules
 
 
         [Test]
-        public void loading_module_fails_during_loading_assembly_phase_throws_an_exception()
-        {
-            Domain.DoCallBack(
-                loading_module_fails_during_loading_assembly_phase_throws_an_exception_callback);
-        }
-
-
-        private void loading_module_fails_during_loading_assembly_phase_throws_an_exception_callback()
+        public void loading_module_fails_during_loading_assembly_phase_throws_an_exception_callback()
         {
             const string dir1 = @"Modules\Dependent5\ModuleA\";
             const string dir2 = @"Modules\Dependent5\ModuleB\";
@@ -203,7 +168,6 @@ namespace Nomad.Tests.FunctionalTests.Modules
             // dependant module generation
             SetUpModuleWithManifest(dir1,
                                     @"..\Source\Nomad.Tests\FunctionalTests\Data\ErrorLoad\DependencyModule1.cs");
-
 
             // second dependent module generation
             SetUpModuleWithManifest(dir2,
