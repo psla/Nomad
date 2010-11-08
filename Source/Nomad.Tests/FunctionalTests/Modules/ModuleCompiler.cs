@@ -16,10 +16,10 @@ namespace Nomad.Tests.FunctionalTests.Modules
     /// </remarks>
     public class ModuleCompiler
     {
-        public static readonly string NomadAssembly = AppDomain.CurrentDomain.BaseDirectory +
+        private static readonly string NomadAssembly = AppDomain.CurrentDomain.BaseDirectory +
                                                       @"\Nomad.dll";
 
-        public static readonly string NomadTestAssembly = AppDomain.CurrentDomain.BaseDirectory +
+        private static readonly string NomadTestAssembly = AppDomain.CurrentDomain.BaseDirectory +
                                                           @"\Nomad.Tests.dll";
 
         private readonly CodeDomProvider _provider;
@@ -33,7 +33,9 @@ namespace Nomad.Tests.FunctionalTests.Modules
             _provider = CodeDomProvider.CreateProvider("CSharp");
         }
 
-
+        /// <summary>
+        ///     Represents the output path with name to the created assembly.
+        /// </summary>
         public string OutputName { get; set; }
 
         /// <summary>

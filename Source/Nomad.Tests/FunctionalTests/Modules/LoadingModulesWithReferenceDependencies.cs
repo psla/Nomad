@@ -35,9 +35,12 @@ namespace Nomad.Tests.FunctionalTests.Modules
             // define discovery sequence
             var discovery = new CompositeModuleDiscovery(new IModuleDiscovery[]
                                                              {
-                                                                 new SimpleDirectoryModuleDiscovery(dir2),
-                                                                 new SimpleDirectoryModuleDiscovery(dir),
-                                                                 new SimpleDirectoryModuleDiscovery(dir3),
+                                                                 new SimpleDirectoryModuleDiscovery(
+                                                                     dir2),
+                                                                 new SimpleDirectoryModuleDiscovery(
+                                                                     dir),
+                                                                 new SimpleDirectoryModuleDiscovery(
+                                                                     dir3),
                                                              });
 
             // perform test and assert
@@ -74,9 +77,12 @@ namespace Nomad.Tests.FunctionalTests.Modules
             // define discovery sequence
             var discovery = new CompositeModuleDiscovery(new IModuleDiscovery[]
                                                              {
-                                                                 new SimpleDirectoryModuleDiscovery(dir2),
-                                                                 new SimpleDirectoryModuleDiscovery(dir),
-                                                                 new SimpleDirectoryModuleDiscovery(dir3),
+                                                                 new SimpleDirectoryModuleDiscovery(
+                                                                     dir2),
+                                                                 new SimpleDirectoryModuleDiscovery(
+                                                                     dir),
+                                                                 new SimpleDirectoryModuleDiscovery(
+                                                                     dir3),
                                                              });
 
             // perform test and assert
@@ -110,19 +116,17 @@ namespace Nomad.Tests.FunctionalTests.Modules
             SetUpModuleWithManifest(dir2,
                                     @"..\Source\Nomad.Tests\FunctionalTests\Data\ChainDependencies\ModuleWithDependency.cs",
                                     dir3 + "DependencyModule2.dll");
+
             // remove dependency
-            string[] files = Directory.GetFiles(dir3);
-            foreach (string file in files)
-            {
-                File.Delete(file);
-            }
+            Directory.Delete(dir3, true);
 
             // define discovery sequence
             var discovery = new CompositeModuleDiscovery(new IModuleDiscovery[]
                                                              {
-                                                                 new SimpleDirectoryModuleDiscovery(dir2),
-                                                                 new SimpleDirectoryModuleDiscovery(dir),
-                                                                 new SimpleDirectoryModuleDiscovery(dir3),
+                                                                 new SimpleDirectoryModuleDiscovery(
+                                                                     dir2),
+                                                                 new SimpleDirectoryModuleDiscovery(
+                                                                     dir),
                                                              });
 
             // perform test and assert
@@ -149,8 +153,10 @@ namespace Nomad.Tests.FunctionalTests.Modules
             // define discovery sequence
             var discovery = new CompositeModuleDiscovery(new IModuleDiscovery[]
                                                              {
-                                                                 new SimpleDirectoryModuleDiscovery(dir2),
-                                                                 new SimpleDirectoryModuleDiscovery(dir1),
+                                                                 new SimpleDirectoryModuleDiscovery(
+                                                                     dir2),
+                                                                 new SimpleDirectoryModuleDiscovery(
+                                                                     dir1),
                                                              });
 
             // perform test and assert
@@ -180,8 +186,10 @@ namespace Nomad.Tests.FunctionalTests.Modules
             // define discovery sequence
             var discovery = new CompositeModuleDiscovery(new IModuleDiscovery[]
                                                              {
-                                                                 new SimpleDirectoryModuleDiscovery(dir2),
-                                                                 new SimpleDirectoryModuleDiscovery(dir1),
+                                                                 new SimpleDirectoryModuleDiscovery(
+                                                                     dir2),
+                                                                 new SimpleDirectoryModuleDiscovery(
+                                                                     dir1),
                                                              });
 
             // perform test and assert

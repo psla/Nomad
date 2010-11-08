@@ -12,7 +12,7 @@ using NUnit.Framework;
 
 namespace Nomad.Tests.FunctionalTests.Modules
 {
-    public abstract class ModuleLoadingTestFixture : MarshalByRefObject
+    public abstract class ModuleLoadingTestFixture
     {
         protected WindsorContainer Container;
         protected ModuleManager Manager;
@@ -62,11 +62,6 @@ namespace Nomad.Tests.FunctionalTests.Modules
             Manager.LoadModules(new SimpleDirectoryModuleDiscovery(fullDirectory));
         }
 
-
-        protected void LoadModulesFromDiscovery(IModuleDiscovery discovery)
-        {
-            Manager.LoadModules(discovery);
-        }
 
 
         protected void AssertModulesLoadedAreEqualTo(params string[] expectedModuleNames)
