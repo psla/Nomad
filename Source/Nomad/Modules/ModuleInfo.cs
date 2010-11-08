@@ -111,10 +111,14 @@ namespace Nomad.Modules
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
             
-            //TODO : add equality by version, watch out for getting Manifest ;)
+            // if path are the same then for sure the modules are same
+            if (Equals(other._assemblyPath, _assemblyPath)) return true;
 
-            return Equals(other.Manifest.ModuleName, Manifest.ModuleName) &&
-                   Equals(other._assemblyPath, _assemblyPath);
+            //TODO: write the better comparision of modules
+            if (other.Manifest.ModuleName == null || Manifest.ModuleName == null)
+                return false;
+                
+            return Equals(other.Manifest.ModuleName, Manifest.ModuleName);
         }
 
         #endregion

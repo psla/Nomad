@@ -60,19 +60,27 @@ namespace Nomad.Tests.UnitTests.Modules
         {
             const string moduleAssemblyName = "module assembly name";
             var expectedModuleInfo = new ModuleInfo(moduleAssemblyName, _moduleManifestMock.Object);
-            var loaderMock = new Mock<IModuleLoader>(MockBehavior.Strict);
-            loaderMock.Setup(loader => loader.LoadModule(expectedModuleInfo))
-                .Verifiable("Loader was not told to load requested module");
+            var loaderMock = new Mock<IModuleLoader>(MockBehavior.Loose);
+            loaderMock.Setup(loader => loader.LoadModule(expectedModuleInfo));
 
             var dependencyCheckerMock = new Mock<IDependencyChecker>(MockBehavior.Strict);
-            dependencyCheckerMock.Setup(x => x.SortModules(It.IsAny<IEnumerable<ModuleInfo>>())).
-                Verifiable("No sorting has been called upon loading");
+            dependencyCheckerMock.Setup(x => x.SortModules(It.IsAny<IEnumerable<ModuleInfo>>()))
+                .Returns<IEnumerable<ModuleInfo>>(e => e)
+                .Verifiable("No sorting has been called upon loading");
 
             var manager = new ModuleManager(loaderMock.Object, _moduleFilterMock.Object,
                                             dependencyCheckerMock.Object);
-            manager.LoadSingleModule(new ModuleInfo(moduleAssemblyName, _moduleManifestMock.Object));
 
-            loaderMock.Verify();
+            var discoveryMock = new Mock<IModuleDiscovery>(MockBehavior.Loose);
+            discoveryMock.Setup(x => x.GetModules()).Returns(new List<ModuleInfo>()
+                                                                 {
+                                                                     new ModuleInfo(
+                                                                         moduleAssemblyName,
+                                                                         _moduleManifestMock.Object)
+                                                                 });
+            manager.LoadModules(discoveryMock.Object);
+
+            dependencyCheckerMock.Verify();
         }
 
 
@@ -90,15 +98,17 @@ namespace Nomad.Tests.UnitTests.Modules
                 .Returns(expectedModuleInfos);
 
             var loaderMock = new Mock<IModuleLoader>(MockBehavior.Strict);
+            
             loaderMock.Setup(loader => loader.LoadModule(expectedModuleInfos[0]))
                 .Verifiable("First module was never loaded");
+
             loaderMock.Setup(loader => loader.LoadModule(expectedModuleInfos[1]))
                 .Verifiable("Second module was never loaded");
 
-            var moduleLoader = new ModuleManager(loaderMock.Object, _moduleFilterMock.Object,
+            var moduleManager = new ModuleManager(loaderMock.Object, _moduleFilterMock.Object,
                                                  _dependencyMock.Object);
 
-            moduleLoader.LoadModules(discoveryMock.Object);
+            moduleManager.LoadModules(discoveryMock.Object);
 
             loaderMock.Verify();
         }
@@ -107,10 +117,12 @@ namespace Nomad.Tests.UnitTests.Modules
         [Test]
         public void load_modules_only_loads_modules_that_pass_filter()
         {
+            var a = new ModuleInfo("a", _moduleManifestMock.Object);
+            var b = new ModuleInfo("b", _moduleManifestMock.Object);
+
             var expectedModuleInfos = new[]
                                           {
-                                              new ModuleInfo("a", _moduleManifestMock.Object),
-                                              new ModuleInfo("b", _moduleManifestMock.Object)
+                                              a,b
                                           };
 
             var discoveryMock = new Mock<IModuleDiscovery>(MockBehavior.Loose);
@@ -118,20 +130,21 @@ namespace Nomad.Tests.UnitTests.Modules
                 .Returns(expectedModuleInfos);
 
             var filterMock = new Mock<IModuleFilter>(MockBehavior.Loose);
-            filterMock.Setup(filter => filter.Matches(expectedModuleInfos[0]))
+            filterMock.Setup(filter => filter.Matches(a))
                 .Returns(true);
-            filterMock.Setup(filter => filter.Matches(expectedModuleInfos[1]))
+            filterMock.Setup(filter => filter.Matches(b))
                 .Returns(false);
 
             var loaderMock = new Mock<IModuleLoader>(MockBehavior.Strict);
-            loaderMock.Setup(loader => loader.LoadModule(expectedModuleInfos[0]))
-                .Verifiable("First module was never loaded");
+            loaderMock.Setup(loader => loader.LoadModule(a));
 
-            var moduleLoader = new ModuleManager(loaderMock.Object, filterMock.Object,
+            var moduleManager = new ModuleManager(loaderMock.Object, filterMock.Object,
                                                  _dependencyMock.Object);
-            moduleLoader.LoadModules(discoveryMock.Object);
 
-            loaderMock.Verify();
+            moduleManager.LoadModules(discoveryMock.Object);
+
+            loaderMock.Verify(x => x.LoadModule(a));
+            loaderMock.Verify(x => x.LoadModule(It.IsAny<ModuleInfo>()),Times.Exactly(1));
         }
     }
 }
