@@ -59,7 +59,7 @@ namespace Nomad.Tests.FunctionalTests.Modules
         {
             string fullDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
                                                 moduleDirectory);
-            Manager.LoadModules(new DirectoryModuleDiscovery(fullDirectory));
+            Manager.LoadModules(new SimpleDirectoryModuleDiscovery(fullDirectory));
         }
 
 

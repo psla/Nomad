@@ -125,10 +125,11 @@
     <Compile Include="FunctionalTests\Signing\ModuleSigning.cs" />
     <Compile Include="FunctionalTests\Modules\Filters\SignedModulesFiltering.cs" />
     <Compile Include="IntegrationTests\Modules\DependencyChecker\SoftLinkeDependencyCheckerTests.cs" />
+    <Compile Include="IntegrationTests\Modules\DirectoryModuleDiscovery.cs" />
     <Compile Include="IntegrationTests\Updater\AppDomainBoundariesUpdaterTests.cs" />
     <Compile Include="UnitTests\GettingModules\UpdatingClient.cs" />
     <Compile Include="GuiNunitHooks.cs" />
-    <Compile Include="IntegrationTests\Modules\DirectoryModuleDiscovery.cs" />
+    <Compile Include="IntegrationTests\Modules\SimpleDirectoryModuleDiscovery.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IntegrationTests\Kernel\NomadKernelTests.cs" />
     <Compile Include="UnitTests\Kernel\NomadConfigurationTests.cs" />

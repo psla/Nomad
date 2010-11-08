@@ -15,7 +15,7 @@ namespace Loading_Unloading_Modules_Host_Application
             var kernel = new NomadKernel();
 
             // loading modules using directory module discovery pattern
-            var discovery = new DirectoryModuleDiscovery(@".\Modules\");
+            var discovery = new SimpleDirectoryModuleDiscovery(@".\Modules\");
 
             // loading discovered modules
             kernel.LoadModules(discovery);

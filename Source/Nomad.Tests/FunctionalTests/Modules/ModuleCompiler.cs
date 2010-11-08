@@ -34,6 +34,8 @@ namespace Nomad.Tests.FunctionalTests.Modules
         }
 
 
+        public string OutputName { get; set; }
+
         /// <summary>
         ///     Represents the output directory where the build artifacts will be put.
         /// </summary>
@@ -73,14 +75,16 @@ namespace Nomad.Tests.FunctionalTests.Modules
                                                                   NomadAssembly,
                                                                   NomadTestAssembly
                                                               });
+            if(string.IsNullOrEmpty(OutputName))
+                OutputName = Path.Combine(OutputDirectory,
+                         Path.GetFileNameWithoutExtension(
+                             sourceFilePath) + ".dll");
 
             _parameters = new CompilerParameters(asmReferences.ToArray())
                               {
                                   GenerateExecutable = false,
                                   TreatWarningsAsErrors = false,
-                                  OutputAssembly = Path.Combine(OutputDirectory,
-                                                                Path.GetFileNameWithoutExtension(
-                                                                    sourceFilePath) + ".dll")
+                                  OutputAssembly = OutputName,
                               };
 
             string srcPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, sourceFilePath);
@@ -95,6 +99,8 @@ namespace Nomad.Tests.FunctionalTests.Modules
                 throw new Exception("Compilation exception during compiling modules");
             }
 
+            OutputName = null;
+
             return _parameters.OutputAssembly;
         }
 
@@ -102,7 +108,7 @@ namespace Nomad.Tests.FunctionalTests.Modules
         public string GenerateManifestForModule(string modulePath,string keyLocation)
         {
             string directory = Path.GetFullPath(Path.GetDirectoryName(modulePath));
-            var builder = new ManifestBuilder("ALAMAKOTA",
+            var builder = new ManifestBuilder("TES_ISSUER_COMPILER",
                                               keyLocation,
                                               Path.GetFileName(modulePath), directory);
             builder.Create();

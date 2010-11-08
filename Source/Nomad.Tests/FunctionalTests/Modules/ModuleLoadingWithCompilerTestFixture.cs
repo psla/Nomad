@@ -54,7 +54,7 @@ namespace Nomad.Tests.FunctionalTests.Modules
                 File.Copy(reference, Path.Combine(outputDirectory,Path.GetFileName(reference)));
             }
             
-
+            // manifest generating is for folder
             _moduleCompiler.GenerateManifestForModule(modulePath, KeyFile);
 
             // remove those references

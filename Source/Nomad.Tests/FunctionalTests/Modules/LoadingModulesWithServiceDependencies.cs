@@ -12,7 +12,7 @@ using TestsShared;
 namespace Nomad.Tests.FunctionalTests.Modules
 {
     [FunctionalTests]
-    public class LoadingModulesWithServiceDependencies : ModuleLoadingWithCompilerTestFixture
+    public class LoadingModulesWithServiceDependencies : ModuleLoadingTestFixture
     {
         [Test]
         public void module_loader_discovers_and_loads_all_simple_modules()

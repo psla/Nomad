@@ -33,11 +33,13 @@ namespace Nomad.Modules
             // populate the graph representing the modules O(n^2), Theta (n+m)
             foreach (ModuleInfo moduleInfo in modules)
             {
+                // populate next - list
                 _nextNodeList[moduleInfo.Manifest.ModuleName] =
                     new List<string>(
                         moduleInfo.Manifest.ModuleDependencies.Select(m => m.ModuleName));
 
 
+                // populate the visited list
                 _myNodesDict[moduleInfo.Manifest.ModuleName] = new ModuleWrapper()
                                                                    {
                                                                        Module = moduleInfo,

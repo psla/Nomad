@@ -1,29 +1,24 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Nomad.Modules.Manifest;
 
-namespace  Nomad.Modules.Discovery
+namespace Nomad.Modules.Discovery
 {
-    /* TODO: look for manifests instead of assemblies
-     * 
-     * Right now, DirectoryModuleDiscovery looks for all assemblies
-     * in the specified directory. However, since many assemblies
-     * there will not be modules, but modules' dependencies, this 
-     * is not the best idea.
-     * 
-     * When manifests are added, we should look for them instead.
-     * */
-
     /// <summary>
-    ///     Discovers modules by enumerating all module files in an assembly
+    ///      Discovers modules by enumerating all module files in an assembly
     /// </summary>
+    /// <remarks>
+    ///     Discovers only the modules that are described with proper  <see cref="ModuleManifest"/> file 
+    /// inferred from the default <see cref="IModuleManifestFactory"/>. 
+    /// </remarks>
     public class DirectoryModuleDiscovery : IModuleDiscovery
     {
         private readonly string _directoryPath;
 
 
         /// <summary>
-        ///     Initializes new instance of the <see cref="DirectoryModuleDiscovery"/>.
+        ///     Initializes new instance of the <see cref="SimpleDirectoryModuleDiscovery"/>.
         /// </summary>
         /// <param name="directoryPath">Full or relative path to the directory with modules</param>
         /// <exception cref="ArgumentNullException">When <paramref name="directoryPath"/> is <c>null</c> or empty.</exception>
@@ -31,17 +26,40 @@ namespace  Nomad.Modules.Discovery
         {
             if (string.IsNullOrEmpty(directoryPath))
                 throw new ArgumentException("directoryPath is required", "directoryPath");
-            _directoryPath = directoryPath;
+
+            _directoryPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, directoryPath);
         }
 
+        #region Implementation of IModuleDiscovery
 
-        /// <summary>Inherited.</summary>
+        /// <summary>
+        ///     Inherited.
+        /// </summary>
         public IEnumerable<ModuleInfo> GetModules()
         {
-            var dllsInDirectory = Directory.GetFiles(_directoryPath, "*.dll");
+            string[] dllsInDirectory = Directory.GetFiles(_directoryPath, "*.dll");
 
-            foreach (var dll in dllsInDirectory)
-                yield return new ModuleInfo(dll);
+            foreach (string dll in dllsInDirectory)
+            {
+                var moduleInfo = new ModuleInfo(dll, ModuleInfo.DefaultFactory);
+
+                ModuleManifest manifest;
+                try
+                {
+                    manifest = moduleInfo.Manifest;
+                }
+                catch (Exception)
+                {
+                    // modules with exception upon getting the manifest are disqualified
+                    continue;
+                }
+
+                // modules with null manifest are also disqualified
+                if (manifest != null)
+                    yield return moduleInfo;
+            }
         }
+
+        #endregion
     }
 }

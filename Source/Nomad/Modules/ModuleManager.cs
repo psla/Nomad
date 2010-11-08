@@ -22,6 +22,7 @@ namespace Nomad.Modules
         /// </summary>
         /// <param name="moduleLoader">A module loader service, that will load individual modules. May not be <c>null</c>.</param>
         /// <param name="moduleFilter">A filter to selected modules that will actually be loaded</param>
+        /// <param name="dependencyChecker">A dependency checker facility which is reposonsible for sorting the modules before loading.</param>
         /// <exception cref="ArgumentNullException">When <paramref name="moduleLoader"/> is <c>null</c></exception>
         public ModuleManager(IModuleLoader moduleLoader, IModuleFilter moduleFilter,IDependencyChecker dependencyChecker)
         {
@@ -56,12 +57,14 @@ namespace Nomad.Modules
         /// </summary>
         /// <remarks>
         ///     This method will try to load all modules that match requirements regardless to whether
-        ///     other modules succeed to load or fail to. If any of the modules fail to load for any reason,
-        ///     a <see cref="ModuleLoadingFailed"/> event will be raised and some information about the failure
-        ///     will be provided.
+        ///     other modules succeed to load or fail to. 
         /// </remarks>
         /// <param name="moduleDiscovery">Source of all modules that can and should be loaded.</param>
         /// <exception cref="ArgumentNullException">When <paramref name="moduleDiscovery"/> is <c>null</c></exception>
+        /// <exception cref="NomadCouldNotLoadModuleException">
+        ///     If any of the modules fail to load for any reason, exception will be raised,
+        /// and some information about the failure will be provided.
+        /// </exception>
         public void LoadModules(IModuleDiscovery moduleDiscovery)
         {
             if (moduleDiscovery == null) throw new ArgumentNullException("moduleDiscovery");
@@ -71,7 +74,6 @@ namespace Nomad.Modules
             var filteredModules = allModules.Where(module => _moduleFilter.Matches(module));
 
             // perform fail safe dependency checking
-
             IEnumerable<ModuleInfo> dependencyCheckedModules;
             try
             {
