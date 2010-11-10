@@ -61,6 +61,14 @@ namespace Nomad.Tests.FunctionalTests.Modules
             }
         }
 
+        /// <summary>
+        ///     Gets the path to SimplestModulePossible1.
+        /// </summary>
+        public static string DefaultSimpleModuleSource
+        {
+            get { return @"..\Source\Nomad.Tests\FunctionalTests\Data\SimplestModulePossible1.cs"; }
+        }
+
 
         /// <summary>
         ///     Generates the module from <paramref name="sourceFilePath"/> with the additional assemblies presented in <paramref name="dependeciesAssembliesPath"/>.

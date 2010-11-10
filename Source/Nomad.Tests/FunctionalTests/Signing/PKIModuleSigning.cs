@@ -6,6 +6,7 @@ using System.Threading;
 using Nomad.ManifestCreator;
 using Nomad.Modules.Manifest;
 using Nomad.Signing.SignatureAlgorithms;
+using Nomad.Tests.FunctionalTests.Modules;
 using Nomad.Utils;
 using NUnit.Framework;
 using TestsShared;
@@ -27,8 +28,10 @@ namespace Nomad.Tests.FunctionalTests.Signing
         [TestFixtureSetUp]
         public void setup()
         {
+            //FIXME what is this for ?
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-US");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
+            
             _privateKeyFileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
                                                @"res\pki\SignedByCA.pfx");
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
@@ -36,13 +39,21 @@ namespace Nomad.Tests.FunctionalTests.Signing
             _assemblyName = "sample_module.dll";
             _moduleDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
                                             @"FunctionalTests\Signing\Module");
+
             _assemblyPath = Path.Combine(_moduleDirectory, _assemblyName);
             _manifestPath = _assemblyPath + ModuleManifest.ManifestFileNameSuffix;
             _issuerName = "test-issuer";
 
             _manifestSignature = _manifestPath + ModuleManifest.ManifestSignatureFileNameSuffix;
 
-            File.WriteAllText(_assemblyPath, "test assembly");
+            // create fully fledgged assembly
+            var compiler = new ModuleCompiler
+                               {
+                                   OutputDirectory = _moduleDirectory,
+                                   OutputName = _assemblyPath
+                               };
+
+            compiler.GenerateModuleFromCode(ModuleCompiler.DefaultSimpleModuleSource); 
 
             CreateSignature(_privateKeyFileName, "abc123");
         }

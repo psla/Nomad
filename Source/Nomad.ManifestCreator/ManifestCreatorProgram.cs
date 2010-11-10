@@ -6,7 +6,7 @@ namespace Nomad.ManifestCreator
     ///     Application responsible for creating manifest for all files in provided directory
     /// </summary>
     /// 
-    public class Program
+    public class ManifestCreatorProgram
     {
         /// <summary>
         /// 

@@ -47,11 +47,10 @@ namespace Nomad.Tests.FunctionalTests.Signing
                                    OutputName = _assemblyPath
                                };
 
-            compiler.GenerateModuleFromCode(
-                @"..\Source\Nomad.Tests\FunctionalTests\Data\SimplestModulePossible1.cs");
+            compiler.GenerateModuleFromCode(ModuleCompiler.DefaultSimpleModuleSource);
             
             // test creating the manifests
-            Program.Main(new[]
+            ManifestCreatorProgram.Main(new[]
                                                             {
                                                                 "rsa",
                                                                 _keyFileName, _moduleDirectory,

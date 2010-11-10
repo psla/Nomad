@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
+using System.Security.Cryptography;
 using Nomad.Modules.Manifest;
 using Nomad.Signing.FileUtils;
 using Nomad.Signing.SignatureAlgorithms;
@@ -21,6 +21,9 @@ namespace Nomad.Utils
         private readonly string _issuerName;
         private readonly string _issuerXmlPath;
 
+        private readonly string _keyPassword;
+        private readonly string _keyStore;
+
         private RSACryptoServiceProvider _key;
         private ISignatureAlgorithm _signatureAlgorithm;
 
@@ -32,26 +35,47 @@ namespace Nomad.Utils
         /// <param name="issuerXmlPath">Path to the file with issuer.</param>
         /// <param name="assemblyName">Name of the assembly for which manifest is going to be created.</param>
         /// <param name="directory">Directory within this assembly.</param>
+        /// <param name="keyStore">Flag which describes whether to use information from PKI or from Nomad key mechanism.</param>
+        /// <param name="keyPassword">Password for PKI certificate.</param>
         public ManifestBuilder(string issuerName, string issuerXmlPath, string assemblyName,
-                               string directory)
+                               string directory, string keyStore, string keyPassword)
         {
             _issuerName = issuerName;
             _issuerXmlPath = issuerXmlPath;
             _assemblyName = assemblyName;
             _directory = directory;
+            _keyStore = keyStore;
+            _keyPassword = keyPassword;
 
             LoadKey();
         }
 
 
+        /// <summary>
+        ///     Initializes the new instance of <see cref="ManifestBuilder"/> class.
+        /// </summary>
+        /// <remarks>
+        ///     Uses Nomad RSA key algorithm to provide security.
+        /// </remarks>
+        /// <param name="issuerName">Name of the issuer of the signing.</param>
+        /// <param name="issuerXmlPath">Path to the file with issuer.</param>
+        /// <param name="assemblyName">Name of the assembly for which manifest is going to be created.</param>
+        /// <param name="directory">Directory within this assembly.</param>
+        public ManifestBuilder(string issuerName, string issuerXmlPath, string assemblyName,
+                               string directory)
+            : this(issuerName, issuerXmlPath, assemblyName, directory, "rsa", string.Empty)
+        {
+        }
+
+
         private void LoadKey()
         {
-            if (_argumentsParser.KeyStore.ToLower() == "rsa")
+            if (_keyStore.ToLower() == "rsa")
                 _signatureAlgorithm =
-                    new RsaSignatureAlgorithm(File.ReadAllText(_argumentsParser.IssuerXml));
+                    new RsaSignatureAlgorithm(File.ReadAllText(_issuerXmlPath));
             else
                 _signatureAlgorithm =
-                    new PkiSignatureAlgorithm(File.ReadAllBytes(_argumentsParser.IssuerXml), _argumentsParser.KeyPassword);
+                    new PkiSignatureAlgorithm(File.ReadAllBytes(_issuerXmlPath), _keyPassword);
         }
 
 
@@ -60,10 +84,12 @@ namespace Nomad.Utils
             return Path.Combine(_directory, _assemblyName);
         }
 
+
         private string GetAssemblyName()
         {
             return AssemblyName.GetAssemblyName(GetAssemblyPath()).Name;
         }
+
 
         /// <summary>
         ///     Generates the manifest based on passed parameters.
@@ -74,7 +100,6 @@ namespace Nomad.Utils
             // get the content of manifest
             Version version = GetVersion();
             IEnumerable<SignedFile> signedFiles = GetSignedFiles();
-            //IEnumerable<ModuleDependency> dependencyModules = GetDependencyModules();
             IEnumerable<ModuleDependency> dependencyModules = GetDependencyModules2();
 
             //  create manifest
@@ -115,7 +140,7 @@ namespace Nomad.Utils
             // mine module
             string myAsm = GetAssemblyName();
 
-            // foreach assembly in this collection, try resolving its, name version and so on.)
+            // for each assembly in this collection, try resolving its, name version and so on.)
             foreach (string file in files)
             {
                 AssemblyName asmName = null;
@@ -128,21 +153,21 @@ namespace Nomad.Utils
                     // nothing happens
                     continue;
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
-                    throw new InvalidOperationException("Access to file is somewhat corrupted",e);
+                    throw new InvalidOperationException("Access to file is somewhat corrupted", e);
                 }
 
                 // do not add itself
-                if(asmName.Name.Equals(myAsm))
+                if (asmName.Name.Equals(myAsm))
                     continue;
 
-                dependencies.Add(new ModuleDependency()
+                dependencies.Add(new ModuleDependency
                                      {
                                          ModuleName = asmName.Name,
                                          MinimalVersion = new Version(asmName.Version),
-                                         ProcessorArchitecture =  asmName.ProcessorArchitecture,
-                                         //TODO: implement recogniction of isServiceProvider ability
+                                         ProcessorArchitecture = asmName.ProcessorArchitecture,
+                                         //TODO: implement recognition of isServiceProvider ability
                                          HasLoadingOrderPriority = false,
                                      });
             }

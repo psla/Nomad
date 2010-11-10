@@ -49,7 +49,7 @@ namespace Nomad.Tests.FunctionalTests.Modules.Filters
                                             @"Modules\signing\");
             _assemblyName = "EmptyModule.dll";
             _modulePath = Path.Combine(_moduleDirectory, _assemblyName);
-            Program.Main(new[]
+            ManifestCreatorProgram.Main(new[]
                                             {
                                                 "rsa",
                                                 _keyFileName

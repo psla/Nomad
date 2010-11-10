@@ -61,9 +61,9 @@ namespace Nomad.Tests.UnitTests.Signing
             var defaultAlgorithm = new Mock<ISignatureAlgorithm>();
             var signatureProvider = new SignatureProvider(defaultAlgorithm.Object);
             
-            var provider = _signatureProvider.GetIssuer("someone");
+            IssuerInformation provider = signatureProvider.GetIssuer("someone");
 
-            Assert.AreSame(defaultAlgorithm.Object, provider, "When no vendor algorithm provided, default should be returned");
+            Assert.AreSame(defaultAlgorithm.Object, provider.IssuerAlgorithm, "When no vendor algorithm provided, default should be returned");
         }
     }
 }

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.IO;
+using Nomad.Utils;
 
 namespace Nomad.ManifestCreator
 {
     /// <summary>
-    ///     Parses arguments provided to <see cref="Program"/> and initializes the instance of <see cref="Nomad.ProgramManifestCreator"/> class.
+    ///     Parses arguments provided to <see cref="ManifestCreatorProgram"/> 
+    /// and initializes the instance of <see cref="ManifestBuilder"/> class.
     /// </summary>
     public class ArgumentsParser
     {
@@ -12,7 +14,7 @@ namespace Nomad.ManifestCreator
         /// 
         /// </summary>
         /// <param name="args"></param>
-        /// <exception cref="ArgumentException">when provided argument is incorrect</exception>
+        /// <exception cref="ArgumentException">When provided argument is incorrect.</exception>
         public ArgumentsParser(string[] args)
         {
             KeyStore = args[0];
@@ -38,13 +40,6 @@ namespace Nomad.ManifestCreator
         /// May be: RSA or PKI
         /// </remarks>
         public string KeyStore { get; private set; }
-
-
-        private void FormatDirectory()
-        {
-            if (!Directory.EndsWith(@"\"))
-                Directory += @"\";
-        }
 
 
         public string IssuerName { get; private set; }
@@ -77,7 +72,7 @@ namespace Nomad.ManifestCreator
 
         public Utils.ManifestBuilder GetManifestCreator()
         {
-            return new Utils.ManifestBuilder(IssuerName, IssuerXml, AssemblyName, Directory);
+            return new Utils.ManifestBuilder(IssuerName, IssuerXml, AssemblyName, Directory,KeyStore,KeyPassword);
         }
     }
 }
