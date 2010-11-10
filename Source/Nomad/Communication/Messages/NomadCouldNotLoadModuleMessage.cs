@@ -7,7 +7,7 @@ namespace Nomad.Communication.Messages
     ///     Class that represents type of event raised when loading of specific module cannot be done.
     /// </summary>
     [Serializable]
-    public class NomadCouldNotLoadModuleMessage : NomadKernelMessage
+    public class NomadCouldNotLoadModuleMessage : NomadMessage
     {
         /// <summary>
         ///     Gets the name of the module which invoked the message.
@@ -30,6 +30,14 @@ namespace Nomad.Communication.Messages
         /// <param name="message">Message to be passed.</param>
         public NomadCouldNotLoadModuleMessage(string message) : this(message, null)
         {
+        }
+
+        /// <summary>
+        ///     Inherrited.
+        /// </summary>
+        public override string ToString()
+        {
+            return string.Format("The module '{0}' could not be loaded.", ModuleName);
         }
     }
 }

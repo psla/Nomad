@@ -102,9 +102,10 @@
     <Compile Include="Communication\EventAggregation\TicketDisposedArgs.cs" />
     <Compile Include="Communication\EventAggregation\WpfGuiThreadProvider.cs" />
     <Compile Include="Communication\Messages\NomadCouldNotLoadModuleMessage.cs" />
-    <Compile Include="Communication\Messages\NomadKernelMessage.cs" />
+    <Compile Include="Communication\Messages\NomadMessage.cs" />
     <Compile Include="Core\IModulesOperations.cs" />
     <Compile Include="Exceptions\NomadCouldNotLoadModuleException.cs" />
+    <Compile Include="Exceptions\NomadException.cs" />
     <Compile Include="Modules\ContainerCreator.cs" />
     <Compile Include="Core\NomadConfiguration.cs" />
     <Compile Include="Core\NomadKernel.cs" />
