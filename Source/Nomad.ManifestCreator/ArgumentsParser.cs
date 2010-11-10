@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Nomad.Signing;
 using Nomad.Utils;
 
 namespace Nomad.ManifestCreator
@@ -22,15 +23,14 @@ namespace Nomad.ManifestCreator
             Directory = args[2];
             AssemblyName = args[3];
             IssuerName = args[4];
-            
+
             KeyPassword = null;
-            if(args.Length == 6)
+            if (args.Length == 6)
                 KeyPassword = args[5];
 
             FormatDirectory();
             ValidateArguments();
         }
-
 
 
         /// <summary>
@@ -59,6 +59,15 @@ namespace Nomad.ManifestCreator
         }
 
 
+        private static KeyStorage MapKeyStringToStorage(string storage)
+        {
+            if (storage.ToLower() == "rsa")
+                return KeyStorage.Nomad;
+
+            return KeyStorage.PKI;
+        }
+
+
         private void ValidateArguments()
         {
             if (!File.Exists(IssuerXml))
@@ -70,9 +79,10 @@ namespace Nomad.ManifestCreator
         }
 
 
-        public Utils.ManifestBuilder GetManifestCreator()
+        public ManifestBuilder GetManifestCreator()
         {
-            return new Utils.ManifestBuilder(IssuerName, IssuerXml, AssemblyName, Directory,KeyStore,KeyPassword);
+            return new ManifestBuilder(IssuerName, IssuerXml, AssemblyName, Directory,
+                                       MapKeyStringToStorage(KeyStore), KeyPassword);
         }
     }
 }

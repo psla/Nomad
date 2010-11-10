@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
 using Nomad.Modules.Manifest;
+using Nomad.Signing;
 using Nomad.Signing.FileUtils;
 using Nomad.Signing.SignatureAlgorithms;
 using File = System.IO.File;
@@ -22,7 +23,7 @@ namespace Nomad.Utils
         private readonly string _issuerXmlPath;
 
         private readonly string _keyPassword;
-        private readonly string _keyStore;
+        private readonly KeyStorage _keyStore;
 
         private RSACryptoServiceProvider _key;
         private ISignatureAlgorithm _signatureAlgorithm;
@@ -38,7 +39,7 @@ namespace Nomad.Utils
         /// <param name="keyStore">Flag which describes whether to use information from PKI or from Nomad key mechanism.</param>
         /// <param name="keyPassword">Password for PKI certificate.</param>
         public ManifestBuilder(string issuerName, string issuerXmlPath, string assemblyName,
-                               string directory, string keyStore, string keyPassword)
+                               string directory, KeyStorage keyStore, string keyPassword)
         {
             _issuerName = issuerName;
             _issuerXmlPath = issuerXmlPath;
@@ -55,7 +56,7 @@ namespace Nomad.Utils
         ///     Initializes the new instance of <see cref="ManifestBuilder"/> class.
         /// </summary>
         /// <remarks>
-        ///     Uses Nomad RSA key algorithm to provide security.
+        ///     Uses Nomad RSA key algorithm to provide security - <see cref="KeyStorage.Nomad"/>.
         /// </remarks>
         /// <param name="issuerName">Name of the issuer of the signing.</param>
         /// <param name="issuerXmlPath">Path to the file with issuer.</param>
@@ -63,17 +64,17 @@ namespace Nomad.Utils
         /// <param name="directory">Directory within this assembly.</param>
         public ManifestBuilder(string issuerName, string issuerXmlPath, string assemblyName,
                                string directory)
-            : this(issuerName, issuerXmlPath, assemblyName, directory, "rsa", string.Empty)
+            : this(issuerName, issuerXmlPath, assemblyName, directory, KeyStorage.Nomad, string.Empty)
         {
         }
 
 
         private void LoadKey()
         {
-            if (_keyStore.ToLower() == "rsa")
+            if (_keyStore == KeyStorage.Nomad)
                 _signatureAlgorithm =
                     new RsaSignatureAlgorithm(File.ReadAllText(_issuerXmlPath));
-            else
+            else if ( _keyStore == KeyStorage.PKI )
                 _signatureAlgorithm =
                     new PkiSignatureAlgorithm(File.ReadAllBytes(_issuerXmlPath), _keyPassword);
         }
