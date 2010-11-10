@@ -126,7 +126,9 @@
     <Compile Include="FunctionalTests\Signing\ModuleSigning.cs" />
     <Compile Include="FunctionalTests\Modules\Filters\SignedModulesFiltering.cs" />
     <Compile Include="FunctionalTests\Kernel\NomadKernelChangesExceptionsToEvents.cs" />
+    <Compile Include="IntegrationTests\Modules\DependencyChecker\DependencyCheckerBase.cs" />
     <Compile Include="IntegrationTests\Modules\DependencyChecker\SoftLinkeDependencyCheckerTests.cs" />
+    <Compile Include="IntegrationTests\Modules\DependencyChecker\VersionDependencyCheckerTests.cs" />
     <Compile Include="IntegrationTests\Modules\DirectoryModuleDiscovery.cs" />
     <Compile Include="IntegrationTests\Updater\AppDomainBoundariesUpdaterTests.cs" />
     <Compile Include="UnitTests\GettingModules\UpdatingClient.cs" />

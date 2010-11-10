@@ -17,30 +17,25 @@ namespace Nomad.Tests.IntegrationTests.Modules.DependencyChecker
     ///     <see cref="ModuleDependency.ModuleName"/> and <see cref="ModuleDependency.HasLoadingOrderPriority"/> properties.
     /// </summary>
     [IntegrationTests]
-    public class SimpleDependencyCheckerTests
+    public class SimpleDependencyCheckerTests : DependencyCheckerBase
     {
-        private Nomad.Modules.DependencyChecker _dependencyChecker;
-
-        private IEnumerable<ModuleInfo> _expectedModules;
-        private IEnumerable<ModuleInfo> _modules;
-
 
         [SetUp]
         public void set_up()
         {
-            _dependencyChecker = new Nomad.Modules.DependencyChecker();
+            DependencyChecker = new Nomad.Modules.DependencyChecker();
         }
 
 
         [Test]
         public void sorting_empty_list()
         {
-            _modules = new List<ModuleInfo>();
-            _expectedModules = new List<ModuleInfo>();
+            Modules = new List<ModuleInfo>();
+            ExpectedModules = new List<ModuleInfo>();
 
-            IEnumerable<ModuleInfo> result = _dependencyChecker.SortModules(_modules);
+            IEnumerable<ModuleInfo> result = DependencyChecker.SortModules(Modules);
 
-            Assert.AreEqual(_expectedModules, result);
+            Assert.AreEqual(ExpectedModules, result);
         }
 
 
@@ -60,7 +55,7 @@ namespace Nomad.Tests.IntegrationTests.Modules.DependencyChecker
             var e = SetUpModuleInfo("E", "X");
             var x = SetUpModuleInfo("X");
 
-            _modules = new List<ModuleInfo>
+            Modules = new List<ModuleInfo>
                            {
                                
                                b,
@@ -71,7 +66,7 @@ namespace Nomad.Tests.IntegrationTests.Modules.DependencyChecker
                                e,
                            };
 
-            _expectedModules = new List<ModuleInfo>
+            ExpectedModules = new List<ModuleInfo>
                                    {
                                        x,
                                        c,
@@ -82,7 +77,7 @@ namespace Nomad.Tests.IntegrationTests.Modules.DependencyChecker
                                    };
 
             // perform test
-            Assert.AreEqual(_expectedModules, _dependencyChecker.SortModules(_modules));
+            Assert.AreEqual(ExpectedModules, DependencyChecker.SortModules(Modules));
         }
 
 
@@ -101,7 +96,7 @@ namespace Nomad.Tests.IntegrationTests.Modules.DependencyChecker
             var e = SetUpModuleInfo("X", "Y");
             var x = SetUpModuleInfo("Y");
 
-            _modules = new List<ModuleInfo>()
+            Modules = new List<ModuleInfo>()
                            {
                                a,
                                b,
@@ -109,61 +104,13 @@ namespace Nomad.Tests.IntegrationTests.Modules.DependencyChecker
                                e,
                                x
                            };
-            _expectedModules = null;
+            ExpectedModules = null;
 
             // perform test 
-            Assert.Throws<ArgumentException>(() => _dependencyChecker.SortModules(_modules));
+            Assert.Throws<ArgumentException>(() => DependencyChecker.SortModules(Modules));
         }
 
         #region SetUp of ModuleInfo
-
-        private static ModuleDependency SetUpModuleDependencyWithNameOnly(string name)
-        {
-            return new ModuleDependency
-                       {
-                           ModuleName = name,
-                           // default values
-                           HasLoadingOrderPriority = false,
-                           MinimalVersion = new Version(),
-                           ProcessorArchitecture = ProcessorArchitecture.None
-                       };
-        }
-
-
-        private static Mock<IModuleManifestFactory> SetUpManifestFactory(string name,
-                                                                         List<ModuleDependency>
-                                                                             dependencies,
-                                                                         Version version)
-        {
-            var moduleManifestFacotry = new Mock<IModuleManifestFactory>(MockBehavior.Loose);
-            moduleManifestFacotry.Setup(x => x.GetManifest(It.IsAny<ModuleInfo>()))
-                .Returns(new ModuleManifest
-                             {
-                                 Issuer = @"ISSUER_NAME",
-                                 ModuleName = name,
-                                 ModuleDependencies = dependencies,
-                                 ModuleVersion = version
-                             }
-                );
-
-            return moduleManifestFacotry;
-        }
-
-        
-        private static ModuleInfo SetUpModuleInfo(string moduleName,
-                                                  params string[] dependenciesNames)
-        {
-            const string modulePath = @"MODULE_PATH";
-
-            List<ModuleDependency> listOfDependecies =
-                dependenciesNames.Select( x => SetUpModuleDependencyWithNameOnly(x)).ToList();
-
-            Mock<IModuleManifestFactory> mockModuleManifestFactory =
-                SetUpManifestFactory(moduleName, listOfDependecies, new Version());
-            var moduleInfo = new ModuleInfo(modulePath, mockModuleManifestFactory.Object);
-
-            return moduleInfo;
-        }
 
         #endregion
 
