@@ -35,11 +35,11 @@ namespace Nomad.Tests.FunctionalTests.Modules
             // define discovery sequence
             var discovery = new CompositeModuleDiscovery(new IModuleDiscovery[]
                                                              {
-                                                                 new SimpleDirectoryModuleDiscovery(
+                                                                 new DirectoryModuleDiscovery(
                                                                      dir2),
-                                                                 new SimpleDirectoryModuleDiscovery(
+                                                                 new DirectoryModuleDiscovery(
                                                                      dir),
-                                                                 new SimpleDirectoryModuleDiscovery(
+                                                                 new DirectoryModuleDiscovery(
                                                                      dir3),
                                                              });
 
@@ -77,11 +77,11 @@ namespace Nomad.Tests.FunctionalTests.Modules
             // define discovery sequence
             var discovery = new CompositeModuleDiscovery(new IModuleDiscovery[]
                                                              {
-                                                                 new SimpleDirectoryModuleDiscovery(
+                                                                 new DirectoryModuleDiscovery(
                                                                      dir2),
-                                                                 new SimpleDirectoryModuleDiscovery(
+                                                                 new DirectoryModuleDiscovery(
                                                                      dir),
-                                                                 new SimpleDirectoryModuleDiscovery(
+                                                                 new DirectoryModuleDiscovery(
                                                                      dir3),
                                                              });
 
@@ -123,9 +123,9 @@ namespace Nomad.Tests.FunctionalTests.Modules
             // define discovery sequence
             var discovery = new CompositeModuleDiscovery(new IModuleDiscovery[]
                                                              {
-                                                                 new SimpleDirectoryModuleDiscovery(
+                                                                 new DirectoryModuleDiscovery(
                                                                      dir2),
-                                                                 new SimpleDirectoryModuleDiscovery(
+                                                                 new DirectoryModuleDiscovery(
                                                                      dir),
                                                              });
 
@@ -153,9 +153,9 @@ namespace Nomad.Tests.FunctionalTests.Modules
             // define discovery sequence
             var discovery = new CompositeModuleDiscovery(new IModuleDiscovery[]
                                                              {
-                                                                 new SimpleDirectoryModuleDiscovery(
+                                                                 new DirectoryModuleDiscovery(
                                                                      dir2),
-                                                                 new SimpleDirectoryModuleDiscovery(
+                                                                 new DirectoryModuleDiscovery(
                                                                      dir1),
                                                              });
 
@@ -186,9 +186,9 @@ namespace Nomad.Tests.FunctionalTests.Modules
             // define discovery sequence
             var discovery = new CompositeModuleDiscovery(new IModuleDiscovery[]
                                                              {
-                                                                 new SimpleDirectoryModuleDiscovery(
+                                                                 new DirectoryModuleDiscovery(
                                                                      dir2),
-                                                                 new SimpleDirectoryModuleDiscovery(
+                                                                 new DirectoryModuleDiscovery(
                                                                      dir1),
                                                              });
 

@@ -9,7 +9,7 @@ namespace Nomad.Communication.ServiceLocation
     /// <summary>
     ///     Default Nomad implementation of IServiceLocator based on Castle Windsor IoC Container.
     /// </summary>
-    public class ServiceLocator : IServiceLocator
+    public class ServiceLocator : MarshalByRefObject,IServiceLocator
     {
         private readonly IWindsorContainer _serviceContainer;
 

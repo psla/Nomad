@@ -6,7 +6,7 @@ namespace Nomad.Communication.EventAggregation
     ///<summary>
     /// Provides implementation for <see cref="IEventAggregator"/> based on delegates
     ///</summary>
-    public class EventAggregator : IEventAggregator
+    public class EventAggregator : MarshalByRefObject,IEventAggregator
     {
         private readonly IGuiThreadProvider _guiThreadProvider;
 

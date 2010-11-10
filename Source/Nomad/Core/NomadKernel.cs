@@ -1,5 +1,9 @@
 ﻿using System;
 using System.Security.Policy;
+using Nomad.Communication.EventAggregation;
+using Nomad.Communication.Messages;
+using Nomad.Communication.ServiceLocation;
+using Nomad.Exceptions;
 using Nomad.Modules;
 using Nomad.Modules.Discovery;
 
@@ -52,6 +56,9 @@ namespace Nomad.Core
             var moduleLoaderCreator = (ContainerCreator)
                                       ModuleAppDomain.CreateInstanceAndUnwrap(asmName, typeName);
 
+            EventAggregator = moduleLoaderCreator.EventAggregator;
+            ServiceLocator = moduleLoaderCreator.ServiceLocator;
+
             ModuleLoader = moduleLoaderCreator.CreateModuleLoaderInstance();
 
             _moduleManager = new ModuleManager(ModuleLoader,
@@ -87,12 +94,12 @@ namespace Nomad.Core
         private IModuleLoader ModuleLoader { get; set; }
 
         /// <summary>
-        ///     AppDomain handler for AppDomain used for storing all loaded modules.
+        ///     AppDomain handler (read only) for AppDomain used for storing all loaded modules.
         /// </summary>
         public AppDomain ModuleAppDomain { get; private set; }
 
         /// <summary>
-        ///     AppDomain handler for AppDomain representing appDomain for <see cref="NomadKernel"/> instance.
+        ///     AppDomain handler (read only) for AppDomain representing appDomain for <see cref="NomadKernel"/> instance.
         /// </summary>
         public AppDomain KernelAppDomain { get; private set; }
 
@@ -101,6 +108,22 @@ namespace Nomad.Core
         ///     Provides read only access to initialized Kernel configuration.
         /// </summary>
         public NomadConfiguration KernelConfiguration { get; private set; }
+
+        /// <summary>
+        ///     Provides read only access to <see cref="IEventAggregator"/> object. Allows asynchronous communication with modules.
+        /// </summary>
+        /// <remarks>
+        ///     Communication from kernel is much slower because of the marshalling mechanism on app domain boundary.
+        /// </remarks>
+        public IEventAggregator EventAggregator { get; private set; }
+
+        /// <summary>
+        ///       Provides read only access to <see cref="IServiceLocator"/> object. Allows synchronous communication with modules.
+        /// </summary>
+        /// <remarks>
+        ///     Communication from kernel is much slower because of the marshalling mechanism on app domain boundary.
+        /// </remarks>
+        public IServiceLocator ServiceLocator { get; private set; }
 
         #region IModulesOperations Members
 
@@ -123,12 +146,31 @@ namespace Nomad.Core
 
 
         /// <summary>
-        /// Loads modules into their domain.
+        ///     Loads modules into their domain.
         /// </summary>
         /// <param name="moduleDiscovery">ModuleDiscovery specifying modules to be loaded.</param>
+        /// <remarks>
+        ///     This method provieds feedback to already loaded modules about any possible failure.
+        /// </remarks>
+        /// <exception cref="NomadCouldNotLoadModuleException">
+        ///     This exception will be raised when <see cref="ModuleManager"/> object responsible for
+        /// loading modules encounter any problems. Any exception will be changed to the message <see cref="NomadCouldNotLoadModuleMessage"/> responsbile for 
+        /// informing other modules about failure.
+        /// </exception>
         public void LoadModules(IModuleDiscovery moduleDiscovery)
         {
-            _moduleManager.LoadModules(moduleDiscovery);
+            try
+            {
+                _moduleManager.LoadModules(moduleDiscovery);
+            }
+            catch (NomadCouldNotLoadModuleException e)
+            {
+                // publish event about not loading module to other modules.
+                EventAggregator.Publish(new NomadCouldNotLoadModuleMessage("Could not load modules",e.ModuleName));
+
+                // rethrow this exception to kernel domain, cause event aggregator cannot be used
+                throw;
+            }
         }
 
         #endregion

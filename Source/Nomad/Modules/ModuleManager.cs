@@ -79,9 +79,14 @@ namespace Nomad.Modules
             {
                 dependencyCheckedModules = _dependencyChecker.SortModules(filteredModules);
             }
-            catch (Exception e)
+            catch (ArgumentException e)
             {
-                throw new NomadCouldNotLoadModuleException("Dependency resolving failed",e);
+                throw new NomadCouldNotLoadModuleException("Dependency resolving failed due to arguments.",e,e.ParamName);
+            }
+            catch(Exception e)
+            {
+                throw new NomadCouldNotLoadModuleException(
+                    "Unknown error during dependency resolving", e);
             }
 
             // perform fail safe loading

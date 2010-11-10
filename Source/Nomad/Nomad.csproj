@@ -101,6 +101,8 @@
     <Compile Include="Communication\EventAggregation\IGuiThreadProvider.cs" />
     <Compile Include="Communication\EventAggregation\TicketDisposedArgs.cs" />
     <Compile Include="Communication\EventAggregation\WpfGuiThreadProvider.cs" />
+    <Compile Include="Communication\Messages\NomadCouldNotLoadModuleMessage.cs" />
+    <Compile Include="Communication\Messages\NomadKernelMessage.cs" />
     <Compile Include="Core\IModulesOperations.cs" />
     <Compile Include="Exceptions\NomadCouldNotLoadModuleException.cs" />
     <Compile Include="Modules\ContainerCreator.cs" />

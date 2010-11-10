@@ -4,6 +4,7 @@ using System.Reflection;
 using Nomad.ManifestCreator;
 using Nomad.Modules;
 using Nomad.Modules.Manifest;
+using Nomad.Tests.FunctionalTests.Modules;
 using Nomad.Utils;
 using NUnit.Framework;
 using TestsShared;
@@ -36,10 +37,20 @@ namespace Nomad.Tests.FunctionalTests.Signing
             _issuerName = "test-issuer";
             if (File.Exists(_keyFileName))
                 File.Delete(_keyFileName);
+
             KeysGenerator.KeysGeneratorProgram.Main(new[] {_keyFileName});
 
-            File.WriteAllText(_assemblyPath, "test assembly");
+            // creating sample assembly, cause the manifest generator requires full-fledgged assembly not imposter
+            var compiler = new ModuleCompiler
+                               {
+                                   OutputDirectory = _moduleDirectory,
+                                   OutputName = _assemblyPath
+                               };
 
+            compiler.GenerateModuleFromCode(
+                @"..\Source\Nomad.Tests\FunctionalTests\Data\SimplestModulePossible1.cs");
+            
+            // test creating the manifests
             Program.Main(new[]
                                                             {
                                                                 "rsa",
@@ -88,7 +99,7 @@ namespace Nomad.Tests.FunctionalTests.Signing
         {
             var moduleManifest =
                 XmlSerializerHelper.Deserialize<ModuleManifest>(File.ReadAllBytes(_manifestPath));
-            Assert.AreEqual(moduleManifest.ModuleName, "sample_module.dll");
+            Assert.AreEqual(moduleManifest.ModuleName, "sample_module");
             var expectedVersion = new Version("0.0.0.0");
             Assert.AreEqual(expectedVersion, moduleManifest.ModuleVersion);
         }

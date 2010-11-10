@@ -86,6 +86,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ErrorLoad", "ErrorLoad", "{
 		Nomad.Tests\FunctionalTests\Data\ErrorLoad\ModuleWithDependency.cs = Nomad.Tests\FunctionalTests\Data\ErrorLoad\ModuleWithDependency.cs
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Kernel", "Kernel", "{7BE8A034-FCB4-4E95-A70A-7E260ECC41D9}"
+	ProjectSection(SolutionItems) = preProject
+		Nomad.Tests\FunctionalTests\Data\Kernel\EventAwareModule.cs = Nomad.Tests\FunctionalTests\Data\Kernel\EventAwareModule.cs
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -164,6 +169,7 @@ Global
 		{6B0366F8-104B-4B8B-A38C-F03BC6504B90} = {795BD409-5B1D-47E3-BC98-1ABFECB7D046}
 		{A3991F62-5131-4901-AE6D-4F027BD6EFF0} = {6B0366F8-104B-4B8B-A38C-F03BC6504B90}
 		{223E9D5F-91DD-4920-9F66-2355ACA86F8B} = {6B0366F8-104B-4B8B-A38C-F03BC6504B90}
+		{7BE8A034-FCB4-4E95-A70A-7E260ECC41D9} = {6B0366F8-104B-4B8B-A38C-F03BC6504B90}
 		{1F6C3A60-1A3C-4627-A9F3-B71897468E21} = {0DC7A9CF-DB4C-47D3-95C2-51FEEA924FB0}
 		{EF5A9D12-B2C4-46E0-B7E9-75868819C4C8} = {0DC7A9CF-DB4C-47D3-95C2-51FEEA924FB0}
 		{69CE733D-8F4E-4183-B5C9-4A6B1B42B843} = {0DC7A9CF-DB4C-47D3-95C2-51FEEA924FB0}

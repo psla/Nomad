@@ -64,11 +64,11 @@ namespace Nomad.Modules
             List<string> nodesToGo;
             ModuleWrapper myNodeInfo;
             if(!_nextNodeList.TryGetValue(myNode, out nodesToGo) || !_myNodesDict.TryGetValue(myNode,out myNodeInfo))
-                throw new ArgumentException(string.Format("No such dependency in dictionary. The {0} could not be found.",myNode));
+                throw new ArgumentException(string.Format("No such dependency in dictionary. The {0} could not be found.",myNode),"myNode");
             
 
             if(myNode.Equals(startingNode) && depth > 0)
-                throw new ArgumentException(string.Format("Graph has cycles. Duplicated node is {0}.",startingNode));
+                throw new ArgumentException(string.Format("Graph has cycles. Duplicated node is {0}.",startingNode),"startingNode");
 
             depth++;
 

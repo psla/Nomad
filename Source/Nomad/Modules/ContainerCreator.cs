@@ -52,6 +52,22 @@ namespace Nomad.Modules
             get { return _windsorContainer; }
         }
 
+        /// <summary>
+        ///     Gets the object implementing <see cref="IEventAggregator"/> class. 
+        /// </summary>
+        public IEventAggregator EventAggregator
+        {
+            get { return _eventAggregator; }
+        }
+
+        /// <summary>
+        ///     Gets the object implementing <see cref="IServiceLocator"/> class.
+        /// </summary>
+        public IServiceLocator ServiceLocator
+        {
+            get { return _serviceLocator; }
+        }
+
 
         /// <summary>
         ///     Initializes new instance of the <see cref="ModuleLoader"/> class as an implementation of <see cref="IModuleLoader"/>
