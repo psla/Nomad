@@ -50,7 +50,11 @@ namespace Nomad.Modules
             // run DFS through graph O(n)
             foreach (var moduleInfo in modules)
             {
-                GoDFS(moduleInfo.Manifest.ModuleName,moduleInfo.Manifest.ModuleName,0);
+                ModuleWrapper wrapper;
+                if (!_myNodesDict.TryGetValue(moduleInfo.Manifest.ModuleName, out wrapper))
+                    throw new ArgumentException(string.Format("No such dependency in dictionary. The {0} could not be found.", moduleInfo.Manifest.ModuleName));
+
+                GoDFS(moduleInfo.Manifest.ModuleName,moduleInfo.Manifest.ModuleName,0,wrapper);
             }
                 
             
@@ -59,29 +63,53 @@ namespace Nomad.Modules
         }
 
 
-        private void GoDFS(string myNode,string startingNode,int depth)
+        private void GoDFS(string myNode,string startingNode,int depth,ModuleWrapper myNodeInfo)
         {
+            // get list of nodes to go
             List<string> nodesToGo;
-            ModuleWrapper myNodeInfo;
-            if(!_nextNodeList.TryGetValue(myNode, out nodesToGo) || !_myNodesDict.TryGetValue(myNode,out myNodeInfo))
+            if(!_nextNodeList.TryGetValue(myNode, out nodesToGo))
                 throw new ArgumentException(string.Format("No such dependency in dictionary. The {0} could not be found.",myNode),"myNode");
             
-
+            // check if graph has cycles
             if(myNode.Equals(startingNode) && depth > 0)
                 throw new ArgumentException(string.Format("Graph has cycles. Duplicated node is {0}.",startingNode),"startingNode");
 
             depth++;
 
+            // stop condition
             if(myNodeInfo.Visited)
                 return;
 
             myNodeInfo.Visited = true;
 
-            foreach (var node in nodesToGo)
+            foreach (var nodeName in nodesToGo)
             {
-                GoDFS(node,startingNode,depth);
-            }
+                // check for the going into node about the versions
+                ModuleWrapper nodeToGo;
+                if(!_myNodesDict.TryGetValue(nodeName,out nodeToGo))
+                    throw new ArgumentException(string.Format("No such dependency in dictionary. The {0} could not be found.", myNode), "myNode");              
 
+                // get version 
+                string name = nodeName;
+                var myNodeDependencyVersions =
+                    myNodeInfo.Module.Manifest.ModuleDependencies.Where(
+                        x => x.ModuleName.Equals(name)).Select(x => x.MinimalVersion);
+
+                var myNodeDependencyVersion =
+                    myNodeDependencyVersions.SingleOrDefault();
+
+                var dependencyVersion = nodeToGo.Module.Manifest.ModuleVersion;
+
+                // compare values of the versions, using system feature
+                if (myNodeDependencyVersion.GetSystemVersion() > dependencyVersion.GetSystemVersion())
+                    throw new ArgumentException(
+                        string.Format(
+                            "Dependency version ({0}) is higher than module's version {1}",
+                            myNodeDependencyVersion, dependencyVersion));
+
+                // if everything ok, go dfs
+                GoDFS(nodeName,startingNode,depth,nodeToGo);
+            }
             _stack.Push(myNodeInfo.Module);
         }
 

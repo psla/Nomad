@@ -72,7 +72,7 @@ namespace Nomad.Tests.IntegrationTests.Modules.DependencyChecker
                                                                    KeyValuePair<string, Version>[]
                                                                    dependenciesNamesAndVersions)
         {
-            // make sure that assemblies are not the same
+            // make sure that assemblies are not the same beacause of the path.
             string modulePath = @"SAMPLE_MODULE_PATH_WITH_VERSION" + Random.Next(0, 100);
 
             var moduleManifestFacotry = new Mock<IModuleManifestFactory>(MockBehavior.Loose);
@@ -90,7 +90,7 @@ namespace Nomad.Tests.IntegrationTests.Modules.DependencyChecker
         }
 
 
-        protected static List<ModuleDependency> SetUpDependenciesWithVersion(
+        private static List<ModuleDependency> SetUpDependenciesWithVersion(
             IEnumerable<KeyValuePair<string, Version>> dependenciesNamesAndVersions)
         {
             return
