@@ -88,6 +88,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ErrorLoad", "ErrorLoad", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Kernel", "Kernel", "{7BE8A034-FCB4-4E95-A70A-7E260ECC41D9}"
 	ProjectSection(SolutionItems) = preProject
+		Nomad.Tests\FunctionalTests\Data\Kernel\AllModulesLoadedEventAwareModule.cs = Nomad.Tests\FunctionalTests\Data\Kernel\AllModulesLoadedEventAwareModule.cs
 		Nomad.Tests\FunctionalTests\Data\Kernel\EventAwareModule.cs = Nomad.Tests\FunctionalTests\Data\Kernel\EventAwareModule.cs
 	EndProjectSection
 EndProject

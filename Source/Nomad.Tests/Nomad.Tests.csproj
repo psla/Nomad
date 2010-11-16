@@ -105,6 +105,7 @@
     <Compile Include="FunctionalTests\EventAggregation\EventPublishing.cs" />
     <Compile Include="FunctionalTests\Kernel\Messages\EventHandledRegistry.cs" />
     <Compile Include="FunctionalTests\Kernel\NomadKernelAppDomainManagmentTests.cs" />
+    <Compile Include="FunctionalTests\Kernel\NomadKernelTestFixture.cs" />
     <Compile Include="FunctionalTests\Modules\IInjectableModulesRegistry.cs" />
     <Compile Include="FunctionalTests\Modules\InjectableModulesRegistry.cs" />
     <Compile Include="FunctionalTests\Modules\LoadedModulesRegistry.cs" />
@@ -125,7 +126,7 @@
     <Compile Include="FunctionalTests\Signing\KeyGenerating.cs" />
     <Compile Include="FunctionalTests\Signing\ModuleSigning.cs" />
     <Compile Include="FunctionalTests\Modules\Filters\SignedModulesFiltering.cs" />
-    <Compile Include="FunctionalTests\Kernel\NomadKernelChangesExceptionsToEvents.cs" />
+    <Compile Include="FunctionalTests\Kernel\NomadKernelEventRaising.cs" />
     <Compile Include="IntegrationTests\Modules\DependencyChecker\DependencyCheckerBase.cs" />
     <Compile Include="IntegrationTests\Modules\DependencyChecker\SoftLinkeDependencyCheckerTests.cs" />
     <Compile Include="IntegrationTests\Modules\DependencyChecker\VersionDependencyCheckerTests.cs" />

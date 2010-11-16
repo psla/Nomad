@@ -162,7 +162,7 @@ namespace Nomad.Core
             try
             {
                 _moduleManager.LoadModules(moduleDiscovery);
-                EventAggregator.Publish(new NomadAllModulesLoadedMessage(moduleDiscovery.GetModules(),"Modules loaded successfully."));
+                EventAggregator.Publish(new NomadAllModulesLoadedMessage("Modules loaded successfully."));
             }
             catch (NomadCouldNotLoadModuleException e)
             {

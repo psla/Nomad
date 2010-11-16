@@ -4,19 +4,19 @@ using Nomad.Communication.EventAggregation;
 using Nomad.Messages;
 using Nomad.Tests.FunctionalTests.Kernel.Messages;
 
-public class EventAwareModule : Nomad.Modules.IModuleBootstraper
+public class AllModulesLoadedEventAwareModule : Nomad.Modules.IModuleBootstraper
 {
     private IEventAggregator _aggregator;
 
-    public EventAwareModule(IEventAggregator eventAggregator)
+    public AllModulesLoadedEventAwareModule(IEventAggregator eventAggregator)
     {
         _aggregator = eventAggregator;
     }
 
     public void OnLoad()
     {
-        _aggregator.Subscribe<NomadCouldNotLoadModuleMessage>(
-            delegate { EventHandledRegistry.RegisterEventType(typeof(EventAwareModule));});
+        _aggregator.Subscribe<NomadAllModulesLoadedMessage>(
+            delegate { EventHandledRegistry.RegisterEventType(typeof(AllModulesLoadedEventAwareModule)); });
     }
 
     public void OnUnLoad()
