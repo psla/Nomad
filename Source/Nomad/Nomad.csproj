@@ -128,6 +128,7 @@
     <Compile Include="Modules\Manifest\IModuleManifestFactory.cs" />
     <Compile Include="Modules\Manifest\ModuleDependency.cs" />
     <Compile Include="Modules\Manifest\ModuleManifestFactory.cs" />
+    <Compile Include="Modules\Installers\NomadCommunicationServicesInstaller.cs" />
     <Compile Include="Signing\FileUtils\SignedFile.cs" />
     <Compile Include="Signing\KeyStorage.cs" />
     <Compile Include="Signing\SignatureAlgorithms\PkiSignatureAlgorithm.cs" />
