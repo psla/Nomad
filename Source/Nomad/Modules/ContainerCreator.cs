@@ -1,9 +1,9 @@
 ﻿using System;
-using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using Nomad.Communication.EventAggregation;
 using Nomad.Communication.ServiceLocation;
 using Nomad.Core;
+using Nomad.Modules.Installers;
 
 namespace Nomad.Modules
 {
@@ -21,8 +21,6 @@ namespace Nomad.Modules
     /// </remarks>
     public class ContainerCreator : MarshalByRefObject
     {
-        private readonly IEventAggregator _eventAggregator;
-        private readonly IServiceLocator _serviceLocator;
         private readonly IWindsorContainer _windsorContainer;
 
 
@@ -36,16 +34,13 @@ namespace Nomad.Modules
         {
             _windsorContainer = new WindsorContainer();
 
-            _serviceLocator = new ServiceLocator(_windsorContainer);
-            _windsorContainer.Register(Component.For<IServiceLocator>().Instance(_serviceLocator));
-
-            _eventAggregator = new EventAggregator(new WpfGuiThreadProvider()); //TODO: Use factory / container
-            _windsorContainer.Register(Component.For<IEventAggregator>().Instance(_eventAggregator));
+            // use nomad specific installer for that
+            _windsorContainer.Install(new NomadCommunicationServicesInstaller());
         }
 
 
         /// <summary>
-        ///     IWindsor container
+        ///     IWindsor container which works as main backend.
         /// </summary>
         public IWindsorContainer WindsorContainer
         {
@@ -54,10 +49,10 @@ namespace Nomad.Modules
 
         /// <summary>
         ///     Gets the object implementing <see cref="IEventAggregator"/> class. 
-        /// </summary>
+        /// </summary>        
         public IEventAggregator EventAggregator
         {
-            get { return _eventAggregator; }
+            get { return _windsorContainer.Resolve<IEventAggregator>(); }
         }
 
         /// <summary>
@@ -65,7 +60,7 @@ namespace Nomad.Modules
         /// </summary>
         public IServiceLocator ServiceLocator
         {
-            get { return _serviceLocator; }
+            get { return _windsorContainer.Resolve<IServiceLocator>(); }
         }
 
 
