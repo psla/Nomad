@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Security.Policy;
 using Nomad.Communication.EventAggregation;
-using Nomad.Communication.Messages;
 using Nomad.Communication.ServiceLocation;
 using Nomad.Exceptions;
+using Nomad.Messages;
 using Nomad.Modules;
 using Nomad.Modules.Discovery;
 
@@ -162,6 +162,7 @@ namespace Nomad.Core
             try
             {
                 _moduleManager.LoadModules(moduleDiscovery);
+                EventAggregator.Publish(new NomadAllModulesLoadedMessage(moduleDiscovery.GetModules(),"Modules loaded successfully."));
             }
             catch (NomadCouldNotLoadModuleException e)
             {

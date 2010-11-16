@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Moq;
-using Nomad.Communication.Messages;
 using Nomad.Core;
 using Nomad.Exceptions;
 using Nomad.KeysGenerator;
