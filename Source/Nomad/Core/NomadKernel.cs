@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Security.Policy;
 using Nomad.Communication.EventAggregation;
 using Nomad.Communication.ServiceLocation;
@@ -162,12 +163,16 @@ namespace Nomad.Core
             try
             {
                 _moduleManager.LoadModules(moduleDiscovery);
-                EventAggregator.Publish(new NomadAllModulesLoadedMessage("Modules loaded successfully."));
+                EventAggregator.Publish(
+                    new NomadAllModulesLoadedMessage(
+                        new List<ModuleInfo>(moduleDiscovery.GetModules()),
+                        "Modules loaded successfully."));
             }
             catch (NomadCouldNotLoadModuleException e)
             {
                 // publish event about not loading module to other modules.
-                EventAggregator.Publish(new NomadCouldNotLoadModuleMessage("Could not load modules",e.ModuleName));
+                EventAggregator.Publish(new NomadCouldNotLoadModuleMessage(
+                                            "Could not load modules", e.ModuleName));
 
                 // rethrow this exception to kernel domain, cause event aggregator cannot be used
                 throw;
