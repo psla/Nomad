@@ -15,8 +15,12 @@ namespace Nomad.Modules
     /// </remarks>
     public class DependencyChecker : IDependencyChecker
     {
+        private bool _canBeSorted;
         private Dictionary<string, ModuleWrapper> _myNodesDict;
         private Dictionary<string, List<string>> _nextNodeList;
+
+        private IList<ModuleInfo> _nonValidModules;
+        private SortingMode _sortingMode;
         private Stack<ModuleInfo> _stack;
 
         #region IDependencyChecker Members
@@ -26,25 +30,8 @@ namespace Nomad.Modules
         /// </summary>
         public IEnumerable<ModuleInfo> SortModules(IEnumerable<ModuleInfo> modules)
         {
-            _stack = new Stack<ModuleInfo>();
-            _nextNodeList = new Dictionary<string, List<string>>();
-            _myNodesDict = new Dictionary<string, ModuleWrapper>();
-
-            // populate the graph representing the modules O(n^2), Theta (n+m)
-            foreach (ModuleInfo moduleInfo in modules)
-            {
-                // populate next - list
-                _nextNodeList[moduleInfo.Manifest.ModuleName] =
-                    new List<string>(
-                        moduleInfo.Manifest.ModuleDependencies.Select(m => m.ModuleName));
-
-                // populate the visited list
-                _myNodesDict[moduleInfo.Manifest.ModuleName] = new ModuleWrapper
-                                                                   {
-                                                                       Module = moduleInfo,
-                                                                       Visited = false
-                                                                   };
-            }
+            _sortingMode = SortingMode.Exceptions;
+            InitializeGraph(modules);
 
             // run DFS through graph O(n)
             foreach (ModuleInfo moduleInfo in modules)
@@ -71,65 +58,129 @@ namespace Nomad.Modules
                                  IEnumerable<ModuleInfo> newModules,
                                  out IEnumerable<ModuleInfo> nonValidModules)
         {
-            // initialize empty list for non valid modules
-            nonValidModules = new List<ModuleInfo>();
-
+            
             // concatenate loaded and new modules into one list, with preference over newModules things. O(n^2)
             var concatentedList = new List<ModuleInfo>(newModules);
 
             foreach (ModuleInfo loadedModule in loadedModules)
             {
                 if (!concatentedList.Contains(loadedModule,
-                                             new InjectableEqualityComparer<ModuleInfo>(
-                                                 (a, b) =>
-                                                 a.Manifest.ModuleName.Equals(b.Manifest.ModuleName))))
+                                              new InjectableEqualityComparer<ModuleInfo>(
+                                                  (a, b) =>
+                                                  a.Manifest.ModuleName.Equals(b.Manifest.ModuleName))))
                 {
                     concatentedList.Add(loadedModule);
                 }
             }
 
-
-            // TODO: rewrite the whole class to use no exception but only TrySortModulesMethod
             // use try sort method to check if it is possible to sort that collections
-            try
-            {
-                SortModules(concatentedList);
-            }
-            catch (ArgumentException e)
-            {
-                if (!string.IsNullOrEmpty(e.ParamName))
-                {
-                    // search for that module info
-                    nonValidModules =
-                        (IEnumerable<ModuleInfo>)
-                        concatentedList.Select(x => x.Manifest.ModuleName.Equals(e.ParamName));
-                }
-                return false;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            IEnumerable<ModuleInfo> sortedModules;
 
-            return true;
+            return TrySortModules(concatentedList, out sortedModules, out nonValidModules);
         }
 
         #endregion
+
+        private void InitializeGraph(IEnumerable<ModuleInfo> modules)
+        {
+            _stack = new Stack<ModuleInfo>();
+            _nextNodeList = new Dictionary<string, List<string>>();
+            _myNodesDict = new Dictionary<string, ModuleWrapper>();
+
+            // populate the graph representing the modules O(n^2), Theta (n+m)
+            foreach (ModuleInfo moduleInfo in modules)
+            {
+                // populate next - list
+                _nextNodeList[moduleInfo.Manifest.ModuleName] =
+                    new List<string>(
+                        moduleInfo.Manifest.ModuleDependencies.Select(m => m.ModuleName));
+
+                // populate the visited list
+                _myNodesDict[moduleInfo.Manifest.ModuleName] = new ModuleWrapper
+                                                                   {
+                                                                       Module = moduleInfo,
+                                                                       Visited = false
+                                                                   };
+            }
+        }
+
+
+        /// <summary>
+        ///     Second implementation of topology sorting, without exceptions.
+        /// </summary>
+        /// <param name="inputList">Enumerable collection of modules to be sorted.</param>
+        /// <param name="outputList">Enumerable collection of sorted modules.</param>
+        /// <param name="nonValidModules">Enumerable collection of modules which made sorting impossible.</param>
+        /// <returns></returns>
+        public bool TrySortModules(IEnumerable<ModuleInfo> inputList,
+                                   out IEnumerable<ModuleInfo> outputList,
+                                   out IEnumerable<ModuleInfo> nonValidModules)
+        {
+            _sortingMode = SortingMode.Silent;
+            _canBeSorted = true;
+
+            InitializeGraph(inputList);
+            
+            _nonValidModules = new List<ModuleInfo>();
+
+            // run DFS through graph O(n)
+            foreach (ModuleInfo moduleInfo in inputList)
+            {
+                ModuleWrapper wrapper;
+                if (!_myNodesDict.TryGetValue(moduleInfo.Manifest.ModuleName, out wrapper))
+                {
+                    _canBeSorted = false;
+                    _nonValidModules.Add(moduleInfo);
+                }
+
+                GoDFS(moduleInfo.Manifest.ModuleName, moduleInfo.Manifest.ModuleName, 0, wrapper);
+            }
+
+            // read stack backwardly O(n) or return empty list if sorting was not possible
+            if (_canBeSorted)
+                outputList = _stack.Reverse().ToList();
+            else
+                outputList = new List<ModuleInfo>();
+
+            // return non valid modules
+            nonValidModules = _nonValidModules;
+
+            // return state value of 'this'
+            return _canBeSorted;
+        }
+
 
         private void GoDFS(string myNode, string startingNode, int depth, ModuleWrapper myNodeInfo)
         {
             // get list of nodes to go
             List<string> nodesToGo;
             if (!_nextNodeList.TryGetValue(myNode, out nodesToGo))
-                throw new ArgumentException(
-                    string.Format("No such dependency in dictionary. The {0} could not be found.",
-                                  myNode), "myNode");
+                if (_sortingMode == SortingMode.Exceptions)
+                {
+                    throw new ArgumentException(
+                        string.Format(
+                            "No such dependency in dictionary. The {0} could not be found.",
+                            myNode), "myNode");
+                }
+                else if (_sortingMode == SortingMode.Silent)
+                {
+                    _canBeSorted = false;
+                    return; // nodes to go wil be empty -> no place to go
+                }
 
             // check if graph has cycles
             if (myNode.Equals(startingNode) && depth > 0)
-                throw new ArgumentException(
-                    string.Format("Graph has cycles. Duplicated node is {0}.", startingNode),
-                    "startingNode");
+                if (_sortingMode == SortingMode.Exceptions)
+                {
+                    throw new ArgumentException(
+                        string.Format("Graph has cycles. Duplicated node is {0}.", startingNode),
+                        "startingNode");
+                }
+                else if (_sortingMode == SortingMode.Silent)
+                {
+                    _canBeSorted = false;
+                    return; // we have to jump out beacause of the inifnite loop
+                }
 
             depth++;
 
@@ -141,13 +192,28 @@ namespace Nomad.Modules
 
             foreach (string nodeName in nodesToGo)
             {
-                // check for the going into node about the versions
+                // check if the node exists
                 ModuleWrapper nodeToGo;
                 if (!_myNodesDict.TryGetValue(nodeName, out nodeToGo))
-                    throw new ArgumentException(
-                        string.Format(
-                            "No such dependency in dictionary. The {0} could not be found.", myNode),
-                        "myNode");
+                    if (_sortingMode == SortingMode.Exceptions)
+                    {
+                        throw new ArgumentException(
+                            string.Format(
+                                "No such dependency in dictionary. The {0} could not be found.",
+                                myNode),
+                            "myNode");
+                    }
+                    else if (_sortingMode == SortingMode.Silent)
+                    {
+                        _canBeSorted = false;
+
+                        // add the starting node to the list of non valid nodes (it has some empty reference)
+                        if(!_nonValidModules.Contains(myNodeInfo.Module))
+                            _nonValidModules.Add(myNodeInfo.Module);
+
+                        // go to another node
+                        continue;
+                    }
 
                 // get version 
                 string name = nodeName;
@@ -163,10 +229,23 @@ namespace Nomad.Modules
                 // compare values of the versions, using system feature
                 if (myNodeDependencyVersion.GetSystemVersion() >
                     dependencyVersion.GetSystemVersion())
-                    throw new ArgumentException(
-                        string.Format(
-                            "Dependency version ({0}) is higher than module's version {1}",
-                            myNodeDependencyVersion, dependencyVersion));
+                    if (_sortingMode == SortingMode.Exceptions)
+                    {
+                        throw new ArgumentException(
+                            string.Format(
+                                "Dependency version ({0}) is higher than module's version {1}",
+                                myNodeDependencyVersion, dependencyVersion));
+                    }
+                    else if(_sortingMode == SortingMode.Silent)
+                    {
+                        _canBeSorted = false;
+                        
+                        // wrong version means that our node has wrong reference
+                        if(!_nonValidModules.Contains(myNodeInfo.Module))
+                            _nonValidModules.Add(myNodeInfo.Module);
+
+                        // let go this way
+                    }
 
                 // if everything ok, go DFS
                 GoDFS(nodeName, startingNode, depth, nodeToGo);
@@ -210,6 +289,16 @@ namespace Nomad.Modules
         {
             public ModuleInfo Module { get; set; }
             public bool Visited { get; set; }
+        }
+
+        #endregion
+
+        #region Nested type: SortingMode
+
+        private enum SortingMode
+        {
+            Exceptions,
+            Silent
         }
 
         #endregion
