@@ -8,7 +8,7 @@ using Version = Nomad.Utils.Version;
 namespace Nomad.Tests.IntegrationTests.Modules.DependencyChecker
 {
     [IntegrationTests]
-    public class VersionDependencyCheckerTests : DependencyCheckerBase
+    public class VersionsSortModulesTests : DependencyCheckerBase
     {
         [SetUp]
         public void set_up()

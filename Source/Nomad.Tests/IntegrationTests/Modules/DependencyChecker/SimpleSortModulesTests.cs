@@ -17,7 +17,7 @@ namespace Nomad.Tests.IntegrationTests.Modules.DependencyChecker
     ///     <see cref="ModuleDependency.ModuleName"/> and <see cref="ModuleDependency.HasLoadingOrderPriority"/> properties.
     /// </summary>
     [IntegrationTests]
-    public class SimpleDependencyCheckerTests : DependencyCheckerBase
+    public class SimpleSortModulesTests : DependencyCheckerBase
     {
 
         [SetUp]
