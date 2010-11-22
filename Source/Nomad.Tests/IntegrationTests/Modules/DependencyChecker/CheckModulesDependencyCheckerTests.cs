@@ -54,9 +54,11 @@ namespace Nomad.Tests.IntegrationTests.Modules.DependencyChecker
             Assert.IsFalse(_resultNonValidModules.GetEnumerator().MoveNext());
         }
 
+
         private void PerformTest()
         {
-            _resultBool = DependencyChecker.CheckModules(Modules, _updateModules, out _resultNonValidModules);
+            _resultBool = DependencyChecker.CheckModules(Modules, _updateModules,
+                                                         out _resultNonValidModules);
         }
 
         #region Basic
@@ -213,7 +215,8 @@ namespace Nomad.Tests.IntegrationTests.Modules.DependencyChecker
 
             PrepareChainWithVersion(_v1, out a1, out b1, out c1);
 
-            var b2 = SetUpModuleInfoWithVersion("B", _v2, new KeyValuePair<string, Version>("C", _v2));
+            ModuleInfo b2 = SetUpModuleInfoWithVersion("B", _v2,
+                                                       new KeyValuePair<string, Version>("C", _v2));
 
             Modules = new[] {a1, b1, c1};
             _updateModules = new[] {b2};
@@ -223,7 +226,7 @@ namespace Nomad.Tests.IntegrationTests.Modules.DependencyChecker
             ExpectedModules = new[] {b2};
 
             Assert.IsFalse(_resultBool);
-            Assert.AreEqual(ExpectedModules,_resultNonValidModules);
+            Assert.AreEqual(ExpectedModules, _resultNonValidModules);
         }
 
 
@@ -245,10 +248,11 @@ namespace Nomad.Tests.IntegrationTests.Modules.DependencyChecker
             ModuleInfo b1;
 
             PrepareChainWithVersion(_v1, out a1, out b1, out c1);
-            Modules = new[] { a1, b1, c1 };
+            Modules = new[] {a1, b1, c1};
 
-            var a2 = SetUpModuleInfoWithVersion("A", _v2, new KeyValuePair<string, Version>("B", _v2));
-            var b2 = SetUpModuleInfoWithVersion("B", _v2);
+            ModuleInfo a2 = SetUpModuleInfoWithVersion("A", _v2,
+                                                       new KeyValuePair<string, Version>("B", _v2));
+            ModuleInfo b2 = SetUpModuleInfoWithVersion("B", _v2);
 
             _updateModules = new[] {a2, b2};
 
@@ -279,12 +283,13 @@ namespace Nomad.Tests.IntegrationTests.Modules.DependencyChecker
                                                        new KeyValuePair<string, Version>("B", _v1));
 
             PrepareChainWithVersion(_v1, out a1, out b1, out c1);
-            Modules = new[] { a1, b1, c1, z1 };
+            Modules = new[] {a1, b1, c1, z1};
 
-            var a2 = SetUpModuleInfoWithVersion("A", _v2, new KeyValuePair<string, Version>("B", _v2));
-            var b2 = SetUpModuleInfoWithVersion("B", _v2);
+            ModuleInfo a2 = SetUpModuleInfoWithVersion("A", _v2,
+                                                       new KeyValuePair<string, Version>("B", _v2));
+            ModuleInfo b2 = SetUpModuleInfoWithVersion("B", _v2);
 
-            _updateModules = new[] { a2, b2 };
+            _updateModules = new[] {a2, b2};
 
             PerformTest();
 
