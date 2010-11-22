@@ -9,6 +9,9 @@ using Version = Nomad.Utils.Version;
 
 namespace Nomad.Tests.IntegrationTests.Modules.DependencyChecker
 {
+    /// <summary>
+    ///     Helper class for performing <see cref="Nomad.Modules.DependencyChecker"/> tests.
+    /// </summary>
     public class DependencyCheckerBase
     {
         private static readonly Random Random = new Random();
@@ -17,6 +20,7 @@ namespace Nomad.Tests.IntegrationTests.Modules.DependencyChecker
 
         protected IEnumerable<ModuleInfo> ExpectedModules;
         protected IEnumerable<ModuleInfo> Modules;
+        
 
         private static ModuleDependency SetUpModuleDependency(string name, Version version)
         {
