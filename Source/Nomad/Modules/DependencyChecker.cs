@@ -121,7 +121,10 @@ namespace Nomad.Modules
                                  IEnumerable<ModuleInfo> newModules,
                                  out IEnumerable<ModuleInfo> nonValidModules)
         {
-            throw new NotImplementedException();
+            // initialize empty list for non valid modules
+            nonValidModules = new List<ModuleInfo>();
+
+            return true;
         }
 
         #endregion
