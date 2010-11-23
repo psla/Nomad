@@ -103,6 +103,7 @@
     <Compile Include="Communication\EventAggregation\WpfGuiThreadProvider.cs" />
     <Compile Include="Messages\NomadAllModulesLoadedMessage.cs" />
     <Compile Include="Messages\NomadCouldNotLoadModuleMessage.cs" />
+    <Compile Include="Messages\NomadCultureChangedMessage.cs" />
     <Compile Include="Messages\NomadMessage.cs" />
     <Compile Include="Core\IModulesOperations.cs" />
     <Compile Include="Exceptions\NomadCouldNotLoadModuleException.cs" />
