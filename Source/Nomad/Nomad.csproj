@@ -96,6 +96,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Communication\EventAggregation\DeliveryMethod.cs" />
+    <Compile Include="Communication\EventAggregation\EventAggregatorFacade.cs" />
+    <Compile Include="Communication\EventAggregation\EventAggregatorMode.cs" />
     <Compile Include="Communication\EventAggregation\EventAggregatorTicket.cs" />
     <Compile Include="Communication\EventAggregation\IEventAggregatorTicket.cs" />
     <Compile Include="Communication\EventAggregation\IGuiThreadProvider.cs" />

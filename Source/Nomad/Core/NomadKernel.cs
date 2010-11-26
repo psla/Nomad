@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Remoting;
 using System.Security.Policy;
 using Nomad.Communication.EventAggregation;
 using Nomad.Communication.ServiceLocation;
@@ -51,14 +52,23 @@ namespace Nomad.Core
                                                      AppDomain.CurrentDomain.BaseDirectory,
                                                      true);
 
+            // create kernel version of the event aggregator and pass to appDomain
+            var siteEventAggregator = new EventAggregator(new WpfGuiThreadProvider());
+            var objectReference = RemotingServices.Marshal(siteEventAggregator);
+            ModuleAppDomain.SetData("EventAggregatorObjRef", objectReference);
+
+            // use container creator to create communication services on modules app domain
             string asmName = typeof (ContainerCreator).Assembly.FullName;
             string typeName = typeof (ContainerCreator).FullName;
 
             var moduleLoaderCreator = (ContainerCreator)
                                       ModuleAppDomain.CreateInstanceAndUnwrap(asmName, typeName);
+            
+            // create facade for event aggregator combining proxy and on site object
+            EventAggregator = new EventAggregatorFacade(moduleLoaderCreator.EventAggregatorOnModulesDomain,siteEventAggregator);
 
-            EventAggregator = moduleLoaderCreator.EventAggregator;
-            ServiceLocator = moduleLoaderCreator.ServiceLocator;
+            // used proxied service locator
+            ServiceLocator = moduleLoaderCreator.ServiceLocatorOnModulesDomain;
 
             ModuleLoader = moduleLoaderCreator.CreateModuleLoaderInstance();
 
@@ -163,6 +173,7 @@ namespace Nomad.Core
             try
             {
                 _moduleManager.LoadModules(moduleDiscovery);
+                EventAggregator.Mode = EventAggregatorMode.AllDomain;
                 EventAggregator.Publish(
                     new NomadAllModulesLoadedMessage(
                         new List<ModuleInfo>(moduleDiscovery.GetModules()),
@@ -171,9 +182,10 @@ namespace Nomad.Core
             catch (NomadCouldNotLoadModuleException e)
             {
                 // publish event about not loading module to other modules.
+                EventAggregator.Mode = EventAggregatorMode.AllDomain;
                 EventAggregator.Publish(new NomadCouldNotLoadModuleMessage(
                                             "Could not load modules", e.ModuleName));
-
+                
                 // rethrow this exception to kernel domain, cause event aggregator cannot be used
                 throw;
             }

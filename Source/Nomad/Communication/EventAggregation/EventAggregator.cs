@@ -6,7 +6,7 @@ namespace Nomad.Communication.EventAggregation
     ///<summary>
     /// Provides implementation for <see cref="IEventAggregator"/> based on delegates
     ///</summary>
-    public class EventAggregator : MarshalByRefObject,IEventAggregator
+    public class EventAggregator : MarshalByRefObject, IEventAggregator
     {
         private readonly IGuiThreadProvider _guiThreadProvider;
 
@@ -23,6 +23,17 @@ namespace Nomad.Communication.EventAggregation
         }
 
         #region Implementation of IEventAggregator
+
+        public EventAggregatorMode Mode
+        {
+            get { return EventAggregatorMode.MyDomain; }
+
+            set
+            {
+                // no setter 
+            }
+        }
+
 
         /// <summary>
         /// Adds action for execution.
@@ -71,38 +82,6 @@ namespace Nomad.Communication.EventAggregation
             return ticket;
         }
 
-        
-        private void TicketDisposed(object sender, TicketDisposedArgs e)
-        {
-            var ticket = sender as IEventAggregatorTicket;
-            ticket.TicketDisposed -= TicketDisposed;
-            Unsubscribe(ticket);
-        }
-
-
-        //TODO: Unsubsribing new lambda won't work!
-        /// <summary>
-        /// Unsubsribes specified action. 
-        /// Removes event from collection. Thread safe.
-        /// <see cref="IEventAggregator.Unsubscribe{T}"/>
-        /// </summary>
-        /// <param name="ticket">ticket have to be <see cref="EventAggregatorTicket{T}"/></param>
-        /// <exception cref="KeyNotFoundException">when unsubscribing from type which was no subsription ever</exception>
-        /// <exception cref="MemberAccessException"></exception>
-        private void Unsubscribe(IEventAggregatorTicket ticket)
-        {
-            Type type = ticket.ActionType;
-            HashSet<IEventAggregatorTicket> tickets = null;
-            lock (_subscriptions)
-            {
-                tickets = _subscriptions[type];
-            }
-            lock (tickets)
-            {
-                tickets.Remove(ticket);
-            }
-        }
-
 
         /// <summary>
         /// Notifies event listeners. Thread safe.
@@ -135,6 +114,44 @@ namespace Nomad.Communication.EventAggregation
             }
         }
 
+
+        private void TicketDisposed(object sender, TicketDisposedArgs e)
+        {
+            var ticket = sender as IEventAggregatorTicket;
+            ticket.TicketDisposed -= TicketDisposed;
+            Unsubscribe(ticket);
+        }
+
+
+        //TODO: Unsubsribing new lambda won't work!
+        /// <summary>
+        /// Unsubsribes specified action. 
+        /// Removes event from collection. Thread safe.
+        /// <see cref="IEventAggregator.Unsubscribe{T}"/>
+        /// </summary>
+        /// <param name="ticket">ticket have to be <see cref="EventAggregatorTicket{T}"/></param>
+        /// <exception cref="KeyNotFoundException">when unsubscribing from type which was no subsription ever</exception>
+        /// <exception cref="MemberAccessException"></exception>
+        private void Unsubscribe(IEventAggregatorTicket ticket)
+        {
+            Type type = ticket.ActionType;
+            HashSet<IEventAggregatorTicket> tickets = null;
+            lock (_subscriptions)
+            {
+                tickets = _subscriptions[type];
+            }
+            lock (tickets)
+            {
+                tickets.Remove(ticket);
+            }
+        }
+
         #endregion
+
+        public override object InitializeLifetimeService()
+        {
+            // do not GC this element
+            return null;
+        }
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using Nomad.Core;
 using Nomad.Exceptions;
 using Nomad.KeysGenerator;
+using Nomad.Messages;
 using Nomad.Modules;
 using Nomad.Modules.Discovery;
 using Nomad.Tests.FunctionalTests.Modules;
@@ -21,6 +22,11 @@ namespace Nomad.Tests.FunctionalTests.Kernel
         {
             // set up configuration of kernel with mocks
             NomadKernel kernel = SetupMockedKernel();
+            
+            // set up listener for kernel side
+            bool hasBeenCalled = false;
+            kernel.EventAggregator.Subscribe<NomadAllModulesLoadedMessage>(
+                (message) => hasBeenCalled = true);
 
             //  compile module for event aggregation
             const string dir = @"Modules\Kernel\Event\";
@@ -59,6 +65,7 @@ namespace Nomad.Tests.FunctionalTests.Kernel
                 typeof (MessageCarrier).Assembly.FullName, typeof (MessageCarrier).FullName);
 
             Assert.AreEqual(new[] {"EventAwareModule"}, carrier.List.ToArray());
+            Assert.IsTrue(hasBeenCalled);
         }
 
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Remoting;
 using Castle.Windsor;
 using Nomad.Communication.EventAggregation;
 using Nomad.Communication.ServiceLocation;
@@ -34,8 +35,12 @@ namespace Nomad.Modules
         {
             _windsorContainer = new WindsorContainer();
 
+            // get the data from out app domain, this code must be done after set data otherwise exception
+            var objectRef = (ObjRef) AppDomain.CurrentDomain.GetData("EventAggregatorObjRef");
+            var proxiedEventAggregator = (IEventAggregator) RemotingServices.Unmarshal(objectRef);
+
             // use nomad specific installer for that
-            _windsorContainer.Install(new NomadCommunicationServicesInstaller());
+            _windsorContainer.Install(new NomadCommunicationServicesInstaller(proxiedEventAggregator));
         }
 
 
@@ -50,15 +55,15 @@ namespace Nomad.Modules
         /// <summary>
         ///     Gets the object implementing <see cref="IEventAggregator"/> class. 
         /// </summary>        
-        public IEventAggregator EventAggregator
+        public IEventAggregator EventAggregatorOnModulesDomain
         {
-            get { return _windsorContainer.Resolve<IEventAggregator>(); }
+            get { return _windsorContainer.Resolve<EventAggregator>("OnSiteEVG"); }
         }
 
         /// <summary>
         ///     Gets the object implementing <see cref="IServiceLocator"/> class.
         /// </summary>
-        public IServiceLocator ServiceLocator
+        public IServiceLocator ServiceLocatorOnModulesDomain
         {
             get { return _windsorContainer.Resolve<IServiceLocator>(); }
         }

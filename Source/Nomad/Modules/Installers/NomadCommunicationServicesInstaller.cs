@@ -17,25 +17,44 @@ namespace Nomad.Modules.Installers
     /// </remarks>
     public class NomadCommunicationServicesInstaller : IWindsorInstaller
     {
+        private readonly IEventAggregator _proxiedEventAggregator;
+
+
+        ///<summary>
+        ///     Initializes the instance of <see cref="NomadCommunicationServicesInstaller"/> class.
+        ///</summary>
+        ///<param name="proxiedEventAggregator">Event aggregator to be combined with <see cref="EventAggregatorFacade"/> for
+        /// better communication</param>
+        public NomadCommunicationServicesInstaller(IEventAggregator proxiedEventAggregator)
+        {
+            _proxiedEventAggregator = proxiedEventAggregator;
+        }
+
         #region IWindsorInstaller Members
 
         public void Install(IWindsorContainer container, IConfigurationStore store)
         {
+            // TODO: refix it into factory mode ?
             container.Register(
                 Component.For<IServiceLocator>()
                     .ImplementedBy<ServiceLocator>()
                     .LifeStyle.Singleton,
+                Component.For<IWindsorContainer>().Instance(container),
+
+                Component.For<EventAggregator>()
+                    .Named("OnSiteEVG")
+                    .LifeStyle.Singleton,
 
                 Component.For<IEventAggregator>()
-                    .ImplementedBy<EventAggregator>()
+                     .UsingFactoryMethod(
+                        (kernel) => new EventAggregatorFacade(_proxiedEventAggregator,
+                                                              kernel.Resolve<EventAggregator>("OnSiteEVG")))
+                    .Named("FacadeEVG")
                     .LifeStyle.Singleton,
 
                 Component.For<IGuiThreadProvider>()
                     .ImplementedBy<WpfGuiThreadProvider>()
-                    .LifeStyle.Singleton,
-
-                //FIXME: judge this ?
-                Component.For<IWindsorContainer>().Instance(container)
+                    .LifeStyle.Singleton
                 );
         }
 
