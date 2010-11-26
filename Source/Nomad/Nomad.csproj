@@ -128,10 +128,11 @@
     <Compile Include="Modules\Discovery\IModuleDiscovery.cs" />
     <Compile Include="Modules\Filters\IModuleFilter.cs" />
     <Compile Include="Modules\IModuleLoader.cs" />
+    <Compile Include="Modules\Installers\NomadServiceLocatorInstaller.cs" />
     <Compile Include="Modules\Manifest\IModuleManifestFactory.cs" />
     <Compile Include="Modules\Manifest\ModuleDependency.cs" />
     <Compile Include="Modules\Manifest\ModuleManifestFactory.cs" />
-    <Compile Include="Modules\Installers\NomadCommunicationServicesInstaller.cs" />
+    <Compile Include="Modules\Installers\NomadEventAggregatorIntaller.cs" />
     <Compile Include="Signing\FileUtils\SignedFile.cs" />
     <Compile Include="Signing\KeyStorage.cs" />
     <Compile Include="Signing\SignatureAlgorithms\PkiSignatureAlgorithm.cs" />

@@ -68,7 +68,7 @@ namespace Nomad.Core
             EventAggregator = new EventAggregatorFacade(moduleLoaderCreator.EventAggregatorOnModulesDomain,siteEventAggregator);
 
             // used proxied service locator
-            ServiceLocator = moduleLoaderCreator.ServiceLocatorOnModulesDomain;
+            ServiceLocator = moduleLoaderCreator.ServiceLocator;
 
             ModuleLoader = moduleLoaderCreator.CreateModuleLoaderInstance();
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Policy;
+using Nomad.Core;
 using Nomad.KeysGenerator;
 using Nomad.Modules;
 using Nomad.Modules.Discovery;
@@ -14,7 +15,7 @@ namespace Nomad.Tests.FunctionalTests.Modules
     public class ModuleLoadingWithCompilerTestFixture : MarshalByRefObject
     {
         private const string KeyFile = @"alaMaKota.xml";
-        private ModuleManager Manager;
+        private NomadKernel _kernel;
         private ModuleCompiler _moduleCompiler;
         protected AppDomain Domain { get; private set; }
 
@@ -35,26 +36,22 @@ namespace Nomad.Tests.FunctionalTests.Modules
         {
             _moduleCompiler = new ModuleCompiler();
 
-            Domain = AppDomain.CreateDomain("TEST DOMAIN",
-                                            new Evidence(AppDomain.CurrentDomain.Evidence),
-                                            AppDomain.CurrentDomain.BaseDirectory, ".",
-                                            true);
+            // prepare configuration
+            NomadConfiguration configuration = NomadConfiguration.Default;
+            configuration.ModuleFilter = new CompositeModuleFilter();
+            configuration.DependencyChecker = new DependencyChecker();
 
-            // create loader in another app domain
-            var containerCreator =
-                (ContainerCreator)
-                Domain.CreateInstanceAndUnwrap(typeof (ContainerCreator).Assembly.FullName,
-                                               typeof (ContainerCreator).FullName);
-            IModuleLoader moduleLoader = containerCreator.CreateModuleLoaderInstance();
+            // initialize kernel
+            _kernel = new NomadKernel(configuration);
 
-            Manager = new ModuleManager(moduleLoader, new CompositeModuleFilter(),
-                                        new DependencyChecker());
+            // domain
+            Domain = _kernel.ModuleAppDomain;
         }
 
 
         protected void LoadModulesFromDiscovery(IModuleDiscovery discovery)
         {
-            Manager.LoadModules(discovery);
+            _kernel.LoadModules(discovery);
         }
 
 

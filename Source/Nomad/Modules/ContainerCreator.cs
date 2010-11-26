@@ -40,7 +40,9 @@ namespace Nomad.Modules
             var proxiedEventAggregator = (IEventAggregator) RemotingServices.Unmarshal(objectRef);
 
             // use nomad specific installer for that
-            _windsorContainer.Install(new NomadCommunicationServicesInstaller(proxiedEventAggregator));
+            _windsorContainer.Install(
+                new NomadEventAggregatorIntaller(proxiedEventAggregator),
+                new NomadServiceLocatorInstaller());
         }
 
 
@@ -63,7 +65,7 @@ namespace Nomad.Modules
         /// <summary>
         ///     Gets the object implementing <see cref="IServiceLocator"/> class.
         /// </summary>
-        public IServiceLocator ServiceLocatorOnModulesDomain
+        public IServiceLocator ServiceLocator
         {
             get { return _windsorContainer.Resolve<IServiceLocator>(); }
         }
