@@ -2,20 +2,20 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Policy;
 using Nomad.Core;
 using Nomad.KeysGenerator;
 using Nomad.Modules;
 using Nomad.Modules.Discovery;
 using Nomad.Modules.Filters;
+using Nomad.Tests.FunctionalTests.Modules;
 using NUnit.Framework;
 
-namespace Nomad.Tests.FunctionalTests.Modules
+namespace Nomad.Tests.FunctionalTests.Fixtures
 {
     public class ModuleLoadingWithCompilerTestFixture : MarshalByRefObject
     {
         private const string KeyFile = @"alaMaKota.xml";
-        private NomadKernel _kernel;
+        protected NomadKernel _kernel;
         private ModuleCompiler _moduleCompiler;
         protected AppDomain Domain { get; private set; }
 

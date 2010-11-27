@@ -7,6 +7,7 @@ using Nomad.KeysGenerator;
 using Nomad.Messages;
 using Nomad.Modules;
 using Nomad.Modules.Discovery;
+using Nomad.Tests.FunctionalTests.Fixtures;
 using Nomad.Tests.FunctionalTests.Modules;
 using NUnit.Framework;
 using TestsShared;

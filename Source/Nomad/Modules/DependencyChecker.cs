@@ -173,7 +173,7 @@ namespace Nomad.Modules
                 if (_sortingMode == SortingMode.Exceptions)
                 {
                     throw new ArgumentException(
-                        string.Format("Graph has cycles. Duplicated node is {0}.", startingNode),
+                        string.Format("DependencyGraph has cycles. Duplicated node is {0}.", startingNode),
                         "startingNode");
                 }
                 else if (_sortingMode == SortingMode.Silent)

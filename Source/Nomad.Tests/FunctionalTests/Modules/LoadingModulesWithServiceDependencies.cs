@@ -6,6 +6,7 @@ using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using Nomad.KeysGenerator;
 using Nomad.Modules;
+using Nomad.Tests.FunctionalTests.Fixtures;
 using NUnit.Framework;
 using TestsShared;
 

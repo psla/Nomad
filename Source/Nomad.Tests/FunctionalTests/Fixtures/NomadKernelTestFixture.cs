@@ -8,7 +8,7 @@ using Nomad.Modules.Filters;
 using Nomad.Tests.FunctionalTests.Kernel.Messages;
 using NUnit.Framework;
 
-namespace Nomad.Tests.FunctionalTests.Kernel
+namespace Nomad.Tests.FunctionalTests.Fixtures
 {
     public class NomadKernelTestFixture
     {

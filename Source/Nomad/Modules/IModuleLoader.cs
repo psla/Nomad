@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Nomad.Modules
 {
     /// <summary>
@@ -40,9 +42,17 @@ namespace Nomad.Modules
          * This can be implemented as a ModuleFilter, though
          * */
 
+
         /// <summary>
         ///     Tries to invoke <see cref="IModuleBootstraper.OnUnLoad"/>  method on each module bootstraper from set.
         /// </summary>
         void InvokeUnload();
+
+
+        /// <summary>
+        ///     Provides information about loaded modules.
+        /// </summary>
+        /// <returns>Enumerable collection of <see cref="ModuleInfo"/> concerning modules currently loaded into the application</returns>
+        List<ModuleInfo> GetLoadedModules();
     }
 }

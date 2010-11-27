@@ -8,6 +8,7 @@ using Nomad.Exceptions;
 using Nomad.Messages;
 using Nomad.Modules;
 using Nomad.Modules.Discovery;
+using Nomad.Services;
 
 namespace Nomad.Core
 {
@@ -54,7 +55,7 @@ namespace Nomad.Core
 
             // create kernel version of the event aggregator and pass to appDomain
             var siteEventAggregator = new EventAggregator(new WpfGuiThreadProvider());
-            var objectReference = RemotingServices.Marshal(siteEventAggregator);
+            ObjRef objectReference = RemotingServices.Marshal(siteEventAggregator);
             ModuleAppDomain.SetData("EventAggregatorObjRef", objectReference);
 
             // use container creator to create communication services on modules app domain
@@ -63,14 +64,20 @@ namespace Nomad.Core
 
             var moduleLoaderCreator = (ContainerCreator)
                                       ModuleAppDomain.CreateInstanceAndUnwrap(asmName, typeName);
-            
+
             // create facade for event aggregator combining proxy and on site object
-            EventAggregator = new EventAggregatorFacade(moduleLoaderCreator.EventAggregatorOnModulesDomain,siteEventAggregator);
+            EventAggregator =
+                new EventAggregatorFacade(moduleLoaderCreator.EventAggregatorOnModulesDomain,
+                                          siteEventAggregator);
 
             // used proxied service locator
             ServiceLocator = moduleLoaderCreator.ServiceLocator;
 
             ModuleLoader = moduleLoaderCreator.CreateModuleLoaderInstance();
+
+            // registering LoadedModulesService
+            ServiceLocator.Register<ILoadedModulesService>(
+                new LoadedModulesService(ModuleLoader));
 
             _moduleManager = new ModuleManager(ModuleLoader,
                                                KernelConfiguration.ModuleFilter,
@@ -185,7 +192,7 @@ namespace Nomad.Core
                 EventAggregator.Mode = EventAggregatorMode.AllDomain;
                 EventAggregator.Publish(new NomadCouldNotLoadModuleMessage(
                                             "Could not load modules", e.ModuleName));
-                
+
                 // rethrow this exception to kernel domain, cause event aggregator cannot be used
                 throw;
             }

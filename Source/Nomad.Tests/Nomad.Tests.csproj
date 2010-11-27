@@ -105,7 +105,7 @@
     <Compile Include="FunctionalTests\EventAggregation\EventPublishing.cs" />
     <Compile Include="FunctionalTests\Kernel\Messages\EventHandledRegistry.cs" />
     <Compile Include="FunctionalTests\Kernel\NomadKernelAppDomainManagmentTests.cs" />
-    <Compile Include="FunctionalTests\Kernel\NomadKernelTestFixture.cs" />
+    <Compile Include="FunctionalTests\Fixtures\NomadKernelTestFixture.cs" />
     <Compile Include="FunctionalTests\Modules\IInjectableModulesRegistry.cs" />
     <Compile Include="FunctionalTests\Modules\InjectableModulesRegistry.cs" />
     <Compile Include="FunctionalTests\Modules\LoadedModulesRegistry.cs" />
@@ -113,8 +113,8 @@
     <Compile Include="FunctionalTests\Modules\LoadingModulesWithReferenceDependencies.cs" />
     <Compile Include="FunctionalTests\Modules\LoadingModulesWithServiceDependencies.cs" />
     <Compile Include="FunctionalTests\Modules\ModuleCompiler.cs" />
-    <Compile Include="FunctionalTests\Modules\ModuleLoadingTestFixture.cs" />
-    <Compile Include="FunctionalTests\Modules\ModuleLoadingWithCompilerTestFixture.cs" />
+    <Compile Include="FunctionalTests\Fixtures\ModuleLoadingTestFixture.cs" />
+    <Compile Include="FunctionalTests\Fixtures\ModuleLoadingWithCompilerTestFixture.cs" />
     <Compile Include="FunctionalTests\Regions\FakeWindowWithRegions.xaml.cs">
       <DependentUpon>FakeWindowWithRegions.xaml</DependentUpon>
     </Compile>
@@ -122,6 +122,7 @@
     <Compile Include="FunctionalTests\ServiceLocation\ITestService.cs" />
     <Compile Include="FunctionalTests\ServiceLocation\ServiceLocatorInModules.cs" />
     <Compile Include="FunctionalTests\ServiceLocation\ServiceRegistry.cs" />
+    <Compile Include="FunctionalTests\Services\LoadedModulesServiceTests.cs" />
     <Compile Include="FunctionalTests\Signing\PKIModuleSigning.cs" />
     <Compile Include="FunctionalTests\Signing\KeyGenerating.cs" />
     <Compile Include="FunctionalTests\Signing\ModuleSigning.cs" />
@@ -148,6 +149,7 @@
     <Compile Include="UnitTests\Regions\RegionManagement.cs" />
     <Compile Include="UnitTests\Regions\SingleActiveViewRegionBehavior.cs" />
     <Compile Include="IntegrationTests\ServiceLocation\ServiceLocationIsolatedTests.cs" />
+    <Compile Include="UnitTests\Services\NomadGetLoadedModulesServiceTests.cs" />
     <Compile Include="UnitTests\Signing\AssemblyVerification.cs" />
     <Compile Include="UnitTests\Signing\SignatureContainer.cs" />
     <Compile Include="UnitTests\Signing\SignatureTests.cs" />

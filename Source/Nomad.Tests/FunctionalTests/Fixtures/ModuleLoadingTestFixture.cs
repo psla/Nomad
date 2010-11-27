@@ -8,9 +8,10 @@ using Moq;
 using Nomad.Modules;
 using Nomad.Modules.Discovery;
 using Nomad.Modules.Filters;
+using Nomad.Tests.FunctionalTests.Modules;
 using NUnit.Framework;
 
-namespace Nomad.Tests.FunctionalTests.Modules
+namespace Nomad.Tests.FunctionalTests.Fixtures
 {
     public abstract class ModuleLoadingTestFixture
     {

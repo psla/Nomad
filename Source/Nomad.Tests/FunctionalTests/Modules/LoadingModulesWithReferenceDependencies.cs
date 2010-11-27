@@ -1,6 +1,7 @@
 using System.IO;
 using Nomad.Exceptions;
 using Nomad.Modules.Discovery;
+using Nomad.Tests.FunctionalTests.Fixtures;
 using NUnit.Framework;
 using TestsShared;
 

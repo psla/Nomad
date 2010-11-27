@@ -1,3 +1,4 @@
+using Nomad.Tests.FunctionalTests.Fixtures;
 using NUnit.Framework;
 using TestsShared;
 

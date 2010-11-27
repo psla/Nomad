@@ -13,6 +13,7 @@ namespace Nomad.Modules
     public class ModuleLoader : MarshalByRefObject, IModuleLoader
     {
         private readonly List<IModuleBootstraper> _loadedModules = new List<IModuleBootstraper>();
+        private readonly List<ModuleInfo> _loadedModuleInfos = new List<ModuleInfo>();
         private readonly IWindsorContainer _rootContainer;
 
 
@@ -46,6 +47,7 @@ namespace Nomad.Modules
                 bootstraper = subContainer.Resolve<IModuleBootstraper>();
                 bootstraper.OnLoad();
                 _loadedModules.Add(bootstraper);
+                _loadedModuleInfos.Add(moduleInfo);
             }
             catch (Exception e)
             {
@@ -69,6 +71,16 @@ namespace Nomad.Modules
             {
                 moduleBootstraper.OnUnLoad();
             }
+        }
+
+
+        /// <summary>
+        ///     Provides information about loaded modules.
+        /// </summary>
+        /// <returns>Enumerable collection of <see cref="ModuleInfo"/> concerning modules currently loaded into the application</returns>
+        public List<ModuleInfo> GetLoadedModules()
+        {
+            return _loadedModuleInfos;
         }
 
         #endregion
