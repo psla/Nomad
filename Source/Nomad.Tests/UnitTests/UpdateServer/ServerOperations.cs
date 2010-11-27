@@ -16,7 +16,7 @@ namespace Nomad.Tests.UnitTests.UpdateServer
         public void SetUp()
         {
             _moduleRepository = new ModulesRepository.ModulesRepository();
-            //TODO: What the f. does this cleanup?
+            //FIXME: What the f. does this cleanup?
             //Directory.Delete(_moduleRepository.ModulesDir, true); //cleanup
             //_moduleRepository = new ModulesRepository.ModulesRepository();
         }

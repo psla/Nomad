@@ -371,13 +371,86 @@ namespace Nomad.Tests.IntegrationTests.Modules.DependencyChecker
             Modules = new[] {a1, b1, c1};
             _updateModules = new[] {c2, d2};
 
-            // TODO:  should it be empty list ? or we should put what ?
+            // FIXME:  should it be empty list ? or we should put what ?
             ExpectedModules = new ModuleInfo[] {};
 
             PerformTest();
 
             Assert.IsFalse(_resultBool);
             Assert.AreEqual(ExpectedModules, _resultNonValidModules);
+        }
+
+        #endregion
+
+        #region Downgrade Tests
+
+        [Test]
+        public void update_list_has_older_members_than_some_in_local_list_results_in_failure()
+        {
+            /*
+             * Local:
+             * A(v1) -> B(v1) -> C(v1)
+             * 
+             * Remote:
+             * B(v0) v0-> ...
+             * with dependency on C(v0)
+             * 
+             * Result: Failure - no downgrade avaliable.
+             */
+            ModuleInfo c1;
+            ModuleInfo a1;
+            ModuleInfo b1;
+
+            PrepareChainWithVersion(_v1, out a1, out b1, out c1);
+            Modules = new[] { a1, b1, c1 };
+
+            var b0 = SetUpModuleInfoWithVersion("B", _v0, new KeyValuePair<string, Version>("C", _v0));
+
+            _updateModules = new[] { b0 };
+
+            ExpectedModules = new[] {b0};
+
+            PerformTest();
+
+            Assert.IsFalse(_resultBool);
+            Assert.AreEqual(ExpectedModules,_resultNonValidModules);
+        }
+
+
+        [Test]
+        public void update_list_has_dependency_on_older_member_which_has_been_referenced_results_in_failure()
+        {
+            /*
+            * Local
+            * Z(v1) v1 ->B(v1)
+            * A(v1) v1-> B(v1) v1-> C(v1)
+            * 
+            * Remote:
+            * A(v0) v0-> B(v0)
+            * 
+            * Result: Failure - no downgrade avaliable
+            */
+            ModuleInfo c1;
+            ModuleInfo a1;
+            ModuleInfo b1;
+            ModuleInfo z1 = SetUpModuleInfoWithVersion("Z", _v1,
+                                                       new KeyValuePair<string, Version>("B", _v1));
+
+            PrepareChainWithVersion(_v1, out a1, out b1, out c1);
+            Modules = new[] { a1, b1, c1, z1 };
+
+            var a2 = SetUpModuleInfoWithVersion("A", _v0, new KeyValuePair<string, Version>("B", _v0));
+            var b2 = SetUpModuleInfoWithVersion("B", _v0);
+
+            _updateModules = new[] { a2, b2 };
+
+            ExpectedModules = new[] {a2, b2};
+
+            PerformTest();
+
+            Assert.IsFalse(_resultBool);
+            Assert.AreEqual(ExpectedModules,_resultNonValidModules);
+            
         }
 
         #endregion

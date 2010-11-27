@@ -34,7 +34,6 @@ namespace Nomad.Tests.FunctionalTests.ServiceLocation
 
         public static IDictionary<Type, int> GetRegisteredServiceCounter()
         {
-            //NOTE: change into something as AsReadOnly - could not fine fast solution to this
             return new Dictionary<Type, int>(_counter);
         }
 

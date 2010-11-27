@@ -10,6 +10,23 @@ namespace Nomad.Updater
     /// </summary>
     public class UpdateArguments
     {
+        public UpdateArguments(string[] args) : this(args[0], args.Skip(1))
+        {
+        }
+
+
+        public UpdateArguments(string pluginsPath, IEnumerable<string> moduleNames)
+        {
+            PluginsPath = pluginsPath;
+            foreach (string moduleName in moduleNames)
+            {
+                ModulesToUpdate.Add(moduleName);
+            }
+
+            ValidateArguments();
+        }
+
+
         /// <summary>
         ///     Path to plugins.
         /// </summary>
@@ -20,21 +37,8 @@ namespace Nomad.Updater
         /// </summary>
         public ICollection<string> ModulesToUpdate { get; set; }
 
-        public UpdateArguments(string[] args) : this(args[0], args.Skip(1))
-        { }
 
-        public UpdateArguments(string pluginsPath, IEnumerable<string> moduleNames )
-        {
-            PluginsPath = pluginsPath;
-            foreach (var moduleName in moduleNames)
-            {
-                ModulesToUpdate.Add(moduleName);
-            }
-
-            ValidateArguments();
-        }
-
-        void ValidateArguments()
+        private void ValidateArguments()
         {
             if (Directory.Exists(PluginsPath))
                 throw new ArgumentException("Plugins path should point to existing directory");

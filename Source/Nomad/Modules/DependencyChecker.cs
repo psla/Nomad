@@ -58,19 +58,45 @@ namespace Nomad.Modules
                                  IEnumerable<ModuleInfo> newModules,
                                  out IEnumerable<ModuleInfo> nonValidModules)
         {
-            
-            // concatenate loaded and new modules into one list, with preference over newModules things. O(n^2)
+            // concatenate loaded and new modules into one list, with preference over newModules things - use newList as default
             var concatentedList = new List<ModuleInfo>(newModules);
 
+            // control variables
+            var downgradedModules = new List<ModuleInfo>();
+            bool hasDowngradedModule = false;
+
+            // concatenate the lists, watching out for downgrades O(n^2)
             foreach (ModuleInfo loadedModule in loadedModules)
             {
-                if (!concatentedList.Contains(loadedModule,
-                                              new InjectableEqualityComparer<ModuleInfo>(
-                                                  (a, b) =>
-                                                  a.Manifest.ModuleName.Equals(b.Manifest.ModuleName))))
+                ModuleInfo inLoopModule = loadedModule;
+                ModuleInfo uploadModule =
+                    concatentedList.Where((module) => module.Manifest.ModuleName.Equals(inLoopModule.Manifest.ModuleName))
+                    .Select(x => x)
+                    .DefaultIfEmpty(null)
+                    .SingleOrDefault();
+
+                if (uploadModule == null)
                 {
+                    // if not contains add to update list
                     concatentedList.Add(loadedModule);
                 }
+                else
+                {
+                    // if contains the same module check if the update module is not a downgrade
+                    if (uploadModule.Manifest.ModuleVersion.GetSystemVersion() <
+                        loadedModule.Manifest.ModuleVersion.GetSystemVersion())
+                    {
+                        hasDowngradedModule = true;
+                        downgradedModules.Add(uploadModule);
+                    }
+                }
+            }
+
+            // check if there were downgrades if true then stop
+            if (hasDowngradedModule)
+            {
+                nonValidModules = downgradedModules;
+                return false;
             }
 
             // use try sort method to check if it is possible to sort that collections
@@ -120,7 +146,7 @@ namespace Nomad.Modules
             _canBeSorted = true;
 
             InitializeGraph(inputList);
-            
+
             _nonValidModules = new List<ModuleInfo>();
 
             // run DFS through graph O(n)
@@ -173,13 +199,14 @@ namespace Nomad.Modules
                 if (_sortingMode == SortingMode.Exceptions)
                 {
                     throw new ArgumentException(
-                        string.Format("DependencyGraph has cycles. Duplicated node is {0}.", startingNode),
+                        string.Format("DependencyGraph has cycles. Duplicated node is {0}.",
+                                      startingNode),
                         "startingNode");
                 }
                 else if (_sortingMode == SortingMode.Silent)
                 {
                     _canBeSorted = false;
-                    return; // we have to jump out beacause of the inifnite loop
+                    return; // we have to jump out because of the infinite loop
                 }
 
             depth++;
@@ -208,7 +235,7 @@ namespace Nomad.Modules
                         _canBeSorted = false;
 
                         // add the starting node to the list of non valid nodes (it has some empty reference)
-                        if(!_nonValidModules.Contains(myNodeInfo.Module))
+                        if (!_nonValidModules.Contains(myNodeInfo.Module))
                             _nonValidModules.Add(myNodeInfo.Module);
 
                         // go to another node
@@ -236,12 +263,12 @@ namespace Nomad.Modules
                                 "Dependency version ({0}) is higher than module's version {1}",
                                 myNodeDependencyVersion, dependencyVersion));
                     }
-                    else if(_sortingMode == SortingMode.Silent)
+                    else if (_sortingMode == SortingMode.Silent)
                     {
                         _canBeSorted = false;
-                        
+
                         // wrong version means that our node has wrong reference
-                        if(!_nonValidModules.Contains(myNodeInfo.Module))
+                        if (!_nonValidModules.Contains(myNodeInfo.Module))
                             _nonValidModules.Add(myNodeInfo.Module);
 
                         // let go this way

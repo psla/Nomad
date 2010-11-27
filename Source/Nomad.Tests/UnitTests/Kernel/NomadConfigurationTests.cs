@@ -27,7 +27,6 @@ namespace Nomad.Tests.UnitTests.Kernel
         [Test]
         public void default_implementation_is_not_frozen()
         {
-            //TODO: this is the question how the default implementation should behave..
             _configuration = new Core.NomadConfiguration();
 
             Assert.IsFalse(_configuration.IsFrozen);
