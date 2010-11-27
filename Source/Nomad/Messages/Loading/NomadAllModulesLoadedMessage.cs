@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Nomad.Modules;
 
-namespace Nomad.Messages
+namespace Nomad.Messages.Loading
 {
     ///<summary>
     /// Message published when all modules from given module discovery are loaded.

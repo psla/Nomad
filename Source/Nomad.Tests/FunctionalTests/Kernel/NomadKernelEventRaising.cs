@@ -5,6 +5,7 @@ using Nomad.Core;
 using Nomad.Exceptions;
 using Nomad.KeysGenerator;
 using Nomad.Messages;
+using Nomad.Messages.Loading;
 using Nomad.Modules;
 using Nomad.Modules.Discovery;
 using Nomad.Tests.FunctionalTests.Fixtures;
@@ -57,9 +58,9 @@ namespace Nomad.Tests.FunctionalTests.Kernel
                 SetUpDiscovery(new ModuleInfo("NonExistingModule.dll"));
 
             // perform test
-            Assert.Throws<NomadCouldNotLoadModuleException>(
+           Assert.Throws<NomadCouldNotLoadModuleException>(
                 () => kernel.LoadModules(nonExistingDiscovery),
-                "Exception should be thrown in kernel domain.");
+                "Exception should  be thrown in kernel domain.");
 
             //verify the method being called in a module.
             var carrier = (MessageCarrier) kernel.ModuleAppDomain.CreateInstanceAndUnwrap(
@@ -84,6 +85,15 @@ namespace Nomad.Tests.FunctionalTests.Kernel
         public void event_after_successful_module_loading_is_published()
         {
             NomadKernel kernel = SetupMockedKernel();
+
+            // subscribe for message in kernel
+            bool hasBeenLoaded = false;
+            kernel.EventAggregator.Subscribe<NomadAllModulesLoadedMessage>( (message) =>    
+            {
+                
+                Assert.AreEqual(3,message.ModuleInfos.Count());
+                hasBeenLoaded = true;                                                                      
+            });
 
             //  compile module for event aggregation
             const string dir = @"Modules\Kernel\AllModulesLoadedAwarenessTestModules\";
@@ -118,13 +128,22 @@ namespace Nomad.Tests.FunctionalTests.Kernel
                 typeof (MessageCarrier).Assembly.FullName, typeof (MessageCarrier).FullName);
 
             Assert.AreEqual(new[] {"AllModulesLoadedEventAwareModule"}, carrier.List.ToArray());
+            Assert.IsTrue(hasBeenLoaded);
         }
 
 
         [Test]
-        public void event_all__modules_loaded_is_catched_upon_every_success()
+        public void event_all_modules_loaded_is_catched_upon_every_success()
         {
             NomadKernel kernel = SetupMockedKernel();
+
+            // subscribe kernel for event
+            bool hasBeenLoaded = false;
+            kernel.EventAggregator.Subscribe<NomadAllModulesLoadedMessage>((message) =>
+            {
+                Assert.AreNotEqual(0,message.ModuleInfos.Count());
+                hasBeenLoaded = true;
+            });
 
             //  compiling simple modules
             const string dir = @"Modules\Kernel\SimpleAllModulesLoadedAwarenessTestModules\Simple\";
@@ -167,6 +186,7 @@ namespace Nomad.Tests.FunctionalTests.Kernel
             Assert.AreEqual(
                 new[] {"AllModulesLoadedEventAwareModule", "AllModulesLoadedEventAwareModule"},
                 carrier.List.ToArray());
+            Assert.IsTrue(hasBeenLoaded);
         }
 
 

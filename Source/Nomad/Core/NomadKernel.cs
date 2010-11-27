@@ -6,6 +6,7 @@ using Nomad.Communication.EventAggregation;
 using Nomad.Communication.ServiceLocation;
 using Nomad.Exceptions;
 using Nomad.Messages;
+using Nomad.Messages.Loading;
 using Nomad.Modules;
 using Nomad.Modules.Discovery;
 using Nomad.Services;
@@ -193,7 +194,7 @@ namespace Nomad.Core
                 EventAggregator.Publish(new NomadCouldNotLoadModuleMessage(
                                             "Could not load modules", e.ModuleName));
 
-                // rethrow this exception to kernel domain, cause event aggregator cannot be used
+                // rethrow this exception to kernel domain 
                 throw;
             }
         }

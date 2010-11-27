@@ -7,6 +7,7 @@ using Nomad.Core;
 using Nomad.Modules;
 using Nomad.Modules.Discovery;
 using Nomad.Modules.Manifest;
+using Nomad.Updater.ModulePackagers;
 
 namespace Nomad.Updater
 {
@@ -37,6 +38,7 @@ namespace Nomad.Updater
         private readonly IModulesOperations _modulesOperations;
         private readonly IModulesRepository _modulesRepository;
         private readonly string _targetDirectory;
+        private readonly IModulePackager _modulePackager;
 
 
         /// <summary>
@@ -48,12 +50,14 @@ namespace Nomad.Updater
         /// <param name="moduleDiscovery">backend used for discovering of modules</param>
         /// <param name="moduleManifestFactory">factory which creates <see cref="ModuleManifest"/> based on <see cref="ModuleInfo"/></param>
         /// <param name="eventAggregator">event aggregator for providing events</param>
+        /// <param name="modulePackager">packager used for unpacking packages</param>
         public Updater(string targetDirectory, IModulesRepository modulesRepository,
                        IModulesOperations modulesOperations, IModuleDiscovery moduleDiscovery,
                        IModuleManifestFactory moduleManifestFactory,
-                       IEventAggregator eventAggregator)
+                       IEventAggregator eventAggregator, IModulePackager modulePackager)
         {
             _targetDirectory = targetDirectory;
+            _modulePackager = modulePackager;
             _modulesRepository = modulesRepository;
             _modulesOperations = modulesOperations;
             _moduleDiscovery = moduleDiscovery;
@@ -146,13 +150,8 @@ namespace Nomad.Updater
         {
             _modulesOperations.UnloadModules();
 
-            foreach (ModulePackage modulePackage in modulePackages)
-            {
-                using (ZipFile file = ZipFile.Read(modulePackage.ModuleZip))
-                {
-                    file.ExtractAll(_targetDirectory, ExtractExistingFileAction.OverwriteSilently);
-                }
-            }
+            // TODO: add try catch, and exception handling
+            _modulePackager.PerformUpdates(_targetDirectory,modulePackages);
 
             _modulesOperations.LoadModules(_moduleDiscovery);
         }

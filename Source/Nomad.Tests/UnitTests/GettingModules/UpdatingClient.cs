@@ -9,6 +9,7 @@ using Nomad.Modules;
 using Nomad.Modules.Discovery;
 using Nomad.Modules.Manifest;
 using Nomad.Updater;
+using Nomad.Updater.ModulePackagers;
 using NUnit.Framework;
 using TestsShared;
 using Version = Nomad.Utils.Version;
@@ -18,6 +19,7 @@ namespace Nomad.Tests.UnitTests.GettingModules
     [UnitTests]
     public class UpdatingClient 
     {
+        // FIXME: change this test into smaller ones. 
         private Mock<IModuleDiscovery> _moduleDiscovery;
         private Mock<IModuleManifestFactory> _moduleManifestFactory;
         private Mock<IModulesOperations> _modulesOperations;
@@ -44,7 +46,7 @@ namespace Nomad.Tests.UnitTests.GettingModules
             _updateClient = new Updater.Updater(_pluginsDir, _modulesRepository.Object,
                                                 _modulesOperations.Object,
                                                 _moduleDiscovery.Object,
-                                                _moduleManifestFactory.Object, _eventAggregator);
+                                                _moduleManifestFactory.Object, _eventAggregator, new ModulePackager());
         }
 
 

@@ -9,6 +9,7 @@ using Nomad.Core;
 using Nomad.Modules.Discovery;
 using Nomad.Modules.Manifest;
 using Nomad.Updater;
+using Nomad.Updater.ModulePackagers;
 using NUnit.Framework;
 using TestsShared;
 
@@ -77,11 +78,11 @@ namespace Nomad.Tests.IntegrationTests.Updater
             var moduleDiscovery = new Mock<IModuleDiscovery>();
             var moduleManifestFactory = new Mock<IModuleManifestFactory>();
             var eventAggregator = new Mock<IEventAggregator>();
+            var packager = new Mock<IModulePackager>();
             Updater = new Nomad.Updater.Updater(targetDirectory, modulesRepository.Object,
                                                  modulesOperations.Object, moduleDiscovery.Object,
-                                                 moduleManifestFactory.Object, eventAggregator.Object);
+                                                 moduleManifestFactory.Object, eventAggregator.Object,packager.Object);
         }
-
 
         public Nomad.Updater.Updater Updater { get; set; }
     }

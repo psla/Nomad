@@ -103,8 +103,8 @@
     <Compile Include="Communication\EventAggregation\IGuiThreadProvider.cs" />
     <Compile Include="Communication\EventAggregation\TicketDisposedArgs.cs" />
     <Compile Include="Communication\EventAggregation\WpfGuiThreadProvider.cs" />
-    <Compile Include="Messages\NomadAllModulesLoadedMessage.cs" />
-    <Compile Include="Messages\NomadCouldNotLoadModuleMessage.cs" />
+    <Compile Include="Messages\Loading\NomadAllModulesLoadedMessage.cs" />
+    <Compile Include="Messages\Loading\NomadCouldNotLoadModuleMessage.cs" />
     <Compile Include="Messages\NomadCultureChangedMessage.cs" />
     <Compile Include="Messages\NomadMessage.cs" />
     <Compile Include="Core\IModulesOperations.cs" />
@@ -140,8 +140,10 @@
     <Compile Include="Signing\SignatureAlgorithms\PkiSignatureAlgorithm.cs" />
     <Compile Include="Updater\AvailableModules.cs" />
     <Compile Include="Updater\AvailableUpdatesEventArgs.cs" />
+    <Compile Include="Updater\ModulePackagers\IModulePackager.cs" />
     <Compile Include="Updater\IModulesRepository.cs" />
     <Compile Include="Updater\ModulePackage.cs" />
+    <Compile Include="Updater\ModulePackagers\ModulePackager.cs" />
     <Compile Include="Updater\UpdateArguments.cs" />
     <Compile Include="Updater\Updater.cs" />
     <Compile Include="Updater\UpdatesReadyEventArgs.cs" />
@@ -197,7 +199,9 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Messages\Updating\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Nomad.Messages
+namespace Nomad.Messages.Loading
 {
     /// <summary>
     ///     Class that represents type of event raised when loading of specific module cannot be done.

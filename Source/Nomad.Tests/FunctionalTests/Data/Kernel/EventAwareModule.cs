@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 using Nomad.Communication.EventAggregation;
-using Nomad.Messages;
+using Nomad.Messages.Loading;
 using Nomad.Tests.FunctionalTests.Kernel.Messages;
 
 public class EventAwareModule : Nomad.Modules.IModuleBootstraper
