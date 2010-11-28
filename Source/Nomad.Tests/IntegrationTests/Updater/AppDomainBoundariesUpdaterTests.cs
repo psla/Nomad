@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Security.Policy;
@@ -58,8 +59,8 @@ namespace Nomad.Tests.IntegrationTests.Updater
         public void update_event_is_cross_domain()
         {
             SetupUpdater();
-            var moduleDiscovery = new Mock<IModuleDiscovery>();
-            _updater.CheckUpdates(moduleDiscovery.Object);
+            IModuleDiscovery discovery = new ListModuleDiscovery(new ModuleInfo[]{});
+            _updater.CheckUpdates(discovery);
         }
 
         [TearDown]
@@ -76,6 +77,8 @@ namespace Nomad.Tests.IntegrationTests.Updater
         {
             var targetDirectory = AppDomain.CurrentDomain.BaseDirectory;
             var modulesRepository = new Mock<IModulesRepository>();
+            modulesRepository.Setup(x => x.GetAvailableModules()).Returns(
+                new AvailableModules(new List<ModuleManifest>()));
             var modulesOperations = new Mock<IModulesOperations>();
             var moduleManifestFactory = new Mock<IModuleManifestFactory>();
             var eventAggregator = new Mock<IEventAggregator>();

@@ -48,24 +48,51 @@ namespace Nomad.Tests.UnitTests.Updater
 
         #endregion
 
-        #region Information about outcome
+        #region Silent errors. 
 
         [Test]
-        public void performing_updates_has_information_about_failure()
+        public void performing_updates_has_information_about_failure_modules_operations_throws()
         {
-            throw new NotImplementedException();
+            ModulesOperations.Setup(x => x.LoadModules(It.IsAny<IModuleDiscovery>()))
+                .Throws(new Exception("Can not discovery moduels"));
+
+            Assert.Throws<Exception> ( () => Updater.PerformUpdates(new List<ModulePackage>()));
+
+            Assert.AreEqual(UpdaterStatus.Invalid,Updater.Status);
+
+        }
+
+        [Test]
+        public void performing_updates_has_information_about_failure_packager_throws()
+        {
+            ModulePackager.Setup(x => x.PerformUpdates(It.IsAny<String>(),It.IsAny<ModulePackage>()))
+                .Throws(new Exception("Can not pacakge this"));
+
+            Assert.Throws<Exception>( () => Updater.PerformUpdates(new List<ModulePackage>() { new ModulePackage() }));
+
+            Assert.AreEqual(UpdaterStatus.Invalid, Updater.Status);
         }
 
 
         [Test]
         public void performing_updates_has_information_about_success()
         {
-            throw new NotImplementedException();
+            Updater.PerformUpdates(new List<ModulePackage>());
+            Assert.AreEqual(UpdaterStatus.Idle,Updater.Status);
         }
 
         #endregion
 
-        #region Basic operations
+        #region Basic operations scenarios
+
+        [Test]
+        public void invoking_perform_updates_with_null_results_in_silent_error()
+        {
+           
+            Assert.Throws<NullReferenceException> ( () => Updater.PerformUpdates(null));
+
+            Assert.AreEqual(UpdaterStatus.Invalid, Updater.Status);
+        }
 
         [Test]
         public void performing_updates_unload_modules()

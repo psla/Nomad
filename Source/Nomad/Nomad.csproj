@@ -120,6 +120,7 @@
     <Compile Include="Modules\DependencyChecker.cs" />
     <Compile Include="Modules\Discovery\CompositeModuleDiscovery.cs" />
     <Compile Include="Modules\Discovery\DirectoryModuleDiscovery.cs" />
+    <Compile Include="Modules\Discovery\ListModuleDiscovery.cs" />
     <Compile Include="Modules\Discovery\SingleModuleDiscovery.cs" />
     <Compile Include="Modules\Filters\CompositeModuleFilter.cs" />
     <Compile Include="Modules\Discovery\SimpleDirectoryModuleDiscovery.cs" />
@@ -147,6 +148,7 @@
     <Compile Include="Updater\UpdateArguments.cs" />
     <Compile Include="Updater\Updater.cs" />
     <Compile Include="Messages\Updating\NomadUpdatesReadyMessage.cs" />
+    <Compile Include="Updater\UpdaterStatus.cs" />
     <Compile Include="Utils\ManifestBuilder.cs" />
     <Compile Include="Utils\Version.cs" />
     <Compile Include="Modules\ModuleInfo.cs" />

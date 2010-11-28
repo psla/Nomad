@@ -59,6 +59,8 @@ namespace Nomad.Updater
                        IEventAggregator eventAggregator, IModulePackager modulePackager,
                        IDependencyChecker dependencyChecker)
         {
+            Status = UpdaterStatus.Idle;
+
             _targetDirectory = targetDirectory;
             _dependencyChecker = dependencyChecker;
             _modulePackager = modulePackager;
@@ -72,7 +74,7 @@ namespace Nomad.Updater
         /// <summary>
         ///     Describes the result of former update. 
         /// </summary>
-        public bool UpdaterResult { get; private set; }
+        public UpdaterStatus Status { get; private set; }
 
 
         /// <summary>
@@ -84,7 +86,9 @@ namespace Nomad.Updater
         /// </remarks>
         public void CheckUpdates(IModuleDiscovery moduleDiscovery)
         {
-            AvailableModules getAvailableModules;
+            Status = UpdaterStatus.Checking;
+
+            AvailableModules availableModules;
             try
             {
                 // FIXME: change into using discovery module info information to get manifests
@@ -92,10 +96,12 @@ namespace Nomad.Updater
                     moduleDiscovery.GetModules().Select(x => _moduleManifestFactory.GetManifest(x));
 
                 // connect to repository - fail safe
-                getAvailableModules = _modulesRepository.GetAvailableModules();
+                availableModules = _modulesRepository.GetAvailableModules();
             }
             catch (Exception e)
             {
+                Status = UpdaterStatus.Invalid;
+
                 // publish information to modules about failing
                 _eventAggregator.Publish(new NomadAvailableUpdatesMessage(
                                              new List<ModuleManifest>(), true, e.Message));
@@ -106,9 +112,21 @@ namespace Nomad.Updater
             IEnumerable<ModuleInfo> nonValidModules = null;
             // TODO: add implementation for dependency checker and error publishing
 
+            // null handling in repoisotry if repository is silent one
+            if (availableModules == null)
+            {
+                Status = UpdaterStatus.Invalid;
+                _eventAggregator.Publish(new NomadAvailableUpdatesMessage(
+                                             new List<ModuleManifest>(), true,
+                                             "Null from repository"));
+                return;
+            }
+
+            Status = UpdaterStatus.Checked;
+
             // set the module discovery for the perform update mechanism
             _moduleDiscovery = moduleDiscovery;
-            InvokeAvailableUpdates(new NomadAvailableUpdatesMessage(getAvailableModules.Manifests));
+            InvokeAvailableUpdates(new NomadAvailableUpdatesMessage(availableModules.Manifests));
         }
 
 
@@ -135,6 +153,8 @@ namespace Nomad.Updater
         /// <param name="nomadAvailableUpdates">modules to install. </param>
         public void PrepareUpdate(NomadAvailableUpdatesMessage nomadAvailableUpdates)
         {
+            Status = UpdaterStatus.Preparing;
+
             var modulePackages = new Dictionary<string, ModulePackage>();
             foreach (ModuleManifest availableUpdate in nomadAvailableUpdates.AvailableUpdates)
             {
@@ -150,6 +170,9 @@ namespace Nomad.Updater
                     modulePackages[availableUpdate.ModuleName] =
                         _modulesRepository.GetModule(availableUpdate.ModuleName);
             }
+
+            Status = UpdaterStatus.Prepared;
+
             InvokeUpdatePackagesReady(
                 new NomadUpdatesReadyMessage(modulePackages.Values.ToList()));
         }
@@ -162,19 +185,34 @@ namespace Nomad.Updater
         /// Using provided <see cref="IModulesOperations"/> it unloads all modules, 
         /// than it places update files into modules directory, and loads modules back.
         /// 
-        /// Upon success or failure sets the flag <see cref="UpdaterResult"/> with corresponding value.
+        /// Upon success or failure sets the flag <see cref="Status"/> with corresponding value.
         /// </remarks>
         /// <param name="modulePackages">collection of packages to install</param>
         public void PerformUpdates(IEnumerable<ModulePackage> modulePackages)
         {
-            _modulesOperations.UnloadModules();
-
-            foreach (ModulePackage modulePackage in modulePackages)
+            Status = UpdaterStatus.Performing;
+            try
             {
-                _modulePackager.PerformUpdates(_targetDirectory, modulePackage);
+                _modulesOperations.UnloadModules();
+
+                foreach (ModulePackage modulePackage in modulePackages)
+                {
+                    _modulePackager.PerformUpdates(_targetDirectory, modulePackage);
+                }
+
+                _modulesOperations.LoadModules(_moduleDiscovery);
+            }
+            catch (Exception)
+            {
+                // catch exceptions, TODO: add logging for this
+                Status = UpdaterStatus.Invalid;
+                
+                //rethrow the exception
+                throw;
             }
 
-            _modulesOperations.LoadModules(_moduleDiscovery);
+            // set result of the updates
+            Status = UpdaterStatus.Idle;
         }
     }
 }
