@@ -6,6 +6,7 @@ using System.Threading;
 using Moq;
 using Nomad.Communication.EventAggregation;
 using Nomad.Core;
+using Nomad.Modules;
 using Nomad.Modules.Discovery;
 using Nomad.Modules.Manifest;
 using Nomad.Updater;
@@ -57,7 +58,8 @@ namespace Nomad.Tests.IntegrationTests.Updater
         public void update_event_is_cross_domain()
         {
             SetupUpdater();
-            _updater.CheckUpdates();
+            var moduleDiscovery = new Mock<IModuleDiscovery>();
+            _updater.CheckUpdates(moduleDiscovery.Object);
         }
 
         [TearDown]
@@ -75,13 +77,13 @@ namespace Nomad.Tests.IntegrationTests.Updater
             var targetDirectory = AppDomain.CurrentDomain.BaseDirectory;
             var modulesRepository = new Mock<IModulesRepository>();
             var modulesOperations = new Mock<IModulesOperations>();
-            var moduleDiscovery = new Mock<IModuleDiscovery>();
             var moduleManifestFactory = new Mock<IModuleManifestFactory>();
             var eventAggregator = new Mock<IEventAggregator>();
+            var dependencyChecker = new Mock<IDependencyChecker>();
             var packager = new Mock<IModulePackager>();
             Updater = new Nomad.Updater.Updater(targetDirectory, modulesRepository.Object,
-                                                 modulesOperations.Object, moduleDiscovery.Object,
-                                                 moduleManifestFactory.Object, eventAggregator.Object,packager.Object);
+                                                 modulesOperations.Object,
+                                                 moduleManifestFactory.Object, eventAggregator.Object,packager.Object,dependencyChecker.Object);
         }
 
         public Nomad.Updater.Updater Updater { get; set; }

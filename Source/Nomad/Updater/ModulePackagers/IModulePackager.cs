@@ -12,6 +12,6 @@ namespace Nomad.Updater.ModulePackagers
         /// </summary>
         /// <param name="targetDirectory">Path to directory on file system to place tha package.</param>
         /// <param name="modulePackages">Package to be placed.</param>
-        void PerformUpdates(string targetDirectory, IEnumerable<ModulePackage> modulePackages);
+        void PerformUpdates(string targetDirectory, ModulePackage modulePackages);
     }
 }

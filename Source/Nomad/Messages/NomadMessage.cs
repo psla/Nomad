@@ -25,10 +25,10 @@ namespace Nomad.Messages
             Message = message;
         }
 
+
         /// <summary>
         ///     Inherited <see cref="object.ToString"/> method which every message has to implement.
         /// </summary>
         public abstract override string ToString();
-
     }
 }

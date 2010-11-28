@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Ionic.Zip;
 using Nomad.Communication.EventAggregation;
 using Nomad.Core;
+using Nomad.Messages.Updating;
 using Nomad.Modules;
 using Nomad.Modules.Discovery;
 using Nomad.Modules.Manifest;
@@ -18,52 +18,61 @@ namespace Nomad.Updater
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Updater provides two event types via EventAggregator
+    ///     Updater provides two message types via EventAggregator
     /// </para>
     /// <para>
-    /// <see cref="AvailableUpdatesEventArgs"/>
+    /// <see cref="NomadAvailableUpdatesMessage"/>
     /// Informs about available updates.
     /// Passing the result to <see cref="PrepareUpdate"/> will result in download.
     /// Event passes <see cref="ModuleManifest"/> of the available upgrades.
     /// </para>
     /// <para>
-    /// <see cref="UpdatesReadyEventArgs"/> - Invoked when update is ready to install. Whole data has been downloaded.
+    /// <see cref="NomadUpdatesReadyMessage"/> - Invoked when update is ready to install. Whole data has been downloaded.
     /// </para>
     /// </remarks>
     public class Updater : MarshalByRefObject
     {
+        private readonly IDependencyChecker _dependencyChecker;
         private readonly IEventAggregator _eventAggregator;
-        private readonly IModuleDiscovery _moduleDiscovery;
         private readonly IModuleManifestFactory _moduleManifestFactory;
+        private readonly IModulePackager _modulePackager;
         private readonly IModulesOperations _modulesOperations;
         private readonly IModulesRepository _modulesRepository;
         private readonly string _targetDirectory;
-        private readonly IModulePackager _modulePackager;
+
+        private IModuleDiscovery _moduleDiscovery;
 
 
         /// <summary>
-        /// Initializes updater instance with proper engines.
+        ///     Initializes updater instance with proper engines.
         /// </summary>
         /// <param name="targetDirectory">directory to install modules to</param>
         /// <param name="modulesRepository">backend used to retrieve modules information. i.e. WebServiceModulesRepository, WebModulesRepository, and so on</param>
         /// <param name="modulesOperations">backend used to unload / load modules</param>
-        /// <param name="moduleDiscovery">backend used for discovering of modules</param>
         /// <param name="moduleManifestFactory">factory which creates <see cref="ModuleManifest"/> based on <see cref="ModuleInfo"/></param>
         /// <param name="eventAggregator">event aggregator for providing events</param>
         /// <param name="modulePackager">packager used for unpacking packages</param>
+        /// <param name="dependencyChecker">dependency checker engine used for validating the outcome</param>
         public Updater(string targetDirectory, IModulesRepository modulesRepository,
-                       IModulesOperations modulesOperations, IModuleDiscovery moduleDiscovery,
+                       IModulesOperations modulesOperations,
                        IModuleManifestFactory moduleManifestFactory,
-                       IEventAggregator eventAggregator, IModulePackager modulePackager)
+                       IEventAggregator eventAggregator, IModulePackager modulePackager,
+                       IDependencyChecker dependencyChecker)
         {
             _targetDirectory = targetDirectory;
+            _dependencyChecker = dependencyChecker;
             _modulePackager = modulePackager;
             _modulesRepository = modulesRepository;
             _modulesOperations = modulesOperations;
-            _moduleDiscovery = moduleDiscovery;
             _moduleManifestFactory = moduleManifestFactory;
             _eventAggregator = eventAggregator;
         }
+
+
+        /// <summary>
+        ///     Describes the result of former update. 
+        /// </summary>
+        public bool UpdaterResult { get; private set; }
 
 
         /// <summary>
@@ -71,55 +80,63 @@ namespace Nomad.Updater
         /// If such check finds higher version of assembly, than new <see cref="ModuleManifest"/> will be in result
         /// </summary>
         /// <remarks>
-        /// Method return result by AvailableUpdates event, so it may be invoked asynchronously
+        /// Method return result by <see cref="NomadAvailableUpdatesMessage"/> event, so it may be invoked asynchronously
         /// </remarks>
-        public void CheckUpdates()
+        public void CheckUpdates(IModuleDiscovery moduleDiscovery)
         {
-            var moduleManifests = new List<ModuleManifest>();
-            IEnumerable<ModuleManifest> currentManifests =
-                _moduleDiscovery.GetModules().Select(x => _moduleManifestFactory.GetManifest(x));
-
-            AvailableModules getAvailableModules = _modulesRepository.GetAvailableModules();
-
-            //o(n^2), may be improved when using dictionary
-            foreach (ModuleManifest currentManifest in currentManifests)
+            AvailableModules getAvailableModules;
+            try
             {
-                IEnumerable<ModuleManifest> updates =
-                    from moduleManifest in getAvailableModules.Manifests
-                    where moduleManifest.ModuleName == currentManifest.ModuleName
-                          && moduleManifest.ModuleVersion > currentManifest.ModuleVersion
-                    select moduleManifest;
-                ModuleManifest manifest = updates.FirstOrDefault();
-                if (manifest != null)
-                    moduleManifests.Add(manifest);
+                // FIXME: change into using discovery module info information to get manifests
+                IEnumerable<ModuleManifest> currentManifests =
+                    moduleDiscovery.GetModules().Select(x => _moduleManifestFactory.GetManifest(x));
+
+                // connect to repository - fail safe
+                getAvailableModules = _modulesRepository.GetAvailableModules();
             }
-            InvokeAvailableUpdates(new AvailableUpdatesEventArgs(moduleManifests));
+            catch (Exception e)
+            {
+                // publish information to modules about failing
+                _eventAggregator.Publish(new NomadAvailableUpdatesMessage(
+                                             new List<ModuleManifest>(), true, e.Message));
+                return;
+            }
+
+            // use dependency checker to get what is wanted
+            IEnumerable<ModuleInfo> nonValidModules = null;
+            // TODO: add implementation for dependency checker and error publishing
+
+            // set the module discovery for the perform update mechanism
+            _moduleDiscovery = moduleDiscovery;
+            InvokeAvailableUpdates(new NomadAvailableUpdatesMessage(getAvailableModules.Manifests));
         }
 
 
-        private void InvokeAvailableUpdates(AvailableUpdatesEventArgs e)
+        private void InvokeAvailableUpdates(NomadAvailableUpdatesMessage e)
         {
+            _eventAggregator.Mode = EventAggregatorMode.AllDomain;
             _eventAggregator.Publish(e);
         }
 
 
-        private void InvokeUpdatePackagesReady(UpdatesReadyEventArgs e)
+        private void InvokeUpdatePackagesReady(NomadUpdatesReadyMessage e)
         {
+            _eventAggregator.Mode = EventAggregatorMode.AllDomain;
             _eventAggregator.Publish(e);
         }
 
 
         /// <summary>
-        /// Prepares update for available updates. Result returned as event.
+        ///     Prepares update for available updates. Result returned as message.
         /// </summary>
         /// <remarks>
-        /// Using provided <see cref="IModulesRepository"/> downloads all modules and their dependencies.
+        ///     Using provided <see cref="IModulesRepository"/> downloads all modules and their dependencies.
         /// </remarks>
-        /// <param name="availableUpdates">modules to install. </param>
-        public void PrepareUpdate(AvailableUpdatesEventArgs availableUpdates)
+        /// <param name="nomadAvailableUpdates">modules to install. </param>
+        public void PrepareUpdate(NomadAvailableUpdatesMessage nomadAvailableUpdates)
         {
             var modulePackages = new Dictionary<string, ModulePackage>();
-            foreach (ModuleManifest availableUpdate in availableUpdates.AvailableUpdates)
+            foreach (ModuleManifest availableUpdate in nomadAvailableUpdates.AvailableUpdates)
             {
                 foreach (ModuleDependency moduleDependency in availableUpdate.ModuleDependencies)
                 {
@@ -134,24 +151,28 @@ namespace Nomad.Updater
                         _modulesRepository.GetModule(availableUpdate.ModuleName);
             }
             InvokeUpdatePackagesReady(
-                new UpdatesReadyEventArgs(modulePackages.Values.ToList()));
+                new NomadUpdatesReadyMessage(modulePackages.Values.ToList()));
         }
 
 
         /// <summary>
-        /// Starts update process
+        ///     Starts update process
         /// </summary>
         /// <remarks>
         /// Using provided <see cref="IModulesOperations"/> it unloads all modules, 
         /// than it places update files into modules directory, and loads modules back.
+        /// 
+        /// Upon success or failure sets the flag <see cref="UpdaterResult"/> with corresponding value.
         /// </remarks>
         /// <param name="modulePackages">collection of packages to install</param>
         public void PerformUpdates(IEnumerable<ModulePackage> modulePackages)
         {
             _modulesOperations.UnloadModules();
 
-            // TODO: add try catch, and exception handling
-            _modulePackager.PerformUpdates(_targetDirectory,modulePackages);
+            foreach (ModulePackage modulePackage in modulePackages)
+            {
+                _modulePackager.PerformUpdates(_targetDirectory, modulePackage);
+            }
 
             _modulesOperations.LoadModules(_moduleDiscovery);
         }

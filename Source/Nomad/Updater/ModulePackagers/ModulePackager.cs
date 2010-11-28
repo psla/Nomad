@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Ionic.Zip;
+﻿using Ionic.Zip;
 
 namespace Nomad.Updater.ModulePackagers
 {
@@ -8,15 +7,16 @@ namespace Nomad.Updater.ModulePackagers
     /// </summary>
     public class ModulePackager : IModulePackager
     {
-        public void PerformUpdates(string targetDirectory, IEnumerable<ModulePackage> modulePackages)
+        #region IModulePackager Members
+
+        public void PerformUpdates(string targetDirectory, ModulePackage modulePackage)
         {
-            foreach (ModulePackage modulePackage in modulePackages)
+            using (ZipFile file = ZipFile.Read(modulePackage.ModuleZip))
             {
-                using (ZipFile file = ZipFile.Read(modulePackage.ModuleZip))
-                {
-                    file.ExtractAll(targetDirectory, ExtractExistingFileAction.OverwriteSilently);
-                }
+                file.ExtractAll(targetDirectory, ExtractExistingFileAction.OverwriteSilently);
             }
         }
+
+        #endregion
     }
 }
