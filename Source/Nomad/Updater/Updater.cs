@@ -153,22 +153,40 @@ namespace Nomad.Updater
         /// <param name="nomadAvailableUpdates">modules to install. </param>
         public void PrepareUpdate(NomadAvailableUpdatesMessage nomadAvailableUpdates)
         {
+            if(nomadAvailableUpdates == null)
+            {
+                // can not throw exception - must change into message
+                _eventAggregator.Publish(new NomadUpdatesReadyMessage(new List<ModulePackage>(),true,"Argumet cannot be null"));
+                Status = UpdaterStatus.Invalid;
+                return;
+            }
+
             Status = UpdaterStatus.Preparing;
 
             var modulePackages = new Dictionary<string, ModulePackage>();
-            foreach (ModuleManifest availableUpdate in nomadAvailableUpdates.AvailableUpdates)
+            try
             {
-                foreach (ModuleDependency moduleDependency in availableUpdate.ModuleDependencies)
+                foreach (ModuleManifest availableUpdate in nomadAvailableUpdates.AvailableUpdates)
                 {
+                    foreach (ModuleDependency moduleDependency in availableUpdate.ModuleDependencies)
+                    {
+                        // preventing getting the same file twice
+                        if (!modulePackages.ContainsKey(moduleDependency.ModuleName))
+                            modulePackages[moduleDependency.ModuleName] =
+                                _modulesRepository.GetModule(moduleDependency.ModuleName);
+                    }
                     // preventing getting the same file twice
-                    if (! modulePackages.ContainsKey(moduleDependency.ModuleName))
-                        modulePackages[moduleDependency.ModuleName] =
-                            _modulesRepository.GetModule(moduleDependency.ModuleName);
+                    if (!modulePackages.ContainsKey(availableUpdate.ModuleName))
+                        modulePackages[availableUpdate.ModuleName] =
+                            _modulesRepository.GetModule(availableUpdate.ModuleName);
                 }
-                // preventing getting the same file twice
-                if (! modulePackages.ContainsKey(availableUpdate.ModuleName))
-                    modulePackages[availableUpdate.ModuleName] =
-                        _modulesRepository.GetModule(availableUpdate.ModuleName);
+            }
+            catch (Exception e)
+            {
+                // change exception into message
+                _eventAggregator.Publish(new NomadUpdatesReadyMessage(new List<ModulePackage>(),true,e.Message));
+                Status = UpdaterStatus.Invalid;
+                return;
             }
 
             Status = UpdaterStatus.Prepared;

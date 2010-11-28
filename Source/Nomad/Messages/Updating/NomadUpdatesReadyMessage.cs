@@ -22,7 +22,7 @@ namespace Nomad.Messages.Updating
         }
 
 
-        private NomadUpdatesReadyMessage(List<ModulePackage> modulePackages, bool error, string message)
+        public NomadUpdatesReadyMessage(List<ModulePackage> modulePackages, bool error, string message)
             : base(message)
         {
             _modulePackages = modulePackages;
