@@ -24,17 +24,6 @@ namespace Nomad.Communication.EventAggregation
 
         #region Implementation of IEventAggregator
 
-        public EventAggregatorMode Mode
-        {
-            get { return EventAggregatorMode.MyDomain; }
-
-            set
-            {
-                // no setter 
-            }
-        }
-
-
         /// <summary>
         /// Adds action for execution.
         /// <see cref="IEventAggregator.Subscribe{T}(System.Action{T})"/>

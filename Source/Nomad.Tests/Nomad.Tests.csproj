@@ -102,7 +102,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FunctionalTests\EventAggregation\EventAggregatorFacade.cs" />
     <Compile Include="FunctionalTests\EventAggregation\EventPublishing.cs" />
+    <Compile Include="FunctionalTests\EventAggregation\ThreadingTestsHelpers.cs" />
     <Compile Include="FunctionalTests\Kernel\Messages\EventHandledRegistry.cs" />
     <Compile Include="FunctionalTests\Kernel\NomadKernelAppDomainManagmentTests.cs" />
     <Compile Include="FunctionalTests\Fixtures\NomadKernelTestFixture.cs" />

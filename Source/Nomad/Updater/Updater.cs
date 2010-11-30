@@ -142,14 +142,12 @@ namespace Nomad.Updater
 
         private void InvokeAvailableUpdates(NomadAvailableUpdatesMessage e)
         {
-            _eventAggregator.Mode = EventAggregatorMode.AllDomain;
             _eventAggregator.Publish(e);
         }
 
 
         private void InvokeUpdatePackagesReady(NomadUpdatesReadyMessage e)
         {
-            _eventAggregator.Mode = EventAggregatorMode.AllDomain;
             _eventAggregator.Publish(e);
         }
 

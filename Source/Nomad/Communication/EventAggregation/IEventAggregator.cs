@@ -8,11 +8,6 @@ namespace Nomad.Communication.EventAggregation
     public interface IEventAggregator
     {
         ///<summary>
-        ///     Describes the mode in which <see cref="EventAggregator"/> is wokring.
-        ///</summary>
-        EventAggregatorMode Mode { get; set; }
-
-        ///<summary>
         /// Subscribes for events of specific type
         ///</summary>
         /// <remarks>

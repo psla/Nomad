@@ -13,7 +13,7 @@ namespace Nomad.Communication.EventAggregation
         private readonly IEventAggregator _onSiteEventAggregator;
         private readonly IEventAggregator _proxiedEventAggregator;
 
-
+        private readonly object _locker;
         ///<summary>
         ///     Initializes the instance of <see cref="EventAggregatorFacade"/> class.
         ///</summary>
@@ -28,13 +28,12 @@ namespace Nomad.Communication.EventAggregation
             _proxiedEventAggregator = proxiedEventAggregator;
             _onSiteEventAggregator = onSiteEventAggregator;
             
-            // set default mode of working
-            Mode = EventAggregatorMode.AllDomain;
+            // ensure locker
+            _locker = new object();
         }
 
         #region IEventAggregator Members
 
-        public EventAggregatorMode Mode { get; set; }
 
 
         public IEventAggregatorTicket<T> Subscribe<T>(Action<T> action) where T : class
@@ -52,11 +51,12 @@ namespace Nomad.Communication.EventAggregation
 
         public void Publish<T>(T message) where T : class
         {
-            if ((Mode == EventAggregatorMode.MyDomain) || Mode == EventAggregatorMode.AllDomain)
+            // ensure thread safty - message must be published within all event aggregators
+            lock (_locker)
+            {
                 _onSiteEventAggregator.Publish(message);
-
-            if ((Mode == EventAggregatorMode.OtherDomain) || (Mode == EventAggregatorMode.AllDomain))
                 _proxiedEventAggregator.Publish(message);
+            }
         }
 
         #endregion

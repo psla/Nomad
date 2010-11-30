@@ -152,7 +152,6 @@ namespace Nomad.Core
             try
             {
                 _moduleManager.LoadModules(moduleDiscovery);
-                EventAggregator.Mode = EventAggregatorMode.AllDomain;
                 EventAggregator.Publish(
                     new NomadAllModulesLoadedMessage(
                         new List<ModuleInfo>(moduleDiscovery.GetModules()),
@@ -161,7 +160,6 @@ namespace Nomad.Core
             catch (NomadCouldNotLoadModuleException e)
             {
                 // publish event about not loading module to other modules.
-                EventAggregator.Mode = EventAggregatorMode.AllDomain;
                 EventAggregator.Publish(new NomadCouldNotLoadModuleMessage(
                                             "Could not load modules", e.ModuleName));
 

@@ -36,22 +36,19 @@ namespace Nomad.Tests.FunctionalTests.Updater
         [Test]
         public void resolve_updater_thorugh_service_locator_after_nomad_start_up_and_unload()
         {
-            IUpdater startingUpdater = null;
-            IUpdater tmpUpdater = null;
-
-            Assert.DoesNotThrow(() => startingUpdater = Kernel.ServiceLocator.Resolve<IUpdater>());
+            Assert.DoesNotThrow(() => Kernel.ServiceLocator.Resolve<IUpdater>());
 
             Kernel.UnloadModules();
-            Assert.DoesNotThrow(() => tmpUpdater = Kernel.ServiceLocator.Resolve<IUpdater>());
+            Assert.DoesNotThrow(() => Kernel.ServiceLocator.Resolve<IUpdater>());
 
             // TODO: provide some additional information
             var discovery = new CompositeModuleDiscovery();
 
             Kernel.LoadModules(discovery);
-            Assert.DoesNotThrow(() => tmpUpdater =Kernel.ServiceLocator.Resolve<IUpdater>());
+            Assert.DoesNotThrow(() => Kernel.ServiceLocator.Resolve<IUpdater>());
 
             Kernel.UnloadModules();
-            Assert.DoesNotThrow(() => tmpUpdater = Kernel.ServiceLocator.Resolve<IUpdater>());
+            Assert.DoesNotThrow(() => Kernel.ServiceLocator.Resolve<IUpdater>());
         }
         
         [Test]
