@@ -8,6 +8,7 @@ using Nomad.Modules.Discovery;
 using Nomad.Modules.Manifest;
 using Nomad.Updater;
 using Nomad.Updater.ModulePackagers;
+using Nomad.Updater.ModuleRepositories;
 using NUnit.Framework;
 
 namespace Nomad.Tests.UnitTests.Updater

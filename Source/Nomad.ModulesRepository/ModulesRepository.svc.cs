@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Nomad.Modules.Manifest;
 using Nomad.Updater;
+using Nomad.Updater.ModuleRepositories;
 using Nomad.Utils;
 
 namespace Nomad.ModulesRepository

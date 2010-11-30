@@ -5,6 +5,7 @@ namespace Nomad.Exceptions
     /// <summary>
     ///     Exception raised when service is not found and no service can be provided.
     /// </summary>
+    [Serializable]
     public class NomadServiceNotFoundException : NomadException
     {
         private readonly Type _serviceType;

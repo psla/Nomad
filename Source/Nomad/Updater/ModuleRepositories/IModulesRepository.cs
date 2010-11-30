@@ -2,7 +2,7 @@
 using System.ServiceModel;
 using Nomad.Modules.Manifest;
 
-namespace Nomad.Updater
+namespace Nomad.Updater.ModuleRepositories
 {
     // NOTE: If you change the interface name "IModulesRepository" here, you must also update the reference to "IModulesRepository" in Web.config.
     /// <summary>

@@ -15,6 +15,9 @@ namespace Nomad.Tests.FunctionalTests.Kernel
     /// <summary>
     /// Checks about AppDomain proper implementation within Nomad.Kernel.
     /// </summary>
+    /// <remarks>
+    ///     Callback due to some issues with remoting automatic serialization features needs to be static.
+    /// </remarks>
     [FunctionalTests]
     public class NomadKernelAppDomainManagmentTests : MarshalByRefObject
     {
@@ -24,15 +27,15 @@ namespace Nomad.Tests.FunctionalTests.Kernel
         private const string AssemblyPath = @"Modules\Simple\SimplestModulePossible1.dll";
         private const string AssemblyPath2 = @"Modules\Simple\SimplestModulePossible2.dll";
 
-        private string _assemblyFullPath;
-        private string _assemblyFullPath2;
-        private Mock<IModuleDiscovery> _moduleDiscoveryMock;
-        private NomadKernel _nomadKernel;
+        private static string _assemblyFullPath;
+        private static string _assemblyFullPath2;
+        private static Mock<IModuleDiscovery> _moduleDiscoveryMock;
+        private static NomadKernel _nomadKernel;
         private AppDomain _testAppDomain;
-        private NomadConfiguration _configuration;
+        private static NomadConfiguration _configuration;
 
 
-        private void SetUpModuleDiscovery(IEnumerable<ModuleInfo> moduleInfos)
+        private static void SetUpModuleDiscovery(IEnumerable<ModuleInfo> moduleInfos)
         {
             _moduleDiscoveryMock = new Mock<IModuleDiscovery>(MockBehavior.Loose);
             _moduleDiscoveryMock.Setup(x => x.GetModules())
@@ -43,13 +46,17 @@ namespace Nomad.Tests.FunctionalTests.Kernel
         [SetUp]
         public void set_up()
         {
-            //Use default configuration if not specified otherwise.
-            _assemblyFullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, AssemblyPath);
-            _assemblyFullPath2 = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, AssemblyPath2);
             _testAppDomain = AppDomain.CreateDomain("Kernel test domain",
                                                     new Evidence(AppDomain.CurrentDomain.Evidence),
-                                                    AppDomain.CurrentDomain.BaseDirectory, ".",
+                                                    AppDomain.CurrentDomain.BaseDirectory, 
+                                                    ".",
                                                     false);
+        }
+
+        private static void SetUpInDomain()
+        {
+            _assemblyFullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, AssemblyPath);
+            _assemblyFullPath2 = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, AssemblyPath2);
 
             _configuration = NomadConfiguration.Default;
             var dependencyMock = new Mock<IDependencyChecker>(MockBehavior.Loose);
@@ -58,7 +65,6 @@ namespace Nomad.Tests.FunctionalTests.Kernel
             _configuration.DependencyChecker = dependencyMock.Object;
         }
 
-
         [Test]
         public void loading_module_into_module_appdomain()
         {
@@ -66,8 +72,9 @@ namespace Nomad.Tests.FunctionalTests.Kernel
         }
 
 
-        private void loading_module_into_module_appdomain_callback()
+        private static void loading_module_into_module_appdomain_callback()
         {
+            SetUpInDomain();
            
             _nomadKernel = new NomadKernel(_configuration);
 
@@ -90,7 +97,7 @@ namespace Nomad.Tests.FunctionalTests.Kernel
 
             _nomadKernel.LoadModules(_moduleDiscoveryMock.Object);
 
-            //Check for not loading asm into kernel appDomain
+            //Check for not loading assembly into kernel appDomain
             foreach (Assembly kernelAsm in _nomadKernel.KernelAppDomain.GetAssemblies())
             {
                 Assert.AreNotEqual(AssemblyFullName, kernelAsm.FullName,
@@ -107,9 +114,10 @@ namespace Nomad.Tests.FunctionalTests.Kernel
         }
 
 
-        private void
+        private static void
             verifing_starting_appdomain_to_have_not_module_loading_implementation_loaded_callback()
         {
+            SetUpInDomain();
             _nomadKernel = new NomadKernel(_configuration);
 
             foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
@@ -126,8 +134,9 @@ namespace Nomad.Tests.FunctionalTests.Kernel
         }
 
 
-        private void loading_more_than_one_module_into_module_appdomain_callback()
+        private static void loading_more_than_one_module_into_module_appdomain_callback()
         {
+            SetUpInDomain();
             _nomadKernel = new NomadKernel(_configuration);
 
             var expectedModuleInfos = new[]
@@ -149,7 +158,7 @@ namespace Nomad.Tests.FunctionalTests.Kernel
 
             _nomadKernel.LoadModules(_moduleDiscoveryMock.Object);
 
-            //Check for not loading asm into kernel appDomain);););
+            //Check for not loading assembly into kernel appDomain);););
             foreach (
                 Assembly kernelAsm in _nomadKernel.KernelAppDomain.ReflectionOnlyGetAssemblies())
             {
@@ -164,12 +173,14 @@ namespace Nomad.Tests.FunctionalTests.Kernel
         [Test]
         public void unloading_modules_upon_request()
         {
-            _testAppDomain.DoCallBack(unloading_modules_upon_request_callback);
+            //_testAppDomain.DoCallBack(unloading_modules_upon_request_callback);
+            unloading_modules_upon_request_callback();
         }
 
 
-        private void unloading_modules_upon_request_callback()
+        private static void unloading_modules_upon_request_callback()
         {
+            SetUpInDomain();
             _nomadKernel = new NomadKernel(_configuration);
 
             var expectedModuleInfos = new[]
@@ -183,16 +194,11 @@ namespace Nomad.Tests.FunctionalTests.Kernel
 
             _nomadKernel.LoadModules(_moduleDiscoveryMock.Object);
 
+            var moduleAppDomain = _nomadKernel.ModuleAppDomain;
+
             _nomadKernel.UnloadModules();
 
-            //Aseert modules unloaded
-            foreach (Assembly moduleAsm in _nomadKernel.ModuleAppDomain.GetAssemblies())
-            {
-                Assert.AreNotEqual(AssemblyFullName, moduleAsm.FullName,
-                                   "The module assembly 1 has been loaded into KernelAppDomain.");
-                Assert.AreNotEqual(AssemblyFullName2, moduleAsm.FullName,
-                                   "The module assembly 2 has been loaded into KernelAppDomain.");
-            }
+            Assert.AreNotSame(moduleAppDomain,_nomadKernel.ModuleAppDomain);
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Nomad.Tests.FunctionalTests.Services
         [Test]
         public void empty_domain_returns_empty_list()
         {
-            var loadedModulesService = _kernel.ServiceLocator.Resolve<ILoadedModulesService>();
+            var loadedModulesService = Kernel.ServiceLocator.Resolve<ILoadedModulesService>();
 
             Assert.AreEqual(0, loadedModulesService.GetLoadedModules().Count);
         }
@@ -40,7 +40,7 @@ namespace Nomad.Tests.FunctionalTests.Services
             // perform test and assert
             LoadModulesFromDiscovery(discovery);
 
-            var loadedModulesService = _kernel.ServiceLocator.Resolve<ILoadedModulesService>();
+            var loadedModulesService = Kernel.ServiceLocator.Resolve<ILoadedModulesService>();
 
             Assert.AreEqual(2, loadedModulesService.GetLoadedModules().Count);
         }

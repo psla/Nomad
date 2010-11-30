@@ -5,7 +5,7 @@ using Nomad.Modules.Manifest;
 namespace Nomad.Updater
 {
     /// <summary>
-    /// Complex class that represents available modules list. 
+    ///     Wrapper class that represents available modules list. 
     /// </summary>
     /// <remarks>
     ///     Class is defined this way because of the <see cref="DataContract"/> constraints

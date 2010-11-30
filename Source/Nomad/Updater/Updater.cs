@@ -8,29 +8,33 @@ using Nomad.Modules;
 using Nomad.Modules.Discovery;
 using Nomad.Modules.Manifest;
 using Nomad.Updater.ModulePackagers;
+using Nomad.Updater.ModuleRepositories;
 
 namespace Nomad.Updater
 {
     /// <summary>
-    /// Handles updates and install operations, especially - 
-    /// verifying if there is any update for any module, 
-    /// installing module taking dependencies into account
+    ///     Manages the process of update.
     /// </summary>
     /// <remarks>
     /// <para>
-    ///     Updater provides two message types via EventAggregator
+    ///     Updater uses various engines to perform its work, the most significant are:
+    /// <see cref="IModulesRepository"/> - repository that describes the placement of the updates.
+    /// <see cref="IDependencyChecker"/> - engine for checking validity of the provided updates.
+    /// <see cref="IModulePackager"/> - engine for unpacking data downloaded from repository.
     /// </para>
     /// <para>
-    /// <see cref="NomadAvailableUpdatesMessage"/>
-    /// Informs about available updates.
-    /// Passing the result to <see cref="PrepareUpdate"/> will result in download.
-    /// Event passes <see cref="ModuleManifest"/> of the available upgrades.
+    ///     Nevertheless of messages passed via <see cref="IEventAggregator"/> updater signals its state via <see cref="Status"/> property.
     /// </para>
     /// <para>
-    /// <see cref="NomadUpdatesReadyMessage"/> - Invoked when update is ready to install. Whole data has been downloaded.
+    ///     Updater provides two message types via EventAggregator:
+    ///     <see cref="NomadAvailableUpdatesMessage"/> for signaling available updates.
+    /// and <see cref="NomadUpdatesReadyMessage"/> for signaling that updates are prepared for installation - downloaded.
+    /// </para>
+    /// <para>
+    ///     TODO: write about thread safety and implement lock on status object.
     /// </para>
     /// </remarks>
-    public class Updater : MarshalByRefObject
+    public class Updater : MarshalByRefObject, IUpdater
     {
         private readonly IDependencyChecker _dependencyChecker;
         private readonly IEventAggregator _eventAggregator;
@@ -47,7 +51,7 @@ namespace Nomad.Updater
         ///     Initializes updater instance with proper engines.
         /// </summary>
         /// <param name="targetDirectory">directory to install modules to</param>
-        /// <param name="modulesRepository">backend used to retrieve modules information. i.e. WebServiceModulesRepository, WebModulesRepository, and so on</param>
+        /// <param name="modulesRepository">backend used to retrieve modules information. ie. WebServiceModulesRepository, WebModulesRepository, and so on</param>
         /// <param name="modulesOperations">backend used to unload / load modules</param>
         /// <param name="moduleManifestFactory">factory which creates <see cref="ModuleManifest"/> based on <see cref="ModuleInfo"/></param>
         /// <param name="eventAggregator">event aggregator for providing events</param>
@@ -82,7 +86,13 @@ namespace Nomad.Updater
         /// If such check finds higher version of assembly, than new <see cref="ModuleManifest"/> will be in result
         /// </summary>
         /// <remarks>
-        /// Method return result by <see cref="NomadAvailableUpdatesMessage"/> event, so it may be invoked asynchronously
+        /// <para>
+        ///     Method return result by <see cref="NomadAvailableUpdatesMessage"/> event, so it may be invoked asynchronously
+        /// </para>
+        /// <para>
+        ///     This methods does not throw any exception in case of failure, because the <see cref="Exception"/> derived classes
+        /// cannot cross app domain boundaries. All information about failures are passed through <see cref="IEventAggregator"/> message bus.
+        /// </para>
         /// </remarks>
         public void CheckUpdates(IModuleDiscovery moduleDiscovery)
         {
@@ -112,7 +122,7 @@ namespace Nomad.Updater
             IEnumerable<ModuleInfo> nonValidModules = null;
             // TODO: add implementation for dependency checker and error publishing
 
-            // null handling in repoisotry if repository is silent one
+            // null handling in repository if repository does not throw
             if (availableModules == null)
             {
                 Status = UpdaterStatus.Invalid;
@@ -148,7 +158,14 @@ namespace Nomad.Updater
         ///     Prepares update for available updates. Result returned as message.
         /// </summary>
         /// <remarks>
+        /// <para>
         ///     Using provided <see cref="IModulesRepository"/> downloads all modules and their dependencies.
+        /// </para>
+        /// 
+        /// <para>
+        ///     This methods does not throw any exception in case of failure, because the <see cref="Exception"/> derived classes
+        /// cannot cross app domain boundaries. All information about failures are passed through <see cref="IEventAggregator"/> message bus.
+        /// </para>
         /// </remarks>
         /// <param name="nomadAvailableUpdates">modules to install. </param>
         public void PrepareUpdate(NomadAvailableUpdatesMessage nomadAvailableUpdates)
@@ -156,7 +173,7 @@ namespace Nomad.Updater
             if(nomadAvailableUpdates == null)
             {
                 // can not throw exception - must change into message
-                _eventAggregator.Publish(new NomadUpdatesReadyMessage(new List<ModulePackage>(),true,"Argumet cannot be null"));
+                _eventAggregator.Publish(new NomadUpdatesReadyMessage(new List<ModulePackage>(),true,"Argument cannot be null"));
                 Status = UpdaterStatus.Invalid;
                 return;
             }

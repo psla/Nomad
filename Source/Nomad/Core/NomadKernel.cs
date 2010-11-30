@@ -5,11 +5,11 @@ using System.Security.Policy;
 using Nomad.Communication.EventAggregation;
 using Nomad.Communication.ServiceLocation;
 using Nomad.Exceptions;
-using Nomad.Messages;
 using Nomad.Messages.Loading;
 using Nomad.Modules;
 using Nomad.Modules.Discovery;
 using Nomad.Services;
+using Nomad.Updater;
 
 namespace Nomad.Core
 {
@@ -18,7 +18,7 @@ namespace Nomad.Core
     /// </summary>
     public class NomadKernel : IModulesOperations
     {
-        private readonly ModuleManager _moduleManager;
+        private ModuleManager _moduleManager;
 
 
         /// <summary>
@@ -48,41 +48,11 @@ namespace Nomad.Core
 
             KernelAppDomain = AppDomain.CurrentDomain;
 
-            ModuleAppDomain = AppDomain.CreateDomain("Modules AppDomain",
-                                                     new Evidence(AppDomain.CurrentDomain.Evidence),
-                                                     AppDomain.CurrentDomain.BaseDirectory,
-                                                     AppDomain.CurrentDomain.BaseDirectory,
-                                                     true);
+            // create another app domain and register very important services
+            RegisterCoreServices();
 
-            // create kernel version of the event aggregator and pass to appDomain
-            var siteEventAggregator = new EventAggregator(new WpfGuiThreadProvider());
-            ObjRef objectReference = RemotingServices.Marshal(siteEventAggregator);
-            ModuleAppDomain.SetData("EventAggregatorObjRef", objectReference);
-
-            // use container creator to create communication services on modules app domain
-            string asmName = typeof (ContainerCreator).Assembly.FullName;
-            string typeName = typeof (ContainerCreator).FullName;
-
-            var moduleLoaderCreator = (ContainerCreator)
-                                      ModuleAppDomain.CreateInstanceAndUnwrap(asmName, typeName);
-
-            // create facade for event aggregator combining proxy and on site object
-            EventAggregator =
-                new EventAggregatorFacade(moduleLoaderCreator.EventAggregatorOnModulesDomain,
-                                          siteEventAggregator);
-
-            // used proxied service locator
-            ServiceLocator = moduleLoaderCreator.ServiceLocator;
-
-            ModuleLoader = moduleLoaderCreator.CreateModuleLoaderInstance();
-
-            // registering LoadedModulesService
-            ServiceLocator.Register<ILoadedModulesService>(
-                new LoadedModulesService(ModuleLoader));
-
-            _moduleManager = new ModuleManager(ModuleLoader,
-                                               KernelConfiguration.ModuleFilter,
-                                               KernelConfiguration.DependencyChecker);
+            // registering additional services ie. updater + listing + languages... etc
+            RegisterAdditionalServices();
         }
 
 
@@ -155,12 +125,13 @@ namespace Nomad.Core
         public void UnloadModules()
         {
             AppDomain.Unload(ModuleAppDomain);
+            ModuleAppDomain = null;
 
-            ModuleAppDomain = AppDomain.CreateDomain("Nomad Loaded Modules",
-                                                     new Evidence(AppDomain.CurrentDomain.Evidence),
-                                                     AppDomain.CurrentDomain.BaseDirectory,
-                                                     ".",
-                                                     false);
+            // re register of the Nomad Core Services
+            RegisterCoreServices();
+
+            // re register Nomad Additional Services
+            RegisterAdditionalServices();
         }
 
 
@@ -169,11 +140,11 @@ namespace Nomad.Core
         /// </summary>
         /// <param name="moduleDiscovery">ModuleDiscovery specifying modules to be loaded.</param>
         /// <remarks>
-        ///     This method provieds feedback to already loaded modules about any possible failure.
+        ///     This method provides feedback to already loaded modules about any possible failure.
         /// </remarks>
         /// <exception cref="NomadCouldNotLoadModuleException">
         ///     This exception will be raised when <see cref="ModuleManager"/> object responsible for
-        /// loading modules encounter any problems. Any exception will be changed to the message <see cref="NomadCouldNotLoadModuleMessage"/> responsbile for 
+        /// loading modules encounter any problems. Any exception will be changed to the message <see cref="NomadCouldNotLoadModuleMessage"/> responsible for 
         /// informing other modules about failure.
         /// </exception>
         public void LoadModules(IModuleDiscovery moduleDiscovery)
@@ -200,5 +171,58 @@ namespace Nomad.Core
         }
 
         #endregion
+
+        private void RegisterCoreServices()
+        {
+            ModuleAppDomain = AppDomain.CreateDomain("Modules AppDomain",
+                                                     new Evidence(AppDomain.CurrentDomain.Evidence),
+                                                     AppDomain.CurrentDomain.BaseDirectory,
+                                                     AppDomain.CurrentDomain.BaseDirectory,
+                                                     true);
+
+            // create kernel version of the event aggregator and pass to appDomain
+            var siteEventAggregator = new EventAggregator(new WpfGuiThreadProvider());
+            ObjRef objectReference = RemotingServices.Marshal(siteEventAggregator);
+            ModuleAppDomain.SetData("EventAggregatorObjRef", objectReference);
+
+            // use container creator to create communication services on modules app domain
+            string asmName = typeof (ContainerCreator).Assembly.FullName;
+            string typeName = typeof (ContainerCreator).FullName;
+
+            var moduleLoaderCreator = (ContainerCreator)
+                                      ModuleAppDomain.CreateInstanceAndUnwrap(asmName, typeName);
+
+            // create facade for event aggregator combining proxy and on site object
+            EventAggregator = new EventAggregatorFacade(moduleLoaderCreator.EventAggregatorOnModulesDomain,
+                                          siteEventAggregator);
+
+            // used proxied service locator
+            ServiceLocator = moduleLoaderCreator.ServiceLocator;
+
+            ModuleLoader = moduleLoaderCreator.CreateModuleLoaderInstance();
+
+            _moduleManager = new ModuleManager(ModuleLoader,
+                                               KernelConfiguration.ModuleFilter,
+                                               KernelConfiguration.DependencyChecker);
+        }
+
+
+        private void RegisterAdditionalServices()
+        {
+            // registering updater using data from configuration
+            var updater = new Updater.Updater(KernelConfiguration.ModuleDirectoryPath,
+                                           KernelConfiguration.ModuleRepository,
+                                           this,
+                                           ModuleInfo.DefaultFactory,
+                                           //TODO ? change it to use configuration class ?
+                                           EventAggregator,
+                                           KernelConfiguration.ModulePackager,
+                                           KernelConfiguration.DependencyChecker);
+            ServiceLocator.Register<IUpdater>(updater);
+
+            // registering LoadedModulesService
+            ServiceLocator.Register<ILoadedModulesService>(
+                new LoadedModulesService(ModuleLoader));
+        }
     }
 }

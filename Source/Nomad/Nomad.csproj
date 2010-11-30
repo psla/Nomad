@@ -141,14 +141,16 @@
     <Compile Include="Signing\SignatureAlgorithms\PkiSignatureAlgorithm.cs" />
     <Compile Include="Updater\AvailableModules.cs" />
     <Compile Include="Messages\Updating\NomadAvailableUpdatesMessage.cs" />
+    <Compile Include="Updater\IUpdater.cs" />
     <Compile Include="Updater\ModulePackagers\IModulePackager.cs" />
-    <Compile Include="Updater\IModulesRepository.cs" />
+    <Compile Include="Updater\ModuleRepositories\IModulesRepository.cs" />
     <Compile Include="Updater\ModulePackage.cs" />
     <Compile Include="Updater\ModulePackagers\ModulePackager.cs" />
     <Compile Include="Updater\UpdateArguments.cs" />
     <Compile Include="Updater\Updater.cs" />
     <Compile Include="Messages\Updating\NomadUpdatesReadyMessage.cs" />
     <Compile Include="Updater\UpdaterStatus.cs" />
+    <Compile Include="Updater\UpdaterType.cs" />
     <Compile Include="Utils\ManifestBuilder.cs" />
     <Compile Include="Utils\Version.cs" />
     <Compile Include="Modules\ModuleInfo.cs" />

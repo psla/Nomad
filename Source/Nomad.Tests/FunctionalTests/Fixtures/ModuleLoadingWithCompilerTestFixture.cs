@@ -15,9 +15,10 @@ namespace Nomad.Tests.FunctionalTests.Fixtures
     public class ModuleLoadingWithCompilerTestFixture : MarshalByRefObject
     {
         private const string KeyFile = @"alaMaKota.xml";
-        protected NomadKernel _kernel;
         private ModuleCompiler _moduleCompiler;
-        protected AppDomain Domain { get; private set; }
+
+        protected NomadKernel Kernel;
+        protected AppDomain Domain;
 
 
         [TestFixtureSetUp]
@@ -32,7 +33,7 @@ namespace Nomad.Tests.FunctionalTests.Fixtures
 
 
         [SetUp]
-        public void set_up()
+        public virtual void SetUp()
         {
             _moduleCompiler = new ModuleCompiler();
 
@@ -42,16 +43,16 @@ namespace Nomad.Tests.FunctionalTests.Fixtures
             configuration.DependencyChecker = new DependencyChecker();
 
             // initialize kernel
-            _kernel = new NomadKernel(configuration);
+            Kernel = new NomadKernel(configuration);
 
             // domain
-            Domain = _kernel.ModuleAppDomain;
+            Domain = Kernel.ModuleAppDomain;
         }
 
 
         protected void LoadModulesFromDiscovery(IModuleDiscovery discovery)
         {
-            _kernel.LoadModules(discovery);
+            Kernel.LoadModules(discovery);
         }
 
 

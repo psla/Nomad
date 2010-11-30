@@ -1,6 +1,9 @@
 ﻿using System;
 using Nomad.Modules;
 using Nomad.Modules.Filters;
+using Nomad.Updater;
+using Nomad.Updater.ModulePackagers;
+using Nomad.Updater.ModuleRepositories;
 
 namespace Nomad.Core
 {
@@ -14,6 +17,10 @@ namespace Nomad.Core
 
         private IDependencyChecker _dependencyChecker;
         private IModuleFilter _moduleFilter;
+        private UpdaterType _updaterType;
+        private string _moduleDirectoryPath;
+        private IModulesRepository _moduleRepository;
+        private IModulePackager _modulePackager;
 
         /// <summary>
         ///     Implementation of <see cref="IModuleFilter"/> which will be used by Kernel.
@@ -26,6 +33,64 @@ namespace Nomad.Core
             {
                 AssertNotFrozen();
                 _moduleFilter = value;
+            }
+        }
+
+        /// <summary>
+        ///     Place where all modules are stored.
+        /// </summary>
+        public string ModuleDirectoryPath
+        {
+            get {return _moduleDirectoryPath; }
+            set
+            {
+                AssertNotFrozen();
+                _moduleDirectoryPath = value;
+            }
+        }
+
+        /// <summary>
+        ///     Engine reposnsible for decoding packages from module repository.
+        /// </summary>
+        public IModulePackager ModulePackager
+        {
+            get
+            {
+                return _modulePackager;
+            }
+            set
+            {
+                AssertNotFrozen();
+                _modulePackager = value;
+            }
+        }
+
+        /// <summary>
+        ///     Module repository responsible for connecting to update center.
+        /// </summary>
+        public IModulesRepository ModuleRepository
+        {
+            get
+            {
+                return _moduleRepository;
+            }
+            set
+            {
+                AssertNotFrozen();
+                _moduleRepository = value;
+            }
+        }
+
+        /// <summary>
+        ///     Type of the updater to be used for the application.
+        /// </summary>
+        public UpdaterType UpdaterType
+        {
+            get { return _updaterType; }
+            set
+            {
+                AssertNotFrozen();
+                _updaterType = value;
             }
         }
 
@@ -57,6 +122,8 @@ namespace Nomad.Core
                                //TODO: Review the idea of default implementation.
                                ModuleFilter = new CompositeModuleFilter(new IModuleFilter[] {}),
                                DependencyChecker = new DependencyChecker(),
+                               UpdaterType = UpdaterType.Manual,
+                               ModulePackager = new ModulePackager(),
                            };
             }
         }
@@ -67,6 +134,8 @@ namespace Nomad.Core
         ///     Determines the state of configuration object.
         /// </summary>
         public bool IsFrozen { get; private set; }
+
+        
 
 
         /// <summary>
