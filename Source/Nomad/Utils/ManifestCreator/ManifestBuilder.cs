@@ -10,13 +10,13 @@ using Nomad.Signing.FileUtils;
 using Nomad.Signing.SignatureAlgorithms;
 using File = System.IO.File;
 
-namespace Nomad.Utils
+namespace Nomad.Utils.ManifestCreator
 {
     /// <summary>
     ///     Tool for creating Nomad compliant manifests for existing assemblies.
     /// </summary>
     /// <remarks>
-    ///     This tool is simplest possible version of ManifestBuilder concept - it has few limitations.
+    ///     This tool is simplest possible version of ManifestBuilder concept - it has few limitations. Nomad default values are used:
     /// <para>
     ///     The scope of working is folder and all files below. All files within provided folder are singed. All assemblies other than provided
     /// assembly name are used as dependencies to current assembly. <c>These assemblies are also signed.</c>
@@ -27,15 +27,18 @@ namespace Nomad.Utils
     /// <para>
     ///     It can be used with two types of cryptographic security.
     /// </para>
+    ///     <c>To change any of this settings provide the <see cref="ManifestBuilderConfiguration"/> object into <see cref="ManifestBuilder"/>.</c>
     /// </remarks>
     public class ManifestBuilder
     {
         private readonly string _assemblyName;
+        private readonly ManifestBuilderConfiguration _configuration;
         private readonly string _directory;
         private readonly string _issuerName;
         private readonly string _issuerXmlPath;
 
         private readonly string _keyPassword;
+
         private readonly KeyStorage _keyStore;
 
         private RSACryptoServiceProvider _key;
@@ -51,8 +54,10 @@ namespace Nomad.Utils
         /// <param name="directory">Directory within this assembly.</param>
         /// <param name="keyStore">Flag which describes whether to use information from PKI or from Nomad key mechanism.</param>
         /// <param name="keyPassword">Password for PKI certificate.</param>
+        /// <param name="configuration">Configuration on manifest builder class.</param>
         public ManifestBuilder(string issuerName, string issuerXmlPath, string assemblyName,
-                               string directory, KeyStorage keyStore, string keyPassword)
+                               string directory, KeyStorage keyStore, string keyPassword,
+                               ManifestBuilderConfiguration configuration)
         {
             _issuerName = issuerName;
             _issuerXmlPath = issuerXmlPath;
@@ -61,7 +66,30 @@ namespace Nomad.Utils
             _keyStore = keyStore;
             _keyPassword = keyPassword;
 
+            if (configuration == null)
+                throw new ArgumentNullException("configuration");
+
+            _configuration = configuration;
+
             LoadKey();
+        }
+
+
+        /// <summary>
+        ///     Initializes the new instance of the <see cref="ManifestBuilder"/> class.
+        /// </summary>
+        /// <param name="issuerName"></param>
+        /// <param name="issuerXmlPath"></param>
+        /// <param name="assemblyName"></param>
+        /// <param name="directory"></param>
+        /// <param name="keyStore"></param>
+        /// <param name="keyPassword"></param>
+        public ManifestBuilder(string issuerName, string issuerXmlPath, string assemblyName,
+                               string directory, KeyStorage keyStore, string keyPassword)
+            : this(
+                issuerName, issuerXmlPath, assemblyName, directory, keyStore, keyPassword,
+                ManifestBuilderConfiguration.Default)
+        {
         }
 
 
@@ -77,7 +105,9 @@ namespace Nomad.Utils
         /// <param name="directory">Directory within this assembly.</param>
         public ManifestBuilder(string issuerName, string issuerXmlPath, string assemblyName,
                                string directory)
-            : this(issuerName, issuerXmlPath, assemblyName, directory, KeyStorage.Nomad, string.Empty)
+            : this(
+                issuerName, issuerXmlPath, assemblyName, directory, KeyStorage.Nomad, string.Empty,
+                ManifestBuilderConfiguration.Default)
         {
         }
 
@@ -87,7 +117,7 @@ namespace Nomad.Utils
             if (_keyStore == KeyStorage.Nomad)
                 _signatureAlgorithm =
                     new RsaSignatureAlgorithm(File.ReadAllText(_issuerXmlPath));
-            else if ( _keyStore == KeyStorage.PKI )
+            else if (_keyStore == KeyStorage.PKI)
                 _signatureAlgorithm =
                     new PkiSignatureAlgorithm(File.ReadAllBytes(_issuerXmlPath), _keyPassword);
         }
@@ -111,10 +141,15 @@ namespace Nomad.Utils
         /// <returns>The newly created manifest.</returns>
         public ModuleManifest Create()
         {
-            // get the content of manifest
-            Version version = GetVersion();
-            IEnumerable<SignedFile> signedFiles = GetSignedFiles();
-            IEnumerable<ModuleDependency> dependencyModules = GetDependencyModules2();
+            // get the content of manifest from various engines.
+            Version version = _configuration.VersionProvider.GetVersion(GetAssemblyPath());
+
+            IEnumerable<SignedFile> signedFiles =
+                _configuration.SignedFilesProvider.GetSignedFiles(_directory, _signatureAlgorithm);
+
+            IEnumerable<ModuleDependency> dependencyModules =
+                _configuration.ModulesDependenciesProvider.GetDependencyModules(_directory,
+                                                                                 GetAssemblyPath());
 
             //  create manifest
             var manifest = new ModuleManifest
@@ -137,95 +172,6 @@ namespace Nomad.Utils
                                _signatureAlgorithm.Sign(File.ReadAllBytes(manifestPath)));
 
             return manifest;
-        }
-
-
-        private IEnumerable<ModuleDependency> GetDependencyModules2()
-        {
-            var dependencies = new List<ModuleDependency>();
-
-            // read the directory 
-            IEnumerable<string> files = Directory.GetFiles(_directory, "*.dll",
-                                                           SearchOption.AllDirectories).Concat(
-                                                               Directory.GetFiles(_directory,
-                                                                                  "*.exe",
-                                                                                  SearchOption.
-                                                                                      AllDirectories));
-            // mine module
-            string myAsm = GetAssemblyName();
-
-            // for each assembly in this collection, try resolving its, name version and so on.)
-            foreach (string file in files)
-            {
-                AssemblyName asmName = null;
-                try
-                {
-                    asmName = AssemblyName.GetAssemblyName(file);
-                }
-                catch (BadImageFormatException)
-                {
-                    // nothing happens
-                    continue;
-                }
-                catch (Exception e)
-                {
-                    throw new InvalidOperationException("Access to file is somewhat corrupted", e);
-                }
-
-                // do not add itself
-                if (asmName.Name.Equals(myAsm))
-                    continue;
-
-                dependencies.Add(new ModuleDependency
-                                     {
-                                         ModuleName = asmName.Name,
-                                         MinimalVersion = new Version(asmName.Version),
-                                         ProcessorArchitecture = asmName.ProcessorArchitecture,
-                                         //TODO: implement recognition of isServiceProvider ability
-                                         HasLoadingOrderPriority = false,
-                                     });
-            }
-
-            return dependencies;
-        }
-
-
-        private IEnumerable<SignedFile> GetSignedFiles()
-        {
-            string[] files = Directory.GetFiles(_directory, "*",
-                                                SearchOption.AllDirectories);
-
-            IEnumerable<SignedFile> signedFiles = from file in files
-                                                  select
-                                                      new SignedFile
-                                                          {
-                                                              FilePath =
-                                                                  file.Substring(
-                                                                      _directory.
-                                                                          Length),
-                                                              Signature =
-                                                                  _signatureAlgorithm.Sign(
-                                                                      File.ReadAllBytes(file))
-                                                          };
-            return signedFiles;
-        }
-
-
-        private Version GetVersion()
-        {
-            Version version = null;
-
-            try
-            {
-                version = new Version(AssemblyName.GetAssemblyName(GetAssemblyPath()).Version);
-            }
-            catch (Exception)
-            {
-                //TODO: this cannot be done ! this way. Implement the proper way of logging this exception
-                version = new Version("0.0.0.0");
-            }
-
-            return version;
         }
     }
 }

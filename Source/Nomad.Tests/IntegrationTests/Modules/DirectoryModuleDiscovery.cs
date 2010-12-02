@@ -5,6 +5,7 @@ using Nomad.KeysGenerator;
 using Nomad.Modules;
 using Nomad.Tests.FunctionalTests.Modules;
 using Nomad.Utils;
+using Nomad.Utils.ManifestCreator;
 using NUnit.Framework;
 using TestsShared;
 

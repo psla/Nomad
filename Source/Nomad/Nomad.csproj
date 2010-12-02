@@ -151,7 +151,14 @@
     <Compile Include="Messages\Updating\NomadUpdatesReadyMessage.cs" />
     <Compile Include="Updater\UpdaterStatus.cs" />
     <Compile Include="Updater\UpdaterType.cs" />
-    <Compile Include="Utils\ManifestBuilder.cs" />
+    <Compile Include="Utils\ManifestCreator\FileSignerProviders\ISignedFilesProvider.cs" />
+    <Compile Include="Utils\ManifestCreator\DependenciesProvider\IModulesDependenciesProvider.cs" />
+    <Compile Include="Utils\ManifestCreator\VersionProviders\IVersionProvider.cs" />
+    <Compile Include="Utils\ManifestCreator\ManifestBuilder.cs" />
+    <Compile Include="Utils\ManifestCreator\ManifestBuilderConfiguration.cs" />
+    <Compile Include="Utils\ManifestCreator\VersionProviders\SimpleVersionProvider.cs" />
+    <Compile Include="Utils\ManifestCreator\FileSignerProviders\WholeDirectorySignedFilesProvider.cs" />
+    <Compile Include="Utils\ManifestCreator\DependenciesProvider\WholeDirectoryModulesDependenciesProvider.cs" />
     <Compile Include="Utils\Version.cs" />
     <Compile Include="Modules\ModuleInfo.cs" />
     <Compile Include="Modules\ModuleLoader.cs" />

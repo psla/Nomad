@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using Nomad.Modules.Manifest;
 using Nomad.Utils;
+using Nomad.Utils.ManifestCreator;
 
 namespace Nomad.Tests.FunctionalTests.Modules
 {

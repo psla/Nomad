@@ -2,6 +2,7 @@
 using System.IO;
 using Nomad.Signing;
 using Nomad.Utils;
+using Nomad.Utils.ManifestCreator;
 
 namespace Nomad.ManifestCreator
 {
