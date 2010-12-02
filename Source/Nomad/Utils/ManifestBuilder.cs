@@ -15,6 +15,19 @@ namespace Nomad.Utils
     /// <summary>
     ///     Tool for creating Nomad compliant manifests for existing assemblies.
     /// </summary>
+    /// <remarks>
+    ///     This tool is simplest possible version of ManifestBuilder concept - it has few limitations.
+    /// <para>
+    ///     The scope of working is folder and all files below. All files within provided folder are singed. All assemblies other than provided
+    /// assembly name are used as dependencies to current assembly. <c>These assemblies are also signed.</c>
+    /// </para>
+    /// <para>
+    ///     Version can be pinpointed using specific constructor - instead of using built in .NET Framework <see cref="Assembly.nGetVersion"/> property.
+    /// </para>
+    /// <para>
+    ///     It can be used with two types of cryptographic security.
+    /// </para>
+    /// </remarks>
     public class ManifestBuilder
     {
         private readonly string _assemblyName;

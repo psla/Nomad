@@ -17,6 +17,10 @@ namespace Nomad.Updater
         /// </summary>
         UpdaterStatus Status { get; }
 
+        /// <summary>
+        ///     Gets or sets the mode in which updater is wokring.
+        /// </summary>
+        UpdaterType Mode { get; set; }
 
         /// <summary>
         /// Runs update checking. For each discovered module performs check for update.

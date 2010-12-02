@@ -80,6 +80,15 @@ namespace Nomad.Updater
         /// </summary>
         public UpdaterStatus Status { get; private set; }
 
+        /// <summary>
+        ///     The type in which updater works.
+        /// </summary>
+        /// <remarks>
+        ///     TODO: implement thread safty of this property.
+        ///     This property is freezable in case of working w
+        /// </remarks>
+        public UpdaterType Mode { get; set; }
+
 
         /// <summary>
         /// Runs update checking. For each discovered module performs check for update.
