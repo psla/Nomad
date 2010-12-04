@@ -12,15 +12,16 @@ namespace Nomad.Modules
     /// </summary>
     public class ModuleLoader : MarshalByRefObject, IModuleLoader
     {
-        private readonly List<IModuleBootstraper> _loadedModules = new List<IModuleBootstraper>();
         private readonly List<ModuleInfo> _loadedModuleInfos = new List<ModuleInfo>();
+        private readonly List<IModuleBootstraper> _loadedModules = new List<IModuleBootstraper>();
         private readonly IWindsorContainer _rootContainer;
 
 
         /// <summary>
         ///     Initializes new instance of the <see cref="ModuleLoader"/> class.
         /// </summary>
-        /// <param name="rootContainer">Container that will be used as a root container. Module's sub-containers will be created based on this container. Must not be <c>null</c>.</param>
+        /// <param name="rootContainer">Container that will be used as a root container.
+        /// Module's sub-containers will be created based on this container. Must not be <c>null</c>.</param>
         /// <exception cref="ArgumentNullException">When <paramref name="rootContainer"/> is <c>null</c></exception>
         public ModuleLoader(IWindsorContainer rootContainer)
         {

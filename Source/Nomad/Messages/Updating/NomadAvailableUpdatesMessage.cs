@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Nomad.Modules.Manifest;
 using Nomad.Updater;
 
@@ -10,6 +11,7 @@ namespace Nomad.Messages.Updating
     /// <remarks>
     ///     Basing on this information you may call <see cref="Updater.PrepareUpdate"/> which will download all available updates
     /// </remarks>
+    [Serializable]
     public class NomadAvailableUpdatesMessage : NomadMessage
     {
         private readonly List<ModuleManifest> _availableUpdates;

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Nomad.Modules.Manifest;
+using Nomad.Signing;
 using Nomad.Utils;
 using Nomad.Utils.ManifestCreator;
 
@@ -69,7 +70,10 @@ namespace Nomad.Tests.FunctionalTests.Modules
         {
             get { return @"..\Source\Nomad.Tests\FunctionalTests\Data\SimplestModulePossible1.cs"; }
         }
-
+        
+        /// <summary>
+        ///     Gets the alternative path. Thus SimplestModulePossible2.
+        /// </summary>
         public static string DefaultSimpleModuleSourceAlternative
         {
             get { return @"..\Source\Nomad.Tests\FunctionalTests\Data\SimplestModulePossible2.cs"; }
@@ -120,16 +124,27 @@ namespace Nomad.Tests.FunctionalTests.Modules
             return _parameters.OutputAssembly;
         }
 
-
-        public string GenerateManifestForModule(string modulePath,string keyLocation)
+        /// <summary>
+        ///     Wrapps the generating manifest with values that should be provided. Provides access to <paramref name="configuration"/>.
+        /// </summary>
+        /// <param name="modulePath"></param>
+        /// <param name="keyLocation"></param>
+        /// <param name="configuration"></param>
+        /// <returns></returns>
+        public string GenerateManifestForModule(string modulePath, string keyLocation,ManifestBuilderConfiguration configuration)
         {
             string directory = Path.GetFullPath(Path.GetDirectoryName(modulePath));
             var builder = new ManifestBuilder("TES_ISSUER_COMPILER",
                                               keyLocation,
-                                              Path.GetFileName(modulePath), directory);
+                                              Path.GetFileName(modulePath), directory,KeyStorage.Nomad,string.Empty,configuration);
             builder.Create();
 
             return modulePath + ModuleManifest.ManifestFileNameSuffix;
+        }
+
+        public string GenerateManifestForModule(string modulePath,string keyLocation)
+        {
+            return GenerateManifestForModule(modulePath, keyLocation, ManifestBuilderConfiguration.Default);
         }
     }
 }

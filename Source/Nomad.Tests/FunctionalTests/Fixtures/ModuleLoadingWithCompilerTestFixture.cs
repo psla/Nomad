@@ -8,6 +8,7 @@ using Nomad.Modules;
 using Nomad.Modules.Discovery;
 using Nomad.Modules.Filters;
 using Nomad.Tests.FunctionalTests.Modules;
+using Nomad.Utils.ManifestCreator;
 using NUnit.Framework;
 
 namespace Nomad.Tests.FunctionalTests.Fixtures
@@ -22,7 +23,7 @@ namespace Nomad.Tests.FunctionalTests.Fixtures
 
 
         [TestFixtureSetUp]
-        public void set_up_fixture()
+        public virtual void SetUpFixture()
         {
             if (File.Exists(KeyFile))
             {
@@ -72,6 +73,12 @@ namespace Nomad.Tests.FunctionalTests.Fixtures
         protected void SetUpModuleWithManifest(string outputDirectory, string srcPath,
                                                params string[] references)
         {
+            SetUpModuleWithManifest(outputDirectory,srcPath,ManifestBuilderConfiguration.Default,references);
+        }
+
+        protected void SetUpModuleWithManifest(string outputDirectory, string srcPath, ManifestBuilderConfiguration configuration,
+                                               params string[] references)
+        {
             _moduleCompiler.OutputDirectory = outputDirectory;
 
             string modulePath = _moduleCompiler.GenerateModuleFromCode(srcPath, references);
@@ -83,7 +90,7 @@ namespace Nomad.Tests.FunctionalTests.Fixtures
             }
 
             // manifest generating is for folder
-            _moduleCompiler.GenerateManifestForModule(modulePath, KeyFile);
+            _moduleCompiler.GenerateManifestForModule(modulePath, KeyFile,configuration);
 
             // remove those references
             foreach (string reference in references)

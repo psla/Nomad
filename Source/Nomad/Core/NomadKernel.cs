@@ -124,6 +124,8 @@ namespace Nomad.Core
         /// </remarks>
         public void UnloadModules()
         {
+            // TODO: add support for performing unLoad method on every module 
+
             AppDomain.Unload(ModuleAppDomain);
             ModuleAppDomain = null;
 
@@ -216,6 +218,8 @@ namespace Nomad.Core
                                            EventAggregator,
                                            KernelConfiguration.ModulePackager,
                                            KernelConfiguration.DependencyChecker);
+            // FIXME this into construcot of the updater ?
+            updater.Mode = KernelConfiguration.UpdaterType;
             ServiceLocator.Register<IUpdater>(updater);
 
             // registering LoadedModulesService

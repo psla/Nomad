@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using Nomad.Core;
 using Nomad.Messages.Updating;
 using Nomad.Modules.Discovery;
@@ -12,15 +13,22 @@ namespace Nomad.Updater
     /// </summary>
     public interface IUpdater
     {
+        AutoResetEvent UpdateFinished { get; }
+
         /// <summary>
-        ///    Gets the state of the updater.
+        ///    Gets the state of the updater. Used to signalize potential threading problems.
         /// </summary>
         UpdaterStatus Status { get; }
 
         /// <summary>
-        ///     Gets or sets the mode in which updater is wokring.
+        ///     Gets or sets the mode in which updater is working. 
         /// </summary>
         UpdaterType Mode { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the default <see cref="IModuleDiscovery"/> of modules to be loaded <c>after</c> update.
+        /// </summary>
+        IModuleDiscovery DefaultAfterUpdateModules { get; set; }
 
         /// <summary>
         /// Runs update checking. For each discovered module performs check for update.
@@ -38,20 +46,20 @@ namespace Nomad.Updater
         /// <remarks>
         ///     Using provided <see cref="IModulesRepository"/> downloads all modules and their dependencies.
         /// </remarks>
-        /// <param name="nomadAvailableUpdates">modules to install. </param>
-        void PrepareUpdate(NomadAvailableUpdatesMessage nomadAvailableUpdates);
+        /// <param name="avaliableUpdates">List of updates to download.</param>
+        void PrepareUpdate(IEnumerable<ModuleManifest> avaliableUpdates);
 
 
         /// <summary>
-        ///     Starts update process
+        ///     Starts update process.
         /// </summary>
+        /// <param name="discovery">The discovery of modules to be loaded after update.</param>
         /// <remarks>
         /// Using provided <see cref="IModulesOperations"/> it unloads all modules, 
         /// than it places update files into modules directory, and loads modules back.
         /// 
         /// Upon success or failure sets the flag <see cref="Updater.Status"/> with corresponding value.
         /// </remarks>
-        /// <param name="modulePackages">collection of packages to install</param>
-        void PerformUpdates(IEnumerable<ModulePackage> modulePackages);
+        void PerformUpdates(IModuleDiscovery discovery);
     }
 }

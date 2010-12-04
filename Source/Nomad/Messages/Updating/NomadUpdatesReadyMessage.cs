@@ -1,28 +1,31 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Nomad.Modules.Manifest;
 using Nomad.Updater;
 
 namespace Nomad.Messages.Updating
 {
     /// <summary>
-    /// C   ontains whole updates packages. Called when all required updates downloaded
+    ///     Contains whole updates packages. Called when all required updates downloaded
     /// </summary>
+    [Serializable]
     public class NomadUpdatesReadyMessage : NomadMessage
     {
         private readonly bool _error;
-        private readonly List<ModulePackage> _modulePackages;
+        private readonly List<ModuleManifest> _modulePackages;
 
 
         ///<summary>
         /// Initializes immutable class with information about ready Update Packages.
         ///</summary>
         ///<param name="modulePackages"></param>
-        public NomadUpdatesReadyMessage(List<ModulePackage> modulePackages)
+        public NomadUpdatesReadyMessage(List<ModuleManifest> modulePackages)
             : this(modulePackages, false, string.Empty)
         {
         }
 
 
-        public NomadUpdatesReadyMessage(List<ModulePackage> modulePackages, bool error, string message)
+        public NomadUpdatesReadyMessage(List<ModuleManifest> modulePackages, bool error, string message)
             : base(message)
         {
             _modulePackages = modulePackages;
@@ -41,7 +44,7 @@ namespace Nomad.Messages.Updating
         /// <summary>
         ///     Update elements. Completely ready.
         /// </summary>
-        public IList<ModulePackage> ModulePackages
+        public IList<ModuleManifest> ModulePackages
         {
             get { return _modulePackages.AsReadOnly(); }
         }

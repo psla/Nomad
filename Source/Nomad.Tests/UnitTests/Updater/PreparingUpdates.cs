@@ -27,6 +27,28 @@ namespace Nomad.Tests.UnitTests.Updater
         }
 
         [Test]
+        public void packages_gotten_from_repository_have_nulls()
+        {
+            EventAggregator.Setup(x => x.Publish(It.IsAny<NomadUpdatesReadyMessage>()))
+                 .Callback<NomadUpdatesReadyMessage>(msg => Assert.IsTrue(msg.Error))
+                 .Verifiable("The message should be published");
+
+            var modulePackages = new List<ModuleManifest>
+                                     {
+                                         new ModuleManifest() { ModuleName = "Test" },
+                                     };
+
+            // provide wrong packages in repository
+            ModulesRepository.Setup(x => x.GetModule(It.IsAny<string>())).Returns(
+                new ModulePackage());
+
+            Updater.PrepareUpdate(modulePackages);
+
+            EventAggregator.Verify();
+            Assert.AreEqual(UpdaterStatus.Invalid, Updater.Status);
+        }
+
+        [Test]
         public void preparing_updates_invoked_with_null_raises_message()
         {
             EventAggregator.Setup(x => x.Publish(It.IsAny<NomadUpdatesReadyMessage>()))
@@ -49,10 +71,10 @@ namespace Nomad.Tests.UnitTests.Updater
                 .Callback<NomadUpdatesReadyMessage>(msg => Assert.IsTrue(msg.Error))
                 .Verifiable("The message should be published");
 
-            Updater.PrepareUpdate(new NomadAvailableUpdatesMessage(new List<ModuleManifest>()
+            Updater.PrepareUpdate(new List<ModuleManifest>()
                                                                        {
                                                                            _moduleManifest
-                                                                       }));
+                                                                       });
 
             EventAggregator.Verify();
             Assert.AreEqual(UpdaterStatus.Invalid,Updater.Status);
@@ -74,15 +96,15 @@ namespace Nomad.Tests.UnitTests.Updater
                                                         {
                                                             Assert.IsFalse(msg.Error);
                                                             Assert.AreEqual(1,msg.ModulePackages.Count);
-                                                            Assert.AreSame(modulePacakge,
+                                                            Assert.AreSame(modulePacakge.ModuleManifest,
                                                                            msg.ModulePackages[0]);
                                                         })
                 .Verifiable("This message should be published upon exit");
 
-            Updater.PrepareUpdate(new NomadAvailableUpdatesMessage(new List<ModuleManifest>()
+            Updater.PrepareUpdate(new List<ModuleManifest>()
                                                                        {
                                                                            _moduleManifest
-                                                                       }));
+                                                                       });
 
             EventAggregator.Verify();
             ModulesRepository.Verify();

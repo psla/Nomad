@@ -1,31 +1,22 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Moq;
 using Nomad.Modules.Discovery;
+using Nomad.Modules.Manifest;
 using Nomad.Updater;
 using NUnit.Framework;
 using TestsShared;
 
 namespace Nomad.Tests.UnitTests.Updater
 {
-    [UnitTests]
+    [IntegrationTests]
     public class PerformingUpdates : UpdaterTestFixture
     {
+
         #region Packager invocations
 
-        [Test]
-        public void performing_updates_uses_packager_on_one_package_exactly_once()
-        {
-            var modulePackages = new List<ModulePackage>
-                                     {
-                                         new ModulePackage()
-                                     };
-
-            Updater.PerformUpdates(modulePackages);
-
-            ModulePackager.Verify(x => x.PerformUpdates(PluginsDir, It.IsAny<ModulePackage>()),
-                                  Times.Exactly(1), "One package should be invoked then only one.");
-        }
+       
 
 
         [TestCase(0)]
@@ -33,13 +24,24 @@ namespace Nomad.Tests.UnitTests.Updater
         public void performing_updates_uses_packager_on_n_packages_exactly_n_times(int times)
         {
             int n = times;
-            var modulePackages = new List<ModulePackage>();
+            IList<ModuleManifest> modulePackages = new List<ModuleManifest>();
             for (int i = 0; i < n; i++)
             {
-                modulePackages.Add(new ModulePackage());
+                modulePackages.Add(new ModuleManifest(){ModuleName = "Test" + i});
             }
 
-            Updater.PerformUpdates(modulePackages);
+            // provide the proper packages per modules
+            ModulesRepository.Setup(x => x.GetModule(It.IsAny<string>()))
+                .Returns<string>(name => new ModulePackage()
+                                             {
+                                                 ModuleManifest = modulePackages
+                                                                        .Where( x => x.ModuleName.Equals(name))
+                                                                        .Select(x => x).Single()
+                                             });
+
+            Updater.PrepareUpdate(modulePackages);
+
+            Updater.PerformUpdates(new CompositeModuleDiscovery());
 
             ModulePackager.Verify(x => x.PerformUpdates(PluginsDir, It.IsAny<ModulePackage>()),
                                   Times.Exactly(n),
@@ -56,19 +58,45 @@ namespace Nomad.Tests.UnitTests.Updater
             ModulesOperations.Setup(x => x.LoadModules(It.IsAny<IModuleDiscovery>()))
                 .Throws(new Exception("Can not discovery moduels"));
 
-            Assert.Throws<Exception> ( () => Updater.PerformUpdates(new List<ModulePackage>()));
+            var moduleManifests = new List<ModuleManifest>
+                             {
+                                 new ModuleManifest(),
+                             };
+            // preapre stub module manifest
+            Updater.PrepareUpdate(moduleManifests);
 
-            Assert.AreEqual(UpdaterStatus.Invalid,Updater.Status);
+            ModulesRepository.Setup(x => x.GetModule(It.IsAny<string>()))
+                .Returns(new ModulePackage() {ModuleManifest = moduleManifests[0]});
 
+            Assert.Throws<Exception>(() => Updater.PerformUpdates(new CompositeModuleDiscovery()));
+
+            Assert.AreEqual(UpdaterStatus.Invalid, Updater.Status);
         }
+
 
         [Test]
         public void performing_updates_has_information_about_failure_packager_throws()
         {
-            ModulePackager.Setup(x => x.PerformUpdates(It.IsAny<String>(),It.IsAny<ModulePackage>()))
+            ModulePackager.Setup(
+                x => x.PerformUpdates(It.IsAny<String>(), It.IsAny<ModulePackage>()))
                 .Throws(new Exception("Can not pacakge this"));
 
-            Assert.Throws<Exception>( () => Updater.PerformUpdates(new List<ModulePackage>() { new ModulePackage() }));
+            var manifest = new ModuleManifest() {ModuleName = "AlaMaKota"};
+            var moduleManifests = new List<ModuleManifest>
+                             {
+                                 manifest,
+                             };
+
+            ModulesRepository.Setup(x => x.GetModule(It.IsAny<string>()))
+                .Returns(new ModulePackage() {ModuleManifest = manifest});
+
+            // preapre stub module manifest
+            Updater.PrepareUpdate(moduleManifests);
+
+            ModulesRepository.Setup(x => x.GetModule(It.IsAny<string>()))
+                .Returns(new ModulePackage() { ModuleManifest = moduleManifests[0] });
+
+            Assert.Throws<Exception>(() => Updater.PerformUpdates(new CompositeModuleDiscovery()));
 
             Assert.AreEqual(UpdaterStatus.Invalid, Updater.Status);
         }
@@ -77,8 +105,8 @@ namespace Nomad.Tests.UnitTests.Updater
         [Test]
         public void performing_updates_has_information_about_success()
         {
-            Updater.PerformUpdates(new List<ModulePackage>());
-            Assert.AreEqual(UpdaterStatus.Idle,Updater.Status);
+            Updater.PerformUpdates(new CompositeModuleDiscovery());
+            Assert.AreEqual(UpdaterStatus.Idle, Updater.Status);
         }
 
         #endregion
@@ -86,18 +114,9 @@ namespace Nomad.Tests.UnitTests.Updater
         #region Basic operations scenarios
 
         [Test]
-        public void invoking_perform_updates_with_null_results_in_silent_error()
-        {
-           
-            Assert.Throws<NullReferenceException> ( () => Updater.PerformUpdates(null));
-
-            Assert.AreEqual(UpdaterStatus.Invalid, Updater.Status);
-        }
-
-        [Test]
         public void performing_updates_unload_modules()
         {
-            Updater.PerformUpdates(new List<ModulePackage>());
+            Updater.PerformUpdates(new CompositeModuleDiscovery());
             ModulesOperations.Verify(x => x.UnloadModules(), Times.Exactly(1));
         }
 
@@ -105,7 +124,7 @@ namespace Nomad.Tests.UnitTests.Updater
         [Test]
         public void performing_updates_load_modules_back()
         {
-            Updater.PerformUpdates(new List<ModulePackage>());
+            Updater.PerformUpdates(new CompositeModuleDiscovery());
             ModulesOperations.Verify(x => x.LoadModules(It.IsAny<IModuleDiscovery>()),
                                      Times.Exactly(1));
         }

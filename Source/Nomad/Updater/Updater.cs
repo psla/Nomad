@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Nomad.Communication.EventAggregation;
 using Nomad.Core;
 using Nomad.Messages.Updating;
@@ -43,8 +44,12 @@ namespace Nomad.Updater
         private readonly IModulesOperations _modulesOperations;
         private readonly IModulesRepository _modulesRepository;
         private readonly string _targetDirectory;
+        private IModuleDiscovery _defaultAfterUpdateModules;
 
-        private IModuleDiscovery _moduleDiscovery;
+        private IEnumerable<ModulePackage> _modulesPackages;
+
+
+        private AutoResetEvent _updateFinished;
 
 
         /// <summary>
@@ -72,8 +77,17 @@ namespace Nomad.Updater
             _modulesOperations = modulesOperations;
             _moduleManifestFactory = moduleManifestFactory;
             _eventAggregator = eventAggregator;
+
+            _modulesPackages = new List<ModulePackage>();
         }
 
+        #region IUpdater Members
+
+        public AutoResetEvent UpdateFinished
+        {
+            get { return _updateFinished; }
+            private set { _updateFinished = value; }
+        }
 
         /// <summary>
         ///     Describes the result of former update. 
@@ -89,14 +103,32 @@ namespace Nomad.Updater
         /// </remarks>
         public UpdaterType Mode { get; set; }
 
+        /// <summary>
+        ///     Provides the default discovery to be loaded during <see cref="Mode"/> being set to <see cref="UpdaterType.Automatic"/>
+        /// </summary>
+        /// <remarks>
+        ///     The default value are all currently loaded modules.
+        /// </remarks>
+        public IModuleDiscovery DefaultAfterUpdateModules
+        {
+            get
+            {
+                if (_defaultAfterUpdateModules == null)
+                    return new DirectoryModuleDiscovery(_targetDirectory);
+
+                return _defaultAfterUpdateModules;
+            }
+            set { _defaultAfterUpdateModules = value; }
+        }
+
 
         /// <summary>
-        /// Runs update checking. For each discovered module performs check for update.
-        /// If such check finds higher version of assembly, than new <see cref="ModuleManifest"/> will be in result
+        /// Runs update checking. For each discovered module performs check for update. Uses <see cref="IDependencyChecker"/> to distinguish whether 
+        /// the module needs to be udpated or not.
         /// </summary>
         /// <remarks>
         /// <para>
-        ///     Method return result by <see cref="NomadAvailableUpdatesMessage"/> event, so it may be invoked asynchronously
+        ///     Method return result by <see cref="NomadAvailableUpdatesMessage"/> event, so it may be invoked asynchronously.
         /// </para>
         /// <para>
         ///     This methods does not throw any exception in case of failure, because the <see cref="Exception"/> derived classes
@@ -110,10 +142,6 @@ namespace Nomad.Updater
             AvailableModules availableModules;
             try
             {
-                // FIXME: change into using discovery module info information to get manifests
-                IEnumerable<ModuleManifest> currentManifests =
-                    moduleDiscovery.GetModules().Select(x => _moduleManifestFactory.GetManifest(x));
-
                 // connect to repository - fail safe
                 availableModules = _modulesRepository.GetAvailableModules();
             }
@@ -143,21 +171,11 @@ namespace Nomad.Updater
 
             Status = UpdaterStatus.Checked;
 
-            // set the module discovery for the perform update mechanism
-            _moduleDiscovery = moduleDiscovery;
             InvokeAvailableUpdates(new NomadAvailableUpdatesMessage(availableModules.Manifests));
-        }
 
-
-        private void InvokeAvailableUpdates(NomadAvailableUpdatesMessage e)
-        {
-            _eventAggregator.Publish(e);
-        }
-
-
-        private void InvokeUpdatePackagesReady(NomadUpdatesReadyMessage e)
-        {
-            _eventAggregator.Publish(e);
+            // if in automatic mode begin the download phase, use all the modules discovered as avaliable
+            if (Mode == UpdaterType.Automatic)
+                PrepareUpdate(new List<ModuleManifest>(availableModules.Manifests));
         }
 
 
@@ -168,19 +186,23 @@ namespace Nomad.Updater
         /// <para>
         ///     Using provided <see cref="IModulesRepository"/> downloads all modules and their dependencies.
         /// </para>
-        /// 
+        /// <para>
+        ///     Method return result by <see cref="NomadUpdatesReadyMessage"/> event, so it may be invoked asynchronously.
+        /// </para>
         /// <para>
         ///     This methods does not throw any exception in case of failure, because the <see cref="Exception"/> derived classes
-        /// cannot cross app domain boundaries. All information about failures are passed through <see cref="IEventAggregator"/> message bus.
+        /// cannot cross app domain boundaries and wont invoke interrupt. All information about failures are passed through <see cref="IEventAggregator"/> message bus.
         /// </para>
         /// </remarks>
-        /// <param name="nomadAvailableUpdates">modules to install. </param>
-        public void PrepareUpdate(NomadAvailableUpdatesMessage nomadAvailableUpdates)
+        /// <param name="availableUpdates">modules to install. </param>
+        public void PrepareUpdate(IEnumerable<ModuleManifest> availableUpdates)
         {
-            if(nomadAvailableUpdates == null)
+            if (availableUpdates == null)
             {
                 // can not throw exception - must change into message
-                _eventAggregator.Publish(new NomadUpdatesReadyMessage(new List<ModulePackage>(),true,"Argument cannot be null"));
+                _eventAggregator.Publish(new NomadUpdatesReadyMessage(new List<ModuleManifest>(),
+                                                                      true,
+                                                                      "Argument cannot be null"));
                 Status = UpdaterStatus.Invalid;
                 return;
             }
@@ -190,9 +212,11 @@ namespace Nomad.Updater
             var modulePackages = new Dictionary<string, ModulePackage>();
             try
             {
-                foreach (ModuleManifest availableUpdate in nomadAvailableUpdates.AvailableUpdates)
+                // FIXME: dont get the packages which are already installed. 
+                foreach (ModuleManifest availableUpdate in availableUpdates)
                 {
-                    foreach (ModuleDependency moduleDependency in availableUpdate.ModuleDependencies)
+                    foreach (ModuleDependency moduleDependency in availableUpdate.ModuleDependencies
+                        )
                     {
                         // preventing getting the same file twice
                         if (!modulePackages.ContainsKey(moduleDependency.ModuleName))
@@ -208,15 +232,32 @@ namespace Nomad.Updater
             catch (Exception e)
             {
                 // change exception into message
-                _eventAggregator.Publish(new NomadUpdatesReadyMessage(new List<ModulePackage>(),true,e.Message));
+                _eventAggregator.Publish(new NomadUpdatesReadyMessage(new List<ModuleManifest>(),
+                                                                      true, e.Message));
                 Status = UpdaterStatus.Invalid;
                 return;
             }
 
             Status = UpdaterStatus.Prepared;
 
+            // verify the packages (simple verification - not checking zips) TODO: provide better verification ?
+            if (modulePackages.Values.Any(modulePackage => modulePackage.ModuleManifest == null))
+            {
+                _eventAggregator.Publish(new NomadUpdatesReadyMessage(new List<ModuleManifest>(),
+                                                                      true,
+                                                                      "Null reference in ModuleManifest"));
+                Status = UpdaterStatus.Invalid;
+                return;
+            }
+
+            _modulesPackages = modulePackages.Values.ToList();
+
             InvokeUpdatePackagesReady(
-                new NomadUpdatesReadyMessage(modulePackages.Values.ToList()));
+                new NomadUpdatesReadyMessage(_modulesPackages.Select(x => x.ModuleManifest).ToList()));
+
+            // if in automation mode use all packages to perform update, use default as ones to be loaded after
+            if (Mode == UpdaterType.Automatic)
+                PerformUpdates(DefaultAfterUpdateModules);
         }
 
 
@@ -224,37 +265,71 @@ namespace Nomad.Updater
         ///     Starts update process
         /// </summary>
         /// <remarks>
+        /// <para>
         /// Using provided <see cref="IModulesOperations"/> it unloads all modules, 
         /// than it places update files into modules directory, and loads modules back.
+        /// </para>
         /// 
-        /// Upon success or failure sets the flag <see cref="Status"/> with corresponding value.
+        /// <para>
+        /// Upon success or failure sets the flag <see cref="Status"/> with corresponding value. 
+        /// </para>
+        /// TODO: provide better documentation
         /// </remarks>
-        /// <param name="modulePackages">collection of packages to install</param>
-        public void PerformUpdates(IEnumerable<ModulePackage> modulePackages)
+        public void PerformUpdates(IModuleDiscovery afterUpdateModulesToBeLoaded)
         {
             Status = UpdaterStatus.Performing;
-            try
-            {
-                _modulesOperations.UnloadModules();
+            UpdateFinished = new AutoResetEvent(false);
 
-                foreach (ModulePackage modulePackage in modulePackages)
-                {
-                    _modulePackager.PerformUpdates(_targetDirectory, modulePackage);
-                }
+            ThreadPool.QueueUserWorkItem(delegate
+                                             {
+                                                 IEnumerable<ModulePackage> modulePackages =
+                                                     _modulesPackages;
+                                                 try
+                                                 {
+                                                     _modulesOperations.UnloadModules();
 
-                _modulesOperations.LoadModules(_moduleDiscovery);
-            }
-            catch (Exception)
-            {
-                // catch exceptions, TODO: add logging for this
-                Status = UpdaterStatus.Invalid;
-                
-                //rethrow the exception
-                throw;
-            }
+                                                     foreach (
+                                                         ModulePackage modulePackage in
+                                                             modulePackages)
+                                                     {
+                                                         _modulePackager.PerformUpdates(
+                                                             _targetDirectory, modulePackage);
+                                                     }
 
-            // set result of the updates
-            Status = UpdaterStatus.Idle;
+                                                     _modulesOperations.LoadModules(
+                                                         afterUpdateModulesToBeLoaded);
+                                                 }
+                                                 catch (Exception)
+                                                 {
+                                                     // catch exceptions, TODO: add logging for this
+                                                     Status = UpdaterStatus.Invalid;
+
+                                                     //rethrow the exception
+                                                     throw;
+                                                 }
+
+                                                 // set result of the updates
+                                                 Status = UpdaterStatus.Idle;
+
+                                                 // make signal about finishing the update.
+                                                 UpdateFinished.Set();
+
+                                                 // free the system resurces
+                                                 UpdateFinished.Close();
+                                             });
+        }
+
+        #endregion
+
+        private void InvokeAvailableUpdates(NomadAvailableUpdatesMessage e)
+        {
+            _eventAggregator.Publish(e);
+        }
+
+
+        private void InvokeUpdatePackagesReady(NomadUpdatesReadyMessage e)
+        {
+            _eventAggregator.Publish(e);
         }
     }
 }

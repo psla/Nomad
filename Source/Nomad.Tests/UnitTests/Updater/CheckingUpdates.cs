@@ -90,20 +90,5 @@ namespace Nomad.Tests.UnitTests.Updater
             EventAggregator.Verify();
         }
 
-        [Test]
-        public void invokes_publish_message_if_passed_null_as_discovery()
-        {
-            EventAggregator.Setup(x => x.Publish(It.IsAny<NomadAvailableUpdatesMessage>()))
-               .Callback<NomadAvailableUpdatesMessage>(
-                   (msg) =>
-                   {
-                       Assert.IsTrue(msg.Error);
-                       Assert.AreEqual(0, msg.AvailableUpdates.Count);
-                   })
-                   .Verifiable("Message was not published");
-
-            Updater.CheckUpdates(null);
-        }
-
     }
 }
