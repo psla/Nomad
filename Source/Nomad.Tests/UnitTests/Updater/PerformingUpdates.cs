@@ -68,8 +68,10 @@ namespace Nomad.Tests.UnitTests.Updater
             ModulesRepository.Setup(x => x.GetModule(It.IsAny<string>()))
                 .Returns(new ModulePackage() {ModuleManifest = moduleManifests[0]});
 
-            Assert.Throws<Exception>(() => Updater.PerformUpdates(new CompositeModuleDiscovery()));
+            Updater.PerformUpdates(new CompositeModuleDiscovery());
 
+            // wait till end to get the information about failure
+            Updater.UpdateFinished.WaitOne();
             Assert.AreEqual(UpdaterStatus.Invalid, Updater.Status);
         }
 
@@ -96,8 +98,10 @@ namespace Nomad.Tests.UnitTests.Updater
             ModulesRepository.Setup(x => x.GetModule(It.IsAny<string>()))
                 .Returns(new ModulePackage() { ModuleManifest = moduleManifests[0] });
 
-            Assert.Throws<Exception>(() => Updater.PerformUpdates(new CompositeModuleDiscovery()));
+            Updater.PerformUpdates(new CompositeModuleDiscovery());
 
+            // wait till end to get the information about failure
+            Updater.UpdateFinished.WaitOne();
             Assert.AreEqual(UpdaterStatus.Invalid, Updater.Status);
         }
 
@@ -106,6 +110,8 @@ namespace Nomad.Tests.UnitTests.Updater
         public void performing_updates_has_information_about_success()
         {
             Updater.PerformUpdates(new CompositeModuleDiscovery());
+
+            Updater.UpdateFinished.WaitOne();
             Assert.AreEqual(UpdaterStatus.Idle, Updater.Status);
         }
 

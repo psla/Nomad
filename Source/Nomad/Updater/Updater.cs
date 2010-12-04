@@ -303,9 +303,11 @@ namespace Nomad.Updater
                                                  {
                                                      // catch exceptions, TODO: add logging for this
                                                      Status = UpdaterStatus.Invalid;
+                                                     
+                                                     UpdateFinished.Set();
+                                                     UpdateFinished.Close();
 
-                                                     //rethrow the exception
-                                                     throw;
+                                                     return;
                                                  }
 
                                                  // set result of the updates
