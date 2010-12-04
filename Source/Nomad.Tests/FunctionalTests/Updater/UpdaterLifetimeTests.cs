@@ -126,6 +126,14 @@ namespace Nomad.Tests.FunctionalTests.Updater
             Assert.DoesNotThrow(() => Kernel.ServiceLocator.Resolve<IUpdater>());
         }
 
+        [Test]
+        public void failing_update_beacause_of_the_missing_dependencies()
+        {
+            // TODO: write this kind of test 2
+        }
+
+       
+
 
         [Test]
         public void basic_usage_scenerio_with_newer_versions_avaliable_automatic_update()
@@ -135,36 +143,8 @@ namespace Nomad.Tests.FunctionalTests.Updater
             SetUpModuleWithManifest(updaterDir,
                                     @"..\Source\Nomad.Tests\FunctionalTests\Data\Updater\UpdaterModule.cs");
 
-            // repository place
-            string repositoryDir = Path.Combine(TestSpacePath, "Repository");
-
-            // create the modules with specific version (mocking the version provider) and use the special manifest builder
-            IModuleDiscovery v0Discovery =
-                SetUpModulesWithVersion(_configuration.ModuleDirectoryPath, "1.0.0.0");
-
-            // preapre module for this test with verions v1 (only of module A and module B) and put them into repository
-            IModuleDiscovery v1Discovery = SetUpModulesWithVersion(repositoryDir, "2.0.0.0");
-
-            // putting them into repo
-            var updateModuleInfos = new List<ModuleInfo>(v1Discovery.GetModules());
-            List<ModuleManifest> updateManifests = (from moduleInfo in updateModuleInfos
-                                                    select moduleInfo.Manifest).ToList();
-
-            _moduleRepository.Setup(x => x.GetAvailableModules())
-                .Returns(new AvailableModules(updateManifests));
-
-            _moduleRepository.Setup(
-                x => x.GetModule(It.IsAny<string>()))
-                .Returns<string>(name => new ModulePackage
-                                             {
-                                                 ModuleManifest = updateModuleInfos
-                                                     .Where(x => x.Manifest.ModuleName.Equals(name))
-                                                     .Select(x => x.Manifest)
-                                                     .Single(),
-                                                 ModuleZip =
-                                                     GetZippedData(updateModuleInfos,
-                                                                   name)
-                                             });
+            // set up two simple modules
+            IModuleDiscovery v0Discovery = SetUpTwoSimpleModulesGetTheirDiscovery();
 
             //  override kernel configuration and initialize kernel
             _configuration.UpdaterType = UpdaterType.Automatic;
@@ -210,31 +190,85 @@ namespace Nomad.Tests.FunctionalTests.Updater
             Assert.IsTrue(avaliableUpdates, "Avaliable updates message was not published.");
             Assert.IsTrue(readyUpdates, "Updates ready message was not published.");
 
-            // verify the outcome of the updater after finishing
+            // verify the outcome of the updater after finishing (this wait is for test purposes)
             updater.UpdateFinished.WaitOne();
             Assert.AreEqual(UpdaterStatus.Idle, Kernel.ServiceLocator.Resolve<IUpdater>().Status, "Problem with the state of the updater");
 
-            // verify the versions of the newest modules are loaded.
+            // verify the versions of the newest modules are loaded
             loadedModules = Kernel.ServiceLocator.Resolve<ILoadedModulesService>().GetLoadedModules();
             Assert.AreEqual(3, loadedModules.Count);
             AssertVersion("2.0.0.0", loadedModules, "SimplestModulePossible1");
             AssertVersion("2.0.0.0", loadedModules, "SimplestModulePossible2");
         }
-
+       
 
         [Test]
-        public void basic_usage_scenerio_with_newer_versions_avaliable_manual_update()
+        public void selective_manual_update_with_updater_wokring_on_threads()
         {
+           
+            // create the updater module for maual testing
+            string updaterDir = _configuration.ModuleDirectoryPath;
+            SetUpModuleWithManifest(updaterDir,
+                                    @"..\Source\Nomad.Tests\FunctionalTests\Data\Updater\UpdaterModuleManual.cs");
+
+            // set up two simple modules
+            IModuleDiscovery basicDiscovery = SetUpTwoSimpleModulesGetTheirDiscovery();
+
             // override kernel configuration
             _configuration.UpdaterType = UpdaterType.Manual;
             SetUpKernel();
 
-            // TODO: finish writing this test
+            // skip verification about loaded modules
+            Kernel.LoadModules(new CompositeModuleDiscovery(basicDiscovery,new DirectoryModuleDiscovery(updaterDir)));
 
+            // get updater reference
+            var updater = Kernel.ServiceLocator.Resolve<IUpdater>();
+
+            // initialize the updating through updater module using event aggregator and publish
+            Kernel.EventAggregator.Publish(new BeginUpdateMessage());
             
+            // no need to verify the messages - just final verification of loaded modules wait for finish
+            updater.UpdateFinished.WaitOne();
+
+            var loadedModules = Kernel.ServiceLocator.Resolve<ILoadedModulesService>().GetLoadedModules();
+            Assert.AreEqual(2, loadedModules.Count); // updater + simples module 2 ;)
+            AssertVersion("2.0.0.0", loadedModules, "SimplestModulePossible2");
         }
 
         #region Helper methods
+
+        private IModuleDiscovery SetUpTwoSimpleModulesGetTheirDiscovery()
+        {
+            string repositoryDir = Path.Combine(TestSpacePath, "Repository");
+
+            // create the modules with specific version (mocking the version provider) and use the special manifest builder
+            IModuleDiscovery v0Discovery =
+                SetUpModulesWithVersion(_configuration.ModuleDirectoryPath, "1.0.0.0");
+
+            // preapre module for this test with verions v1 (only of module A and module B) and put them into repository
+            IModuleDiscovery v1Discovery = SetUpModulesWithVersion(repositoryDir, "2.0.0.0");
+
+            // putting them into repo
+            var updateModuleInfos = new List<ModuleInfo>(v1Discovery.GetModules());
+            List<ModuleManifest> updateManifests = (from moduleInfo in updateModuleInfos
+                                                    select moduleInfo.Manifest).ToList();
+
+            _moduleRepository.Setup(x => x.GetAvailableModules())
+                .Returns(new AvailableModules(updateManifests));
+
+            _moduleRepository.Setup(
+                x => x.GetModule(It.IsAny<string>()))
+                .Returns<string>(name => new ModulePackage
+                {
+                    ModuleManifest = updateModuleInfos
+                        .Where(x => x.Manifest.ModuleName.Equals(name))
+                        .Select(x => x.Manifest)
+                        .Single(),
+                    ModuleZip = GetZippedData(updateModuleInfos,
+                                              name)
+                });
+            return v0Discovery;
+        }
 
         private static void AssertVersion(string version, IEnumerable<ModuleInfo> modules,
                                           string moduleName)

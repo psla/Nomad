@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Nomad.Modules.Discovery
@@ -5,6 +6,7 @@ namespace Nomad.Modules.Discovery
     /// <summary>
     ///     Provides composite pattern for <see cref="IModuleDiscovery"/>.
     /// </summary>
+    [Serializable]
     public class CompositeModuleDiscovery : IModuleDiscovery
     {
         private readonly IModuleDiscovery[] _moduleDiscoveries;

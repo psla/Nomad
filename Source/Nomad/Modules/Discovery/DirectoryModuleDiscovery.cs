@@ -12,6 +12,7 @@ namespace Nomad.Modules.Discovery
     ///     Discovers only the modules that are described with proper  <see cref="ModuleManifest"/> file 
     /// inferred from the default <see cref="IModuleManifestFactory"/>. 
     /// </remarks>
+    [Serializable]
     public class DirectoryModuleDiscovery : IModuleDiscovery
     {
         private readonly string _directoryPath;

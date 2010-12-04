@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Nomad.Modules.Discovery
@@ -9,6 +10,7 @@ namespace Nomad.Modules.Discovery
     ///     Does not check for manifest file neither completeness of the resources or other files. 
     ///     Discovery simply provides the mean for loading pinpointed file.
     /// </remarks>
+    [Serializable]
     public class SingleModuleDiscovery : IModuleDiscovery
     {
         private readonly ModuleInfo _moduleInfo;
