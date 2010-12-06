@@ -322,7 +322,6 @@ namespace Nomad.Updater
                                                      Status = UpdaterStatus.Invalid;
                                                      
                                                      UpdateFinished.Set();
-                                                     UpdateFinished.Close();
 
                                                      return;
                                                  }
@@ -333,8 +332,6 @@ namespace Nomad.Updater
                                                  // make signal about finishing the update.
                                                  UpdateFinished.Set();
 
-                                                 // free the system resurces
-                                                 UpdateFinished.Close();
                                              });
         }
 
