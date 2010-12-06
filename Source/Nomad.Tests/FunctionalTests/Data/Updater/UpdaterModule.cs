@@ -25,7 +25,7 @@ public class UpdaterModule : Nomad.Modules.IModuleBootstraper
 
     private void StartUpdate()
     {
-            _locator.Resolve<IUpdater>().CheckUpdates(null);
+            _locator.Resolve<IUpdater>().CheckUpdates();
     }
 
     public void OnUnLoad()

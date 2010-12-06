@@ -18,7 +18,7 @@ namespace Nomad.Tests.UnitTests.Updater
         [Test]
         public void publishes_error_message_when_checking_for_updates_failed()
         {
-            ModuleDiscovery.Setup(x => x.GetModules())
+            ModulesRepository.Setup(x => x.GetAvailableModules())
                 .Throws(new Exception("Can not have these modules"));
 
             EventAggregator.Setup(x => x.Publish(It.IsAny<NomadAvailableUpdatesMessage>()))
@@ -30,7 +30,7 @@ namespace Nomad.Tests.UnitTests.Updater
                         })
                     .Verifiable("Message was not published");
 
-            Assert.DoesNotThrow(() => Updater.CheckUpdates(ModuleDiscovery.Object));
+            Assert.DoesNotThrow(() => Updater.CheckUpdates());
 
             EventAggregator.Verify();
         }
@@ -84,7 +84,7 @@ namespace Nomad.Tests.UnitTests.Updater
                              })
                 .Verifiable("Get Avaliable modules has not been called");
 
-            Updater.CheckUpdates(ModuleDiscovery.Object);
+            Updater.CheckUpdates();
 
             ModulesRepository.Verify();
             EventAggregator.Verify();

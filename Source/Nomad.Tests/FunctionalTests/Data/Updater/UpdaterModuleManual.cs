@@ -35,7 +35,7 @@ public class UpdaterModuleManual : Nomad.Modules.IModuleBootstraper
     private void CheckForUpdates()
     {
             _updater = _locator.Resolve<IUpdater>();
-            _updater.CheckUpdates(null);
+            _updater.CheckUpdates();
     }
 
     private void PrepareUpdates(NomadAvailableUpdatesMessage message)

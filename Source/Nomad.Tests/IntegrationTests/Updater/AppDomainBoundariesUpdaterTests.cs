@@ -60,8 +60,7 @@ namespace Nomad.Tests.IntegrationTests.Updater
         public void update_event_is_cross_domain()
         {
             SetupUpdater();
-            IModuleDiscovery discovery = new ListModuleDiscovery(new ModuleInfo[]{});
-            _updater.CheckUpdates(discovery);
+            _updater.CheckUpdates();
         }
 
         [TearDown]

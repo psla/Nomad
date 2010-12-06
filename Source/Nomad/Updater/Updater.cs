@@ -49,9 +49,6 @@ namespace Nomad.Updater
         private IEnumerable<ModulePackage> _modulesPackages;
 
 
-        private AutoResetEvent _updateFinished;
-
-
         /// <summary>
         ///     Initializes updater instance with proper engines.
         /// </summary>
@@ -83,11 +80,7 @@ namespace Nomad.Updater
 
         #region IUpdater Members
 
-        public AutoResetEvent UpdateFinished
-        {
-            get { return _updateFinished; }
-            private set { _updateFinished = value; }
-        }
+        public AutoResetEvent UpdateFinished { get; private set; }
 
         /// <summary>
         ///     Describes the result of former update. 
@@ -98,7 +91,7 @@ namespace Nomad.Updater
         ///     The type in which updater works.
         /// </summary>
         /// <remarks>
-        ///     TODO: implement thread safty of this property.
+        ///     TODO: implement thread safety of this property (within the 
         ///     This property is freezable in case of working w
         /// </remarks>
         public UpdaterType Mode { get; set; }
@@ -124,7 +117,7 @@ namespace Nomad.Updater
 
         /// <summary>
         /// Runs update checking. For each discovered module performs check for update. Uses <see cref="IDependencyChecker"/> to distinguish whether 
-        /// the module needs to be udpated or not.
+        /// the module needs to be updated or not.
         /// </summary>
         /// <remarks>
         /// <para>
@@ -135,7 +128,7 @@ namespace Nomad.Updater
         /// cannot cross app domain boundaries. All information about failures are passed through <see cref="IEventAggregator"/> message bus.
         /// </para>
         /// </remarks>
-        public void CheckUpdates(IModuleDiscovery moduleDiscovery)
+        public void CheckUpdates()
         {
             Status = UpdaterStatus.Checking;
 
@@ -171,10 +164,11 @@ namespace Nomad.Updater
 
             InvokeAvailableUpdates(new NomadAvailableUpdatesMessage(availableModules.Manifests));
 
-            // if in automatic mode begin the download phase, use all the modules discovered as avaliable
+            // if in automatic mode begin the download phase, use all the modules discovered as available
             if (Mode == UpdaterType.Automatic)
                 PrepareUpdate(new List<ModuleManifest>(availableModules.Manifests));
         }
+        
 
 
         /// <summary>
@@ -217,7 +211,7 @@ namespace Nomad.Updater
 
             if(!_dependencyChecker.CheckModules(loadedModules,newModules,out nonValidModules))
             {
-                // publish information about not feasible depenencies
+                // publish information about not feasible dependencies
                 _eventAggregator.Publish(
                     new NomadUpdatesReadyMessage(nonValidModules.Select(x => x.Manifest).ToList(),
                                                  true, "Dependencies could not be resolved"));
@@ -229,7 +223,7 @@ namespace Nomad.Updater
             var modulePackages = new Dictionary<string, ModulePackage>();
             try
             {
-                // FIXME: dont get the packages which are already installed. 
+                // FIXME: do not get the packages which are already installed. 
                 foreach (ModuleManifest availableUpdate in availableUpdates)
                 {
                     foreach (ModuleDependency moduleDependency in availableUpdate.ModuleDependencies
@@ -286,15 +280,21 @@ namespace Nomad.Updater
         /// Using provided <see cref="IModulesOperations"/> it unloads all modules, 
         /// than it places update files into modules directory, and loads modules back.
         /// </para>
-        /// 
+        /// <para>
+        ///     This implementation creates the new thread to be used to unload modules. It is obligatory because of the 
+        /// <see cref="AppDomain.Unload"/> method, which can not be invoked by thread which used to be on unloading domain.
+        /// </para>
         /// <para>
         /// Upon success or failure sets the flag <see cref="Status"/> with corresponding value. 
         /// </para>
-        /// TODO: provide better documentation
         /// </remarks>
         public void PerformUpdates(IModuleDiscovery afterUpdateModulesToBeLoaded)
         {
             Status = UpdaterStatus.Performing;
+
+            // manage resources faster than GC
+            if (UpdateFinished != null)
+                UpdateFinished.Close();
             UpdateFinished = new AutoResetEvent(false);
 
             ThreadPool.QueueUserWorkItem(delegate
@@ -313,8 +313,7 @@ namespace Nomad.Updater
                                                              _targetDirectory, modulePackage);
                                                      }
 
-                                                     _modulesOperations.LoadModules(
-                                                         afterUpdateModulesToBeLoaded);
+                                                     _modulesOperations.LoadModules(afterUpdateModulesToBeLoaded);
                                                  }
                                                  catch (Exception)
                                                  {
