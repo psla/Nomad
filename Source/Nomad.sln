@@ -94,6 +94,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{B3
 	ProjectSection(SolutionItems) = preProject
 		Nomad.Tests\FunctionalTests\Data\Services\SimplestModulePossible1.cs = Nomad.Tests\FunctionalTests\Data\Services\SimplestModulePossible1.cs
 		Nomad.Tests\FunctionalTests\Data\Services\SimplestModulePossible2.cs = Nomad.Tests\FunctionalTests\Data\Services\SimplestModulePossible2.cs
+		Nomad.Tests\FunctionalTests\Data\SimplestModulePossible3.cs = Nomad.Tests\FunctionalTests\Data\SimplestModulePossible3.cs
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Updater", "Updater", "{CEE03019-DE60-4DBA-9784-6BCBCE3E2665}"

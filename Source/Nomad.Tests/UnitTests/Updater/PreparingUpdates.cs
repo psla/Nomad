@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Moq;
 using Nomad.Messages;
 using Nomad.Messages.Updating;
+using Nomad.Modules;
 using Nomad.Modules.Manifest;
 using Nomad.Updater;
 using NUnit.Framework;
@@ -24,6 +26,15 @@ namespace Nomad.Tests.UnitTests.Updater
             var moduleVersion = new Nomad.Utils.Version("0.1.1.0");
 
             _moduleManifest = new ModuleManifest { ModuleName = _moduleName, ModuleVersion = moduleVersion };
+
+            // sick creating of dependency checker
+            IEnumerable<ModuleInfo> outter = new List<ModuleInfo>();
+            DependencyChecker.Setup(
+                x =>
+                x.CheckModules(It.IsAny<IEnumerable<ModuleInfo>>(),
+                               It.IsAny<IEnumerable<ModuleInfo>>(),
+                               out outter))
+                .Returns(true);
         }
 
         [Test]

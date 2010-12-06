@@ -155,10 +155,6 @@ namespace Nomad.Updater
                 return;
             }
 
-            // use dependency checker to get what is wanted
-            IEnumerable<ModuleInfo> nonValidModules = null;
-            // TODO: add implementation for dependency checker and error publishing
-
             // null handling in repository if repository does not throw
             if (availableModules == null)
             {
@@ -168,6 +164,8 @@ namespace Nomad.Updater
                                              "Null from repository"));
                 return;
             }
+
+            
 
             Status = UpdaterStatus.Checked;
 
@@ -208,6 +206,25 @@ namespace Nomad.Updater
             }
 
             Status = UpdaterStatus.Preparing;
+
+            // use dependency checker to get what is wanted
+            // FIXME: the optimalization impact is here (mostly this linq is improper)
+
+            IEnumerable<ModuleInfo> nonValidModules = null;
+            IEnumerable<ModuleInfo> loadedModules = _modulesOperations.GetLoadedModules();
+            var rnd = new Random();
+            IEnumerable<ModuleInfo> newModules = availableUpdates.Select( x => new ModuleInfo(rnd.Next().ToString(),x,null)).ToList();
+
+            if(!_dependencyChecker.CheckModules(loadedModules,newModules,out nonValidModules))
+            {
+                // publish information about not feasible depenencies
+                _eventAggregator.Publish(
+                    new NomadUpdatesReadyMessage(nonValidModules.Select(x => x.Manifest).ToList(),
+                                                 true, "Dependencies could not be resolved"));
+
+                Status = UpdaterStatus.Invalid;
+                return;
+            }
 
             var modulePackages = new Dictionary<string, ModulePackage>();
             try

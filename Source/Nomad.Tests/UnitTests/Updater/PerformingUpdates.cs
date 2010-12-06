@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Moq;
+using Nomad.Modules;
 using Nomad.Modules.Discovery;
 using Nomad.Modules.Manifest;
 using Nomad.Updater;
@@ -15,8 +16,19 @@ namespace Nomad.Tests.UnitTests.Updater
     {
 
         #region Packager invocations
-
-       
+        
+       [SetUp]
+       public void set_up()
+       {
+           // sick creating of dependency checker
+           IEnumerable<ModuleInfo> outter = new List<ModuleInfo>();
+           DependencyChecker.Setup(
+               x =>
+               x.CheckModules(It.IsAny<IEnumerable<ModuleInfo>>(),
+                              It.IsAny<IEnumerable<ModuleInfo>>(),
+                              out outter))
+               .Returns(true);
+       }
 
 
         [TestCase(0)]
@@ -43,6 +55,7 @@ namespace Nomad.Tests.UnitTests.Updater
 
             Updater.PerformUpdates(new CompositeModuleDiscovery());
 
+            Updater.UpdateFinished.WaitOne();
             ModulePackager.Verify(x => x.PerformUpdates(PluginsDir, It.IsAny<ModulePackage>()),
                                   Times.Exactly(n),
                                   string.Format("One package should be invoked {0} times.", n));
@@ -123,6 +136,8 @@ namespace Nomad.Tests.UnitTests.Updater
         public void performing_updates_unload_modules()
         {
             Updater.PerformUpdates(new CompositeModuleDiscovery());
+
+            Updater.UpdateFinished.WaitOne();
             ModulesOperations.Verify(x => x.UnloadModules(), Times.Exactly(1));
         }
 
@@ -131,6 +146,8 @@ namespace Nomad.Tests.UnitTests.Updater
         public void performing_updates_load_modules_back()
         {
             Updater.PerformUpdates(new CompositeModuleDiscovery());
+
+            Updater.UpdateFinished.WaitOne();
             ModulesOperations.Verify(x => x.LoadModules(It.IsAny<IModuleDiscovery>()),
                                      Times.Exactly(1));
         }

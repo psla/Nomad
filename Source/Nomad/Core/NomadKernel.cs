@@ -170,6 +170,13 @@ namespace Nomad.Core
             }
         }
 
+
+        public IEnumerable<ModuleInfo> GetLoadedModules()
+        {
+            // delegate the getting this into service, instead of implementing 
+            return ServiceLocator.Resolve<ILoadedModulesService>().GetLoadedModules();
+        }
+
         #endregion
 
         private void RegisterCoreServices()

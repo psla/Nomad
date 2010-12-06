@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using Ionic.Zip;
 using Moq;
@@ -16,6 +17,7 @@ using Nomad.Tests.FunctionalTests.Modules;
 using Nomad.Updater;
 using Nomad.Updater.ModuleRepositories;
 using Nomad.Utils.ManifestCreator;
+using Nomad.Utils.ManifestCreator.DependenciesProvider;
 using Nomad.Utils.ManifestCreator.VersionProviders;
 using NUnit.Framework;
 using TestsShared;
@@ -126,11 +128,107 @@ namespace Nomad.Tests.FunctionalTests.Updater
             Assert.DoesNotThrow(() => Kernel.ServiceLocator.Resolve<IUpdater>());
         }
 
+        /// <summary>
+        ///     Module A depends on B which depends on C. Only B is in repository with newer version.
+        /// </summary>
+        /// <remarks>
+        ///     Using dependency checker way of naming things:
+        ///     Local: A(v0) v0-> B(v0) v0-> C(v0)
+        ///     Remote: B(v1) v1-> C (which is missing)
+        /// </remarks>
         [Test]
         public void failing_update_beacause_of_the_missing_dependencies()
         {
-            // TODO: write this kind of test 2
+            // create the updater module
+            string updaterDir = _configuration.ModuleDirectoryPath;
+            SetUpModuleWithManifest(updaterDir,
+                                    @"..\Source\Nomad.Tests\FunctionalTests\Data\Updater\UpdaterModule.cs"); 
+
+            // version for modules A, B and C
+            const string versionString = "1.0.0.0";
+           
+            // create modules A with version v0 (this version and dependencies are only in manifest - not in assembly)
+            var moduelADir = Path.Combine(_configuration.ModuleDirectoryPath, @"ModuleADir");
+            var moduleAConfiguration = ManifestBuilderConfiguration.Default;
+            
+            moduleAConfiguration.VersionProvider = GetVersionProviderForVersion(versionString);
+            moduleAConfiguration.ModulesDependenciesProvider = GetModuleDependenciesOnSingleModule("SimplestModulePossible2",versionString);
+            
+            SetUpModuleWithManifest(moduelADir,ModuleCompiler.DefaultSimpleModuleSource,moduleAConfiguration);
+
+            // create module B with the same setting as A (with version v0)
+            var moduelBDir = Path.Combine(_configuration.ModuleDirectoryPath, @"ModuleBDir");
+            moduleAConfiguration = ManifestBuilderConfiguration.Default;
+
+            moduleAConfiguration.VersionProvider = GetVersionProviderForVersion(versionString);
+            moduleAConfiguration.ModulesDependenciesProvider = GetModuleDependenciesOnSingleModule("SimplestModulePossible3", versionString);
+
+            SetUpModuleWithManifest(moduelBDir, ModuleCompiler.DefaultSimpleModuleSourceAlternative, moduleAConfiguration);
+
+            // create module C with no dependency on any other module with version v0
+            var moduleCDir = Path.Combine(_configuration.ModuleDirectoryPath, @"ModuleCDir");
+            moduleAConfiguration = ManifestBuilderConfiguration.Default;
+
+            moduleAConfiguration.VersionProvider = GetVersionProviderForVersion(versionString);
+            SetUpModuleWithManifest(moduleCDir, ModuleCompiler.DefaultSimpleModuleSourceLastAlternative, moduleAConfiguration);
+
+            // create module B in version v1 which depends on module C in version v1
+            var moduleBVersionUpperDir = Path.Combine(_configuration.ModuleDirectoryPath,@"ModuleBUpperDir");
+            moduleAConfiguration = ManifestBuilderConfiguration.Default;
+
+            moduleAConfiguration.VersionProvider = GetVersionProviderForVersion("2.0.0.0");
+            moduleAConfiguration.ModulesDependenciesProvider = GetModuleDependenciesOnSingleModule("SimplestModulePossible3", "2.0.0.0");
+            
+            SetUpModuleWithManifest(moduleBVersionUpperDir, ModuleCompiler.DefaultSimpleModuleSourceAlternative, moduleAConfiguration);
+
+            // put module B into repository
+            var bRepoModuleInfo = new DirectoryModuleDiscovery(moduleBVersionUpperDir)
+                .GetModules()
+                .Select(x => x)
+                .Single();
+
+
+            _moduleRepository.Setup(x => x.GetAvailableModules())
+                .Returns(new AvailableModules(new List<ModuleManifest>(){bRepoModuleInfo.Manifest}));
+
+            _moduleRepository
+                .Setup(x => x.GetModule(It.IsAny<string>()))
+                .Returns(new ModulePackage()
+                             {
+                                 ModuleManifest = bRepoModuleInfo.Manifest,
+                                 ModuleZip = GetZippedData(new List<ModuleInfo>(){bRepoModuleInfo},bRepoModuleInfo.Manifest.ModuleName )
+                             });
+
+            // configure kernel
+            _configuration.UpdaterType = UpdaterType.Automatic;
+            SetUpKernel();
+            
+            // load modules A,B,C in version v0 into Nomad
+            var discovery = new CompositeModuleDiscovery(new DirectoryModuleDiscovery(moduelADir),
+                                                         new DirectoryModuleDiscovery(moduelBDir),
+                                                         new DirectoryModuleDiscovery(moduleCDir),
+                                                         new DirectoryModuleDiscovery(updaterDir));
+            Kernel.LoadModules(discovery);
+
+            // register for updates avaliable message
+            var hasBeenInvoked = false;
+            Kernel.EventAggregator.Subscribe<NomadUpdatesReadyMessage>(message =>
+                                                                           {
+                                                                               hasBeenInvoked = true;
+                                                                               Assert.IsTrue(message.Error,"The error should be reported");
+                                                                               
+                                                                               // list of non valid modules is accurate
+                                                                               Assert.AreEqual("SimplestModulePossible2", message.ModulePackages[0].ModuleName);
+                                                                           });
+
+            // initialize check updates (automatic mode)
+            Kernel.EventAggregator.Publish(new BeginUpdateMessage());
+
+            // verify that update can not be done
+            Assert.IsTrue(hasBeenInvoked,"The updates ready message was not invoked");
+            Assert.AreEqual(UpdaterStatus.Invalid,Kernel.ServiceLocator.Resolve<IUpdater>().Status);
         }
+
 
        
 
@@ -218,10 +316,10 @@ namespace Nomad.Tests.FunctionalTests.Updater
             _configuration.UpdaterType = UpdaterType.Manual;
             SetUpKernel();
 
-            // skip verification about loaded modules
+            // skip verification about loaded modules, just load them
             Kernel.LoadModules(new CompositeModuleDiscovery(basicDiscovery,new DirectoryModuleDiscovery(updaterDir)));
 
-            // get updater reference
+            // get updater reference, for synchronization
             var updater = Kernel.ServiceLocator.Resolve<IUpdater>();
 
             // initialize the updating through updater module using event aggregator and publish
@@ -308,12 +406,30 @@ namespace Nomad.Tests.FunctionalTests.Updater
             return File.ReadAllBytes(tmpFile);
         }
 
+        private static IModulesDependenciesProvider GetModuleDependenciesOnSingleModule(string s, string versionString)
+        {
+            var moduleAonBDependency = new ModuleDependency()
+            {
+                HasLoadingOrderPriority = false,
+                MinimalVersion = new Version(versionString),
+                ModuleName = s,
+                ProcessorArchitecture = ProcessorArchitecture.MSIL
+            };
+
+            var moduleDependencyProviderMock = new Mock<IModulesDependenciesProvider>(MockBehavior.Loose);
+            moduleDependencyProviderMock
+                .Setup(x => x.GetDependencyModules(It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(new List<ModuleDependency>() { moduleAonBDependency });
+
+            return moduleDependencyProviderMock.Object;
+        }
 
         private static IVersionProvider GetVersionProviderForVersion(string versionString)
         {
             var mockedVersionProvider = new Mock<IVersionProvider>(MockBehavior.Loose);
-            mockedVersionProvider.Setup(x => x.GetVersion(It.IsAny<string>())).Returns(
-                new Version(versionString));
+            mockedVersionProvider
+                .Setup(x => x.GetVersion(It.IsAny<string>()))
+                .Returns(new Version(versionString));
 
             return mockedVersionProvider.Object;
         }

@@ -1,4 +1,6 @@
-﻿using Nomad.Modules.Discovery;
+﻿using System.Collections.Generic;
+using Nomad.Modules;
+using Nomad.Modules.Discovery;
 
 namespace Nomad.Core
 {
@@ -17,5 +19,12 @@ namespace Nomad.Core
         /// Loads all modules
         /// </summary>
         void LoadModules(IModuleDiscovery moduleDiscovery);
+
+
+        /// <summary>
+        ///     Gets all the loaded modules.
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<ModuleInfo> GetLoadedModules();
     }
 }
