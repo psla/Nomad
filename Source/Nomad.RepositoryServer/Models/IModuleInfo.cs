@@ -2,10 +2,10 @@ using Nomad.Modules.Manifest;
 
 namespace Nomad.RepositoryServer.Models
 {
-    public interface IRepositoryModuleInfo
+    public interface IModuleInfo
     {
         ModuleManifest Manifest { get; }
-        string Url { get; }
+        string Id { get; }
         byte[] ModuleData { get; }
     }
 }

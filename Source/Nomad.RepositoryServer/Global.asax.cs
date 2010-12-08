@@ -4,6 +4,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using Castle.Windsor;
+using Nomad.RepositoryServer.IoC;
 
 namespace Nomad.RepositoryServer
 {
@@ -28,6 +30,13 @@ namespace Nomad.RepositoryServer
             AreaRegistration.RegisterAllAreas();
 
             RegisterRoutes(RouteTable.Routes);
+
+            // initialize IoC for whole MVC project
+            var container = new WindsorContainer();
+            
+            // NOTE: inject installers here
+            container.Install(new RepositoryInstaller(),new ControllersInstaller());
+            ControllerBuilder.Current.SetControllerFactory(new WindsorControllerFactory(container));
         }
     }
 }

@@ -3,25 +3,23 @@ using Nomad.Modules.Manifest;
 
 namespace Nomad.RepositoryServer.Models
 {
-    public class RepositoryModuleInfo : IRepositoryModuleInfo
+    public class ModuleInfo : IModuleInfo
     {
         private readonly string _packagePath;
 
 
-        public RepositoryModuleInfo(ModuleManifest manifest, string path)
+        public ModuleInfo(ModuleManifest manifest, string path, string id)
         {
             Manifest = manifest;
             _packagePath = path;
+            Id = id;
         }
 
-        #region IRepositoryModuleInfo Members
+        #region IModuleInfo Members
 
         public ModuleManifest Manifest { get; private set; }
 
-        public string Url
-        {
-            get { return Manifest.ModuleName + '/' + Manifest.ModuleVersion + "/getPack"; }
-        }
+        public string Id { get; private set; }
 
         public byte[] ModuleData
         {

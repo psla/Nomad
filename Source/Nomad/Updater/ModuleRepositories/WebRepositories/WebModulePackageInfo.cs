@@ -12,8 +12,15 @@ namespace Nomad.Updater.ModuleRepositories.WebRepositories
             Url = url;
         }
 
+        /// <summary>
+        ///     Parameterless constructor for XML serialization.
+        /// </summary>
+        public WebModulePackageInfo()
+        {
+            
+        }
 
-        public string Url { get; private set; }
-        public ModuleManifest Manifest { get; private set; }
+        public string Url { get;  set; }
+        public ModuleManifest Manifest { get;  set; }
     }
 }

@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using System.Web.Security;
 using Nomad.RepositoryServer.Models;
+using Nomad.RepositoryServer.Models.Accounts;
 
 namespace Nomad.RepositoryServer.Controllers
 {

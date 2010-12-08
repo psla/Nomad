@@ -1,24 +1,53 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
+using Nomad.RepositoryServer.Models;
 
 namespace Nomad.RepositoryServer.Controllers
 {
+    /// <summary>
+    ///     Handles the display of the actual state of the repository and so on.
+    /// </summary>
     [HandleError]
     public class HomeController : Controller
     {
-        public ActionResult Index()
-        {
-            ViewData["Message"] = "Welcome to ASP.NET MVC!";
+        private const string InviteMessage = "Nomad Modules Center";
 
-            return View();
+        private readonly RepositoryModel _repositoryModel;
+
+        public HomeController(RepositoryModel repositoryModel)
+        {
+            _repositoryModel = repositoryModel;
         }
 
+        /// <summary>
+        ///     Displays main page with the list of available modules.
+        /// </summary>
+        /// <returns></returns>
+        [AcceptVerbs(HttpVerbs.Get)]
+        public ActionResult Index()
+        {
+            ViewData["Message"] = InviteMessage;
+
+            return View("Index", _repositoryModel);
+        }
+
+        /// <summary>
+        ///     Displays view with information about authors.
+        /// </summary>
+        /// <returns></returns>
+        [AcceptVerbs(HttpVerbs.Get)]
         public ActionResult About()
         {
-            return View();
+            return View("About");
+        }
+
+
+        /// <summary>
+        ///     Handles file not found action
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult FileNotFound()
+        {
+            return View("FileNotFound");
         }
     }
 }

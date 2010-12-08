@@ -11,10 +11,18 @@ namespace Nomad.Updater.ModuleRepositories.WebRepositories
     {
         public WebAvailablePackagesCollection(IList<WebModulePackageInfo> availablePackages)
         {
-            AvailablePackages = availablePackages;
+            AvailablePackages = new List<WebModulePackageInfo>(availablePackages);
+        }
+
+        /// <summary>
+        ///     Constructor for XML serialization.
+        /// </summary>
+        public WebAvailablePackagesCollection()
+        {
+            
         }
 
 
-        public IList<WebModulePackageInfo> AvailablePackages { get; private set; }
+        public List<WebModulePackageInfo> AvailablePackages { get;  set; }
     }
 }

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
@@ -8,43 +7,67 @@ using Nomad.Utils;
 
 namespace Nomad.RepositoryServer.Controllers
 {
+    /// <summary>
+    ///     Manages access to files to be dowloaded. Returns no views at all.
+    /// </summary>
     public class ModulesController : Controller
     {
-        private readonly RepositoryModel _repositoryModel = new RepositoryModel();
+        private readonly RepositoryModel _repositoryModel;
 
-        //method bases on http://stackoverflow.com/questions/186062/can-an-asp-net-mvc-controller-return-an-image
-        public FileResult ReturnAvailableModules()
+
+        public ModulesController(RepositoryModel repositoryModel)
         {
-            //todo test it
-            var repoList = _repositoryModel.ModuleInfosList;
-            var packageList =
-                repoList.Select(
-                    repositoryModuleInfo =>
-                    new WebModulePackageInfo(repositoryModuleInfo.Manifest, repositoryModuleInfo.Url))
-                    .ToList();
-            var webPackagesCollection =
-                new WebAvailablePackagesCollection(
-                    packageList);
+            _repositoryModel = repositoryModel;
+        }
+
+
+        /// <summary>
+        ///     Gets the XML file with avaliable modules.
+        /// </summary>
+        /// <remarks>
+        ///     method bases on http://stackoverflow.com/questions/186062/can-an-asp-net-mvc-controller-return-an-image
+        /// </remarks>
+        /// <returns><see cref="FileResult"/> with XML file describing the avaliable modules</returns>
+        [AcceptVerbs(HttpVerbs.Get)]
+        public ActionResult GetModules()
+        {
+            // TODO: add handling errors of not having something or anything else
+            List<IModuleInfo> repoList = new List<IModuleInfo>(_repositoryModel.ModuleInfosList);
+            List<WebModulePackageInfo> packageList = repoList
+                .Select(repositoryModuleInfo
+                        =>
+                        new WebModulePackageInfo(repositoryModuleInfo.Manifest,
+                            // TODO: prepare proper version of this url
+                                                 repositoryModuleInfo.Id))
+                .ToList();
+            var webPackagesCollection = new WebAvailablePackagesCollection(packageList);
 
             return File(XmlSerializerHelper.Serialize(webPackagesCollection),
-                        "repo/packagesList");
+                        "text/xml");
         }
 
 
-        public FileResult ReturnModulePackage(string urlId)
+        /// <summary>
+        ///     Gets the binary data requested package.
+        /// </summary>
+        /// <param name="urlId"></param>
+        /// <returns>Binary file</returns>
+        [AcceptVerbs(HttpVerbs.Get)]
+        public ActionResult GetModulePackage(string urlId)
         {
-            //todo test it
-            return
-                File(
-                    _repositoryModel.ModuleInfosList.
-                        Where(x => x.Url.Equals(urlId)).
-                        Select(x => x.ModuleData).Single(), "repo/moduleZip"
-                        );
-        }
+            if (string.IsNullOrEmpty(urlId))
+                return RedirectToAction("FileNotFound", "Home");
 
-        public ActionResult ShowAvailableModules()
-        {
-            throw new NotImplementedException();
+            byte[] data = _repositoryModel.ModuleInfosList
+                .Where(x => x.Id.Equals(urlId))
+                .Select(x => x.ModuleData)
+                .DefaultIfEmpty(null)
+                .SingleOrDefault();
+
+            if (data == null)
+                return RedirectToAction("FileNotFound", "Home");
+
+            return File(data, "application/zip");
         }
     }
 }
