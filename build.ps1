@@ -372,7 +372,7 @@ task FastBuild -depends UnitTest, IntegrationTest {
 
 }
 
-task SlowBuild -depends FastBuild, FunctionalTest, Documentation, Deploy {
+task SlowBuild -depends FastBuild, RemoteFunctionalTest, Documentation, Deploy {
 
 }
 
