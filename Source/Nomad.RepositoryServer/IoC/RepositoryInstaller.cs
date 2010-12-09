@@ -3,7 +3,7 @@ using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
 using Nomad.RepositoryServer.Models;
-using Nomad.RepositoryServer.Models.Design;
+using Nomad.RepositoryServer.Models.DesignStorage;
 
 namespace Nomad.RepositoryServer.IoC
 {

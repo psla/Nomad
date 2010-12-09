@@ -75,19 +75,19 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="IoC\ControllersInstaller.cs" />
-    <Compile Include="Models\Design\DesignStorage.cs" />
+    <Compile Include="Models\DesignStorage\DesignStorage.cs" />
     <Compile Include="IoC\RepositoryInstaller.cs" />
     <Compile Include="Models\Accounts\AccountModels.cs" />
     <Compile Include="Models\IModuleInfo.cs" />
     <Compile Include="Models\IStorageProvider.cs" />
     <Compile Include="Models\RepositoryModel.cs" />
-    <Compile Include="Models\ModuleInfo.cs" />
+    <Compile Include="Models\DirectoryStorage\DirectoryModuleInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IoC\WindsorControllerFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
-    <Content Include="Views\Home\RepoBrowser.aspx" />
+    <Content Include="Views\Home\Details.aspx" />
     <Content Include="Views\Shared\FileNotFound.aspx" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">

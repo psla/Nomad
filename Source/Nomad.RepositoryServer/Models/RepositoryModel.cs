@@ -6,11 +6,13 @@ namespace Nomad.RepositoryServer.Models
     ///     Describes the state of the Nomad modules repository.
     /// </summary>
     /// <remarks>
-    ///     TODO: implement better support injection of storageProvider mechanism
+    ///    Uses <see cref="IStorageProvider"/> mechanism to access the data.
     /// </remarks>
     public class RepositoryModel
     {
-        private IStorageProvider _storageProvider;
+        private readonly List<IModuleInfo> _moduleInfosList;
+        private readonly IStorageProvider _storageProvider;
+
 
         public RepositoryModel(IStorageProvider storageProvider)
         {
@@ -21,24 +23,29 @@ namespace Nomad.RepositoryServer.Models
         }
 
 
-        private List<IModuleInfo> _moduleInfosList;
-
-        public IList<IModuleInfo> ModuleInfosList
+        public IEnumerable<IModuleInfo> ModuleInfosList
         {
             get { return _moduleInfosList.AsReadOnly(); }
         }
 
+
         public void AddModule(IModuleInfo moduleInfo)
         {
             // TODO: implement checking
+            // check for completeness of the provided thing
+
+            // check for duplications
+
             _moduleInfosList.Add(moduleInfo);
         }
+
 
         public void RemoveModule(IModuleInfo moduleInfo)
         {
             // TODO: implement checking
+
+            // check for existence
             _moduleInfosList.Remove(moduleInfo);
         }
-
     }
 }

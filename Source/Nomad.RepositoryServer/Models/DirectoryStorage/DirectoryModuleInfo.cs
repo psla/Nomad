@@ -1,14 +1,13 @@
 ﻿using System.IO;
 using Nomad.Modules.Manifest;
 
-namespace Nomad.RepositoryServer.Models
+namespace Nomad.RepositoryServer.Models.DirectoryStorage
 {
-    public class ModuleInfo : IModuleInfo
+    public class DirectoryModuleInfo : IModuleInfo
     {
         private readonly string _packagePath;
 
-
-        public ModuleInfo(ModuleManifest manifest, string path, string id)
+        public DirectoryModuleInfo(ModuleManifest manifest, string path, string id)
         {
             Manifest = manifest;
             _packagePath = path;

@@ -8,7 +8,7 @@ using Nomad.Utils;
 namespace Nomad.RepositoryServer.Controllers
 {
     /// <summary>
-    ///     Manages access to files to be dowloaded. Returns no views at all.
+    ///     Manages access to files to be dowloaded. Returns no views at all only <see cref="FileResult"/> classes.
     /// </summary>
     public class ModulesController : Controller
     {
