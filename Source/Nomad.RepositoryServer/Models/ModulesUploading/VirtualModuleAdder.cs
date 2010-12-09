@@ -6,7 +6,7 @@ using System.Web;
 using Nomad.Modules.Manifest;
 using Version = Nomad.Utils.Version;
 
-namespace Nomad.RepositoryServer.Models
+namespace Nomad.RepositoryServer.Models.ModulesUploading
 {
     /// <summary>
     ///     Encapsulates all information about process of module being added.

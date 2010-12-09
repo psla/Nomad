@@ -1,7 +1,6 @@
-﻿using System;
-using Nomad.Modules.Manifest;
+﻿using Nomad.Modules.Manifest;
 
-namespace Nomad.RepositoryServer.Models
+namespace Nomad.RepositoryServer.Models.ModulesUploading
 {
     public class VirtualModuleInfo : IModuleInfo
     {

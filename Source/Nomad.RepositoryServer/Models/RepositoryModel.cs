@@ -1,4 +1,9 @@
+using System;
 using System.Collections.Generic;
+using Nomad.KeysGenerator;
+using Nomad.Modules.Manifest;
+using Nomad.Signing;
+using Nomad.Utils.ManifestCreator;
 
 namespace Nomad.RepositoryServer.Models
 {
@@ -53,5 +58,6 @@ namespace Nomad.RepositoryServer.Models
 
             // remove from storage
         }
+
     }
 }

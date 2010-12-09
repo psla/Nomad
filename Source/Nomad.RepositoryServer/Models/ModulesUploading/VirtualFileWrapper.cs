@@ -1,7 +1,6 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 
-namespace Nomad.RepositoryServer.Models
+namespace Nomad.RepositoryServer.Models.ModulesUploading
 {
     public class VirtualFileWrapper
     {

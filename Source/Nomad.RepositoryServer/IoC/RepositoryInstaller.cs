@@ -19,7 +19,12 @@ namespace Nomad.RepositoryServer.IoC
                 Component
                 .For<IStorageProvider>()
                 .ImplementedBy<DesignStorage>()
+                .LifeStyle.Singleton,
 
+                Component
+                    .For<IManifestProvider>()
+                    .ImplementedBy<ManifestProvider>()
+                    .LifeStyle.Singleton
                 );
         }
     }

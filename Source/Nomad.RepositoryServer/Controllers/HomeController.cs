@@ -9,6 +9,7 @@ using Ionic.Zip;
 using Nomad.KeysGenerator;
 using Nomad.Modules.Manifest;
 using Nomad.RepositoryServer.Models;
+using Nomad.RepositoryServer.Models.ModulesUploading;
 using Nomad.Signing;
 using Nomad.Utils.ManifestCreator;
 using Version = Nomad.Utils.Version;
@@ -23,11 +24,14 @@ namespace Nomad.RepositoryServer.Controllers
     {
 
         private readonly RepositoryModel _repositoryModel;
+        private readonly IManifestProvider _manifestProvider;
 
-        public HomeController(RepositoryModel repositoryModel)
+        public HomeController(RepositoryModel repositoryModel, IManifestProvider manifestProvider)
         {
             _repositoryModel = repositoryModel;
+            _manifestProvider = manifestProvider;
         }
+
 
         /// <summary>
         ///     Displays main page with the list of available modules and some CRUD options.
@@ -83,8 +87,10 @@ namespace Nomad.RepositoryServer.Controllers
         /// <summary>
         ///     Adds files to virtual folder. Is a mid step in adding module to repository.
         /// </summary>
+        /// <remarks>
+        ///     TODO: Needs <see cref="FormCollection"/> to provide means for remembering the files to be included in package.
+        /// </remarks>
         /// <param name="file"></param>
-        /// <returns></returns>
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult AddFile(HttpPostedFileBase file)
         {
@@ -98,12 +104,26 @@ namespace Nomad.RepositoryServer.Controllers
             // use obtained session module adder to add something into virtual folder
             adder.SaveFileToVirtualFolder(file);
 
+            //// manage the chekboxes from view
+            //foreach (var fileWrapper in adder.InFolderFiles)
+            //{
+            //    // search this file wrapper in form collection
+            //    var key = fileWrapper.FileName;
+            //    var value = Request.Form[key];
+
+            //    if(value != null && value[0].Equals("true"))
+            //    {
+            //        fileWrapper.ToPackage = true;
+            //    }
+            //}
+            
+
             // pass the new VirtualModuleAdder into the View once again.
             return View("AddModule",adder);
         }
 
         /// <summary>
-        ///     Publishes module into repository
+        ///     Publishes module into repository.
         /// </summary>
         /// <remarks>
         ///     Performs the following actions:
@@ -112,7 +132,7 @@ namespace Nomad.RepositoryServer.Controllers
         /// 3. Adds all necessary information to repository using <see cref="IStorageProvider"/>
         /// </remarks>
         [AcceptVerbs(HttpVerbs.Post)]
-        public ActionResult PublishModule(FormCollection form)
+        public ActionResult PublishModule()
         {
             // get module adder from session
             object moduleAdder = Session["ModuleAdder"];
@@ -122,49 +142,25 @@ namespace Nomad.RepositoryServer.Controllers
             var adder = (VirtualModuleAdder)moduleAdder;
 
             var listOfFilesInPackage = new List<string>();
-            // get list of files to include into package (assembly,asc,manifest are required) from checkboxes from page
-            foreach (var item in form)
-            {
-                 // TODO: implement getting this work properly  
-            }
+            //TODO: get list of files to include into package (assembly,asc,manifest are required) from checkboxes from page
+            
+            
+            // generate manifest with the manifest provider from sever
+            var manifest = _manifestProvider.GenerateManifest(adder.AssemblyFilePath, adder.VirtualFolderPath);
 
-            // build manifest for virtual folder
-            var configuration = ManifestBuilderConfiguration.Default;
-            var issuerPathXml = @"ISSUER_PATH";
-            KeysGeneratorProgram.Main(new[]{issuerPathXml} );
-            var manifestBuilder = new ManifestBuilder("ISSUER_NAME_HERE", issuerPathXml,
-                                                      adder.AssemblyFilePath,
-                                                      adder.VirtualFolderPath, KeyStorage.Nomad,
-                                                      string.Empty, configuration);
-            var manifest = manifestBuilder.Create();
+            // use packager as service, with more options about packing
+            var zipPackager = new ZipPackager();
 
-            // pack the things from the form into zip file TODO: encapsulate this
-            string tmpZipFile = Path.GetTempFileName();
-            using (var zipFile = new ZipFile())
-            {
-
-                var directoryInfo = new DirectoryInfo(adder.VirtualFolderPath);
-
-                // get all files from this directory into zip archive
-                foreach (FileInfo fileInfo in directoryInfo.GetFiles())
-                {
-                    zipFile.AddFile(fileInfo.FullName, ".");
-                }
-
-                zipFile.Save(tmpZipFile);
-            }
-
-            // use add ModuleInfo to module repository (storage layer under repository should make everything good)
+            // use add ModuleInfo to module repository (storage layer under repository should make everything work)
             _repositoryModel.AddModule(new VirtualModuleInfo()
                                            {
                                                // maybe this should be generated automatically
                                                Id = manifest.ModuleName + manifest.ModuleVersion, 
                                                Manifest =  manifest,
-                                               ModuleData = System.IO.File.ReadAllBytes(tmpZipFile),
+                                               ModuleData = zipPackager.Package(adder.VirtualFolderPath),
                                            });
 
-            // dispose of adder and zip file
-            System.IO.File.Delete(tmpZipFile);
+            // dispose of module adder to free virtual directory
             adder.Dispose();
 
             return RedirectToAction("Index");
