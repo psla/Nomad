@@ -11,7 +11,12 @@ namespace Nomad.RepositoryServer.Models
     ///     Describes the state of the Nomad modules repository.
     /// </summary>
     /// <remarks>
+    /// <para>
     ///    Uses <see cref="IStorageProvider"/> mechanism to access the data.
+    /// </para>
+    /// <para>
+    ///     TODO: this class needs to be thread safe. !!!
+    /// </para>
     /// </remarks>
     public class RepositoryModel
     {
@@ -26,7 +31,6 @@ namespace Nomad.RepositoryServer.Models
 
             // initialize the list of modules using the storageProvider provider
             _moduleInfosList = _storageProvider.GetAvaliableModules();
-
         }
 
 
@@ -46,17 +50,17 @@ namespace Nomad.RepositoryServer.Models
             _moduleInfosList.Add(moduleInfo);
 
             // save into storage
+            _storageProvider.SaveModule(moduleInfo);
         }
 
 
         public void RemoveModule(IModuleInfo moduleInfo)
         {
-            // TODO: implement checking
-
             // check for existence
             _moduleInfosList.Remove(moduleInfo);
 
             // remove from storage
+            _storageProvider.RemoveModule(moduleInfo);
         }
 
     }
