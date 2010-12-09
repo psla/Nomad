@@ -32,12 +32,12 @@ namespace Nomad.RepositoryServer.Controllers
         public ActionResult GetModules()
         {
             // TODO: add handling errors of not having something or anything else
-            List<IModuleInfo> repoList = new List<IModuleInfo>(_repositoryModel.ModuleInfosList);
+            var repoList = new List<IModuleInfo>(_repositoryModel.ModuleInfosList);
             List<WebModulePackageInfo> packageList = repoList
                 .Select(repositoryModuleInfo
                         =>
                         new WebModulePackageInfo(repositoryModuleInfo.Manifest,
-                            // TODO: prepare proper version of this url
+                                                 // TODO: prepare proper version of this url
                                                  repositoryModuleInfo.Id))
                 .ToList();
             var webPackagesCollection = new WebAvailablePackagesCollection(packageList);
@@ -56,7 +56,7 @@ namespace Nomad.RepositoryServer.Controllers
         public ActionResult GetModulePackage(string urlId)
         {
             if (string.IsNullOrEmpty(urlId))
-                return RedirectToAction("FileNotFound", "Home");
+                return View("FileNotFound");
 
             byte[] data = _repositoryModel.ModuleInfosList
                 .Where(x => x.Id.Equals(urlId))
@@ -65,7 +65,7 @@ namespace Nomad.RepositoryServer.Controllers
                 .SingleOrDefault();
 
             if (data == null)
-                return RedirectToAction("FileNotFound", "Home");
+                return View("FileNotFound");
 
             return File(data, "application/zip");
         }

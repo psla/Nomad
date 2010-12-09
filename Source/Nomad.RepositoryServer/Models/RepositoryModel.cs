@@ -10,6 +10,7 @@ namespace Nomad.RepositoryServer.Models
     /// </remarks>
     public class RepositoryModel
     {
+
         private readonly List<IModuleInfo> _moduleInfosList;
         private readonly IStorageProvider _storageProvider;
 
@@ -20,6 +21,7 @@ namespace Nomad.RepositoryServer.Models
 
             // initialize the list of modules using the storageProvider provider
             _moduleInfosList = _storageProvider.GetAvaliableModules();
+
         }
 
 
@@ -37,6 +39,8 @@ namespace Nomad.RepositoryServer.Models
             // check for duplications
 
             _moduleInfosList.Add(moduleInfo);
+
+            // save into storage
         }
 
 
@@ -46,6 +50,8 @@ namespace Nomad.RepositoryServer.Models
 
             // check for existence
             _moduleInfosList.Remove(moduleInfo);
+
+            // remove from storage
         }
     }
 }
