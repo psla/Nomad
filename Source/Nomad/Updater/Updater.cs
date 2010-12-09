@@ -303,6 +303,8 @@ namespace Nomad.Updater
                                                      _modulesPackages;
                                                  try
                                                  {
+                                                     Thread.Sleep(100);
+
                                                      _modulesOperations.UnloadModules();
 
                                                      foreach (
