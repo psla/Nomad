@@ -1,0 +1,3 @@
+In order to have a working build with signing tests passing one must:
+1) Install the NomadFakeCa.cer into the Trusted Root Certification Authorities (manual install location)
+2) Install the corresponding NomadFakeCa.crl into the system.
