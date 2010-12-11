@@ -138,7 +138,7 @@ namespace Nomad.Tests.FunctionalTests.Modules
         public string GenerateManifestForModule(string modulePath, string keyLocation,ManifestBuilderConfiguration configuration)
         {
             string directory = Path.GetFullPath(Path.GetDirectoryName(modulePath));
-            var builder = new ManifestBuilder("TES_ISSUER_COMPILER",
+            var builder = new ManifestBuilder("TEST_ISSUER_COMPILER",
                                               keyLocation,
                                               Path.GetFileName(modulePath), directory,KeyStorage.Nomad,string.Empty,configuration);
             builder.Create();
