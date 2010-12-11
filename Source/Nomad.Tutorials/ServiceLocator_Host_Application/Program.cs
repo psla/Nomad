@@ -11,6 +11,11 @@ namespace ServiceLocator_Host_Application
     {
         private static void Main(string[] args)
         {
+            // signing the assemblies and creating the manifest using manifestBuilder api
+            GenerateManifestUsingApi("Registering_within_ServiceLocator_Module.dll", @".\Modules\RegisteringModule");
+            GenerateManifestUsingApi("ServiceLocator_dependent_Module.dll", @".\Modules\DependantModule");
+
+
             // using default configuration
             var kernel = new NomadKernel();
 
@@ -25,6 +30,15 @@ namespace ServiceLocator_Host_Application
 
             //wait
             Console.ReadLine();
+        }
+
+        private static void GenerateManifestUsingApi(string assemblyName, string path)
+        {
+            var builder = new Nomad.Utils.ManifestCreator.ManifestBuilder(@"TUTORIAL_ISSUER",
+                                                                          @"..\..\KEY_FILE.xml",
+                                                                          assemblyName,
+                                                                          path);
+            builder.Create();
         }
     }
 }

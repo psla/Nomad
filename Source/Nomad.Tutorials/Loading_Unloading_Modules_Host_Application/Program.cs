@@ -11,6 +11,9 @@ namespace Loading_Unloading_Modules_Host_Application
     {
         private static void Main(string[] args)
         {
+            // signing the assembly and creating the manifest using manifestBuilder api
+            GenerateManifestUsingApi();
+
             // using default configuration
             var kernel = new NomadKernel();
 
@@ -28,6 +31,16 @@ namespace Loading_Unloading_Modules_Host_Application
 
             //wait for input
             Console.ReadLine();
+        }
+
+
+        private static void GenerateManifestUsingApi()
+        {
+            var builder = new Nomad.Utils.ManifestCreator.ManifestBuilder(@"TUTORIAL_ISSUER",
+                                                                          @"..\..\KEY_FILE.xml",
+                                                                          @"Tutorial_01_Example_Module.dll",
+                                                                          @".\Modules\");
+            builder.Create();
         }
     }
 }
