@@ -29,7 +29,7 @@ namespace Nomad.RepositoryServer.Tests.ControllersTests
         [Test]
         public void publishing_proper_zip_file_results_in_redirect_to_index()
         { 
-            // TODO: should I implement this test ?
+            // TODO: should I implement this test, this is pretty solid one?
 
             //// set up simplest possible manifest
             //var manifest = new ModuleManifest

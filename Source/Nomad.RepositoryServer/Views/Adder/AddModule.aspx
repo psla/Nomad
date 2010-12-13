@@ -35,7 +35,7 @@ MasterPageFile="~/Views/Shared/Site.Master" %>
   -->
   <div>
 		<h4>Add aditional files here, which might be requested during manifest building</h4>
-		<%using(Html.BeginForm("AddFile","Home",FormMethod.Post,new{enctype="multipart/form-data"}))
+		<%using(Html.BeginForm("AddFile","Adder",FormMethod.Post,new{enctype="multipart/form-data"}))
 		{
 		%>
 		<table>
@@ -63,7 +63,7 @@ MasterPageFile="~/Views/Shared/Site.Master" %>
 	-->
    <div style="background-color:White;">
    <h4>List of files in your virtual folder</h4>
-   <% using( Html.BeginForm("PublishModule","Home")) { %> 
+   <% using( Html.BeginForm("PublishModule","Adder")) { %> 
 	<table>
 		<tr>
 		<th>File</th>
