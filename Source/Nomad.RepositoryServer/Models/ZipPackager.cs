@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Ionic.Zip;
+using Nomad.Modules.Manifest;
 using Nomad.RepositoryServer.Models.ServerSigner;
+using Nomad.Utils;
 
 namespace Nomad.RepositoryServer.Models
 {
@@ -18,7 +20,6 @@ namespace Nomad.RepositoryServer.Models
             string tmpZipFile = Path.GetTempFileName();
             using (var zipFile = new ZipFile())
             {
-
                 var directoryInfo = new DirectoryInfo(toFolder);
 
                 // get all files from this directory into zip archive
@@ -30,7 +31,7 @@ namespace Nomad.RepositoryServer.Models
                 zipFile.Save(tmpZipFile);
             }
 
-            var data = File.ReadAllBytes(tmpZipFile);
+            byte[] data = File.ReadAllBytes(tmpZipFile);
             File.Delete(tmpZipFile);
             return data;
         }
@@ -42,7 +43,6 @@ namespace Nomad.RepositoryServer.Models
             string tmpZipFile = Path.GetTempFileName();
             using (var zipFile = new ZipFile())
             {
-
                 var directoryInfo = new DirectoryInfo(pathToFolder);
 
                 // get all files from this directory into zip archive
@@ -50,12 +50,12 @@ namespace Nomad.RepositoryServer.Models
                 {
                     // find this file in in folderFiles 
                     FileInfo info = fileInfo;
-                    var item = inFolderFiles
+                    VirtualFileWrapper item = inFolderFiles
                         .Where(x => x.FileName.Equals(info) && x.ToPackage == false)
                         .DefaultIfEmpty(null)
                         .SingleOrDefault();
 
-                    if(item != null)
+                    if (item != null)
                         continue;
 
                     zipFile.AddFile(fileInfo.FullName, ".");
@@ -64,19 +64,69 @@ namespace Nomad.RepositoryServer.Models
                 zipFile.Save(tmpZipFile);
             }
 
-            var data = File.ReadAllBytes(tmpZipFile);
+            byte[] data = File.ReadAllBytes(tmpZipFile);
             File.Delete(tmpZipFile);
             return data;
         }
 
 
+        /// <summary>
+        ///     Unzips the data from <paramref name="packageData"/> and access <see cref="ModuleManifest"/>.
+        /// </summary>
+        /// <param name="packageData">The raw data of the package.</param>
+        /// <returns><see cref="ModuleInfo"/> object that has ModuleManifest found.</returns>
         public IModuleInfo UnPack(byte[] packageData)
         {
             if (packageData == null)
                 throw new ArgumentNullException("packageData");
 
-            
-            return new ModuleInfo();
+            ZipFile zipFile = null;
+            ModuleManifest manifest = null;
+
+            try
+            {
+                zipFile = ZipFile.Read(packageData);
+
+                // find manifest inside the zip data
+                foreach (ZipEntry zipEntry in zipFile)
+                {
+                    if (zipEntry.FileName.EndsWith(ModuleManifest.ManifestFileNameSuffix))
+                    {
+                        // use this file as manifest
+                        var ms = new MemoryStream();
+                        zipEntry.Extract(ms);
+                        manifest = XmlSerializerHelper.Deserialize<ModuleManifest>(ms.ToArray());
+
+                        // now serach for the assembly described by this manifest, simply by iterating through zip entries
+                        if (
+                            !zipFile.Any(
+                                entry =>
+                                entry.FileName.EndsWith(".dll") | entry.FileName.EndsWith("exe")))
+                        {
+                            throw new ArgumentException("No assembly in the package");
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw new ArgumentException("The file is corruted");
+            }
+            finally
+            {
+                if (zipFile != null)
+                    zipFile.Dispose();
+            }
+
+            // have not found manifest
+            if (manifest == null)
+                throw new ArgumentException("No manifest file in package");
+
+            return new ModuleInfo
+                       {
+                           ModuleData = packageData,
+                           Manifest = manifest
+                       };
         }
     }
 }

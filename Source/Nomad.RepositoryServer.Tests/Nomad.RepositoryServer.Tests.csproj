@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\Build\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -25,7 +25,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\..\Build\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -64,6 +64,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Nomad.KeysGenerator\Nomad.KeysGenerator.csproj">
+      <Project>{1F6C3A60-1A3C-4627-A9F3-B71897468E21}</Project>
+      <Name>Nomad.KeysGenerator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Nomad.ManifestCreator\Nomad.ManifestCreator.csproj">
+      <Project>{EF5A9D12-B2C4-46E0-B7E9-75868819C4C8}</Project>
+      <Name>Nomad.ManifestCreator</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Nomad.RepositoryServer\Nomad.RepositoryServer.csproj">
       <Project>{11D7FC79-9873-4234-BB08-A75E01FD7092}</Project>
       <Name>Nomad.RepositoryServer</Name>
