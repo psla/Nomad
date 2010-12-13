@@ -42,8 +42,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceLocator_dependent_Mo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleCommunicationServiceInterface", "Nomad.Tutorials\SimpleCommunicationServiceInterface\SimpleCommunicationServiceInterface.csproj", "{E15369D3-E227-47C0-8273-E336DF1BB519}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nomad.ModulesRepository", "Nomad.ModulesRepository\Nomad.ModulesRepository.csproj", "{69CE733D-8F4E-4183-B5C9-4A6B1B42B843}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loading_Unloading_Modules_Host_Application", "Nomad.Tutorials\Loading_Unloading_Modules_Host_Application\Loading_Unloading_Modules_Host_Application.csproj", "{EDB3E0D1-A7AD-46EC-9620-13FE3C5A661B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceLocator_Host_Application", "Nomad.Tutorials\ServiceLocator_Host_Application\ServiceLocator_Host_Application.csproj", "{A6AECD48-8DCB-4B6F-B9DA-66B6CD39D37F}"
@@ -109,6 +107,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tutorial_04_WpfApplication", "Tutorial_04_WpfApplication", "{F311E519-E8C4-4C82-831B-14EFDD72F542}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nomad.RepositoryServer", "Nomad.RepositoryServer\Nomad.RepositoryServer.csproj", "{11D7FC79-9873-4234-BB08-A75E01FD7092}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nomad.RepositoryServer.Tests", "Nomad.RepositoryServer.Tests\Nomad.RepositoryServer.Tests.csproj", "{1B6620DB-87F5-49C5-826E-E59FB9E6496A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -304,6 +304,11 @@ Global
 		{11D7FC79-9873-4234-BB08-A75E01FD7092}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{11D7FC79-9873-4234-BB08-A75E01FD7092}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{11D7FC79-9873-4234-BB08-A75E01FD7092}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11D7FC79-9873-4234-BB08-A75E01FD7092}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B6620DB-87F5-49C5-826E-E59FB9E6496A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B6620DB-87F5-49C5-826E-E59FB9E6496A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B6620DB-87F5-49C5-826E-E59FB9E6496A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B6620DB-87F5-49C5-826E-E59FB9E6496A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -317,8 +322,8 @@ Global
 		{CEE03019-DE60-4DBA-9784-6BCBCE3E2665} = {6B0366F8-104B-4B8B-A38C-F03BC6504B90}
 		{1F6C3A60-1A3C-4627-A9F3-B71897468E21} = {0DC7A9CF-DB4C-47D3-95C2-51FEEA924FB0}
 		{EF5A9D12-B2C4-46E0-B7E9-75868819C4C8} = {0DC7A9CF-DB4C-47D3-95C2-51FEEA924FB0}
-		{69CE733D-8F4E-4183-B5C9-4A6B1B42B843} = {0DC7A9CF-DB4C-47D3-95C2-51FEEA924FB0}
 		{11D7FC79-9873-4234-BB08-A75E01FD7092} = {0DC7A9CF-DB4C-47D3-95C2-51FEEA924FB0}
+		{1B6620DB-87F5-49C5-826E-E59FB9E6496A} = {0DC7A9CF-DB4C-47D3-95C2-51FEEA924FB0}
 		{10C9F747-ABB7-4548-B5E4-25449736D7F0} = {7658FD92-7978-4772-A530-CAD32A656DC0}
 		{24940CF6-1C5F-4E26-97F0-019F5A3A53CF} = {7658FD92-7978-4772-A530-CAD32A656DC0}
 		{A7F38696-7175-4258-B853-BAF3EC649A4E} = {7658FD92-7978-4772-A530-CAD32A656DC0}

@@ -1,9 +1,9 @@
-using System;
 using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
 using Nomad.RepositoryServer.Models;
-using Nomad.RepositoryServer.Models.DesignStorage;
+using Nomad.RepositoryServer.Models.ServerSigner;
+using Nomad.RepositoryServer.Models.StorageProviders;
 
 namespace Nomad.RepositoryServer.IoC
 {
@@ -18,7 +18,7 @@ namespace Nomad.RepositoryServer.IoC
 
                 Component
                 .For<IStorageProvider>()
-                .ImplementedBy<DesignStorage>()
+                .ImplementedBy<InMemoryStorageProvider>()
                 .LifeStyle.Singleton,
 
                 Component

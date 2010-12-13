@@ -6,7 +6,7 @@ using System.Web;
 using Nomad.Modules.Manifest;
 using Version = Nomad.Utils.Version;
 
-namespace Nomad.RepositoryServer.Models.ModulesUploading
+namespace Nomad.RepositoryServer.Models.ServerSigner
 {
     /// <summary>
     ///     Encapsulates all information about process of module being added.
@@ -58,7 +58,7 @@ namespace Nomad.RepositoryServer.Models.ModulesUploading
                                };
 
             // get the moduleInfo but so called virtual implementation
-            ModuleInfo = new VirtualModuleInfo
+            ModuleInfo = new ModuleInfo
                                          {
                                              Manifest = manifest,
                                              ModuleData = File.ReadAllBytes(AssemblyFilePath),

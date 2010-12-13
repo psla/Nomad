@@ -10,6 +10,10 @@ namespace Nomad.RepositoryServer.Controllers
     /// <summary>
     ///     Manages access to files to be dowloaded. Returns no views at all only <see cref="FileResult"/> classes.
     /// </summary>
+    /// <remarks>
+    ///     If any error occurs output will be Error View.
+    /// </remarks>
+    [HandleError(View = "Error")]
     public class ModulesController : Controller
     {
         private readonly RepositoryModel _repositoryModel;
@@ -27,7 +31,7 @@ namespace Nomad.RepositoryServer.Controllers
         /// <remarks>
         ///     method bases on http://stackoverflow.com/questions/186062/can-an-asp-net-mvc-controller-return-an-image
         /// </remarks>
-        /// <returns><see cref="FileResult"/> with XML file describing the avaliable modules</returns>
+        /// <returns><see cref="FileResult"/> with XML file describing the avaliable modules, compilant with <see cref="WebAvailablePackagesCollection"/></returns>
         [AcceptVerbs(HttpVerbs.Get)]
         public ActionResult GetModules()
         {
@@ -43,7 +47,7 @@ namespace Nomad.RepositoryServer.Controllers
             var webPackagesCollection = new WebAvailablePackagesCollection(packageList);
 
             return File(XmlSerializerHelper.Serialize(webPackagesCollection),
-                        "text/xml");
+                        "text/xml", "updates.xml");
         }
 
 
@@ -67,7 +71,7 @@ namespace Nomad.RepositoryServer.Controllers
             if (data == null)
                 return View("FileNotFound");
 
-            return File(data, "application/zip");
+            return File(data, "application/zip", "package.zip");
         }
     }
 }

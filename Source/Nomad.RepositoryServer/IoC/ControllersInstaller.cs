@@ -6,7 +6,6 @@ using Castle.Core;
 using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
-using Nomad.RepositoryServer.Controllers;
 
 namespace Nomad.RepositoryServer.IoC
 {

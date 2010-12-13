@@ -3,7 +3,7 @@ using Nomad.Modules.Manifest;
 using Nomad.Signing;
 using Nomad.Utils.ManifestCreator;
 
-namespace Nomad.RepositoryServer.Models
+namespace Nomad.RepositoryServer.Models.ServerSigner
 {
     /// <summary>
     ///     Describes the settings of the manifests in server.

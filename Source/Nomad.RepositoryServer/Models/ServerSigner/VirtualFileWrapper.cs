@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Nomad.RepositoryServer.Models.ModulesUploading
+namespace Nomad.RepositoryServer.Models.ServerSigner
 {
     public class VirtualFileWrapper
     {

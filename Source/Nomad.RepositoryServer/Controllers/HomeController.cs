@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using Nomad.Modules.Manifest;
 using Nomad.RepositoryServer.Models;
-using Nomad.RepositoryServer.Models.ModulesUploading;
+using Nomad.RepositoryServer.Models.ServerSigner;
 using Nomad.Utils.ManifestCreator;
 
 namespace Nomad.RepositoryServer.Controllers
@@ -198,7 +198,7 @@ namespace Nomad.RepositoryServer.Controllers
             var zipPackager = new ZipPackager();
 
             // use add ModuleInfo to module repository (storage layer under repository should make everything work)
-            _repositoryModel.AddModule(new VirtualModuleInfo
+            _repositoryModel.AddModule(new ModuleInfo
                                            {
                                                // maybe this should be generated automatically
                                                Id = manifest.ModuleName + manifest.ModuleVersion,

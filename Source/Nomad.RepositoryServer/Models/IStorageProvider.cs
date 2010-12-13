@@ -2,12 +2,15 @@
 
 namespace Nomad.RepositoryServer.Models
 {
+    /// <summary>
+    ///     Defines the way of accessing data repository, storage.
+    /// </summary>
     public interface IStorageProvider
     {
-        List<IModuleInfo> GetAvaliableModules();
+        IEnumerable<IModuleInfo> GetAvaliableModules();
 
-        bool SaveModule(IModuleInfo moduleInfo);
+        void SaveModule(IModuleInfo moduleInfo);
 
-        bool RemoveModule(IModuleInfo moduleInfo);
+        void RemoveModule(IModuleInfo moduleInfo);
     }
 }

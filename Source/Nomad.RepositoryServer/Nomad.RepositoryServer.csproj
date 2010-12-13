@@ -72,25 +72,25 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AdderController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ModulesController.cs" />
+    <Compile Include="Controllers\PlainController.cs" />
+    <Compile Include="Models\StorageProviders\InMemoryStorageProvider.cs" />
     <Compile Include="Models\IManifestProvider.cs" />
-    <Compile Include="Models\ManifestProvider.cs" />
-    <Compile Include="Models\ModulesUploading\VirtualFileWrapper.cs" />
-    <Compile Include="Models\ModulesUploading\VirtualModuleInfo.cs" />
+    <Compile Include="Models\ServerSigner\ManifestProvider.cs" />
+    <Compile Include="Models\ServerSigner\VirtualFileWrapper.cs" />
+    <Compile Include="Models\ModuleInfo.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="IoC\ControllersInstaller.cs" />
-    <Compile Include="Models\DesignStorage\DesignStorage.cs" />
     <Compile Include="IoC\RepositoryInstaller.cs" />
     <Compile Include="Models\Accounts\AccountModels.cs" />
-    <Compile Include="Models\DirectoryStorage\DirectoryStorageProvider.cs" />
     <Compile Include="Models\IModuleInfo.cs" />
     <Compile Include="Models\IStorageProvider.cs" />
     <Compile Include="Models\RepositoryModel.cs" />
-    <Compile Include="Models\DirectoryStorage\DirectoryModuleInfo.cs" />
-    <Compile Include="Models\ModulesUploading\VirtualModuleAdder.cs" />
+    <Compile Include="Models\ServerSigner\VirtualModuleAdder.cs" />
     <Compile Include="Models\ZipPackager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IoC\WindsorControllerFactory.cs" />

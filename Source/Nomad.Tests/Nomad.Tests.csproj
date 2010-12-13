@@ -162,7 +162,6 @@
     <Compile Include="UnitTests\Signing\SignatureTests.cs" />
     <Compile Include="UnitTests\Updater\PreparingUpdates.cs" />
     <Compile Include="UnitTests\Updater\UpdaterTestFixture.cs" />
-    <Compile Include="UnitTests\UpdateServer\ServerOperations.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Nomad.KeysGenerator\Nomad.KeysGenerator.csproj">
@@ -172,10 +171,6 @@
     <ProjectReference Include="..\Nomad.ManifestCreator\Nomad.ManifestCreator.csproj">
       <Project>{EF5A9D12-B2C4-46E0-B7E9-75868819C4C8}</Project>
       <Name>Nomad.ManifestCreator</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Nomad.ModulesRepository\Nomad.ModulesRepository.csproj">
-      <Project>{69CE733D-8F4E-4183-B5C9-4A6B1B42B843}</Project>
-      <Name>Nomad.ModulesRepository</Name>
     </ProjectReference>
     <ProjectReference Include="..\Nomad\Nomad.csproj">
       <Project>{3828EBBD-FFBA-4C30-BF46-D3742BC165F1}</Project>

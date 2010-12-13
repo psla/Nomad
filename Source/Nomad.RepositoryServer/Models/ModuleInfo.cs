@@ -1,8 +1,8 @@
 ﻿using Nomad.Modules.Manifest;
 
-namespace Nomad.RepositoryServer.Models.ModulesUploading
+namespace Nomad.RepositoryServer.Models
 {
-    public class VirtualModuleInfo : IModuleInfo
+    public class ModuleInfo : IModuleInfo
     {
         public ModuleManifest Manifest { get; set; }
 

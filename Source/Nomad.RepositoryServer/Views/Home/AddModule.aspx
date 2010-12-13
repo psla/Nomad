@@ -1,5 +1,5 @@
 <%@ Page Title="" Language="C#" 
-Inherits="System.Web.Mvc.ViewPage<Nomad.RepositoryServer.Models.ModulesUploading.VirtualModuleAdder>" 
+Inherits="System.Web.Mvc.ViewPage<Nomad.RepositoryServer.Models.ServerSigner.VirtualModuleAdder>" 
 MasterPageFile="~/Views/Shared/Site.Master" %>
 <%@ Import Namespace="System.IO" %>
 <asp:Content runat="server" ID="Title" ContentPlaceHolderID="TitleContent">
