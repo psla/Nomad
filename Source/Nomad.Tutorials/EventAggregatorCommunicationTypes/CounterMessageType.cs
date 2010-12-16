@@ -1,4 +1,6 @@
-﻿namespace EventAggregatorCommunicationTypes
+﻿using System;
+
+namespace EventAggregatorCommunicationTypes
 {
     /// <summary>
     ///     Simple counter message class.
@@ -6,6 +8,7 @@
     /// <remarks>
     ///     In this tutorial this class will be used as message carrier.
     /// </remarks>
+    [Serializable]
     public class CounterMessageType
     {
         public CounterMessageType(int counter)

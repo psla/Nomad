@@ -1,3 +1,5 @@
+using System;
+
 namespace EventAggregatorCommunicationTypes
 {
     /// <summary>
@@ -6,6 +8,7 @@ namespace EventAggregatorCommunicationTypes
     /// <remarks>
     ///     In this tutorial this class will be used as simple control message carrier.
     /// </remarks>
+    [Serializable]
     public class StopPublishingMessageType
     {
         public readonly string Message;

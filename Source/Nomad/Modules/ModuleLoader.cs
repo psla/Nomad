@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Castle.MicroKernel.Registration;
@@ -39,8 +40,15 @@ namespace Nomad.Modules
 
             try
             {
+ 
                 AssemblyName asmName = AssemblyName.GetAssemblyName(moduleInfo.AssemblyPath);
                 Assembly assembly = Assembly.Load(asmName);
+
+                // make sure that all things lazy - loading asm are loaded before changing the bin path
+                foreach(var asm in assembly.GetReferencedAssemblies())
+                {
+                    Console.WriteLine(asm.Name);
+                }
 
                 Type bootstraperType = GetBootstrapperType(assembly);
 

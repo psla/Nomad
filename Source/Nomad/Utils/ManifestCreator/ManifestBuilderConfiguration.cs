@@ -24,8 +24,7 @@ namespace Nomad.Utils.ManifestCreator
                            {
                                VersionProvider = new SimpleVersionProvider(),
                                SignedFilesProvider = new WholeDirectorySignedFilesProvider(),
-                               ModulesDependenciesProvider =
-                                   new WholeDirectoryModulesDependenciesProvider(),
+                               ModulesDependenciesProvider = new FromFileModulesDependencyProvider(),
                            };
             }
         }
