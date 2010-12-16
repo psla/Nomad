@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using Nomad.Modules.Manifest;
-using Nomad.Utils.ManifestCreator.DependenciesProvider;
 
-namespace Nomad.Utils.ManifestCreator
+namespace Nomad.Utils.ManifestCreator.DependenciesProvider
 {
     /// <summary>
     ///     Searches the provided file with for dependencies if files exists then applies this dependency.

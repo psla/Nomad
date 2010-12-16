@@ -9,6 +9,7 @@ using Nomad.Modules.Discovery;
 using Nomad.Modules.Filters;
 using Nomad.Tests.FunctionalTests.Modules;
 using Nomad.Utils.ManifestCreator;
+using Nomad.Utils.ManifestCreator.DependenciesProvider;
 using NUnit.Framework;
 
 namespace Nomad.Tests.FunctionalTests.Fixtures
@@ -73,7 +74,11 @@ namespace Nomad.Tests.FunctionalTests.Fixtures
         protected void SetUpModuleWithManifest(string outputDirectory, string srcPath,
                                                params string[] references)
         {
-            SetUpModuleWithManifest(outputDirectory,srcPath,ManifestBuilderConfiguration.Default,references);
+            // NOTE: we are using whole directory module discovery instead of file one
+            var configuration = ManifestBuilderConfiguration.Default;
+            configuration.ModulesDependenciesProvider =new WholeDirectoryModulesDependenciesProvider();
+
+            SetUpModuleWithManifest(outputDirectory,srcPath,configuration,references);
         }
 
         protected void SetUpModuleWithManifest(string outputDirectory, string srcPath, ManifestBuilderConfiguration configuration,

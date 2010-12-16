@@ -153,7 +153,7 @@
     <Compile Include="Updater\UpdaterType.cs" />
     <Compile Include="Utils\ManifestCreator\FileSignerProviders\ISignedFilesProvider.cs" />
     <Compile Include="Utils\ManifestCreator\DependenciesProvider\IModulesDependenciesProvider.cs" />
-    <Compile Include="Utils\ManifestCreator\FromFileModulesDependencyProvider.cs" />
+    <Compile Include="Utils\ManifestCreator\DependenciesProvider\FromFileModulesDependencyProvider.cs" />
     <Compile Include="Utils\ManifestCreator\VersionProviders\IVersionProvider.cs" />
     <Compile Include="Utils\ManifestCreator\ManifestBuilder.cs" />
     <Compile Include="Utils\ManifestCreator\ManifestBuilderConfiguration.cs" />
