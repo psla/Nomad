@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using Nomad.Modules.Manifest;
 
 namespace Nomad.Utils.ManifestCreator.DependenciesProvider
@@ -16,18 +17,34 @@ namespace Nomad.Utils.ManifestCreator.DependenciesProvider
     ///          Does not utilize the <see cref="ModuleDependency.HasLoadingOrderPriority"/> property.
     ///     </para>
     ///     <para>
-    ///         TODO: write about this file
+    ///        Conf file is text file which consists of paths to valid .NET assemblies (relative or absolute).
     ///     </para>
     /// </remarks>
     public class FromFileModulesDependencyProvider : IModulesDependenciesProvider
     {
         private readonly string _depFileName;
 
+        /// <summary>
+        ///     The file name in which the dependencies are stored.
+        /// </summary>
+        public string DependencyFileName
+        {
+            get { return _depFileName; }
+        }
+
+        /// <summary>
+        ///     Default FileName to be searched for dependencies for module.
+        /// </summary>
+        public static string DefaultFileName
+        {
+            get { return @"dep.conf"; }
+        }
+
         #region Constructors
 
         /// <summary>
         ///     Initializes the instance of the <see cref="FromFileModulesDependencyProvider"/>  class with
-        /// <see cref="DefaultFileName"/> as fiel name to be serached.
+        /// <see cref="DefaultFileName"/> as file name to be searched.
         /// </summary>
         public FromFileModulesDependencyProvider() : this(DefaultFileName)
         {
@@ -37,7 +54,7 @@ namespace Nomad.Utils.ManifestCreator.DependenciesProvider
         /// <summary>
         ///     Initializes the instance of the <see cref="FromFileModulesDependencyProvider"/> class.
         /// </summary>
-        /// <param name="depFileName">File name to be searched for depenencies.</param>
+        /// <param name="depFileName">File name to be searched for dependencies.</param>
         public FromFileModulesDependencyProvider(string depFileName)
         {
             if (string.IsNullOrEmpty(depFileName))
@@ -48,14 +65,6 @@ namespace Nomad.Utils.ManifestCreator.DependenciesProvider
 
         #endregion
 
-        /// <summary>
-        ///     Default FileName to be searched for dependencies for module.
-        /// </summary>
-        public static string DefaultFileName
-        {
-            get { return @"dep.conf"; }
-        }
-
         #region IModulesDependenciesProvider Members
 
         public IEnumerable<ModuleDependency> GetDependencyModules(string directory,
@@ -63,19 +72,40 @@ namespace Nomad.Utils.ManifestCreator.DependenciesProvider
         {
             var dependencies = new List<ModuleDependency>();
 
-            // check for existance
+            // check for existence
             if (!File.Exists(_depFileName))
             {
                 //NOTE: if not find file then use empty list
                 return dependencies;
             }
 
-            // open file  
-            
-            
-            // foreach dependency in add to module depenency list
+            // open file    
+            using (StreamReader reader = File.OpenText(_depFileName))
+            {
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    try
+                    {
+                        string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, line);
+                        AssemblyName asmName = AssemblyName.GetAssemblyName(path);
+                        var dependency = new ModuleDependency
+                                             {
+                                                 HasLoadingOrderPriority = false,
+                                                 ModuleName = asmName.Name,
+                                                 MinimalVersion = new Version(asmName.Version),
+                                                 ProcessorArchitecture =
+                                                     asmName.ProcessorArchitecture
+                                             };
+                        dependencies.Add(dependency);
+                    }
+                    catch (Exception e)
+                    {
+                        throw new FileFormatException("File corrupted", e);
+                    }
+                }
+            }
 
-            
             return dependencies;
         }
 

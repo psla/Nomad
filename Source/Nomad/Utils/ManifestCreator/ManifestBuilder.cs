@@ -16,14 +16,8 @@ namespace Nomad.Utils.ManifestCreator
     ///     Tool for creating Nomad compliant manifests for existing assemblies.
     /// </summary>
     /// <remarks>
-    ///     This tool is simplest possible version of ManifestBuilder concept - it has few limitations. Nomad default values are used:
-    /// <para>
-    ///     The scope of working is folder and all files below. All files within provided folder are singed. All assemblies other than provided
-    /// assembly name are used as dependencies to current assembly. <c>These assemblies are also signed.</c>
-    /// </para>
-    /// <para>
-    ///     Version can be pinpointed using specific constructor - instead of using built in .NET Framework <see cref="Assembly.nGetVersion"/> property.
-    /// </para>
+    ///     This tool is simplest possible version of ManifestBuilder concept - it has few limitations though. Nomad default values are used from 
+    /// <see cref="ManifestBuilderConfiguration.Default"/> and are the only authors proposition for creating manifests.
     /// <para>
     ///     It can be used with two types of cryptographic security.
     /// </para>
@@ -136,30 +130,16 @@ namespace Nomad.Utils.ManifestCreator
 
 
         /// <summary>
-        ///     Generates the manifest based on passed parameters.
+        ///     Generates the manifest based on passed parameters and <c>saves manifest to file system</c>
         /// </summary>
+        /// <remarks>
+        ///     Performs the signing of the manifest file.
+        /// </remarks>
         /// <returns>The newly created manifest.</returns>
-        public ModuleManifest Create()
+        public ModuleManifest CreateAndPublish()
         {
-            // get the content of manifest from various engines.
-            Version version = _configuration.VersionProvider.GetVersion(GetAssemblyPath());
-
-            IEnumerable<SignedFile> signedFiles =
-                _configuration.SignedFilesProvider.GetSignedFiles(_directory, _signatureAlgorithm);
-
-            IEnumerable<ModuleDependency> dependencyModules =
-                _configuration.ModulesDependenciesProvider.GetDependencyModules(_directory,
-                                                                                 GetAssemblyPath());
-
-            //  create manifest
-            var manifest = new ModuleManifest
-                               {
-                                   Issuer = _issuerName,
-                                   ModuleName = GetAssemblyName(),
-                                   ModuleVersion = version,
-                                   SignedFiles = signedFiles.ToList(),
-                                   ModuleDependencies = dependencyModules.ToList()
-                               };
+            // perform creation
+            ModuleManifest manifest = Create();
 
             byte[] manifestSerialized = XmlSerializerHelper.Serialize(manifest);
 
@@ -170,6 +150,39 @@ namespace Nomad.Utils.ManifestCreator
             File.WriteAllBytes(manifestPath, manifestSerialized);
             File.WriteAllBytes(manifestPath + ModuleManifest.ManifestSignatureFileNameSuffix,
                                _signatureAlgorithm.Sign(File.ReadAllBytes(manifestPath)));
+
+            return manifest;
+        }
+
+
+        /// <summary>
+        ///     Generates manifest in memory.
+        /// </summary>
+        /// <remarks>
+        ///     Does <c>not</c> sign the manifest, cause there is no file to sign.
+        /// </remarks>
+        /// <returns>The newly created manifest</returns>
+        public ModuleManifest Create()
+        {
+            // get the content of manifest from various engines.
+            Version version = _configuration.VersionProvider.GetVersion(GetAssemblyPath());
+
+            IEnumerable<SignedFile> signedFiles =
+                _configuration.SignedFilesProvider.GetSignedFiles(_directory, _signatureAlgorithm);
+
+            IEnumerable<ModuleDependency> dependencyModules =
+                _configuration.ModulesDependenciesProvider.GetDependencyModules(_directory,
+                                                                                GetAssemblyPath());
+
+            //  create manifest
+            var manifest = new ModuleManifest
+                               {
+                                   Issuer = _issuerName,
+                                   ModuleName = GetAssemblyName(),
+                                   ModuleVersion = version,
+                                   SignedFiles = signedFiles.ToList(),
+                                   ModuleDependencies = dependencyModules.ToList()
+                               };
 
             return manifest;
         }

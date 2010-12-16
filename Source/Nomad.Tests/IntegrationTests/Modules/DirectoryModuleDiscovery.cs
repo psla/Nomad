@@ -53,9 +53,9 @@ namespace Nomad.Tests.IntegrationTests.Modules
 
             // generate manifests
             var builder = new ManifestBuilder(@"TEST_ISSUER", KeyFile, @"a.dll", testPath);
-            builder.Create();
+            builder.CreateAndPublish();
             builder = new ManifestBuilder(@"TEST_ISSUER", KeyFile, @"b.dll", testPath);
-            builder.Create();
+            builder.CreateAndPublish();
 
             // add spoiling module (assembly without manifest)
             File.Copy(Path.Combine(testPath, @"a.dll"), Path.Combine(testPath, "c.dll"));

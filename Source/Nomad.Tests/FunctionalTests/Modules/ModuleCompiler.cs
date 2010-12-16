@@ -141,7 +141,7 @@ namespace Nomad.Tests.FunctionalTests.Modules
             var builder = new ManifestBuilder("TEST_ISSUER_COMPILER",
                                               keyLocation,
                                               Path.GetFileName(modulePath), directory,KeyStorage.Nomad,string.Empty,configuration);
-            builder.Create();
+            builder.CreateAndPublish();
 
             return modulePath + ModuleManifest.ManifestFileNameSuffix;
         }

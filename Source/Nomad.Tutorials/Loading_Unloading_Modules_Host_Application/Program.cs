@@ -40,7 +40,7 @@ namespace Loading_Unloading_Modules_Host_Application
                                                                           @"..\..\KEY_FILE.xml",
                                                                           @"Tutorial_01_Example_Module.dll",
                                                                           @".\Modules\");
-            builder.Create();
+            builder.CreateAndPublish();
         }
     }
 }

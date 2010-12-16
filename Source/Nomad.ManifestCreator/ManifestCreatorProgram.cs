@@ -24,7 +24,7 @@ namespace Nomad.ManifestCreator
                 var argumentsParser = new ArgumentsParser(args);
                 var manifestCreator = argumentsParser.GetManifestCreator();
 
-                manifestCreator.Create();
+                manifestCreator.CreateAndPublish();
             }
             catch (Exception e)
             {

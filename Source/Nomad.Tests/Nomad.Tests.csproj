@@ -131,6 +131,7 @@
     <Compile Include="FunctionalTests\Modules\Filters\SignedModulesFiltering.cs" />
     <Compile Include="FunctionalTests\Kernel\NomadKernelEventRaising.cs" />
     <Compile Include="FunctionalTests\Updater\UpdaterLifetimeTests.cs" />
+    <Compile Include="FunctionalTests\Utils\FromFileModuleDependencies.cs" />
     <Compile Include="IntegrationTests\Modules\DependencyChecker\CheckModulesTest.cs" />
     <Compile Include="IntegrationTests\Modules\DependencyChecker\DependencyCheckerBase.cs" />
     <Compile Include="IntegrationTests\Modules\DependencyChecker\VersionsSortModulesTests.cs" />

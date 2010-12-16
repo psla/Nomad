@@ -42,13 +42,7 @@ namespace Nomad.Modules
             {
  
                 AssemblyName asmName = AssemblyName.GetAssemblyName(moduleInfo.AssemblyPath);
-                Assembly assembly = Assembly.Load(asmName);
-
-                // make sure that all things lazy - loading asm are loaded before changing the bin path
-                foreach(var asm in assembly.GetReferencedAssemblies())
-                {
-                    Console.WriteLine(asm.Name);
-                }
+                Assembly assembly = Assembly.Load(asmName);                
 
                 Type bootstraperType = GetBootstrapperType(assembly);
 

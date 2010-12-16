@@ -39,7 +39,7 @@ namespace ServiceLocator_Host_Application
                                               @"..\..\KEY_FILE.xml",
                                               assemblyName,
                                               path);
-            builder.Create();
+            builder.CreateAndPublish();
         }
     }
 }
