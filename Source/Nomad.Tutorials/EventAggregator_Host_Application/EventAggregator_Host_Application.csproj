@@ -74,6 +74,10 @@
       <Project>{3828EBBD-FFBA-4C30-BF46-D3742BC165F1}</Project>
       <Name>Nomad</Name>
     </ProjectReference>
+    <ProjectReference Include="..\EventAggregatorCommunicationTypes\EventAggregatorCommunicationTypes.csproj">
+      <Project>{2B0A0CD6-FD57-48F0-A163-F39073981934}</Project>
+      <Name>EventAggregatorCommunicationTypes</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -91,6 +95,9 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

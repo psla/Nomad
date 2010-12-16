@@ -22,7 +22,7 @@ namespace ServiceLocator_Host_Application
             // using default configuration
             var kernel = new NomadKernel();
 
-            // loading modules using single module discovery pattern
+            // loading modules using composite module discovery pattern
             var discovery = new CompositeModuleDiscovery(
                 new DirectoryModuleDiscovery(@".\Modules\RegisteringModule"),
                 new DirectoryModuleDiscovery(@".\Modules\DependantModule"));

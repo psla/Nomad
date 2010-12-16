@@ -36,7 +36,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\Build\Examples\Tutorial_02_ServiceLocator\Modules\</OutputPath>
+    <OutputPath>..\..\..\Build\Examples\Tutorial_02_ServiceLocator\Modules\RegisteringModule\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
