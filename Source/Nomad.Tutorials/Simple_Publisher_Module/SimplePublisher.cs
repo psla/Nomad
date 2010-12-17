@@ -2,6 +2,7 @@
 using System.Threading;
 using EventAggregatorCommunicationTypes;
 using Nomad.Communication.EventAggregation;
+using Nomad.Messages.Loading;
 using Nomad.Modules;
 
 namespace Simple_Publisher_Module
@@ -13,7 +14,8 @@ namespace Simple_Publisher_Module
     {
         private readonly IEventAggregator _eventAggregator;
         private bool _keepPublishing;
-        private IEventAggregatorTicket<StopPublishingMessageType> _subscriptionTicket;
+        private IEventAggregatorTicket<StopPublishingMessageType> _stopPublishingSubscriptionTicket;
+        private IEventAggregatorTicket<NomadAllModulesLoadedMessage> _allModulesLoadedSubscriptionTicket;
 
 
         /// <summary>
@@ -32,8 +34,15 @@ namespace Simple_Publisher_Module
         public void OnLoad()
         {
             // subscribing to an event (Stop Publishing) in Nomad
-            _subscriptionTicket = _eventAggregator.Subscribe<StopPublishingMessageType>(StopPublishing);
-           
+            _stopPublishingSubscriptionTicket = _eventAggregator.Subscribe<StopPublishingMessageType>(StopPublishing);
+
+            //subscribing to AllModulesLoaded event in Nomad
+            _allModulesLoadedSubscriptionTicket = _eventAggregator.Subscribe<NomadAllModulesLoadedMessage>(TickerMethod);
+        }
+
+
+        private void TickerMethod(NomadAllModulesLoadedMessage nomadAllModulesLoadedMessage)
+        {
             _keepPublishing = true;
             int count = 0;
             while (_keepPublishing)
@@ -65,7 +74,7 @@ namespace Simple_Publisher_Module
             Console.WriteLine("Received termination event: {0}", message.Message);
             
             // unsubscribing from event
-            _subscriptionTicket.Dispose();
+            _allModulesLoadedSubscriptionTicket.Dispose();
         }
     }
 }
