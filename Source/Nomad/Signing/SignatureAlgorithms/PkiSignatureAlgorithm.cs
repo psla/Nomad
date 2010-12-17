@@ -34,13 +34,21 @@ namespace Nomad.Signing.SignatureAlgorithms
         }
 
         /// <summary>
-        /// Creates instance of pki signature algorithm which allows verification agains certificate collection
+        /// Creates instance of pki signature algorithm which allows verification against certificate collection
         /// </summary>
         /// <param name="certificate2Collection">Collection of additional (to system one) certificates. Remember, that providing a CA certificate, you should provide certificate revocation list!</param>
         public PkiSignatureAlgorithm(X509Certificate2Collection certificate2Collection)
         {
             _certificate2Collection = certificate2Collection;
             _md5 = MD5.Create();
+        }
+
+        /// <summary>
+        /// Creates instance of pki signature which allows verification against system certificates collection
+        /// </summary>
+        public PkiSignatureAlgorithm() : this (new X509Certificate2Collection())
+        {
+            
         }
 
 

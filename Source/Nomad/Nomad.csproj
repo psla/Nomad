@@ -137,6 +137,7 @@
     <Compile Include="Services\LoadedModulesService.cs" />
     <Compile Include="Signing\FileUtils\SignedFile.cs" />
     <Compile Include="Signing\KeyStorage.cs" />
+    <Compile Include="Signing\SignatureAlgorithms\AcceptSignatureAlgorithm.cs" />
     <Compile Include="Signing\SignatureAlgorithms\PkiSignatureAlgorithm.cs" />
     <Compile Include="Updater\AvailableModules.cs" />
     <Compile Include="Messages\Updating\NomadAvailableUpdatesMessage.cs" />

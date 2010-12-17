@@ -65,5 +65,13 @@ namespace Nomad.Tests.UnitTests.Signing
 
             Assert.AreSame(defaultAlgorithm.Object, provider.IssuerAlgorithm, "When no vendor algorithm provided, default should be returned");
         }
+
+        [Test]
+        public void when_signature_provider_initialized_with_accept_signature_it_always_allows()
+        {
+            var signatureProvider = new SignatureProvider(new AcceptSignatureAlgorithm());
+            var algorithm = signatureProvider.GetIssuer("Whatever");
+            Assert.IsTrue(algorithm.IssuerAlgorithm.Verify(null, null), "When SignatureProvider was initialized with AcceptSignatureAlgorithm it should accept signatures, which are not denied by other policies");
+        }
     }
 }

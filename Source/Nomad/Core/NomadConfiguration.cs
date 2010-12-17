@@ -1,6 +1,8 @@
 ﻿using System;
 using Nomad.Modules;
 using Nomad.Modules.Filters;
+using Nomad.Signing.SignatureAlgorithms;
+using Nomad.Signing.SignatureProviders;
 using Nomad.Updater;
 using Nomad.Updater.ModulePackagers;
 using Nomad.Updater.ModuleRepositories;
@@ -11,16 +13,16 @@ namespace Nomad.Core
     /// Contains all information concerning <see cref="NomadKernel"/> configuration.
     /// This class acts as freezable. Also provides default configuration.
     /// </summary>
-    public class NomadConfiguration
+    public class NomadConfiguration 
     {
         #region Configuration
 
         private IDependencyChecker _dependencyChecker;
-        private IModuleFilter _moduleFilter;
-        private UpdaterType _updaterType;
         private string _moduleDirectoryPath;
-        private IModulesRepository _moduleRepository;
+        private IModuleFilter _moduleFilter;
         private IModulePackager _modulePackager;
+        private IModulesRepository _moduleRepository;
+        private UpdaterType _updaterType;
 
         /// <summary>
         ///     Implementation of <see cref="IModuleFilter"/> which will be used by Kernel.
@@ -41,7 +43,7 @@ namespace Nomad.Core
         /// </summary>
         public string ModuleDirectoryPath
         {
-            get {return _moduleDirectoryPath; }
+            get { return _moduleDirectoryPath; }
             set
             {
                 AssertNotFrozen();
@@ -54,10 +56,7 @@ namespace Nomad.Core
         /// </summary>
         public IModulePackager ModulePackager
         {
-            get
-            {
-                return _modulePackager;
-            }
+            get { return _modulePackager; }
             set
             {
                 AssertNotFrozen();
@@ -70,10 +69,7 @@ namespace Nomad.Core
         /// </summary>
         public IModulesRepository ModuleRepository
         {
-            get
-            {
-                return _moduleRepository;
-            }
+            get { return _moduleRepository; }
             set
             {
                 AssertNotFrozen();
@@ -124,18 +120,47 @@ namespace Nomad.Core
                                DependencyChecker = new DependencyChecker(),
                                UpdaterType = UpdaterType.Manual,
                                ModulePackager = new ModulePackager(),
+                               SignatureProvider =
+                                   new SignatureProvider(new NullSignatureAlgorithm())
                            };
             }
         }
 
         #region Freeze Implementation
 
+        private bool _isFrozen;
+
         /// <summary>
         ///     Determines the state of configuration object.
         /// </summary>
-        public bool IsFrozen { get; private set; }
+        public bool IsFrozen
+        {
+            get { return _isFrozen; }
+        }
 
-        
+        private ISignatureProvider _signatureProvider;
+
+        /// <summary>
+        ///<para>     
+        ///     Determines the way of signature verification. By default - not defined signatures issuer are not TRUSTED and will be denied.
+        /// </para>
+        ///<para>
+        /// You may make use of <see cref="PkiSignatureAlgorithm"/> (simply assign <example>
+        /// <code>
+        /// nomadConfiguration.SignatureProvider = new SignatureProvider(new PkiSignatureAlgorithm())
+        /// </code></example>
+        /// You may also make use of other <see cref="ISignatureAlgorithm"/>
+        /// </para>
+        /// </summary>
+        public ISignatureProvider SignatureProvider
+        {
+            get { return _signatureProvider; }
+            private set
+            {
+                AssertNotFrozen();
+                _signatureProvider = value;
+            }
+        }
 
 
         /// <summary>
@@ -158,7 +183,7 @@ namespace Nomad.Core
         /// </summary>
         public void Freeze()
         {
-            IsFrozen = true;
+            _isFrozen = true;
         }
 
         #endregion

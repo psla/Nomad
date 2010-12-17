@@ -125,6 +125,7 @@
     <Compile Include="FunctionalTests\ServiceLocation\ServiceLocatorInModules.cs" />
     <Compile Include="FunctionalTests\ServiceLocation\ServiceRegistry.cs" />
     <Compile Include="FunctionalTests\Services\LoadedModulesServiceTests.cs" />
+    <Compile Include="FunctionalTests\Signing\KernelSupportOfPki.cs" />
     <Compile Include="FunctionalTests\Signing\PKIModuleSigning.cs" />
     <Compile Include="FunctionalTests\Signing\KeyGenerating.cs" />
     <Compile Include="FunctionalTests\Signing\ModuleSigning.cs" />

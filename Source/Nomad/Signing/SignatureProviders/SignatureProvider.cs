@@ -7,12 +7,16 @@ namespace Nomad.Signing.SignatureProviders
     ///<summary>
     /// Container for trusted signatures
     ///</summary>
+    /// <remarks>
+    /// If issuer was not found (was not provided), by default Provider returns <see cref="_defaultSignatureAlgorithm"/> which is by default <see cref="NullSignatureAlgorithm"/>, which does not pass signature verification
+    /// </remarks>
     public class SignatureProvider : ISignatureProvider
     {
         private readonly ISignatureAlgorithm _defaultSignatureAlgorithm;
 
         private readonly IDictionary<string, IssuerInformation> _issuers =
             new Dictionary<string, IssuerInformation>();
+
 
         /// <summary>
         /// Initializes <see cref="SignatureProvider"/> with <see cref="NullSignatureAlgorithm"/>
@@ -22,8 +26,9 @@ namespace Nomad.Signing.SignatureProviders
         /// </remarks>
         public SignatureProvider() : this(new NullSignatureAlgorithm())
         {
-            
         }
+
+
         /// <summary>
         /// Initializes <see cref="SignatureProvider"/> with default algorithm
         /// </summary>
