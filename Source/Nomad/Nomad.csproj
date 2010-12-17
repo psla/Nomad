@@ -97,7 +97,6 @@
   <ItemGroup>
     <Compile Include="Communication\EventAggregation\DeliveryMethod.cs" />
     <Compile Include="Communication\EventAggregation\EventAggregatorFacade.cs" />
-    <Compile Include="Communication\EventAggregation\EventAggregatorMode.cs" />
     <Compile Include="Communication\EventAggregation\EventAggregatorTicket.cs" />
     <Compile Include="Communication\EventAggregation\IEventAggregatorTicket.cs" />
     <Compile Include="Communication\EventAggregation\IGuiThreadProvider.cs" />
@@ -133,7 +132,7 @@
     <Compile Include="Modules\Manifest\IModuleManifestFactory.cs" />
     <Compile Include="Modules\Manifest\ModuleDependency.cs" />
     <Compile Include="Modules\Manifest\ModuleManifestFactory.cs" />
-    <Compile Include="Modules\Installers\NomadEventAggregatorIntaller.cs" />
+    <Compile Include="Modules\Installers\NomadEventAggregatorInstaller.cs" />
     <Compile Include="Services\ILoadedModulesService.cs" />
     <Compile Include="Services\LoadedModulesService.cs" />
     <Compile Include="Signing\FileUtils\SignedFile.cs" />

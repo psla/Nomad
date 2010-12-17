@@ -13,17 +13,17 @@ namespace Nomad.Modules.Installers
     ///     Describes the lifetime and manages the dependencies of basic services of <see cref="IEventAggregator"/>
     /// implemented as facade for two cross domain working event aggregators.
     /// </remarks>
-    public class NomadEventAggregatorIntaller : IWindsorInstaller
+    public class NomadEventAggregatorInstaller : IWindsorInstaller
     {
         private readonly IEventAggregator _proxiedEventAggregator;
 
 
         ///<summary>
-        ///     Initializes the instance of <see cref="NomadEventAggregatorIntaller"/> class.
+        ///     Initializes the instance of <see cref="NomadEventAggregatorInstaller"/> class.
         ///</summary>
         ///<param name="proxiedEventAggregator">Event aggregator to be combined with <see cref="EventAggregatorFacade"/> for
         /// better communication</param>
-        public NomadEventAggregatorIntaller(IEventAggregator proxiedEventAggregator)
+        public NomadEventAggregatorInstaller(IEventAggregator proxiedEventAggregator)
         {
             _proxiedEventAggregator = proxiedEventAggregator;
         }

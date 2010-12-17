@@ -35,13 +35,9 @@ namespace Nomad.Modules
         {
             _windsorContainer = new WindsorContainer();
 
-            // get the data from out app domain, this code must be done after set data otherwise exception
-            var objectRef = (ObjRef) AppDomain.CurrentDomain.GetData("EventAggregatorObjRef");
-            var proxiedEventAggregator = (IEventAggregator) RemotingServices.Unmarshal(objectRef);
-
             // use nomad specific installer for that
             _windsorContainer.Install(
-                new NomadEventAggregatorIntaller(proxiedEventAggregator),
+                new NomadEventAggregatorInstaller(null),
                 new NomadServiceLocatorInstaller());
         }
 

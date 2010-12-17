@@ -187,10 +187,8 @@ namespace Nomad.Core
                                                      AppDomain.CurrentDomain.BaseDirectory,
                                                      true);
 
-            // create kernel version of the event aggregator and pass to appDomain
-            var siteEventAggregator = new EventAggregator(new WpfGuiThreadProvider());
-            ObjRef objectReference = RemotingServices.Marshal(siteEventAggregator);
-            ModuleAppDomain.SetData("EventAggregatorObjRef", objectReference);
+            // create kernel version of the event aggregator4
+            var siteEventAggregator = new EventAggregator(null);
 
             // use container creator to create communication services on modules app domain
             string asmName = typeof (ContainerCreator).Assembly.FullName;

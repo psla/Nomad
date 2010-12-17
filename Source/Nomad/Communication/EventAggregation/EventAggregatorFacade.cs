@@ -17,9 +17,6 @@ namespace Nomad.Communication.EventAggregation
         ///<summary>
         ///     Initializes the instance of <see cref="EventAggregatorFacade"/> class.
         ///</summary>
-        /// <remarks>
-        ///     Default <see cref="Mode"/> is set to <see cref="EventAggregatorMode.AllDomain"/>.
-        /// </remarks>
         ///<param name="proxiedEventAggregator">Implementation on of the remote <see cref="IEventAggregator"/></param>
         ///<param name="onSiteEventAggregator">Implementation of the local (this <see cref="AppDomain"/>) <see cref="IEventAggregator"/></param>
         public EventAggregatorFacade(IEventAggregator proxiedEventAggregator,
@@ -55,6 +52,8 @@ namespace Nomad.Communication.EventAggregation
             lock (_locker)
             {
                 _onSiteEventAggregator.Publish(message);
+                // Modules Facade publishes only into local domain.
+                if (_proxiedEventAggregator == null) return;
                 _proxiedEventAggregator.Publish(message);
             }
         }
