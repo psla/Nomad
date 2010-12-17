@@ -3,11 +3,18 @@ using System.Collections.Generic;
 using System.IO;
 using System.Web;
 using System.Web.Mvc;
+using Ionic.Zip;
 using Moq;
+using Nomad.KeysGenerator;
 using Nomad.Modules.Manifest;
 using Nomad.RepositoryServer.Controllers;
+using Nomad.Signing;
 using Nomad.Signing.FileUtils;
 using Nomad.Utils;
+using Nomad.Utils.ManifestCreator;
+using Nomad.Utils.ManifestCreator.DependenciesProvider;
+using Nomad.Utils.ManifestCreator.FileSignerProviders;
+using Nomad.Utils.ManifestCreator.VersionProviders;
 using NUnit.Framework;
 using TestsShared;
 using File = System.IO.File;
@@ -18,7 +25,17 @@ namespace Nomad.RepositoryServer.Tests.ControllersTests
     [IntegrationTests]
     public class PlainRepositoryControllerTests
     {
+        private const string FolderPath = @"IntegrationTests\Server\ModuleController";
         private PlainController _plainController;
+
+        [TestFixtureSetUp]
+        public void set_up_fixture()
+        {
+            if(Directory.Exists(FolderPath))
+                Directory.Delete(FolderPath,true);
+
+            Directory.CreateDirectory(FolderPath);
+        }
 
         [SetUp]
         public void set_up()
@@ -29,41 +46,56 @@ namespace Nomad.RepositoryServer.Tests.ControllersTests
         [Test]
         public void publishing_proper_zip_file_results_in_redirect_to_index()
         { 
-            // TODO: should I implement this test, this is pretty solid one?
+            // some remarkable constancies, we are using sample module from psake build
+            const string issuerName = @"TEST_ISSUER";
+            const string issuerXmlPath = @"TEST_XML_KEY_FILE.xml";
+            const string assemblyName = @"Modules\Simple\SimplestModulePossible1.dll";
 
-            //// set up simplest possible manifest
-            //var manifest = new ModuleManifest
-            //                   {
-            //                       Issuer = @"TEST_ISSUER",
-            //                       ModuleName = @"SimplesModulePossible1",
-            //                       ModuleVersion = new Version("1.0.0.0"),
-            //                       ModuleDependencies = new List<ModuleDependency>(),
-            //                       SignedFiles = new List<SignedFile>()
-            //                   };
-            //var manifestData = XmlSerializerHelper.Serialize(manifest);
-            //File.WriteAllBytes(@"manifestPath",manifestData);
-    
+            // get the key file
+            KeysGeneratorProgram.Main(new []{Path.Combine(FolderPath,issuerXmlPath)});
 
-            //// TODO: provide module package
+            // get the assembly file into test folder
+            File.Copy(assemblyName,Path.Combine(FolderPath,Path.GetFileName(assemblyName)));
+            
+            // NOTE: we are using here default builder configuration for simplicity of the test
+            var manifestBuilder = new ManifestBuilder(issuerName,
+                                                      Path.Combine(FolderPath, issuerXmlPath),
+                                                      Path.GetFileName(assemblyName), FolderPath, KeyStorage.Nomad,
+                                                      string.Empty, ManifestBuilderConfiguration.Default);
 
-            //byte[] fileData = null;
+            manifestBuilder.Create();
 
-            //// set up http posted file context
-            //var file = new Mock<HttpPostedFileBase>(MockBehavior.Loose);
-            //file.Setup(x => x.FileName)
-            //    .Returns("package.zip");
-            //file.Setup(x => x.InputStream)
-            //    .Returns(new MemoryStream(fileData))
-            //    .Verifiable("The data must be read from file");
+            var memoryStream = new MemoryStream();
 
-            //var testedController = new PlainController();
+            // make zip out of this folder 
+            var zipFilePath = Path.GetTempFileName();
+            File.Delete(zipFilePath);
+            using(var zipFile = new ZipFile(zipFilePath))
+            {
+                foreach(var f in Directory.GetFiles(FolderPath))
+                {
+                    zipFile.AddFile(f, ".");
+                }
 
-            //ActionResult result = testedController.UploadPackage(file.Object);
+                zipFile.Save(memoryStream);
+            }
 
-            //Assert.IsInstanceOf(typeof(ViewResult),result,"Reutrned no view");
-            //var resutlView = (ViewResult) result;
-            //Assert.AreEqual("Index",resutlView.ViewName);
 
+            // set up http posted file context
+            var file = new Mock<HttpPostedFileBase>(MockBehavior.Loose);
+            file.Setup(x => x.FileName)
+                .Returns("package.zip");
+            file.Setup(x => x.InputStream)
+                .Returns(memoryStream)
+                .Verifiable("The data must be read from file");
+
+            var testedController = new PlainController();
+
+            ActionResult result = testedController.UploadPackage(file.Object);
+
+            Assert.IsInstanceOf(typeof(ViewResult), result, "Returned no view");
+            var resutlView = (ViewResult)result;
+            Assert.AreEqual("Index", resutlView.ViewName);
         }
 
         [Test]
