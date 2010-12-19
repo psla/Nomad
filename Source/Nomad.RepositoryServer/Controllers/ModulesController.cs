@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Web.Mvc;
 using Nomad.RepositoryServer.Models;
 using Nomad.Updater.ModuleRepositories.WebRepositories;
@@ -33,21 +35,25 @@ namespace Nomad.RepositoryServer.Controllers
         /// </remarks>
         /// <returns><see cref="FileResult"/> with XML file describing the avaliable modules, compilant with <see cref="WebAvailablePackagesCollection"/></returns>
         [AcceptVerbs(HttpVerbs.Get)]
-        public ActionResult GetModules()
+        public FileResult GetModules()
         {
-            // TODO: add handling errors of not having something or anything else
+            var splitedUrl = Request.RawUrl.Split('/');
+            // select all but last element
+            var urlBase= splitedUrl.Take(splitedUrl.Count() - 1);
+            var addressToController = urlBase.Aggregate((a, b) => a + '/' + b);
+            
             var repoList = new List<IModuleInfo>(_repositoryModel.ModuleInfosList);
             List<WebModulePackageInfo> packageList = repoList
                 .Select(repositoryModuleInfo
                         =>
                         new WebModulePackageInfo(repositoryModuleInfo.Manifest,
-                                                 // TODO: prepare proper version of this url
-                                                 repositoryModuleInfo.Id))
+                                                 addressToController + '/' + repositoryModuleInfo.Id))
                 .ToList();
             var webPackagesCollection = new WebAvailablePackagesCollection(packageList);
 
-            return File(XmlSerializerHelper.Serialize(webPackagesCollection),
-                        "text/xml", "updates.xml");
+            return File(
+                    new MemoryStream(XmlSerializerHelper.Serialize(webPackagesCollection)),
+                    "text/xml","updates.xml");
         }
 
 
@@ -71,7 +77,8 @@ namespace Nomad.RepositoryServer.Controllers
             if (data == null)
                 return View("FileNotFound");
 
-            return File(data, "application/zip", "package.zip");
+            
+            return  File(new MemoryStream(data), "application/zip","module.zip");
         }
     }
 }
