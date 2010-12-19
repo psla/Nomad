@@ -8,6 +8,7 @@ using Moq;
 using Nomad.KeysGenerator;
 using Nomad.Modules.Manifest;
 using Nomad.RepositoryServer.Controllers;
+using Nomad.RepositoryServer.Models;
 using Nomad.Signing;
 using Nomad.Signing.FileUtils;
 using Nomad.Utils;
@@ -27,36 +28,45 @@ namespace Nomad.RepositoryServer.Tests.ControllersTests
     {
         private const string FolderPath = @"IntegrationTests\Server\ModuleController";
         private PlainController _plainController;
-
-        [TestFixtureSetUp]
-        public void set_up_fixture()
-        {
-            if(Directory.Exists(FolderPath))
-                Directory.Delete(FolderPath,true);
-
-            Directory.CreateDirectory(FolderPath);
-        }
+        private Mock<IStorageProvider> _storageMock;
+        private RepositoryModel _repositoryModel;
+        private ZipPackager _zipPackager;
+        
 
         [SetUp]
         public void set_up()
         {
-            _plainController = new PlainController();
+            if (Directory.Exists(FolderPath))
+                Directory.Delete(FolderPath, true);
+
+            Directory.CreateDirectory(FolderPath);
+
+            _storageMock = new Mock<IStorageProvider>();
+            _repositoryModel = new RepositoryModel(_storageMock.Object);
+            _zipPackager = new ZipPackager();
+            _plainController = new PlainController(_repositoryModel,_zipPackager);
+            
         }
 
-        [Test]
-        public void publishing_proper_zip_file_results_in_redirect_to_index()
-        { 
+        [TearDown]
+        public void tear_down()
+        {
+            Directory.Delete(FolderPath,true);
+        }
+
+        private static void BuildModule()
+        {
             // some remarkable constancies, we are using sample module from psake build
             const string issuerName = @"TEST_ISSUER";
             const string issuerXmlPath = @"TEST_XML_KEY_FILE.xml";
             const string assemblyName = @"Modules\Simple\SimplestModulePossible1.dll";
 
             // get the key file
-            KeysGeneratorProgram.Main(new []{Path.Combine(FolderPath,issuerXmlPath)});
+            KeysGeneratorProgram.Main(new[] { Path.Combine(FolderPath, issuerXmlPath) });
 
             // get the assembly file into test folder
-            File.Copy(assemblyName,Path.Combine(FolderPath,Path.GetFileName(assemblyName)));
-            
+            File.Copy(assemblyName, Path.Combine(FolderPath, Path.GetFileName(assemblyName)),true);
+
             // NOTE: we are using here default builder configuration for simplicity of the test
             var manifestBuilder = new ManifestBuilder(issuerName,
                                                       Path.Combine(FolderPath, issuerXmlPath),
@@ -64,6 +74,13 @@ namespace Nomad.RepositoryServer.Tests.ControllersTests
                                                       string.Empty, ManifestBuilderConfiguration.Default);
 
             manifestBuilder.Create();
+        }
+
+        [Test]
+        public void publishing_proper_zip_file_results_in_redirect_to_index()
+        { 
+            // prepare files for zipping
+            BuildModule();
 
             var memoryStream = new MemoryStream();
 
@@ -80,6 +97,15 @@ namespace Nomad.RepositoryServer.Tests.ControllersTests
                 zipFile.Save(memoryStream);
             }
 
+            // set up storage context in the plain controller
+            _storageMock
+                .Setup(x => x.GetAvaliableModules())
+                .Returns(new List<IModuleInfo>())
+                .Verifiable("This method should be called, by repository model!");
+
+            _storageMock
+                .Setup(x => x.SaveModule(It.IsAny<IModuleInfo>()))
+                .Verifiable("This method should be called upon publishing file");
 
             // set up http posted file context
             var file = new Mock<HttpPostedFileBase>(MockBehavior.Loose);
@@ -89,13 +115,58 @@ namespace Nomad.RepositoryServer.Tests.ControllersTests
                 .Returns(memoryStream)
                 .Verifiable("The data must be read from file");
 
-            var testedController = new PlainController();
+            // act
+            var result = _plainController.UploadPackage(file.Object) as RedirectToRouteResult;
 
-            ActionResult result = testedController.UploadPackage(file.Object);
+            // assert the gotten redirect action
+            Assert.NotNull(result,"The redirect action should be returned");
+            Assert.AreEqual("Index", result.RouteValues["action"], "Redirect action should be");
+            
+            // assert the changes in storage - checking if add was called
+            _storageMock.Verify();
+        }
 
-            Assert.IsInstanceOf(typeof(ViewResult), result, "Returned no view");
-            var resutlView = (ViewResult)result;
-            Assert.AreEqual("Index", resutlView.ViewName);
+        [Test]
+        public void publishing_zip_file_with_missing_data_results_in_failure_page()
+        {
+            // prepare files for zipping
+            BuildModule();
+
+            var memoryStream = new MemoryStream();
+
+            // build wrong zip (missing manifest)
+            var zipFilePath = Path.GetTempFileName();
+            File.Delete(zipFilePath);
+            using (var zipFile = new ZipFile(zipFilePath))
+            {
+                foreach (var f in Directory.GetFiles(FolderPath))
+                {
+                    // dont add manifest for the package - number one error
+                    if(f.EndsWith(ModuleManifest.ManifestFileNameSuffix))
+                        continue;
+
+                    zipFile.AddFile(f, ".");
+                }
+
+                zipFile.Save(memoryStream);
+            }
+
+            // set up http posted file context
+            var file = new Mock<HttpPostedFileBase>(MockBehavior.Loose);
+            file.Setup(x => x.FileName)
+                .Returns("package.zip");
+            file.Setup(x => x.InputStream)
+                .Returns(memoryStream)
+                .Verifiable("The data must be read from file");
+
+            // act
+            var result = _plainController.UploadPackage(file.Object) as ViewResult;
+
+            // assert the gotten redirect action
+            Assert.NotNull(result, "Expected view");
+            Assert.AreEqual("Error", result.ViewName);
+            Assert.AreEqual("No manifest file in package", result.ViewData["Message"]);
+
         }
 
         [Test]

@@ -20,6 +20,7 @@ namespace Nomad.RepositoryServer.Tests.ModelTests
         private RepositoryModel _repositoryModel;
         private Mock<IStorageProvider> _storageMock;
 
+
         [SetUp]
         public void set_up()
         {
@@ -74,11 +75,37 @@ namespace Nomad.RepositoryServer.Tests.ModelTests
         public void adding_incomplete_module_raises_exception()
         {
             var moduleInfoMock = new Mock<IModuleInfo>(MockBehavior.Loose);
-            moduleInfoMock.Setup(x => x.Manifest).Returns(() => null);
+            moduleInfoMock
+                .Setup(x => x.ModuleData)
+                .Returns(new byte[] {0xFF});
+            moduleInfoMock.
+                Setup(x => x.Manifest)
+                .Returns(() => null)
+                .Verifiable("This method should be called");
 
             Assert.Throws<ArgumentException>(
                 () => _repositoryModel.AddModule(moduleInfoMock.Object),
                 "Argument exception should be thrown");
+            moduleInfoMock.Verify();
+        }
+
+
+        [Test]
+        public void adding_incomplete_module_no_data_raises_exception()
+        {
+            var moduleInfoMock = new Mock<IModuleInfo>(MockBehavior.Loose);
+            moduleInfoMock
+                .Setup(x => x.Manifest)
+                .Returns(new ModuleManifest());
+            moduleInfoMock
+                .Setup(x => x.ModuleData)
+                .Returns(() => null)
+                .Verifiable("This method should be called");
+
+            Assert.Throws<ArgumentException>(
+                () => _repositoryModel.AddModule(moduleInfoMock.Object),
+                "Argument exception should be thrown");
+            moduleInfoMock.Verify();
         }
 
 

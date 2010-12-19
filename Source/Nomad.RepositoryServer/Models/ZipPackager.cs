@@ -37,7 +37,7 @@ namespace Nomad.RepositoryServer.Models
         }
 
 
-        public byte[] Package(string pathToFolder, IList<VirtualFileWrapper> inFolderFiles)
+        public byte[] Package(string pathToFolder, IEnumerable<VirtualFileWrapper> inFolderFiles)
         {
             // pack the things from the form into zip file 
             string tmpZipFile = Path.GetTempFileName();
@@ -97,7 +97,7 @@ namespace Nomad.RepositoryServer.Models
                         zipEntry.Extract(ms);
                         manifest = XmlSerializerHelper.Deserialize<ModuleManifest>(ms.ToArray());
 
-                        // now serach for the assembly described by this manifest, simply by iterating through zip entries
+                        // now search for the assembly described by this manifest, simply by iterating through zip entries
                         if (
                             !zipFile.Any(
                                 entry =>
@@ -108,9 +108,9 @@ namespace Nomad.RepositoryServer.Models
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw new ArgumentException("The file is corruted");
+                throw new InvalidDataException("The file is corrupted",e);
             }
             finally
             {
@@ -120,7 +120,7 @@ namespace Nomad.RepositoryServer.Models
 
             // have not found manifest
             if (manifest == null)
-                throw new ArgumentException("No manifest file in package");
+                throw new InvalidDataException("No manifest file in package");
 
             return new ModuleInfo
                        {

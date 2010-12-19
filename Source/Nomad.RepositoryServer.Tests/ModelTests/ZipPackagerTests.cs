@@ -98,7 +98,7 @@ namespace Nomad.RepositoryServer.Tests.ModelTests
             var data = new byte[] {0xFF, 0xFF, 0xFF};
 
             IModuleInfo moduleInfo;
-            Assert.Throws<ArgumentException>(() => moduleInfo = _zipPackager.UnPack(data));
+            Assert.Throws<InvalidDataException>(() => moduleInfo = _zipPackager.UnPack(data));
         }
 
 
@@ -129,7 +129,7 @@ namespace Nomad.RepositoryServer.Tests.ModelTests
             byte[] data = GetZipFilePath(AddKeyFile(), AddManifestFile());
 
             // assert
-            Assert.Throws<ArgumentException>(() => _zipPackager.UnPack(data));
+            Assert.Throws<InvalidDataException>(() => _zipPackager.UnPack(data));
         }
 
 
@@ -139,7 +139,7 @@ namespace Nomad.RepositoryServer.Tests.ModelTests
             byte[] data = GetZipFilePath(AddKeyFile(), AddModuleFile());
 
             // assert
-            Assert.Throws<ArgumentException>(() => _zipPackager.UnPack(data));
+            Assert.Throws<InvalidDataException>(() => _zipPackager.UnPack(data));
         }
 
         #endregion

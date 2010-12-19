@@ -63,13 +63,15 @@ namespace Nomad.RepositoryServer.Tests.ControllersTests
                             "File content should be set to zip");
         }
 
+
         [Test]
         public void getting_null_element_returns_file_not_found_view()
         {
             var viewResut = _controller.GetModulePackage(null) as ViewResult;
-            Assert.NotNull(viewResut,"The view result should be returned");
-            Assert.AreEqual("FileNotFound",viewResut.ViewName);
+            Assert.NotNull(viewResut, "The view result should be returned");
+            Assert.AreEqual("FileNotFound", viewResut.ViewName);
         }
+
 
         [Test]
         public void get_non_existing_module_returns_file_not_found_view()
@@ -101,8 +103,9 @@ namespace Nomad.RepositoryServer.Tests.ControllersTests
                                  {
                                      Id = stringId,
                                      ModuleData = new byte[] {0xFF},
-                                     Manifest = new ModuleManifest()
+                                     Manifest =  new ModuleManifest(),
                                  };
+            
 
             _mockedStorageProvider.Setup(x => x.GetAvaliableModules())
                 .Returns(new List<IModuleInfo>

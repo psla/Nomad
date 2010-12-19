@@ -37,9 +37,6 @@
     <Reference Include="Moq">
       <HintPath>..\..\Libraries\Moq\Moq.dll</HintPath>
     </Reference>
-    <Reference Include="Nomad">
-      <HintPath>..\..\Release\Nomad\bin\Nomad.dll</HintPath>
-    </Reference>
     <Reference Include="nunit.framework, Version=2.5.5.10112, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Libraries\NUnit\nunit.framework.dll</HintPath>
@@ -79,6 +76,10 @@
     <ProjectReference Include="..\Nomad.Tests\Nomad.Tests.csproj">
       <Project>{18AC8400-37F4-4473-9BEB-204B0C9D9ABE}</Project>
       <Name>Nomad.Tests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Nomad\Nomad.csproj">
+      <Project>{3828EBBD-FFBA-4C30-BF46-D3742BC165F1}</Project>
+      <Name>Nomad</Name>
     </ProjectReference>
     <ProjectReference Include="..\TestsShared\TestsShared.csproj">
       <Project>{568F24F9-9ED8-4D0B-931C-8506E3A4808C}</Project>
