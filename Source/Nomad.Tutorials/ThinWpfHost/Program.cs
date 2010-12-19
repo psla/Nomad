@@ -35,7 +35,9 @@ namespace ThinWpfHost
 
             kernel.UnloadModules();
 
-            Thread.Sleep(5000);
+            //TODO: Here we might to try to substitute dll with new version to see if it was really unloaded
+
+            Thread.Sleep(2000);
 
             thread = new Thread((ThreadStart)delegate { kernel.LoadModules(discovery); });
             thread.SetApartmentState(ApartmentState.STA);
