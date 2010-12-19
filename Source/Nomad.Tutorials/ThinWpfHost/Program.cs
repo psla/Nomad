@@ -6,6 +6,12 @@ using Nomad.Utils.ManifestCreator;
 
 namespace ThinWpfHost
 {
+    /// <summary>
+    /// Sample WpfApplication loader 
+    /// </summary>
+    /// <remarks>
+    /// This tutorial shows how to load & unload & load again wpf application
+    /// </remarks>
     internal class Program
     {
         [STAThread]
