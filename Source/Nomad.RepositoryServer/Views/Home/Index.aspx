@@ -5,7 +5,7 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <h2>
-        List of avaliable modules within this Nomad Modules Center:
+        Available modules:
     </h2>
     <table>
         <tr>
@@ -41,23 +41,23 @@
                 <%= item.Manifest.Issuer %>
             </td>
             <td>
-                <%= Html.ActionLink("Details","Details", new { id = item.Id}, HttpVerbs.Get) %>
+                <%= Html.ActionLink("Details", "Details", "Home", new { itemId = item.Id }, HttpVerbs.Get)%>
             </td>
             <td>
                 <%= Html.ActionLink("Download","GetModulePackage","Modules",new { urlId = item.Id},HttpVerbs.Get) %>
             </td>
             <td>
-                <%= Html.ActionLink("Remove","Remove",new {id = item.Id}, HttpVerbs.Get) %>
+                <%= Html.ActionLink("Remove", "Remove", "Home", new { itemId = item.Id }, HttpVerbs.Get)%>
             </td>
         </tr>
         <% } %>
     </table>
     <!--
-        FIXME: Add better way of viewing this, beacause my UI skills sux
+        FIXME: Add better way of viewing this, because my UI skills sux
     -->
     <div>
         <p>
-            Add new module here
+            <b>Add new module here</b>
         </p>
         
         <% using (Html.BeginForm("UploadPackage", "Plain", FormMethod.Post, new { enctype = "multipart/form-data" }))

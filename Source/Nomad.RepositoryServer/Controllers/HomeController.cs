@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using Nomad.Modules.Manifest;
 using Nomad.RepositoryServer.Models;
-using Nomad.RepositoryServer.Models.ServerSigner;
-using Nomad.Utils.ManifestCreator;
 
 namespace Nomad.RepositoryServer.Controllers
 {
@@ -48,14 +43,20 @@ namespace Nomad.RepositoryServer.Controllers
 
 
         /// <summary>
-        ///     Displays the view with information about module with provided <paramref name="id"/>
+        ///     Displays the view with information about module with provided <paramref name="itemId"/>
         /// </summary>
-        /// <param name="id">The key to provided module</param>
+        /// <param name="itemId">The key to provided module</param>
         [AcceptVerbs(HttpVerbs.Get)]
-        public ActionResult Details(string id)
+        public ActionResult Details(string itemId)
         {
+            if(string.IsNullOrEmpty(itemId))
+            {
+                ViewData["Message"] = "No key provided";
+                return View("Error");
+            }
+
             IModuleInfo selectedModel = _repositoryModel.ModuleInfosList
-                .Where(x => x.Id.Equals(id))
+                .Where(x => x.Id.Equals(itemId))
                 .Select(x => x)
                 .DefaultIfEmpty(null)
                 .SingleOrDefault();
@@ -73,23 +74,30 @@ namespace Nomad.RepositoryServer.Controllers
 
 
         /// <summary>
-        ///     Removes the module with provided <paramref name="id"/>.
+        ///     Removes the module with provided <paramref name="itemId"/>.
         /// </summary>
         /// <returns></returns>
         [AcceptVerbs(HttpVerbs.Get)]
-        public ActionResult Remove(string id)
+        public ActionResult Remove(string itemId)
         {
-            if (string.IsNullOrEmpty(id))
-                return View("FileNotFound");
+            if (string.IsNullOrEmpty(itemId))
+            {
+                ViewData["Message"] = "No key provided";
+                return View("Error");
+            }
 
-            var item = _repositoryModel.ModuleInfosList
-                .Where(x => x.Id.Equals(id))
+            IModuleInfo item = _repositoryModel.ModuleInfosList
+                .Where(x => x.Id.Equals(itemId))
                 .Select(x => x)
                 .DefaultIfEmpty(null)
                 .SingleOrDefault();
 
             if (item == null)
-                return View("FileNotFound");
+            {
+                ViewData["Message"] = "Key could not be found in database";
+                return View("Error");
+            }
+
             try
             {
                 _repositoryModel.RemoveModule(item);
@@ -102,7 +110,5 @@ namespace Nomad.RepositoryServer.Controllers
 
             return RedirectToAction("Index");
         }
-
-        
     }
 }

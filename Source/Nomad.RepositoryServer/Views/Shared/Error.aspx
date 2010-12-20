@@ -8,14 +8,11 @@
 	<h2>
 		Sorry, an error occurred while processing your request.
 	</h2>
-	<h5>
+	<h4>
 		Error message:
-	</h5>
+	</h4>
 	<p>
-		<%if (!string.IsNullOrEmpty((string)ViewData["Message"]))
-		Html.Encode(ViewData["Message"]);
-	else
-		Html.Encode("No message passed");
-			%>
+		<% if (!string.IsNullOrEmpty((string)ViewData["Message"])) %>
+		  <%= ViewData["Message"] %>
 	</p>
 </asp:Content>
