@@ -18,7 +18,7 @@ namespace Nomad.RepositoryServer.IoC
 
                 Component
                 .For<IStorageProvider>()
-                .ImplementedBy<InMemoryStorageProvider>()
+                .ImplementedBy<LinqToSqlStorageProvider>()
                 .LifeStyle.Singleton,
 
                 Component
