@@ -14,12 +14,17 @@ namespace Nomad.RepositoryServer.IoC
             container.Register(
                 Component
                 .For<RepositoryModel>()
-                .LifeStyle.Singleton,
+                .LifeStyle.Transient,
 
                 Component
                 .For<IStorageProvider>()
                 .ImplementedBy<InMemoryStorageProvider>()
                 .LifeStyle.Singleton,
+
+                Component
+                    .For<ZipPackager>()
+                    .ImplementedBy<ZipPackager>()
+                    .LifeStyle.Transient,
 
                 Component
                     .For<IManifestProvider>()

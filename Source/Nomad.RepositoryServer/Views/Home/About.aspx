@@ -7,6 +7,6 @@
 <asp:Content ID="aboutContent" ContentPlaceHolderID="MainContent" runat="server">
     <h2>About</h2>
     <p>
-        This is alfa implementation of the server providing basic means for managing the Nomad's modules.
+        This is simple / basic implementation of server working with <b>Nomad</b> framework related programs.
     </p>
 </asp:Content>

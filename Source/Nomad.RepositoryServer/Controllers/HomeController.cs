@@ -33,7 +33,7 @@ namespace Nomad.RepositoryServer.Controllers
         [AcceptVerbs(HttpVerbs.Get)]
         public ActionResult Index()
         {
-            return View("Index", _repositoryModel);
+            return View("Index", _repositoryModel.ModuleInfosList);
         }
 
 
@@ -90,8 +90,15 @@ namespace Nomad.RepositoryServer.Controllers
 
             if (item == null)
                 return View("FileNotFound");
-
-            _repositoryModel.RemoveModule(item);
+            try
+            {
+                _repositoryModel.RemoveModule(item);
+            }
+            catch (Exception e)
+            {
+                ViewData["Message"] = e.Message;
+                return View("Error");
+            }
 
             return RedirectToAction("Index");
         }

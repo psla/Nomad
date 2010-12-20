@@ -94,6 +94,10 @@
     <Compile Include="Models\ZipPackager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IoC\WindsorControllerFactory.cs" />
+    <Compile Include="Views\Home\Index.aspx.cs">
+      <DependentUpon>Index.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />

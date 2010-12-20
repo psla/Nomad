@@ -12,10 +12,6 @@ namespace Nomad.RepositoryServer.Controllers
     /// <summary>
     ///     Manages access to files to be dowloaded. Returns no views at all only <see cref="FileResult"/> classes.
     /// </summary>
-    /// <remarks>
-    ///     If any error occurs output will be Error View.
-    /// </remarks>
-    [HandleError(View = "Error")]
     public class ModulesController : Controller
     {
         private readonly RepositoryModel _repositoryModel;

@@ -1,7 +1,7 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<Nomad.RepositoryServer.Models.RepositoryModel>" %>
+﻿<%@ Page CodeFile="Index.aspx.cs" Inherits="Nomad.RepositoryServer.Views.Home.Index" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
-    Home Page
+    Index of modules
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <h2>
@@ -9,6 +9,9 @@
     </h2>
     <table>
         <tr>
+            <th>
+                ID
+            </th>
             <th>
                 Module Name
             </th>
@@ -22,9 +25,12 @@
                 Actions
             </th>
         </tr>
-        <% foreach (var item in Model.ModuleInfosList)
+        <% foreach (var item in Model)
            { %>
         <tr>
+            <td>
+                <%= item.Id %>
+            </td>
             <td>
                 <%= item.Manifest.ModuleName %>
             </td>
@@ -51,27 +57,31 @@
     -->
     <div>
         <p>
-            <h3>
-                Add new module here</h3>
+            Add new module here
         </p>
-        <form action="/Home/AddModule" method="post" enctype="multipart/form-data">
+        
+        <% using (Html.BeginForm("UploadPackage", "Plain", FormMethod.Post, new { enctype = "multipart/form-data" }))
+           {%> 
         <table>
             <tr>
                 <td>
                     <label>
-                        Assembly File:
+                        Module Package (*.zip)
                     </label>
                 </td>
                 <td>
                     <input type="file" name="file" />
+                    
                 </td>
             </tr>
             <tr>
                 <td colspan="2">
-                    <input type="submit" value="Send" />
+                    <input type="submit" value="Upload" />
                 </td>
             </tr>
         </table>
-        </form>
+        <%
+           }%>
+        
     </div>
 </asp:Content>

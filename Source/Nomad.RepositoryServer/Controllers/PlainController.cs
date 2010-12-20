@@ -18,19 +18,19 @@ namespace Nomad.RepositoryServer.Controllers
             _zipPackager = zipPackager;
         }
 
-
-        public ActionResult UploadPackage(HttpPostedFileBase httpPostedFileBase)
+        [AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult UploadPackage(HttpPostedFileBase file)
         {
-            if (httpPostedFileBase == null)
+            if (file == null)
                 return RedirectToAction("Index", "Home");
 
             // save file into memory stream
             using (var memoryStream = new MemoryStream())
             {
-                httpPostedFileBase.InputStream.Position = 0;
-                while (httpPostedFileBase.InputStream.Position < httpPostedFileBase.InputStream.Length)
+                file.InputStream.Position = 0;
+                while (file.InputStream.Position < file.InputStream.Length)
                 {
-                    var dataSinge = (byte) httpPostedFileBase.InputStream.ReadByte();
+                    var dataSinge = (byte) file.InputStream.ReadByte();
                     memoryStream.WriteByte(dataSinge);
                 }
 

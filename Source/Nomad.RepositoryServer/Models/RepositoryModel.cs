@@ -42,7 +42,8 @@ namespace Nomad.RepositoryServer.Models
 
             // check for duplications
             IEnumerable<IModuleInfo> avaliableModules = _storageProvider.GetAvaliableModules();
-            if (avaliableModules.Any(module => module.Id.Equals(moduleInfo.Id)))
+            if (avaliableModules.Any(module => module.Manifest.ModuleName.Equals(moduleInfo.Manifest.ModuleName) && 
+                avaliableModules.Any(info => info.Manifest.ModuleVersion.Equals(moduleInfo.Manifest.ModuleVersion))))
                 throw new ArgumentException("Duplicate module", "moduleInfo");
 
             // save into storage

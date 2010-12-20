@@ -5,6 +5,7 @@ using Nomad.Modules.Manifest;
 using Nomad.RepositoryServer.Models;
 using NUnit.Framework;
 using TestsShared;
+using Version = Nomad.Utils.Version;
 
 namespace Nomad.RepositoryServer.Tests.ModelTests
 {
@@ -33,7 +34,11 @@ namespace Nomad.RepositoryServer.Tests.ModelTests
         {
             var duplicateInfoMock = new Mock<IModuleInfo>();
             duplicateInfoMock.Setup(x => x.Id).Returns("1");
-            duplicateInfoMock.Setup(x => x.Manifest).Returns(new ModuleManifest());
+            duplicateInfoMock.Setup(x => x.Manifest).Returns(new ModuleManifest()
+                                                                 {
+                                                                     ModuleName = "SAME_NAME",
+                                                                     ModuleVersion = new Version("0.0.0.0")
+                                                                 });
             duplicateInfoMock.Setup(x => x.ModuleData).Returns(new byte[] {0x00});
             return duplicateInfoMock;
         }
@@ -42,8 +47,12 @@ namespace Nomad.RepositoryServer.Tests.ModelTests
         private static Mock<IModuleInfo> GetModuleInfoMock()
         {
             var moduleInfoMock = new Mock<IModuleInfo>();
-            moduleInfoMock.Setup(x => x.Id).Returns("1");
-            moduleInfoMock.Setup(x => x.Manifest).Returns(new ModuleManifest());
+            moduleInfoMock.Setup(x => x.Id).Returns("2");
+            moduleInfoMock.Setup(x => x.Manifest).Returns(new ModuleManifest()
+                                                              {
+                                                                  ModuleName = "SAME_NAME",
+                                                                  ModuleVersion = new Version("0.0.0.0")
+                                                              });
             moduleInfoMock.Setup(x => x.ModuleData).Returns(new byte[] {0xFF});
             return moduleInfoMock;
         }
