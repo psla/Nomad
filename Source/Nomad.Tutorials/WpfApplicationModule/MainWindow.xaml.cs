@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Threading;
+using System.Windows;
 using System.Windows.Controls;
 using Nomad.Communication.ServiceLocation;
 using Nomad.Regions;
@@ -12,8 +13,12 @@ namespace WpfApplicationModule
     {
         private readonly IServiceLocator _locator;
 
-
-        public MainWindow(IServiceLocator locator)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="locator"></param>
+        /// <param name="resetEvent">invoked after all region defined</param>
+        public MainWindow(IServiceLocator locator, ManualResetEvent resetEvent)
         {
             _locator = locator;
             InitializeComponent();
@@ -21,18 +26,9 @@ namespace WpfApplicationModule
             var regionManager = locator.Resolve<RegionManager>();
 
             regionManager.AttachRegion("mainTab", OurTabcontrol);
+            resetEvent.Set();
         }
 
 
-        private void ButtonClick(object sender, RoutedEventArgs e)
-        {
-            var regionManager = _locator.Resolve<RegionManager>();
-            IRegion region = regionManager.GetRegion("mainTab");
-            region.AddView(new TabItem
-                               {
-                                   Header = "Nasz headerek",
-                                   Content = new Button {Content = "Nasz batonik"}
-                               });
-        }
     }
 }

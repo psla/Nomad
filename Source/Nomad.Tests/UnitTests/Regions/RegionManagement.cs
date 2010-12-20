@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using Moq;
+using Nomad.Communication.EventAggregation;
 using Nomad.Regions;
 using NUnit.Framework;
 using TestsShared;

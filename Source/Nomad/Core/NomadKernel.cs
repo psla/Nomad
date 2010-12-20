@@ -189,7 +189,7 @@ namespace Nomad.Core
                                                      true);
 
             // create kernel version of the event aggregator4
-            var siteEventAggregator = new EventAggregator(null);
+            var siteEventAggregator = new EventAggregator(new NullGuiThreadProvider());
 
             // use container creator to create communication services on modules app domain
             string asmName = typeof (ContainerCreator).Assembly.FullName;

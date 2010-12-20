@@ -13,10 +13,21 @@ namespace Nomad.Communication.EventAggregation
         ///<summary>
         /// Initializes thread provider with current dispatcher
         ///</summary>
+        ///<param name="dispatcher"></param>
         public WpfGuiThreadProvider()
         {
             _dispatcher = Dispatcher.CurrentDispatcher;
+            
         }
+        /// <summary>
+        /// responsible for providing provided dispatcher to all class that needs it
+        /// </summary>
+        /// <param name="dispatcher"></param>
+        public WpfGuiThreadProvider(Dispatcher dispatcher)
+        {
+            _dispatcher = dispatcher;
+        }
+
         public void RunInGui(Delegate @delegate)
         {
             if (_dispatcher.CheckAccess())

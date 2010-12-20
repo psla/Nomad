@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Windows.Controls;
 using Moq;
+using Nomad.Communication.EventAggregation;
 using Nomad.Regions;
 using Nomad.Regions.Adapters;
 using Nomad.Regions.Behaviors;

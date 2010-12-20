@@ -19,13 +19,15 @@ namespace ThinWpfHost
         {
             // signing the assemblies and creating the manifest using manifestBuilder api
             GenerateManifestUsingApi("WpfApplicationModule.exe", @".\Modules\WpfApplication");
+            GenerateManifestUsingApi("WpfButtonModule.dll", @".\Modules\WpfButton");
 
             // using default configuration
             var kernel = new NomadKernel();
 
             // loading modules using single module discovery pattern
             var discovery = new CompositeModuleDiscovery(
-                new SingleModuleDiscovery(@".\Modules\WpfApplication\WpfApplicationModule.exe")
+                new SingleModuleDiscovery(@".\Modules\WpfApplication\WpfApplicationModule.exe"),
+                new SingleModuleDiscovery(@".\Modules\WpfButton\WpfButtonModule.dll")
                 );
 
             kernel.LoadModules(discovery);

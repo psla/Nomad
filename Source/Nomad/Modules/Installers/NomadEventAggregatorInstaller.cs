@@ -34,18 +34,14 @@ namespace Nomad.Modules.Installers
         {
             // TODO: refix it into factory mode ?
             container.Register(
-                Component.For<EventAggregator>()
+                Component.For<EventAggregator>().UsingFactoryMethod((kernel) => new EventAggregator(new NullGuiThreadProvider()))
                     .Named("OnSiteEVG")
                     .LifeStyle.Singleton,
                 Component.For<IEventAggregator>()
                     .UsingFactoryMethod(
                         (kernel) => new EventAggregatorFacade(_proxiedEventAggregator,
-                                                              kernel.Resolve<EventAggregator>(
-                                                                  "OnSiteEVG")))
+                                                              kernel.Resolve<IEventAggregator>("OnSiteEVG")))
                     .Named("FacadeEVG")
-                    .LifeStyle.Singleton,
-                Component.For<IGuiThreadProvider>()
-                    .ImplementedBy<WpfGuiThreadProvider>()
                     .LifeStyle.Singleton
                 );
         }

@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using Nomad.Communication.EventAggregation;
 using Nomad.Communication.ServiceLocation;
 using Nomad.Modules;
 using Nomad.Regions;
@@ -15,12 +16,11 @@ namespace WpfApplicationModule
         private readonly IServiceLocator _locator;
         private App _app;
         private Thread _thread;
-
-
+        private readonly ManualResetEvent _resetEvent = new ManualResetEvent(false);
+        
         public WpfMainApplication(IServiceLocator locator)
         {
             _locator = locator;
-            _locator.Register(new RegionManager(new RegionFactory(new IRegionAdapter[] { new TabControlAdapter()})));
         }
 
         #region IModuleBootstraper Members
@@ -33,14 +33,26 @@ namespace WpfApplicationModule
             _thread = new Thread(StartApplication);
             _thread.SetApartmentState(ApartmentState.STA);
             _thread.Start();
+            _resetEvent.WaitOne();
         }
 
         [STAThread]
         private void StartApplication()
         {
-            _app = new App();
+            
 
-            _app.Run(new MainWindow(_locator));
+            _app = new App();
+            var guiThreadProvider = (new WpfGuiThreadProvider(_app.Dispatcher));
+            RegionManager regionManager = null;
+            guiThreadProvider.RunInGui((ThreadStart) delegate
+                {
+                    regionManager = new RegionManager( new RegionFactory(new IRegionAdapter[] { new TabControlAdapter () }));
+                });
+
+            _locator.Register<IGuiThreadProvider>(guiThreadProvider);
+            _locator.Register(regionManager);
+            
+            _app.Run(new MainWindow(_locator, _resetEvent));
         }
 
 

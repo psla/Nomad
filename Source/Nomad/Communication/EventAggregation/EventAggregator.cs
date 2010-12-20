@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Nomad.Messages;
 
 namespace Nomad.Communication.EventAggregation
 {
@@ -8,10 +9,12 @@ namespace Nomad.Communication.EventAggregation
     ///</summary>
     public class EventAggregator : MarshalByRefObject, IEventAggregator
     {
-        private readonly IGuiThreadProvider _guiThreadProvider;
-
         private readonly IDictionary<Type, HashSet<IEventAggregatorTicket>> _subscriptions =
             new Dictionary<Type, HashSet<IEventAggregatorTicket>>();
+
+        private IGuiThreadProvider _guiThreadProvider;
+
+        private IEventAggregatorTicket<WpfGuiChangedMessage> ticket;
 
 
         ///<summary>
@@ -20,6 +23,28 @@ namespace Nomad.Communication.EventAggregation
         public EventAggregator(IGuiThreadProvider guiThreadProvider)
         {
             _guiThreadProvider = guiThreadProvider;
+            ticket = Subscribe<WpfGuiChangedMessage>(GuiThreadChanged);
+        }
+
+
+        private void GuiThreadChanged(WpfGuiChangedMessage wpfGuiChangedMessage)
+        {
+            _guiThreadProvider = wpfGuiChangedMessage.NewGuiThreadProvider;
+            Unsubscribe(ticket);
+            ticket = Subscribe<WpfGuiChangedMessage>(GuiThreadChangedInvalid);
+        }
+
+
+        private void GuiThreadChangedInvalid(object obj)
+        {
+            throw new InvalidOperationException("Cannot set wpf gui thread twice!");
+        }
+
+
+        public override object InitializeLifetimeService()
+        {
+            // do not GC this element
+            return null;
         }
 
         #region Implementation of IEventAggregator
@@ -136,11 +161,5 @@ namespace Nomad.Communication.EventAggregation
         }
 
         #endregion
-
-        public override object InitializeLifetimeService()
-        {
-            // do not GC this element
-            return null;
-        }
     }
 }
