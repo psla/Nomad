@@ -3,6 +3,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        <Button>Test</Button>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <TabControl Name="OurTabcontrol" ></TabControl>
+        <Button Grid.Row="1" Click="ButtonClick">Ten button wyleci do modułu. Utwórz nowego taba</Button>
     </Grid>
 </Window>

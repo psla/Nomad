@@ -125,6 +125,7 @@ namespace Nomad.Core
         public void UnloadModules()
         {
             // TODO: add support for performing unLoad method on every module 
+            _moduleManager.InvokeUnloadCallback();
 
             AppDomain.Unload(ModuleAppDomain);
             ModuleAppDomain = null;

@@ -1,5 +1,9 @@
 using System;
+using System.Threading;
+using Nomad.Communication.ServiceLocation;
 using Nomad.Modules;
+using Nomad.Regions;
+using Nomad.Regions.Adapters;
 
 namespace WpfApplicationModule
 {
@@ -8,19 +12,35 @@ namespace WpfApplicationModule
     /// </summary>
     public class WpfMainApplication : IModuleBootstraper
     {
+        private readonly IServiceLocator _locator;
         private App _app;
+        private Thread _thread;
+
+
+        public WpfMainApplication(IServiceLocator locator)
+        {
+            _locator = locator;
+            _locator.Register(new RegionManager(new RegionFactory(new IRegionAdapter[] { new TabControlAdapter()})));
+        }
 
         #region IModuleBootstraper Members
 
         /// <summary>
         /// Start WPF application.
         /// </summary>
-        [STAThread]
         public void OnLoad()
+        {
+            _thread = new Thread(StartApplication);
+            _thread.SetApartmentState(ApartmentState.STA);
+            _thread.Start();
+        }
+
+        [STAThread]
+        private void StartApplication()
         {
             _app = new App();
 
-            _app.Run(new MainWindow());
+            _app.Run(new MainWindow(_locator));
         }
 
 
@@ -29,7 +49,8 @@ namespace WpfApplicationModule
         /// </summary>
         public void OnUnLoad()
         {
-            _app.Shutdown();
+            // when killing appdomain thread.abort is allowed :]
+            _thread.Abort();
         }
 
         #endregion

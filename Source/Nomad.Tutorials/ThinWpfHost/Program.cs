@@ -28,16 +28,13 @@ namespace ThinWpfHost
                 new SingleModuleDiscovery(@".\Modules\WpfApplication\WpfApplicationModule.exe")
                 );
 
-            var thread = new Thread(() => kernel.LoadModules(discovery));
-            thread.SetApartmentState(ApartmentState.STA);
-            thread.IsBackground = false;
-            thread.Start();
+            kernel.LoadModules(discovery);
 
             //wait for input
             //Console.ReadLine();
 
             //simulate reloading :]
-            Thread.Sleep(15000);
+            /*Thread.Sleep(15000);
 
             kernel.UnloadModules();
 
@@ -45,12 +42,10 @@ namespace ThinWpfHost
 
             Thread.Sleep(2000);
 
-            thread = new Thread((ThreadStart)delegate { kernel.LoadModules(discovery); });
-            thread.SetApartmentState(ApartmentState.STA);
-            thread.Start();
+            kernel.LoadModules(discovery);
 
             Thread.Sleep(5000);
-
+            */
             //TODO: Here we should wait for event "onclose", because we are going to loose nomad ;)
         }
 
