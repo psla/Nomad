@@ -16,7 +16,7 @@ namespace Nomad.RepositoryServer.Tests.ModelTests
     /// <remarks>
     ///     For now only the unpackaging test are working.
     /// </remarks>
-    [IntegrationTests]
+    [FunctionalTests]
     public class ZipPackagerTests
     {
         private const string IssuerXmlPath = "KEY.xml";

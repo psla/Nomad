@@ -55,7 +55,6 @@
     <Compile Include="ControllersTests\ModuleControllerTests.cs" />
     <Compile Include="ControllersTests\PlainRepositoryControllerTests.cs" />
     <Compile Include="ModelTests\RepositoryModelAddRemoveTests.cs" />
-    <Compile Include="ModelTests\RepositoryModelPackageVerification.cs" />
     <Compile Include="ModelTests\ZipPackagerTests.cs" />
     <Compile Include="MvcMockHelpers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

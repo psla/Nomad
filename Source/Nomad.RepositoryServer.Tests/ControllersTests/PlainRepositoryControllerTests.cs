@@ -23,7 +23,7 @@ using Version = Nomad.Utils.Version;
 
 namespace Nomad.RepositoryServer.Tests.ControllersTests
 {
-    [IntegrationTests]
+    [FunctionalTests]
     public class PlainRepositoryControllerTests
     {
         private const string FolderPath = @"IntegrationTests\Server\ModuleController";

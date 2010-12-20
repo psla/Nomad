@@ -63,19 +63,19 @@
 			</td>
 		 </tr>
 		<%}%>
-        <tr>
-            <th colspan="2">
-                Signed files
-            </th>
-        </tr>
-            <%foreach (var signedFile in Model.Manifest.SignedFiles)
-            { %>
-               
-               <tr>
-                    <td colspan="2">
-                        <%= signedFile.FilePath %>
-                    </td>
-               </tr>
-            <% } %>
+		<tr>
+			<th colspan="2">
+				Signed files
+			</th>
+		</tr>
+			<%foreach (var signedFile in Model.Manifest.SignedFiles)
+			{ %>
+			   
+			   <tr>
+					<td colspan="2">
+						<%= signedFile.FilePath %>
+					</td>
+			   </tr>
+			<% } %>
 	</table>
 </asp:Content>
