@@ -6,6 +6,6 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <Button Content="Ten button wyleci do modułu. Utwórz nowego taba" Click="ButtonClick" />
+        <Button Content="Button which came from module" Click="ButtonClick" />
     </Grid>
 </UserControl>

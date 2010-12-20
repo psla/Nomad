@@ -39,8 +39,6 @@ namespace WpfApplicationModule
         [STAThread]
         private void StartApplication()
         {
-            
-
             _app = new App();
             var guiThreadProvider = (new WpfGuiThreadProvider(_app.Dispatcher));
             RegionManager regionManager = null;
