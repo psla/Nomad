@@ -19,7 +19,8 @@ namespace Application_Thin_Host
             kernel.LoadModules(new CompositeModuleDiscovery(
                 new SingleModuleDiscovery(@".\FileLoaderModule\FileLoaderModule.dll"),
                 new SingleModuleDiscovery(@".\GraphicFilesHandlerModule\GraphicFilesHandlerModule.dll"),
-                new SingleModuleDiscovery(@".\TextFileHandlerModule\TextFileHandlerModule.dll")
+                new SingleModuleDiscovery(@".\TextFileHandlerModule\TextFileHandlerModule.dll"),
+                new SingleModuleDiscovery(@".\ListingAllLoadedModule\ListingAllLoadedModule.dll")
                 ));
         }
     }
