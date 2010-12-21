@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using Nomad.Communication.EventAggregation;
 using Nomad.Communication.ServiceLocation;
 using Nomad.Messages.Loading;
@@ -19,7 +20,7 @@ namespace FileLoaderModule
         public FileLoaderModule(EventAggregator eventAggregator, IServiceLocator serviceLocator)
         {
             _serviceLocator = serviceLocator;
-            this._eventAggregator = _eventAggregator;
+            _eventAggregator = eventAggregator;
         }
 
 
@@ -31,9 +32,16 @@ namespace FileLoaderModule
 
         private void AllModulesLoaded(NomadAllModulesLoadedMessage obj)
         {
-            var regionManager = _serviceLocator.Resolve<RegionManager>();
-            var region = regionManager.GetRegion("leftSideMenu");
-            region.AddView(new SelectFileView(_eventAggregator));
+            var guiThread = _serviceLocator.Resolve<IGuiThreadProvider>();
+            guiThread.RunInGui((ThreadStart) delegate
+                                                 {
+                                                     var regionManager =
+                                                         _serviceLocator.Resolve<RegionManager>();
+                                                     var region =
+                                                         regionManager.GetRegion("leftSideMenu");
+                                                     region.AddView(
+                                                         new SelectFileView(_eventAggregator));
+                                                 });
         }
 
 

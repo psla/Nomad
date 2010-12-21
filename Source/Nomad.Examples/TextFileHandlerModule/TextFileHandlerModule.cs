@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Windows.Controls;
 using FileLoaderModule;
 using Nomad.Communication.EventAggregation;
@@ -35,8 +36,14 @@ namespace TextFileHandlerModule
 
         private void AllModulesLoaded(NomadAllModulesLoadedMessage obj)
         {
-            _eventAggregator.Subscribe<FileSelectedMessage>(FileSelected, DeliveryMethod.GuiThread);
-            _regionManager = _serviceLocator.Resolve<RegionManager>();
+            var guiThread = _serviceLocator.Resolve<IGuiThreadProvider>();
+            guiThread.RunInGui((ThreadStart) delegate
+                                                 {
+                                                     _eventAggregator.Subscribe<FileSelectedMessage>
+                                                         (FileSelected);
+                                                     _regionManager =
+                                                         _serviceLocator.Resolve<RegionManager>();
+                                                 });
         }
 
 

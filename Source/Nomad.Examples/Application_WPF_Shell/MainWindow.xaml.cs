@@ -26,7 +26,7 @@ namespace Application_WPF_Shell
         {
             InitializeComponent();
 
-            
+            resetEvent.Set();
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Windows.Controls;
 using FileLoaderModule;
 using Nomad.Communication.EventAggregation;
@@ -15,11 +16,11 @@ namespace GraphicFilesHandlerModule
     public class GraphicFileHandlerModule : IModuleBootstraper
     {
         private readonly IEventAggregator _eventAggregator;
-        private readonly ServiceLocator _serviceLocator;
+        private readonly IServiceLocator _serviceLocator;
         private RegionManager _regionManager;
 
 
-        public GraphicFileHandlerModule(ServiceLocator serviceLocator)
+        public GraphicFileHandlerModule(IServiceLocator serviceLocator)
         {
             _serviceLocator = serviceLocator;
             _eventAggregator = serviceLocator.Resolve<IEventAggregator>();
@@ -33,9 +34,14 @@ namespace GraphicFilesHandlerModule
 
 
         private void AllModulesLoaded(NomadAllModulesLoadedMessage obj)
-        {
-            _eventAggregator.Subscribe<FileSelectedMessage>(FileSelected, DeliveryMethod.GuiThread);
-            _regionManager = _serviceLocator.Resolve<RegionManager>();
+        {var guiThread = _serviceLocator.Resolve<IGuiThreadProvider>();
+            guiThread.RunInGui((ThreadStart) delegate
+                                                 {
+                                                     _eventAggregator.Subscribe<FileSelectedMessage>
+                                                         (FileSelected, DeliveryMethod.GuiThread);
+                                                     _regionManager =
+                                                         _serviceLocator.Resolve<RegionManager>();
+                                                 });
         }
 
 

@@ -64,6 +64,7 @@ namespace Application_WPF_Shell
 
             _locator.Register<IGuiThreadProvider>(guiThreadProvider);
             _locator.Register(regionManager);
+            _aggregator.Publish<WpfGuiThreadProvider>(guiThreadProvider);
 
             _app.Run(new MainWindow(_locator, _aggregator, _resetEvent));
         }
