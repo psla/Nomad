@@ -118,6 +118,10 @@
     <Compile Include="FunctionalTests\Modules\ModuleCompiler.cs" />
     <Compile Include="FunctionalTests\Fixtures\ModuleLoadingTestFixture.cs" />
     <Compile Include="FunctionalTests\Fixtures\ModuleLoadingWithCompilerTestFixture.cs" />
+    <Compile Include="FunctionalTests\Regions\RegisteringRegionsFromMarkup.cs" />
+    <Compile Include="FunctionalTests\Regions\NewFakeWindowWithRegions.xaml.cs">
+      <DependentUpon>NewFakeWindowWithRegions.xaml</DependentUpon>
+    </Compile>
     <Compile Include="FunctionalTests\Regions\FakeWindowWithRegions.xaml.cs">
       <DependentUpon>FakeWindowWithRegions.xaml</DependentUpon>
     </Compile>
@@ -215,6 +219,10 @@
     <None Include="UnitTests\.gitignore" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="FunctionalTests\Regions\NewFakeWindowWithRegions.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="FunctionalTests\Regions\FakeWindowWithRegions.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
