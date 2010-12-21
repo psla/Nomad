@@ -120,6 +120,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Example Application Modules
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application_WPF_Shell", "Nomad.Examples\Application_WPF_Shell\Application_WPF_Shell.csproj", "{2030A35E-912F-439B-8808-AEA5025F0DB7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileLoaderModule", "Nomad.Examples\FileLoaderModule\FileLoaderModule.csproj", "{85BA7B52-3192-4D00-9A81-4D287B6FA045}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphicFilesHandlerModule", "Nomad.Examples\GraphicFilesHandlerModule\GraphicFilesHandlerModule.csproj", "{BE28955D-72A3-4692-8856-582750F0A8EF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextFileHandlerModule", "Nomad.Examples\TextFileHandlerModule\TextFileHandlerModule.csproj", "{97201BBC-900F-4416-8CEC-34C94F57E76B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -350,6 +356,36 @@ Global
 		{2030A35E-912F-439B-8808-AEA5025F0DB7}.Release|Mixed Platforms.Build.0 = Release|x86
 		{2030A35E-912F-439B-8808-AEA5025F0DB7}.Release|x86.ActiveCfg = Release|x86
 		{2030A35E-912F-439B-8808-AEA5025F0DB7}.Release|x86.Build.0 = Release|x86
+		{85BA7B52-3192-4D00-9A81-4D287B6FA045}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{85BA7B52-3192-4D00-9A81-4D287B6FA045}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{85BA7B52-3192-4D00-9A81-4D287B6FA045}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{85BA7B52-3192-4D00-9A81-4D287B6FA045}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{85BA7B52-3192-4D00-9A81-4D287B6FA045}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{85BA7B52-3192-4D00-9A81-4D287B6FA045}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{85BA7B52-3192-4D00-9A81-4D287B6FA045}.Release|Any CPU.Build.0 = Release|Any CPU
+		{85BA7B52-3192-4D00-9A81-4D287B6FA045}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{85BA7B52-3192-4D00-9A81-4D287B6FA045}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{85BA7B52-3192-4D00-9A81-4D287B6FA045}.Release|x86.ActiveCfg = Release|Any CPU
+		{BE28955D-72A3-4692-8856-582750F0A8EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE28955D-72A3-4692-8856-582750F0A8EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE28955D-72A3-4692-8856-582750F0A8EF}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{BE28955D-72A3-4692-8856-582750F0A8EF}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{BE28955D-72A3-4692-8856-582750F0A8EF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BE28955D-72A3-4692-8856-582750F0A8EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE28955D-72A3-4692-8856-582750F0A8EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE28955D-72A3-4692-8856-582750F0A8EF}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{BE28955D-72A3-4692-8856-582750F0A8EF}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{BE28955D-72A3-4692-8856-582750F0A8EF}.Release|x86.ActiveCfg = Release|Any CPU
+		{97201BBC-900F-4416-8CEC-34C94F57E76B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97201BBC-900F-4416-8CEC-34C94F57E76B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97201BBC-900F-4416-8CEC-34C94F57E76B}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{97201BBC-900F-4416-8CEC-34C94F57E76B}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{97201BBC-900F-4416-8CEC-34C94F57E76B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{97201BBC-900F-4416-8CEC-34C94F57E76B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97201BBC-900F-4416-8CEC-34C94F57E76B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97201BBC-900F-4416-8CEC-34C94F57E76B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{97201BBC-900F-4416-8CEC-34C94F57E76B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{97201BBC-900F-4416-8CEC-34C94F57E76B}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -389,5 +425,8 @@ Global
 		{1F5FE9E8-912A-4582-A713-49191F06D0BA} = {11700600-3F50-484A-AFF5-9A6FF09D155B}
 		{86848038-102B-421B-A3FC-FC1816AF4C6E} = {11700600-3F50-484A-AFF5-9A6FF09D155B}
 		{2030A35E-912F-439B-8808-AEA5025F0DB7} = {11700600-3F50-484A-AFF5-9A6FF09D155B}
+		{85BA7B52-3192-4D00-9A81-4D287B6FA045} = {86848038-102B-421B-A3FC-FC1816AF4C6E}
+		{BE28955D-72A3-4692-8856-582750F0A8EF} = {86848038-102B-421B-A3FC-FC1816AF4C6E}
+		{97201BBC-900F-4416-8CEC-34C94F57E76B} = {86848038-102B-421B-A3FC-FC1816AF4C6E}
 	EndGlobalSection
 EndGlobal
