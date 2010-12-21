@@ -3,8 +3,10 @@
         <Grid.RowDefinitions>
             <RowDefinition/>
             <RowDefinition/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
-		<TabControl x:Name="TabControl"></TabControl>
-        <StatusBar x:Name="StatusBar" Grid.Row="1"></StatusBar>
+        <ToolBarTray x:Name="ToolBarTray" Grid.Row="0"></ToolBarTray>
+		<TabControl x:Name="TabControl" Grid.Row="1"></TabControl>
+        <StatusBar x:Name="StatusBar" Grid.Row="2"></StatusBar>
 	</Grid>
 </Window>

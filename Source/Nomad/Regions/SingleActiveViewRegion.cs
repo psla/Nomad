@@ -75,5 +75,14 @@ namespace Nomad.Regions
         {
             _activeViews.Remove(view);
         }
+
+
+        /// <summary>
+        ///     Clears all views
+        /// </summary>
+        public void ClearViews()
+        {
+            _views.Clear();
+        }
     }
 }

@@ -79,5 +79,11 @@ namespace Nomad.Regions
         /// </para>
         /// <exception cref="ArgumentNullException">When <paramref name="view"/> is null</exception>
         void Deactivate(object view);
+
+
+        /// <summary>
+        ///     Removes available views from region
+        /// </summary>
+        void ClearViews();
     }
 }
