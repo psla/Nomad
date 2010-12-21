@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using FileLoaderModule;
 using Nomad.Communication.EventAggregation;
 using Nomad.Communication.ServiceLocation;
@@ -15,8 +10,8 @@ namespace TextFileHandlerModule
 {
     public class TextFileHandlerModule : IModuleBootstraper
     {
+        private readonly IEventAggregator _eventAggregator;
         private readonly IServiceLocator _serviceLocator;
-        private IEventAggregator _eventAggregator;
         private RegionManager _regionManager;
 
 
@@ -26,7 +21,7 @@ namespace TextFileHandlerModule
             _eventAggregator = _serviceLocator.Resolve<IEventAggregator>();
         }
 
-
+        #region IModuleBootstraper Members
 
         public void OnLoad()
         {
@@ -34,16 +29,16 @@ namespace TextFileHandlerModule
         }
 
 
+        public void OnUnLoad()
+        {
+        }
+
+        #endregion
+
         private void AllModulesLoaded(NomadAllModulesLoadedMessage obj)
         {
-            var guiThread = _serviceLocator.Resolve<IGuiThreadProvider>();
-            guiThread.RunInGui((ThreadStart) delegate
-                                                 {
-                                                     _eventAggregator.Subscribe<FileSelectedMessage>
-                                                         (FileSelected);
-                                                     _regionManager =
-                                                         _serviceLocator.Resolve<RegionManager>();
-                                                 });
+            _eventAggregator.Subscribe<FileSelectedMessage>(FileSelected, DeliveryMethod.GuiThread);
+            _regionManager = _serviceLocator.Resolve<RegionManager>();
         }
 
 
@@ -52,16 +47,11 @@ namespace TextFileHandlerModule
             if (obj.FilePath.EndsWith("txt"))
             {
                 var pp = new TextPresenter(obj.FilePath);
-                var tabItem = new TabItem() { Header = obj.FilePath, Content = pp };
-                var region = _regionManager.GetRegion("mainTabs");
+                var tabItem = new TabItem {Header = obj.FilePath, Content = pp};
+                IRegion region = _regionManager.GetRegion("mainTabs");
                 region.AddView(tabItem);
                 region.Activate(tabItem);
             }
-        }
-
-
-        public void OnUnLoad()
-        {
         }
     }
 }
