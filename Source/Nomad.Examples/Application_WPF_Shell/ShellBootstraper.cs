@@ -1,6 +1,7 @@
 using System.Threading;
 using Nomad.Communication.EventAggregation;
 using Nomad.Communication.ServiceLocation;
+using Nomad.Messages;
 using Nomad.Modules;
 using Nomad.Regions;
 using Nomad.Regions.Adapters;
@@ -64,7 +65,7 @@ namespace Application_WPF_Shell
 
             _locator.Register<IGuiThreadProvider>(guiThreadProvider);
             _locator.Register(regionManager);
-            _aggregator.Publish<WpfGuiThreadProvider>(guiThreadProvider);
+            _aggregator.Publish(new WpfGuiChangedMessage(guiThreadProvider));
 
             _app.Run(new MainWindow(_locator, _aggregator, _resetEvent));
         }
