@@ -67,7 +67,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>$(SolutionDir)\..\Release\Tools\Nomad.KeysGenerator.exe "MY_KEY.xml"
+    <PostBuildEvent>echo $(TargetDir)..\FileLoaderModule\FileLoaderModule.dll &gt; dep.conf
+$(SolutionDir)\..\Release\Tools\Nomad.KeysGenerator.exe "MY_KEY.xml"
 $(SolutionDir)\..\Release\Tools\Nomad.ManifestCreator.exe "rsa" "MY_KEY.xml" $(TargetDir) "$(TargetFileName)" "TEST_ISSUER"
 </PostBuildEvent>
   </PropertyGroup>

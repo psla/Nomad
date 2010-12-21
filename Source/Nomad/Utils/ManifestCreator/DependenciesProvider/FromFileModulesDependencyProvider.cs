@@ -29,7 +29,7 @@ namespace Nomad.Utils.ManifestCreator.DependenciesProvider
         /// </summary>
         public string DependencyFileName
         {
-            get { return _depFileName; }
+            get { return Path.Combine(AppDomain.CurrentDomain.BaseDirectory,_depFileName); }
         }
 
         /// <summary>

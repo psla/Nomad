@@ -115,6 +115,13 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Example Application", "Example Application", "{11700600-3F50-484A-AFF5-9A6FF09D155B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application_Thin_Host", "Nomad.Examples\Application_Thin_Host\Application_Thin_Host.csproj", "{1F5FE9E8-912A-4582-A713-49191F06D0BA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{85BA7B52-3192-4D00-9A81-4D287B6FA045} = {85BA7B52-3192-4D00-9A81-4D287B6FA045}
+		{BE28955D-72A3-4692-8856-582750F0A8EF} = {BE28955D-72A3-4692-8856-582750F0A8EF}
+		{2030A35E-912F-439B-8808-AEA5025F0DB7} = {2030A35E-912F-439B-8808-AEA5025F0DB7}
+		{97201BBC-900F-4416-8CEC-34C94F57E76B} = {97201BBC-900F-4416-8CEC-34C94F57E76B}
+		{EDB3E0D1-A7AD-46EC-9620-13FE3C5A661B} = {EDB3E0D1-A7AD-46EC-9620-13FE3C5A661B}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Example Application Modules", "Example Application Modules", "{86848038-102B-421B-A3FC-FC1816AF4C6E}"
 EndProject
@@ -125,10 +132,22 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application_WPF_Shell", "No
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileLoaderModule", "Nomad.Examples\FileLoaderModule\FileLoaderModule.csproj", "{85BA7B52-3192-4D00-9A81-4D287B6FA045}"
+	ProjectSection(ProjectDependencies) = postProject
+		{EF5A9D12-B2C4-46E0-B7E9-75868819C4C8} = {EF5A9D12-B2C4-46E0-B7E9-75868819C4C8}
+		{1F6C3A60-1A3C-4627-A9F3-B71897468E21} = {1F6C3A60-1A3C-4627-A9F3-B71897468E21}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphicFilesHandlerModule", "Nomad.Examples\GraphicFilesHandlerModule\GraphicFilesHandlerModule.csproj", "{BE28955D-72A3-4692-8856-582750F0A8EF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{EF5A9D12-B2C4-46E0-B7E9-75868819C4C8} = {EF5A9D12-B2C4-46E0-B7E9-75868819C4C8}
+		{1F6C3A60-1A3C-4627-A9F3-B71897468E21} = {1F6C3A60-1A3C-4627-A9F3-B71897468E21}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextFileHandlerModule", "Nomad.Examples\TextFileHandlerModule\TextFileHandlerModule.csproj", "{97201BBC-900F-4416-8CEC-34C94F57E76B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{EF5A9D12-B2C4-46E0-B7E9-75868819C4C8} = {EF5A9D12-B2C4-46E0-B7E9-75868819C4C8}
+		{1F6C3A60-1A3C-4627-A9F3-B71897468E21} = {1F6C3A60-1A3C-4627-A9F3-B71897468E21}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
