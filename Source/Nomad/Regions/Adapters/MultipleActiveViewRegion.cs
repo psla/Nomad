@@ -14,11 +14,21 @@ namespace Nomad.Regions.Adapters
 
         #region IRegion Members
 
+        /// <summary>
+        ///     Gets collection of all views that are members of this region
+        /// </summary>
         public IViewCollection Views
         {
             get { return _views; }
         }
-
+        
+        /// <summary>
+        ///     Gets collection of all views that are active (e.g. selected by user, visible, ...)
+        /// </summary>
+        /// <remarks>
+        ///     Specific interpretation of what active means depends on type of control, that
+        ///     is region's host, and on region adapter used.
+        /// </remarks>
         public IViewCollection ActiveViews
         {
             get { return _activeViews; }

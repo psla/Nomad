@@ -1,5 +1,4 @@
 using System;
-using Nomad.Regions.Behaviors;
 
 namespace Nomad.Regions
 {
@@ -8,8 +7,10 @@ namespace Nomad.Regions
     /// </summary>
     public class SingleActiveViewRegion : IRegion
     {
-        private readonly IViewCollection _views = new ViewCollection();
         private readonly IViewCollection _activeViews = new ViewCollection();
+        private readonly IViewCollection _views = new ViewCollection();
+
+        #region IRegion Members
 
         /// <summary>
         ///     Gets collection of all views that are members of this region
@@ -23,8 +24,13 @@ namespace Nomad.Regions
         ///     Gets collection of all views that are active (e.g. selected by user, visible, ...)
         /// </summary>
         /// <remarks>
+        /// <para>
         ///     Specific interpretation of what active means depends on type of control, that
         ///     is region's host, and on region adapter used.
+        /// </para>
+        /// <para>
+        /// This type of region assumes, that there is only one active region allowed a a time
+        /// </para>
         /// </remarks>
         public IViewCollection ActiveViews
         {
@@ -84,5 +90,7 @@ namespace Nomad.Regions
         {
             _views.Clear();
         }
+
+        #endregion
     }
 }

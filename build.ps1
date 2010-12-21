@@ -206,6 +206,10 @@ task Init -depends Clean, GetProjects {
 			{
 				$file = "$source_dir\Nomad.Tutorials\$($project.Name)\Properties\AssemblyInfo.cs"
 			}
+			elseif($project.Path -match "Nomad.Examples")
+			{
+				$file = "$source_dir\Nomad.Examples\$($project.Name)\Properties\AssemblyInfo.cs"
+			}
 			else
 			{
 				$file = "$source_dir\$($project.Name)\Properties\AssemblyInfo.cs"
