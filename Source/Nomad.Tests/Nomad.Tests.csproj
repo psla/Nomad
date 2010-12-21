@@ -52,6 +52,7 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Bricks.RuntimeFramework, Version=1.0.0.0, Culture=neutral, PublicKeyToken=83a26c96fb92c77f, processorArchitecture=MSIL" />
     <Reference Include="Castle.Core, Version=2.5.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Libraries\Windsor\Castle.Core.dll</HintPath>
@@ -90,6 +91,7 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="UIAutomationClient" />
     <Reference Include="UIAutomationProvider">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -126,6 +128,7 @@
       <DependentUpon>FakeWindowWithRegions.xaml</DependentUpon>
     </Compile>
     <Compile Include="FunctionalTests\Regions\StatusBarBehaviors.cs" />
+    <Compile Include="FunctionalTests\Regions\StatusBarUIItem.cs" />
     <Compile Include="FunctionalTests\Regions\TabControlBehaviors.cs" />
     <Compile Include="FunctionalTests\ServiceLocation\ITestService.cs" />
     <Compile Include="FunctionalTests\ServiceLocation\ServiceLocatorInModules.cs" />

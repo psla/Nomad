@@ -135,6 +135,7 @@
     <Compile Include="Modules\Manifest\ModuleDependency.cs" />
     <Compile Include="Modules\Manifest\ModuleManifestFactory.cs" />
     <Compile Include="Modules\Installers\NomadEventAggregatorInstaller.cs" />
+    <Compile Include="Regions\Adapters\StatusBarAdapter.cs" />
     <Compile Include="Services\ILoadedModulesService.cs" />
     <Compile Include="Services\LoadedModulesService.cs" />
     <Compile Include="Signing\FileUtils\SignedFile.cs" />
