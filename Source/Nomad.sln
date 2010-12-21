@@ -119,6 +119,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Example Application Modules", "Example Application Modules", "{86848038-102B-421B-A3FC-FC1816AF4C6E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application_WPF_Shell", "Nomad.Examples\Application_WPF_Shell\Application_WPF_Shell.csproj", "{2030A35E-912F-439B-8808-AEA5025F0DB7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{EF5A9D12-B2C4-46E0-B7E9-75868819C4C8} = {EF5A9D12-B2C4-46E0-B7E9-75868819C4C8}
+		{1F6C3A60-1A3C-4627-A9F3-B71897468E21} = {1F6C3A60-1A3C-4627-A9F3-B71897468E21}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileLoaderModule", "Nomad.Examples\FileLoaderModule\FileLoaderModule.csproj", "{85BA7B52-3192-4D00-9A81-4D287B6FA045}"
 EndProject

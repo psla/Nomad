@@ -28,7 +28,9 @@ namespace Nomad.ManifestCreator
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                foreach(var arg in args)
+                    Console.WriteLine(arg);
+
                 if (args.Length != 5)
                 {
                     Console.WriteLine(
