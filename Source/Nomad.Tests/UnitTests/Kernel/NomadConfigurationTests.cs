@@ -29,7 +29,7 @@ namespace Nomad.Tests.UnitTests.Kernel
         [Test]
         public void default_implementation_is_not_frozen()
         {
-            _configuration = new NomadConfiguration();
+            _configuration = NomadConfiguration.Default;
 
             Assert.IsFalse(_configuration.IsFrozen);
         }
@@ -38,7 +38,7 @@ namespace Nomad.Tests.UnitTests.Kernel
         [Test]
         public void unfrozen_configuration_is_fully_configurable()
         {
-            _configuration = new NomadConfiguration();
+            _configuration = NomadConfiguration.Default;
             _configuration.ModuleFilter = _moduleFilterMock.Object;
 
             Assert.AreSame(_moduleFilterMock.Object, _configuration.ModuleFilter,
@@ -53,7 +53,7 @@ namespace Nomad.Tests.UnitTests.Kernel
         [Test]
         public void freezing_does_not_change_already_set_services()
         {
-            _configuration = new NomadConfiguration();
+            _configuration = NomadConfiguration.Default;
             _configuration.ModuleFilter = _moduleFilterMock.Object;
 
             _configuration.Freeze();
@@ -66,7 +66,7 @@ namespace Nomad.Tests.UnitTests.Kernel
         [Test]
         public void freezing_prevents_from_using_setter()
         {
-            _configuration = new NomadConfiguration();
+            _configuration = NomadConfiguration.Default;
 
             _configuration.ModuleFilter = _moduleFilterMock.Object;
             _configuration.Freeze();

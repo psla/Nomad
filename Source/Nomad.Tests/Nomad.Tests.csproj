@@ -119,12 +119,13 @@
     <Compile Include="FunctionalTests\Fixtures\ModuleLoadingTestFixture.cs" />
     <Compile Include="FunctionalTests\Fixtures\ModuleLoadingWithCompilerTestFixture.cs" />
     <Compile Include="FunctionalTests\Regions\RegisteringRegionsFromMarkup.cs" />
-    <Compile Include="FunctionalTests\Regions\NewFakeWindowWithRegions.xaml.cs">
-      <DependentUpon>NewFakeWindowWithRegions.xaml</DependentUpon>
+    <Compile Include="FunctionalTests\Regions\FakeWindowWithRegionsRegisteredByAttachedProperty.xaml.cs">
+      <DependentUpon>FakeWindowWithRegionsRegisteredByAttachedProperty.xaml</DependentUpon>
     </Compile>
     <Compile Include="FunctionalTests\Regions\FakeWindowWithRegions.xaml.cs">
       <DependentUpon>FakeWindowWithRegions.xaml</DependentUpon>
     </Compile>
+    <Compile Include="FunctionalTests\Regions\StatusBarBehaviors.cs" />
     <Compile Include="FunctionalTests\Regions\TabControlBehaviors.cs" />
     <Compile Include="FunctionalTests\ServiceLocation\ITestService.cs" />
     <Compile Include="FunctionalTests\ServiceLocation\ServiceLocatorInModules.cs" />
@@ -219,7 +220,7 @@
     <None Include="UnitTests\.gitignore" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="FunctionalTests\Regions\NewFakeWindowWithRegions.xaml">
+    <Page Include="FunctionalTests\Regions\FakeWindowWithRegionsRegisteredByAttachedProperty.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

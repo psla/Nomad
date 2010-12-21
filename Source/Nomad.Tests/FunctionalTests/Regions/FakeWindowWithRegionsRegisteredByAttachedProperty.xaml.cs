@@ -3,9 +3,9 @@
     /// <summary>
     /// Interaction logic for FakeWindowWithRegions.xaml
     /// </summary>
-    public partial class NewFakeWindowWithRegions
+    public partial class FakeWindowWithRegionsRegisteredByAttachedProperty
     {
-        public NewFakeWindowWithRegions()
+        public FakeWindowWithRegionsRegisteredByAttachedProperty()
         {
             InitializeComponent();
         }

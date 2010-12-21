@@ -13,7 +13,7 @@ using White.Core.UIItems.TabItems;
 namespace Nomad.Tests.FunctionalTests.Regions
 {
     [FunctionalTests]
-    public class RegisteringRegionsFromMarkup : GuiTestFixture<NewFakeWindowWithRegions>
+    public class RegisteringRegionsFromMarkup : GuiTestFixture<FakeWindowWithRegionsRegisteredByAttachedProperty>
     {
         private RegionManager _regionManager;
         private TabControl _tabControl;

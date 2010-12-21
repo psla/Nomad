@@ -3,9 +3,11 @@ using Moq;
 using Nomad.Communication.EventAggregation;
 using Nomad.Messages;
 using NUnit.Framework;
+using TestsShared;
 
 namespace Nomad.Tests.FunctionalTests.EventAggregation
 {
+    [IntegrationTests]
     public class EventAggregationGuiThreadChangesSupport
     {
         private EventAggregator _eventAggregator;
