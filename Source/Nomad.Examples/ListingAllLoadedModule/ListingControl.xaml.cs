@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Nomad.Communication.ServiceLocation;
+using Nomad.Modules.Manifest;
 using Nomad.Services;
 
 namespace ListingAllLoadedModule
@@ -23,17 +24,16 @@ namespace ListingAllLoadedModule
     {
         private readonly IServiceLocator _serviceLocator;
 
-        public IList<string > GetListOfModules
+        public IList<ModuleManifest > GetListOfModules
         {
             get
             {
                 var list = _serviceLocator.Resolve<ILoadedModulesService>().GetLoadedModules();
 
-                return
-                    new List<string>(
-                        list.Select(x => x.Manifest.ModuleName + x.Manifest.ModuleVersion));
+                return new List<ModuleManifest>(list.Select( x => x.Manifest));
             }
         }
+
 
         public ListingControl(IServiceLocator serviceLocator)
         {

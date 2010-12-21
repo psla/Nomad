@@ -6,8 +6,37 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <ListBox Name="ListBoxWithModules" ItemsSource="{Binding Path=GetListOfModules}">
-            
-        </ListBox>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="0.3*" />
+        </Grid.RowDefinitions>
+        <ListBox Grid.Row="0" Background="AliceBlue" Name="ListBoxWithModules" ItemsSource="{Binding Path=GetListOfModules}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                        <StackPanel Orientation="Vertical" >
+                            <TextBlock Text="{Binding Path=ModuleName}"/>
+                            <TextBlock Text="{Binding Path=ModuleVersion}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        <!--
+            Show details about module
+        -->
+        <StackPanel Background="LightGray"  Orientation="Vertical" Grid.Row="1">
+            <TextBlock Text="{Binding ElementName=ListBoxWithModules, Path=SelectedItem.ModuleName}" />
+            <TextBlock Text="{Binding ElementName=ListBoxWithModules, Path=SelectedItem.ModuleVersion}" />
+            <TextBlock Text="{Binding ElementName=ListBoxWithModules, Path=SelectedItem.Issuer}" />
+            <ListBox Background="LightGoldenrodYellow" ItemsSource="{Binding ElementName=ListBoxWithModules, Path=SelectedItem.ModuleDependencies}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock Grid.Column="1" Text="{Binding Path=ModuleName}"/>
+                            <TextBlock Grid.Column="1" Text="{Binding Path=ModuleVersion}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>    
+            </ListBox>
+        </StackPanel>
     </Grid>
 </UserControl>
