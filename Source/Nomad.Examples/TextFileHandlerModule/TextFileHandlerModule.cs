@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Controls;
 using FileLoaderModule;
 using Nomad.Communication.EventAggregation;
 using Nomad.Communication.ServiceLocation;
