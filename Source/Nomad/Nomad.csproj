@@ -150,6 +150,9 @@
     <Compile Include="Updater\ModuleRepositories\IModulesRepository.cs" />
     <Compile Include="Updater\ModulePackage.cs" />
     <Compile Include="Updater\ModulePackagers\ModulePackager.cs" />
+    <Compile Include="Updater\ModuleRepositories\WebModulesRepository.cs" />
+    <Compile Include="Updater\ModuleRepositories\WebRepositories\WebAvailablePackagesCollection.cs" />
+    <Compile Include="Updater\ModuleRepositories\WebRepositories\WebModulePackageInfo.cs" />
     <Compile Include="Updater\UpdateArguments.cs" />
     <Compile Include="Updater\Updater.cs" />
     <Compile Include="Messages\Updating\NomadUpdatesReadyMessage.cs" />
