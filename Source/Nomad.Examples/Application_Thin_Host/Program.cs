@@ -15,6 +15,12 @@ namespace Application_Thin_Host
 
             // load the Application_WPF_Shell
             kernel.LoadModules(new SingleModuleDiscovery(@".\Application_WPF_Shell\Application_WPF_Shell.exe"));
+
+            kernel.LoadModules(new CompositeModuleDiscovery(
+                new SingleModuleDiscovery(@".\FileLoaderModule\FileLoaderModule.dll"),
+                new SingleModuleDiscovery(@".\GraphicFilesHandlerModule\GraphicFilesHandlerModule.dll"),
+                new SingleModuleDiscovery(@".\TextFileHandlerModule\TextFileHandlerModule.dll")
+                ));
         }
     }
 }
