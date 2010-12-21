@@ -1,9 +1,11 @@
 using System.Collections;
 using Nomad.Regions;
 using NUnit.Framework;
+using TestsShared;
 
 namespace Nomad.Tests.UnitTests.Regions
 {
+    [UnitTests]
     public class SingleActiveViewRegionBehavior
     {
         private SingleActiveViewRegion _region;

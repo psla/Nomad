@@ -78,7 +78,7 @@ namespace Nomad.Tests.FunctionalTests.Regions
                 () =>
                     {
                         region = _regionManager.AttachRegion("region",
-                                                             Window.TabControl);
+                                                             _tabControl);
                         region.AddView("tab1");
                         region.AddView("tab2");
                         region.AddView("tab3");

@@ -120,6 +120,7 @@
     <Compile Include="FunctionalTests\Modules\ModuleCompiler.cs" />
     <Compile Include="FunctionalTests\Fixtures\ModuleLoadingTestFixture.cs" />
     <Compile Include="FunctionalTests\Fixtures\ModuleLoadingWithCompilerTestFixture.cs" />
+    <Compile Include="FunctionalTests\Regions\ItemsControlBehaviors.cs" />
     <Compile Include="FunctionalTests\Regions\ToolbarTrayAdapter.cs" />
     <Compile Include="FunctionalTests\Regions\ToolbarTrayBehaviors.cs" />
     <Compile Include="FunctionalTests\Regions\RegisteringRegionsFromMarkup.cs" />
