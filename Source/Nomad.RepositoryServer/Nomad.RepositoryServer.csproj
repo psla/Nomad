@@ -108,6 +108,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\ModuleInfo.mdf" />
+    <Content Include="App_Data\ModuleInfo_log.LDF">
+      <DependentUpon>ModuleInfo.mdf</DependentUpon>
+    </Content>
     <Content Include="Global.asax" />
     <Content Include="Views\Shared\AddingError.aspx" />
     <Content Include="Views\Adder\AddModule.aspx" />

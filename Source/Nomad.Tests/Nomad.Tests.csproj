@@ -52,6 +52,7 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Bricks.RuntimeFramework, Version=1.0.0.0, Culture=neutral, PublicKeyToken=83a26c96fb92c77f, processorArchitecture=MSIL" />
     <Reference Include="Castle.Core, Version=2.5.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Libraries\Windsor\Castle.Core.dll</HintPath>
@@ -90,6 +91,7 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="UIAutomationClient" />
     <Reference Include="UIAutomationProvider">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -102,6 +104,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FunctionalTests\EventAggregation\EventAggregationGuiThreadChangesSupport.cs" />
     <Compile Include="FunctionalTests\EventAggregation\EventAggregatorFacade.cs" />
     <Compile Include="FunctionalTests\EventAggregation\EventPublishing.cs" />
     <Compile Include="FunctionalTests\EventAggregation\ThreadingTestsHelpers.cs" />
@@ -117,9 +120,15 @@
     <Compile Include="FunctionalTests\Modules\ModuleCompiler.cs" />
     <Compile Include="FunctionalTests\Fixtures\ModuleLoadingTestFixture.cs" />
     <Compile Include="FunctionalTests\Fixtures\ModuleLoadingWithCompilerTestFixture.cs" />
+    <Compile Include="FunctionalTests\Regions\RegisteringRegionsFromMarkup.cs" />
+    <Compile Include="FunctionalTests\Regions\FakeWindowWithRegionsRegisteredByAttachedProperty.xaml.cs">
+      <DependentUpon>FakeWindowWithRegionsRegisteredByAttachedProperty.xaml</DependentUpon>
+    </Compile>
     <Compile Include="FunctionalTests\Regions\FakeWindowWithRegions.xaml.cs">
       <DependentUpon>FakeWindowWithRegions.xaml</DependentUpon>
     </Compile>
+    <Compile Include="FunctionalTests\Regions\StatusBarBehaviors.cs" />
+    <Compile Include="FunctionalTests\Regions\StatusBarUIItem.cs" />
     <Compile Include="FunctionalTests\Regions\TabControlBehaviors.cs" />
     <Compile Include="FunctionalTests\ServiceLocation\ITestService.cs" />
     <Compile Include="FunctionalTests\ServiceLocation\ServiceLocatorInModules.cs" />
@@ -209,6 +218,10 @@
     <None Include="UnitTests\.gitignore" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="FunctionalTests\Regions\FakeWindowWithRegionsRegisteredByAttachedProperty.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="FunctionalTests\Regions\FakeWindowWithRegions.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

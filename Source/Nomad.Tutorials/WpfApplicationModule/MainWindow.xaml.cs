@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using Nomad.Communication.ServiceLocation;
+using Nomad.Regions;
 
 namespace WpfApplicationModule
 {
@@ -19,9 +11,24 @@ namespace WpfApplicationModule
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        private readonly IServiceLocator _locator;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="locator"></param>
+        /// <param name="resetEvent">invoked after all region defined</param>
+        public MainWindow(IServiceLocator locator, ManualResetEvent resetEvent)
         {
+            _locator = locator;
             InitializeComponent();
+
+            var regionManager = locator.Resolve<RegionManager>();
+
+            regionManager.AttachRegion("mainTab", OurTabcontrol);
+            resetEvent.Set();
         }
+
+
     }
 }

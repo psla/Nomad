@@ -15,6 +15,11 @@ namespace Nomad.Core
     /// </summary>
     public class NomadConfiguration 
     {
+        internal NomadConfiguration()
+        {
+            
+        }
+
         #region Configuration
 
         private IDependencyChecker _dependencyChecker;

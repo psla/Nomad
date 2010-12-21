@@ -9,6 +9,15 @@ namespace Nomad.Regions
     /// </summary>
     public class RegionManager
     {
+        private static RegionManager _currentRegionManager;
+
+        public static readonly DependencyProperty RegionNameProperty =
+            DependencyProperty.Register("RegionName", typeof (string), typeof (DependencyObject),
+                                        new FrameworkPropertyMetadata(null,
+                                                                      FrameworkPropertyMetadataOptions
+                                                                          .Inherits,
+                                                                      RegionNameChanged));
+
         private readonly IRegionFactory _regionFactory;
         private readonly Dictionary<string, IRegion> _regions = new Dictionary<string, IRegion>();
 
@@ -22,6 +31,8 @@ namespace Nomad.Regions
         {
             if (regionFactory == null) throw new ArgumentNullException("regionFactory");
             _regionFactory = regionFactory;
+
+            _currentRegionManager = this;
         }
 
 
@@ -46,11 +57,11 @@ namespace Nomad.Regions
             ValidateRegionName(regionName);
             if (ContainsRegion(regionName))
             {
-                var message = string.Format("Region \"{0}\" already exists", regionName);
+                string message = string.Format("Region \"{0}\" already exists", regionName);
                 throw new ArgumentException(message);
             }
 
-            var region = _regionFactory.CreateRegion(view);
+            IRegion region = _regionFactory.CreateRegion(view);
 
             _regions.Add(regionName, region);
             return region;
@@ -72,7 +83,7 @@ namespace Nomad.Regions
             IRegion region;
             if (!_regions.TryGetValue(regionName, out region))
             {
-                var message = string.Format("Region \"{0}\" has not been attached", regionName);
+                string message = string.Format("Region \"{0}\" has not been attached", regionName);
                 throw new KeyNotFoundException(message);
             }
             return region;
@@ -106,6 +117,29 @@ namespace Nomad.Regions
         {
             if (string.IsNullOrEmpty(regionName))
                 throw new ArgumentException("Region name cannot be null or empty", "regionName");
+        }
+
+
+        private static void RegionNameChanged(DependencyObject d,
+                                              DependencyPropertyChangedEventArgs e)
+        {
+            /*if(e.OldValue!=null)
+            {
+                _currentRegionManager.RemoveRegion(e.OldValue);
+            }*/
+        }
+
+
+        public static string GetRegionName(DependencyObject target)
+        {
+            return target.GetValue(RegionNameProperty) as string;
+        }
+
+
+        public static void SetRegionName(DependencyObject target, string value)
+        {
+            _currentRegionManager.AttachRegion(value, target);
+            target.SetValue(RegionNameProperty, value);
         }
     }
 }

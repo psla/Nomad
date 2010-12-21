@@ -19,25 +19,24 @@ namespace ThinWpfHost
         {
             // signing the assemblies and creating the manifest using manifestBuilder api
             GenerateManifestUsingApi("WpfApplicationModule.exe", @".\Modules\WpfApplication");
+            GenerateManifestUsingApi("WpfButtonModule.dll", @".\Modules\WpfButton");
 
             // using default configuration
             var kernel = new NomadKernel();
 
             // loading modules using single module discovery pattern
             var discovery = new CompositeModuleDiscovery(
-                new SingleModuleDiscovery(@".\Modules\WpfApplication\WpfApplicationModule.exe")
+                new SingleModuleDiscovery(@".\Modules\WpfApplication\WpfApplicationModule.exe"),
+                new SingleModuleDiscovery(@".\Modules\WpfButton\WpfButtonModule.dll")
                 );
 
-            var thread = new Thread(() => kernel.LoadModules(discovery));
-            thread.SetApartmentState(ApartmentState.STA);
-            thread.IsBackground = false;
-            thread.Start();
+            kernel.LoadModules(discovery);
 
             //wait for input
             //Console.ReadLine();
 
             //simulate reloading :]
-            Thread.Sleep(15000);
+            /*Thread.Sleep(15000);
 
             kernel.UnloadModules();
 
@@ -45,12 +44,10 @@ namespace ThinWpfHost
 
             Thread.Sleep(2000);
 
-            thread = new Thread((ThreadStart)delegate { kernel.LoadModules(discovery); });
-            thread.SetApartmentState(ApartmentState.STA);
-            thread.Start();
+            kernel.LoadModules(discovery);
 
             Thread.Sleep(5000);
-
+            */
             //TODO: Here we should wait for event "onclose", because we are going to loose nomad ;)
         }
 

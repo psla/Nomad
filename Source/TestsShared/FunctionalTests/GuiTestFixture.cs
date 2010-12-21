@@ -40,7 +40,6 @@ namespace TestsShared.FunctionalTests
         ///     Runs fake application in new thread and gets basic
         ///     automation wrappers.
         /// </summary>
-        [TestFixtureSetUp]
         public void Run()
         {
             Window window;
