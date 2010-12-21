@@ -5,8 +5,16 @@ using Nomad.Regions.Behaviors;
 
 namespace Nomad.Regions.Adapters
 {
+    /// <summary>
+    /// Region adapter for <see cref="ItemsControl"/> region host
+    /// </summary>
+    /// <remarks>
+    /// Regions created using this adapter are <see cref="MultipleActiveViewRegion"/></remarks>
     public class ItemsControlAdapter : IRegionAdapter
     {
+        /// <summary>
+        /// ItemsControl instances are supported with this adapter
+        /// </summary>
         public Type SupportedType
         {
             get { return typeof (ItemsControl); }
@@ -20,7 +28,7 @@ namespace Nomad.Regions.Adapters
                     "This adapter only supports regionHosts that are ItemsControls");
 
             var itemsControl = (ItemsControl)regionHost;
-            var region = new SingleActiveViewRegion(); //TODO: Implement multiple active view region
+            var region = new MultipleActiveViewRegion(); //TODO: Implement multiple active view region
 
             new SynchronizeItemsBehavior().Attach(region, itemsControl);
             new ActiveAwareBehavior().Attach(region, itemsControl);

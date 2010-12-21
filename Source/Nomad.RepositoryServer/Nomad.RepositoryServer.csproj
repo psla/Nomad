@@ -72,6 +72,7 @@
     <Reference Include="System.Web.Mobile" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Content\ArgumentsParser.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdderController.cs" />
     <Compile Include="Controllers\HomeController.cs" />

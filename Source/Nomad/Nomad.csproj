@@ -136,6 +136,7 @@
     <Compile Include="Modules\Manifest\ModuleManifestFactory.cs" />
     <Compile Include="Modules\Installers\NomadEventAggregatorInstaller.cs" />
     <Compile Include="Regions\Adapters\ItemsControlAdapter.cs" />
+    <Compile Include="Regions\Adapters\MultipleActiveViewRegion.cs" />
     <Compile Include="Regions\Adapters\StatusBarAdapter.cs" />
     <Compile Include="Services\ILoadedModulesService.cs" />
     <Compile Include="Services\LoadedModulesService.cs" />
