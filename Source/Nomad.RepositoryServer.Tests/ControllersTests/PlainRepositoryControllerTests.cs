@@ -73,7 +73,7 @@ namespace Nomad.RepositoryServer.Tests.ControllersTests
                                                       Path.GetFileName(assemblyName), FolderPath, KeyStorage.Nomad,
                                                       string.Empty, ManifestBuilderConfiguration.Default);
 
-            manifestBuilder.Create();
+            manifestBuilder.CreateAndPublish();
         }
 
         [Test]

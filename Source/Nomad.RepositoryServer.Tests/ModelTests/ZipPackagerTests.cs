@@ -77,7 +77,7 @@ namespace Nomad.RepositoryServer.Tests.ModelTests
             var builder = new ManifestBuilder(IssuerName, IssuerXmlPath,
                                               @"SimplestModulePossible1.dll",
                                               @"Modules\Simple");
-            _manifest = builder.Create();
+            _manifest = builder.CreateAndPublish();
             return @"Modules\Simple\SimplestModulePossible1.dll" +
                    ModuleManifest.ManifestFileNameSuffix;
         }
