@@ -31,5 +31,17 @@ namespace Nomad.Tests.UnitTests.Regions
 
             Assert.Contains(view, (ICollection) _region.Views);
         }
+
+        [Test]
+        public void can_clear_views()
+        {
+            var view = new object();
+            _region.AddView(view);
+
+            _region.ClearViews();
+            
+            Assert.IsEmpty((ICollection) _region.Views);
+            Assert.IsEmpty((ICollection) _region.ActiveViews);
+        }
     }
 }
