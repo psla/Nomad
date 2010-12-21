@@ -141,6 +141,10 @@ task GetProjects -description "Identifies all projects in product" {
 		{
 			$expected_directory = "$source_dir\Nomad.Tutorials\$project_name"
 		}
+		elseif($project_file.FullName -match "Nomad.Examples")
+		{
+			$expected_directory = "$source_dir\Nomad.Examples\$project_name"
+		}
 		else
 		{
 			$expected_directory = "$source_dir\$project_name"
