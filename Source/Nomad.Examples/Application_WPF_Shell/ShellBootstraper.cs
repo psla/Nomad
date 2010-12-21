@@ -7,17 +7,17 @@ using Nomad.Regions.Adapters;
 
 namespace Application_WPF_Shell
 {
-    public class ShellBootstraper :  IModuleBootstraper
+    public class ShellBootstraper : IModuleBootstraper
     {
-        private readonly IServiceLocator _locator;
         private readonly IEventAggregator _aggregator;
+        private readonly IServiceLocator _locator;
 
         private readonly ManualResetEvent _resetEvent = new ManualResetEvent(false);
-        
+
         private App _app;
         private Thread _guiThread;
-        
-        
+
+
         public ShellBootstraper(IServiceLocator locator, IEventAggregator aggregator)
         {
             _locator = locator;
@@ -37,22 +37,6 @@ namespace Application_WPF_Shell
             _resetEvent.WaitOne();
         }
 
-        private void StartApplication()
-        {
-            _app = new App();
-            var guiThreadProvider = (new WpfGuiThreadProvider(_app.Dispatcher));
-            RegionManager regionManager = null;
-            guiThreadProvider.RunInGui((ThreadStart) delegate
-                                                         {
-                                                             regionManager = new RegionManager(null);
-                                                         });
-
-            _locator.Register<IGuiThreadProvider>(guiThreadProvider);
-            _locator.Register(regionManager);
-            
-            _app.Run(new MainWindow(_locator, _aggregator, _resetEvent));
-        }
-
 
         /// <summary>
         ///         Kill all threads when unload. Shutdown the application
@@ -64,5 +48,34 @@ namespace Application_WPF_Shell
         }
 
         #endregion
+
+        private void StartApplication()
+        {
+            _app = new App();
+            var guiThreadProvider = (new WpfGuiThreadProvider(_app.Dispatcher));
+            RegionManager regionManager = null;
+            guiThreadProvider.RunInGui((ThreadStart) delegate
+                                                         {
+                                                             regionManager =
+                                                                 new RegionManager(
+                                                                     new RegionFactory(
+                                                                         GetRegionAdapters()));
+                                                         });
+
+            _locator.Register<IGuiThreadProvider>(guiThreadProvider);
+            _locator.Register(regionManager);
+
+            _app.Run(new MainWindow(_locator, _aggregator, _resetEvent));
+        }
+
+
+        private static IRegionAdapter[] GetRegionAdapters()
+        {
+            return new IRegionAdapter[]
+                       {
+                           new ItemsControlAdapter(),
+                           new TabControlAdapter()
+                       };
+        }
     }
 }
