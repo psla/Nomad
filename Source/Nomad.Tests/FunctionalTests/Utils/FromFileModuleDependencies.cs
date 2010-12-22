@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using Nomad.Modules.Manifest;
@@ -47,7 +48,7 @@ namespace Nomad.Tests.FunctionalTests.Utils
         public void no_passing_value_in_constructor_uses_the_default_value()
         {
             _dependencyProvider = new FromFileModulesDependencyProvider();
-            Assert.AreEqual(FromFileModulesDependencyProvider.DefaultFileName,
+            Assert.AreEqual(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, FromFileModulesDependencyProvider.DefaultFileName),
                             _dependencyProvider.DependencyFileName,
                             "Default name is not same as default in constructor");
         }
