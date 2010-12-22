@@ -1,6 +1,9 @@
+using System;
+using System.Windows;
 using System.Windows.Controls;
 using Nomad.Regions;
 using Nomad.Regions.Adapters;
+using Nomad.Regions.Behaviors;
 using NUnit.Framework;
 using TestsShared;
 using TestsShared.FunctionalTests;
@@ -8,17 +11,17 @@ using TestsShared.FunctionalTests;
 namespace Nomad.Tests.FunctionalTests.Regions
 {
     [FunctionalTests]
-    public class ToolBarBehaviors : GuiTestFixture<FakeWindowWithRegions>
+    public class MenuBehaviors : GuiTestFixture<FakeWindowWithRegions>
     {
         private RegionManager _regionManager;
-        private ToolBar _toolBar;
+        private Menu _toolBar;
 
 
         [TestFixtureSetUp]
         public void show_window()
         {
             Run();
-            _toolBar = Window.Toolbar;
+            _toolBar = Window.Menu;
         }
 
 
@@ -32,7 +35,7 @@ namespace Nomad.Tests.FunctionalTests.Regions
         [SetUp]
         public void set_up()
         {
-            var adapters = new IRegionAdapter[] {new ItemsControlAdapter()};
+            var adapters = new IRegionAdapter[] { new ItemsControlAdapter() };
             var regionFactory = new RegionFactory(adapters);
             _regionManager = new RegionManager(regionFactory);
         }
@@ -53,14 +56,14 @@ namespace Nomad.Tests.FunctionalTests.Regions
             Button view = null;
             Invoke(
                 () =>
-                    {
-                        IRegion region = _regionManager.AttachRegion("region", _toolBar);
-                        view = new Button() {Content = "test"};
-                        region.AddView(view);
-                    });
+                {
+                    IRegion region = _regionManager.AttachRegion("region", _toolBar);
+                    view = new Button() { Content = "test" };
+                    region.AddView(view);
+                });
 
-            Assert.AreEqual(1, Window.Toolbar.Items.Count);
-            Assert.AreSame(view, Window.Toolbar.Items[0]);
+            Assert.AreEqual(1, Window.Menu.Items.Count);
+            Assert.AreSame(view, Window.Menu.Items[0]);
         }
     }
 }

@@ -6,6 +6,7 @@
             <RowDefinition/>
             <RowDefinition/>
             <RowDefinition/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
         <ToolBarTray x:Name="ToolBarTray" Grid.Row="0"></ToolBarTray>
 		<TabControl x:Name="TabControl" Grid.Row="1"></TabControl>
@@ -16,5 +17,6 @@
                 
             </ToolBar>
         </ToolBarTray>
+        <Menu Grid.Row="5" x:Name="Menu"></Menu>
 	</Grid>
 </Window>
