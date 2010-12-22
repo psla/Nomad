@@ -1,14 +1,14 @@
 ﻿<Window x:Class="Application_WPF_Shell.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:Regions="clr-namespace:Nomad.Regions;assembly=Nomad" Title="MainWindow" Height="350" Width="525">
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:Regions="clr-namespace:Nomad.Regions;assembly=Nomad" Title="MainWindow" Height="600" Width="800">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <ToolBarTray  Regions:RegionManager.RegionName="toolbarRegion" Grid.Row="0">
-            
+        <ToolBarTray  Regions:RegionManager.RegionName="toolbarTrayRegion" Grid.Row="0">
+            <ToolBar Regions:RegionManager.RegionName="defaultToolbarRegion" Height="22"/>
         </ToolBarTray>
             <Grid Grid.Row="1">
         <Grid.ColumnDefinitions>

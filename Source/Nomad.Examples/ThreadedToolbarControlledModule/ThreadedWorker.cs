@@ -39,9 +39,9 @@ namespace ThreadedToolbarControlledModule
                 var regionManager =
                     _serviceLocator.Resolve<RegionManager>();
                 var region =
-                    regionManager.GetRegion("toolbarRegion");
-                //region.AddView(
-                //    new Toolbar(_eventAggregator));
+                    regionManager.GetRegion("toolbarTrayRegion");
+                region.AddView(
+                    new ThreadedToolbarPanel());
             });
 
             //background Runner
