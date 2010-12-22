@@ -47,15 +47,23 @@ namespace FileLoaderModule
         }
 
 
+        private bool m_initialized;
+
         private void InitializeMenuClick(object sender, RoutedEventArgs e)
         {
-            
+            if(!m_initialized)
+                InitializeMenu();
+            m_initialized = true;
         }
 
         private void InitializeMenu()
         {
-            var myMenu = new Menu() { Name = "FileLoader" }; // this one will be registered in region manager, after that event will be sent
+            var myMenu = new Menu() { Name = "FileLoader"}; // this one will be registered in region manager, after that event will be sent
             var regionManager = _serviceLocator.Resolve<RegionManager>();
+            var menuRegion = regionManager.GetRegion("mainMenu");
+            menuRegion.AddView(myMenu);
+
+            
             regionManager.AttachRegion("FileLoaderMenu", myMenu);
 
             var region = regionManager.GetRegion("FileLoaderMenu");
@@ -64,8 +72,7 @@ namespace FileLoaderModule
             
             region.AddView(about);
 
-            var menuRegion = regionManager.GetRegion("mainTab");
-            menuRegion.AddView(myMenu);
+            
 
             _eventAggregator.Publish(new FileLoaderMenuRegionRegisteredMessage("FileLoaderMenu"));
         }
