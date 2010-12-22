@@ -41,7 +41,7 @@ namespace ThreadedToolbarControlledModule
                 var region =
                     regionManager.GetRegion("toolbarTrayRegion");
                 region.AddView(
-                    new ThreadedToolbarPanel());
+                    new ThreadedToolbarPanel(_eventAggregator));
             });
 
             //background Runner
@@ -50,7 +50,7 @@ namespace ThreadedToolbarControlledModule
 
         public void OnUnLoad()
         {
-            throw new NotImplementedException();
+            //todo
         }
     }
 }

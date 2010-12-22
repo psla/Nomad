@@ -11,7 +11,7 @@ namespace Nomad.KeysGenerator
                 var arguments = new ArgumentsParser(args);
                 var keyGenerator = new RsaKeyFilesGenerator(arguments.PublicFile, arguments.TargetFile);
                 keyGenerator.GenerateSignature();
-                Console.WriteLine("Successfuly generated signature file");
+                //Console.WriteLine("Successfuly generated signature file");
             }
             catch (Exception e)
             {

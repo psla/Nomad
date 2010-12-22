@@ -6,7 +6,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <StackPanel Orientation="Horizontal">
-        <Button Content="Run" />
-        <Button Content="Stop" />
+        <Button Content="Run" Click="RunMe"/>
+        <Button Content="Stop" Click="StopMe" />
     </StackPanel>
 </ToolBar>
