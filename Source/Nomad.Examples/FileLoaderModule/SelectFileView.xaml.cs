@@ -58,7 +58,7 @@ namespace FileLoaderModule
 
         private void InitializeMenu()
         {
-            var myMenu = new Menu() { Name = "FileLoader"}; // this one will be registered in region manager, after that event will be sent
+            var myMenu = new System.Windows.Controls.MenuItem() { Header = "FileLoader" }; // this one will be registered in region manager, after that event will be sent
             var regionManager = _serviceLocator.Resolve<RegionManager>();
             var menuRegion = regionManager.GetRegion("mainMenu");
             menuRegion.AddView(myMenu);
@@ -67,7 +67,7 @@ namespace FileLoaderModule
             regionManager.AttachRegion("FileLoaderMenu", myMenu);
 
             var region = regionManager.GetRegion("FileLoaderMenu");
-            var about = new MenuItem() { Name = "About" };
+            var about = new System.Windows.Controls.MenuItem() { Header = "About" };
             about.Click += (x, y) => System.Windows.Forms.MessageBox.Show("File Loader 1.0.1");
             
             region.AddView(about);
