@@ -28,7 +28,7 @@ namespace Nomad.Regions.Adapters
                     "This adapter only supports regionHosts that are ItemsControls");
 
             var itemsControl = (ItemsControl)regionHost;
-            var region = new MultipleActiveViewRegion(); //TODO: Implement multiple active view region
+            var region = new MultipleActiveViewRegion(); 
 
             new SynchronizeItemsBehavior().Attach(region, itemsControl);
             new ActiveAwareBehavior().Attach(region, itemsControl);

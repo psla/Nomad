@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="100">
-    <Grid>
+    <StackPanel>
         <Button Click="ButtonClick">Wybierz plik</Button>
-    </Grid>
+        <Button Click="InitializeMenuClick">Inicjalizuj menu</Button>
+    </StackPanel>
 </UserControl>

@@ -1,4 +1,6 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.Windows;
+using System.Windows.Controls;
 using FileLoaderModule;
 using Nomad.Communication.EventAggregation;
 using Nomad.Communication.ServiceLocation;
@@ -26,6 +28,18 @@ namespace GraphicFilesHandlerModule
         public void OnLoad()
         {
             _eventAggregator.Subscribe<NomadAllModulesLoadedMessage>(AllModulesLoaded);
+            _eventAggregator.Subscribe<FileLoaderMenuRegionRegisteredMessage>(NewMenu,
+                                                                              DeliveryMethod.
+                                                                                  GuiThread);
+        }
+
+
+        private void NewMenu(FileLoaderMenuRegionRegisteredMessage obj)
+        {
+            var region = _regionManager.GetRegion(obj.RegionName);
+            var menuItem = new MenuItem() {Header = "About Graphic FileHandler"};
+            menuItem.Click += (x, y) => MessageBox.Show("Piotr Ślatała, obsługa JPG i PNG, 1.0.2");
+            region.AddView(menuItem);
         }
 
 
