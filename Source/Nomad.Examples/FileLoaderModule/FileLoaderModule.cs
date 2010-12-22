@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Windows.Controls;
 using Nomad.Communication.EventAggregation;
 using Nomad.Communication.ServiceLocation;
 using Nomad.Messages.Loading;
@@ -42,6 +43,11 @@ namespace FileLoaderModule
                                                      region.AddView(
                                                          new SelectFileView(_eventAggregator));
                                                  });
+        }
+
+        private void InitializeMenu()
+        {
+            var myMenu = new MenuItem() {Name = "FileLoader"}; // this one will be registered in region manager, after that event will be sent
         }
 
 

@@ -121,7 +121,6 @@
     <Compile Include="FunctionalTests\Modules\ModuleCompiler.cs" />
     <Compile Include="FunctionalTests\Fixtures\ModuleLoadingTestFixture.cs" />
     <Compile Include="FunctionalTests\Fixtures\ModuleLoadingWithCompilerTestFixture.cs" />
-    <Compile Include="FunctionalTests\Regions\MenuAdapter.cs" />
     <Compile Include="FunctionalTests\Regions\MenuBehaviors.cs" />
     <Compile Include="FunctionalTests\Regions\ToolbarBehaviors.cs" />
     <Compile Include="FunctionalTests\Regions\ItemsControlBehaviors.cs" />
