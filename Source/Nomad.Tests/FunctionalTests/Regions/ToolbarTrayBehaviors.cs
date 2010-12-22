@@ -1,5 +1,6 @@
 using System.Windows.Controls;
 using Nomad.Regions;
+using Nomad.Regions.Adapters;
 using NUnit.Framework;
 using TestsShared;
 using TestsShared.FunctionalTests;

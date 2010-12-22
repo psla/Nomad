@@ -5,10 +5,14 @@
             <RowDefinition/>
             <RowDefinition/>
             <RowDefinition/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
         <ToolBarTray x:Name="ToolBarTray" Grid.Row="0"></ToolBarTray>
 		<TabControl x:Name="TabControl" Grid.Row="1"></TabControl>
         <StatusBar x:Name="StatusBar" Grid.Row="2"></StatusBar>
         <ItemsControl x:Name="ItemsControl" Grid.Row="3"></ItemsControl>
+        <ToolBarTray>
+            <ToolBar x:Name="myOwnToolbar"></ToolBar>
+        </ToolBarTray>
 	</Grid>
 </Window>

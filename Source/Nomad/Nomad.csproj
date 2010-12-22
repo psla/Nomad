@@ -138,6 +138,8 @@
     <Compile Include="Regions\Adapters\ItemsControlAdapter.cs" />
     <Compile Include="Regions\Adapters\MultipleActiveViewRegion.cs" />
     <Compile Include="Regions\Adapters\StatusBarAdapter.cs" />
+    <Compile Include="Regions\Adapters\ToolbarTrayAdapter.cs" />
+    <Compile Include="Regions\Behaviors\SynchronizeToolbarsBehavior.cs" />
     <Compile Include="Services\ILoadedModulesService.cs" />
     <Compile Include="Services\LoadedModulesService.cs" />
     <Compile Include="Signing\FileUtils\SignedFile.cs" />
