@@ -11,8 +11,10 @@
 		<TabControl x:Name="TabControl" Grid.Row="1"></TabControl>
         <StatusBar x:Name="StatusBar" Grid.Row="2"></StatusBar>
         <ItemsControl x:Name="ItemsControl" Grid.Row="3"></ItemsControl>
-        <ToolBarTray>
-            <ToolBar x:Name="myOwnToolbar"></ToolBar>
+        <ToolBarTray Grid.Row="4">
+            <ToolBar x:Name="Toolbar" Height="50" Width="250">
+                
+            </ToolBar>
         </ToolBarTray>
 	</Grid>
 </Window>

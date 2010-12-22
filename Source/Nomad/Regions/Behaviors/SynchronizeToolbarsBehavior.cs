@@ -22,13 +22,6 @@ namespace Nomad.Regions.Behaviors
             _region = region;
 
             _region.Views.CollectionChanged += ViewsCollectionChanged;
-
-            // ToolBarTray.ToolBars is not 
-            /*Binding binding = new Binding("Views");
-            binding.Source = region;
-
-            BindingOperations.SetBinding(regionHost, ToolBarTray)*/
-            //_region.ActiveViews.CollectionChanged += RegionActiveViewsChanged;
         }
 
         void ViewsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -36,6 +29,9 @@ namespace Nomad.Regions.Behaviors
             _control.ToolBars.Clear();
             foreach (var view in _region.Views)
             {
+                if (!(view is ToolBar))
+                    throw new InvalidOperationException("view must be of type ToolBar");
+
                 _control.ToolBars.Add(view as ToolBar);
             }
         }

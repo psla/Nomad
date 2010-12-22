@@ -20,7 +20,7 @@ namespace Nomad.Regions.Adapters
                     "This adapter only supports regionHosts that are Toolbars");
 
             var tabControl = (ToolBarTray) regionHost;
-            var region = new SingleActiveViewRegion();
+            var region = new MultipleActiveViewRegion();
             new SynchronizeToolbarsBehavior().Attach(region, tabControl);
             return region;
         }
