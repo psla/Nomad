@@ -76,7 +76,8 @@ namespace Application_WPF_Shell
             return new IRegionAdapter[]
                        {
                            new ItemsControlAdapter(),
-                           new TabControlAdapter()
+                           new TabControlAdapter(),
+            new ToolbarTrayAdapter()
                        };
         }
     }

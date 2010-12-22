@@ -155,6 +155,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ListingAllLoadedModule", "N
 		{1F6C3A60-1A3C-4627-A9F3-B71897468E21} = {1F6C3A60-1A3C-4627-A9F3-B71897468E21}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThreadedToolbarControlledModule", "Nomad.Examples\ThreadedToolbarControlledModule\ThreadedToolbarControlledModule.csproj", "{F6C9FD33-9A6C-4C5F-A6F0-BB9D4563D09F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -429,6 +431,16 @@ Global
 		{AB2AF8C8-4641-4291-81F6-5EE4BBAFB59E}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{AB2AF8C8-4641-4291-81F6-5EE4BBAFB59E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{AB2AF8C8-4641-4291-81F6-5EE4BBAFB59E}.Release|x86.ActiveCfg = Release|Any CPU
+		{F6C9FD33-9A6C-4C5F-A6F0-BB9D4563D09F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6C9FD33-9A6C-4C5F-A6F0-BB9D4563D09F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6C9FD33-9A6C-4C5F-A6F0-BB9D4563D09F}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{F6C9FD33-9A6C-4C5F-A6F0-BB9D4563D09F}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{F6C9FD33-9A6C-4C5F-A6F0-BB9D4563D09F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F6C9FD33-9A6C-4C5F-A6F0-BB9D4563D09F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6C9FD33-9A6C-4C5F-A6F0-BB9D4563D09F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6C9FD33-9A6C-4C5F-A6F0-BB9D4563D09F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{F6C9FD33-9A6C-4C5F-A6F0-BB9D4563D09F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{F6C9FD33-9A6C-4C5F-A6F0-BB9D4563D09F}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -472,5 +484,6 @@ Global
 		{BE28955D-72A3-4692-8856-582750F0A8EF} = {86848038-102B-421B-A3FC-FC1816AF4C6E}
 		{97201BBC-900F-4416-8CEC-34C94F57E76B} = {86848038-102B-421B-A3FC-FC1816AF4C6E}
 		{AB2AF8C8-4641-4291-81F6-5EE4BBAFB59E} = {86848038-102B-421B-A3FC-FC1816AF4C6E}
+		{F6C9FD33-9A6C-4C5F-A6F0-BB9D4563D09F} = {86848038-102B-421B-A3FC-FC1816AF4C6E}
 	EndGlobalSection
 EndGlobal
