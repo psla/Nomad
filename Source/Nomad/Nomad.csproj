@@ -100,6 +100,7 @@
     <Compile Include="Communication\EventAggregation\EventAggregatorTicket.cs" />
     <Compile Include="Communication\EventAggregation\IEventAggregatorTicket.cs" />
     <Compile Include="Communication\EventAggregation\IGuiThreadProvider.cs" />
+    <Compile Include="Communication\EventAggregation\LazyWpfGuiThreadProvider.cs" />
     <Compile Include="Communication\EventAggregation\NullGuiThreadProvider.cs" />
     <Compile Include="Communication\EventAggregation\TicketDisposedArgs.cs" />
     <Compile Include="Communication\EventAggregation\WpfGuiThreadProvider.cs" />
