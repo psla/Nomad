@@ -28,30 +28,20 @@ namespace FileLoaderModule
 
         public void OnLoad()
         {
-            _eventAggregator.Subscribe<NomadAllModulesLoadedMessage>(AllModulesLoaded);
+            _eventAggregator.Subscribe<NomadAllModulesLoadedMessage>(AllModulesLoaded, DeliveryMethod.GuiThread);
         }
 
 
         private void AllModulesLoaded(NomadAllModulesLoadedMessage obj)
         {
-            var guiThread = _serviceLocator.Resolve<IGuiThreadProvider>();
-            guiThread.RunInGui((ThreadStart) delegate
-                                                 {
-                                                     var regionManager =
-                                                         _serviceLocator.Resolve<RegionManager>();
-                                                     var region =
-                                                         regionManager.GetRegion("leftSideMenu");
-                                                     region.AddView(
-                                                         new SelectFileView(_serviceLocator, _eventAggregator));
-                                                 });
+            var regionManager = _serviceLocator.Resolve<RegionManager>();
+            var region = regionManager.GetRegion("leftSideMenu");
+            region.AddView(new SelectFileView(_serviceLocator, _eventAggregator));
         }
-
-        
 
 
         public void OnUnLoad()
         {
-            
         }
     }
 }

@@ -34,7 +34,7 @@ namespace Nomad.Modules.Installers
         {
             // TODO: refix it into factory mode ?
             container.Register(
-                Component.For<EventAggregator>().UsingFactoryMethod((kernel) => new EventAggregator(new NullGuiThreadProvider()))
+                Component.For<EventAggregator>().UsingFactoryMethod((kernel) => new EventAggregator(new LazyWpfGuiThreadProvider()))
                     .Named("OnSiteEVG")
                     .LifeStyle.Singleton,
                 Component.For<IEventAggregator>()

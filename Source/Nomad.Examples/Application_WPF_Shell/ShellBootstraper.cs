@@ -52,21 +52,10 @@ namespace Application_WPF_Shell
 
         private void StartApplication()
         {
-            _app = new App();
-            var guiThreadProvider = (new WpfGuiThreadProvider(_app.Dispatcher));
-            RegionManager regionManager = null;
-            guiThreadProvider.RunInGui((ThreadStart) delegate
-                                                         {
-                                                             regionManager =
-                                                                 new RegionManager(
-                                                                     new RegionFactory(
-                                                                         GetRegionAdapters()));
-                                                         });
-
-            _locator.Register<IGuiThreadProvider>(guiThreadProvider);
+            var regionManager = new RegionManager(new RegionFactory(GetRegionAdapters()));
             _locator.Register(regionManager);
-            _aggregator.Publish(new WpfGuiChangedMessage(guiThreadProvider));
 
+            _app = new App();
             _app.Run(new MainWindow(_locator, _aggregator, _resetEvent));
         }
 
@@ -77,7 +66,7 @@ namespace Application_WPF_Shell
                        {
                            new ItemsControlAdapter(),
                            new TabControlAdapter(),
-            new ToolbarTrayAdapter()
+                           new ToolbarTrayAdapter()
                        };
         }
     }

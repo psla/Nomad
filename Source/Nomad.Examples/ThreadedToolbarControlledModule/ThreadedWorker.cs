@@ -27,22 +27,15 @@ namespace ThreadedToolbarControlledModule
 
         public void OnLoad()
         {
-            _eventAggregator.Subscribe<NomadAllModulesLoadedMessage>(AllModulesLoaded);
+            _eventAggregator.Subscribe<NomadAllModulesLoadedMessage>(AllModulesLoaded, DeliveryMethod.GuiThread);
         }
 
         private void AllModulesLoaded(NomadAllModulesLoadedMessage obj)
         {
             //gui Runner
-            var guiThread = _serviceLocator.Resolve<IGuiThreadProvider>();
-            guiThread.RunInGui((ThreadStart)delegate
-            {
-                var regionManager =
-                    _serviceLocator.Resolve<RegionManager>();
-                var region =
-                    regionManager.GetRegion("toolbarTrayRegion");
-                region.AddView(
-                    new ThreadedToolbarPanel(_eventAggregator));
-            });
+            var regionManager = _serviceLocator.Resolve<RegionManager>();
+            var region = regionManager.GetRegion("toolbarTrayRegion");
+            region.AddView(new ThreadedToolbarPanel(_eventAggregator));
 
             //background Runner
         }
