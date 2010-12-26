@@ -1,10 +1,7 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using FileLoaderModule;
 using Nomad.Communication.EventAggregation;
-using Nomad.Communication.ServiceLocation;
-using Nomad.Messages.Loading;
 using Nomad.Modules;
 using Nomad.Regions;
 
@@ -13,33 +10,21 @@ namespace GraphicFilesHandlerModule
     public class GraphicFileHandlerModule : IModuleBootstraper
     {
         private readonly IEventAggregator _eventAggregator;
-        private readonly IServiceLocator _serviceLocator;
-        private RegionManager _regionManager;
+        private readonly RegionManager _regionManager;
 
 
-        public GraphicFileHandlerModule(IServiceLocator serviceLocator)
+        public GraphicFileHandlerModule(IEventAggregator eventAggregator, RegionManager regionManager)
         {
-            _serviceLocator = serviceLocator;
-            _eventAggregator = serviceLocator.Resolve<IEventAggregator>();
+            _eventAggregator = eventAggregator;
+            _regionManager = regionManager;
         }
 
         #region IModuleBootstraper Members
 
         public void OnLoad()
         {
-            _eventAggregator.Subscribe<NomadAllModulesLoadedMessage>(AllModulesLoaded);
-            _eventAggregator.Subscribe<FileLoaderMenuRegionRegisteredMessage>(NewMenu,
-                                                                              DeliveryMethod.
-                                                                                  GuiThread);
-        }
-
-
-        private void NewMenu(FileLoaderMenuRegionRegisteredMessage obj)
-        {
-            var region = _regionManager.GetRegion(obj.RegionName);
-            var menuItem = new MenuItem() {Header = "About Graphic FileHandler"};
-            menuItem.Click += (x, y) => MessageBox.Show("Piotr Ślatała, obsługa JPG i PNG, 1.0.2");
-            region.AddView(menuItem);
+            _eventAggregator.Subscribe<FileLoaderMenuRegionRegisteredMessage>(NewMenu, DeliveryMethod.GuiThread);
+            _eventAggregator.Subscribe<FileSelectedMessage>(FileSelected, DeliveryMethod.GuiThread);
         }
 
 
@@ -49,10 +34,13 @@ namespace GraphicFilesHandlerModule
 
         #endregion
 
-        private void AllModulesLoaded(NomadAllModulesLoadedMessage obj)
+
+        private void NewMenu(FileLoaderMenuRegionRegisteredMessage obj)
         {
-            _eventAggregator.Subscribe<FileSelectedMessage>(FileSelected, DeliveryMethod.GuiThread);
-            _regionManager = _serviceLocator.Resolve<RegionManager>();
+            var region = _regionManager.GetRegion(obj.RegionName);
+            var menuItem = new MenuItem() { Header = "About Graphic FileHandler" };
+            menuItem.Click += (x, y) => MessageBox.Show("Piotr Ślatała, obsługa JPG i PNG, 1.0.2");
+            region.AddView(menuItem);
         }
 
 
