@@ -27,10 +27,10 @@ namespace FileLoaderModule
     public partial class SelectFileView : UserControl
     {
         private readonly IServiceLocator _serviceLocator;
-        private readonly EventAggregator _eventAggregator;
+        private readonly IEventAggregator _eventAggregator;
 
 
-        public SelectFileView(IServiceLocator serviceLocator, EventAggregator eventAggregator)
+        public SelectFileView(IServiceLocator serviceLocator, IEventAggregator eventAggregator)
         {
             _serviceLocator = serviceLocator;
             _eventAggregator = eventAggregator;

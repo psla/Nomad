@@ -131,6 +131,7 @@
     <Compile Include="Modules\Discovery\IModuleDiscovery.cs" />
     <Compile Include="Modules\Filters\IModuleFilter.cs" />
     <Compile Include="Modules\IModuleLoader.cs" />
+    <Compile Include="Modules\Installers\ModuleLoaderInstaller.cs" />
     <Compile Include="Modules\Installers\NomadServiceLocatorInstaller.cs" />
     <Compile Include="Modules\Manifest\IModuleManifestFactory.cs" />
     <Compile Include="Modules\Manifest\ModuleDependency.cs" />

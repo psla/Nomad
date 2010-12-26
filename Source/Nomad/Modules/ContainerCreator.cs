@@ -37,8 +37,10 @@ namespace Nomad.Modules
 
             // use nomad specific installer for that
             _windsorContainer.Install(
-                new NomadEventAggregatorInstaller(null),
-                new NomadServiceLocatorInstaller());
+                new NomadEventAggregatorInstaller(),
+                new NomadServiceLocatorInstaller(),
+                new ModuleLoaderInstaller()
+                );
         }
 
 
@@ -55,7 +57,7 @@ namespace Nomad.Modules
         /// </summary>        
         public IEventAggregator EventAggregatorOnModulesDomain
         {
-            get { return _windsorContainer.Resolve<EventAggregator>("OnSiteEVG"); }
+            get { return _windsorContainer.Resolve<IEventAggregator>("OnSiteEVG"); }
         }
 
         /// <summary>
@@ -78,7 +80,7 @@ namespace Nomad.Modules
         /// </returns>
         public IModuleLoader CreateModuleLoaderInstance()
         {
-            return new ModuleLoader(WindsorContainer);
+            return _windsorContainer.Resolve<IModuleLoader>();
         }
     }
 }

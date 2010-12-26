@@ -15,37 +15,14 @@ namespace Nomad.Modules.Installers
     /// </remarks>
     public class NomadEventAggregatorInstaller : IWindsorInstaller
     {
-        private readonly IEventAggregator _proxiedEventAggregator;
-
-
-        ///<summary>
-        ///     Initializes the instance of <see cref="NomadEventAggregatorInstaller"/> class.
-        ///</summary>
-        ///<param name="proxiedEventAggregator">Event aggregator to be combined with <see cref="EventAggregatorFacade"/> for
-        /// better communication</param>
-        public NomadEventAggregatorInstaller(IEventAggregator proxiedEventAggregator)
-        {
-            _proxiedEventAggregator = proxiedEventAggregator;
-        }
-
-        #region IWindsorInstaller Members
-
         public void Install(IWindsorContainer container, IConfigurationStore store)
         {
-            // TODO: refix it into factory mode ?
             container.Register(
-                Component.For<EventAggregator>().UsingFactoryMethod((kernel) => new EventAggregator(new LazyWpfGuiThreadProvider()))
+                Component.For<IGuiThreadProvider>().ImplementedBy<LazyWpfGuiThreadProvider>(),
+                Component.For<IEventAggregator>().ImplementedBy<EventAggregator>()
                     .Named("OnSiteEVG")
-                    .LifeStyle.Singleton,
-                Component.For<IEventAggregator>()
-                    .UsingFactoryMethod(
-                        (kernel) => new EventAggregatorFacade(_proxiedEventAggregator,
-                                                              kernel.Resolve<IEventAggregator>("OnSiteEVG")))
-                    .Named("FacadeEVG")
                     .LifeStyle.Singleton
                 );
         }
-
-        #endregion
     }
 }

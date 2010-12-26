@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
+using Nomad.Communication.EventAggregation;
 
 namespace Nomad.Modules
 {
@@ -16,6 +18,7 @@ namespace Nomad.Modules
         private readonly List<ModuleInfo> _loadedModuleInfos = new List<ModuleInfo>();
         private readonly List<IModuleBootstraper> _loadedModules = new List<IModuleBootstraper>();
         private readonly IWindsorContainer _rootContainer;
+        private readonly IGuiThreadProvider _guiThreadProvider;
 
 
         /// <summary>
@@ -23,12 +26,15 @@ namespace Nomad.Modules
         /// </summary>
         /// <param name="rootContainer">Container that will be used as a root container.
         /// Module's sub-containers will be created based on this container. Must not be <c>null</c>.</param>
-        /// <exception cref="ArgumentNullException">When <paramref name="rootContainer"/> is <c>null</c></exception>
-        public ModuleLoader(IWindsorContainer rootContainer)
+        /// <param name="guiThreadProvider">Used to execute OnLoad method on module's bootstraper. Must not be <c>null</c>.</param>
+        /// <exception cref="ArgumentNullException">When <paramref name="rootContainer"/> or <paramref name="guiThreadProvider"/> is <c>null</c></exception>
+        public ModuleLoader(IWindsorContainer rootContainer, IGuiThreadProvider guiThreadProvider)
         {
             if (rootContainer == null) throw new ArgumentNullException("rootContainer");
+            if (guiThreadProvider == null) throw new ArgumentNullException("guiThreadProvider");
 
             _rootContainer = rootContainer;
+            _guiThreadProvider = guiThreadProvider;
         }
 
         #region IModuleLoader Members
@@ -36,29 +42,43 @@ namespace Nomad.Modules
         /// <summary>Inherited</summary>
         public void LoadModule(ModuleInfo moduleInfo)
         {
-            IModuleBootstraper bootstraper;
+            var assembly = LoadAssembly(moduleInfo);
+            var bootstraper = CreateBootstraper(assembly);
+            ExecuteOnLoad(bootstraper);
+            RegisterModule(moduleInfo, bootstraper);
+        }
 
-            try
+        private Assembly LoadAssembly(ModuleInfo moduleInfo)
+        {
+            var asmName = AssemblyName.GetAssemblyName(moduleInfo.AssemblyPath);
+            return Assembly.Load(asmName);
+        }
+
+        private IModuleBootstraper CreateBootstraper(Assembly assembly)
+        {
+            var bootstraperType = GetBootstrapperType(assembly);
+            var subContainer = CreateSubContainerConfiguredFor(bootstraperType);
+            return subContainer.Resolve<IModuleBootstraper>();
+        }
+
+        private void ExecuteOnLoad(IModuleBootstraper bootstraper)
+        {
+            using (var waitHandle = new AutoResetEvent(false))
             {
- 
-                AssemblyName asmName = AssemblyName.GetAssemblyName(moduleInfo.AssemblyPath);
-                Assembly assembly = Assembly.Load(asmName);                
-
-                Type bootstraperType = GetBootstrapperType(assembly);
-
-                IWindsorContainer subContainer = CreateSubContainerConfiguredFor(bootstraperType);
-                bootstraper = subContainer.Resolve<IModuleBootstraper>();
-                bootstraper.OnLoad();
-                _loadedModules.Add(bootstraper);
-                _loadedModuleInfos.Add(moduleInfo);
+                Action @delegate = () =>
+                                       {
+                                           bootstraper.OnLoad();
+                                           waitHandle.Set();
+                                       };
+                _guiThreadProvider.RunInGui(@delegate);
+                waitHandle.WaitOne();
             }
-            catch (Exception e)
-            {
-                //TODO: fix this issue
-                //_logger.WarnException("Couldn't load assembly", e);
-                throw;
-                return;
-            }
+        }
+
+        private void RegisterModule(ModuleInfo moduleInfo, IModuleBootstraper bootstraper)
+        {
+            _loadedModules.Add(bootstraper);
+            _loadedModuleInfos.Add(moduleInfo);
         }
 
 
@@ -70,7 +90,7 @@ namespace Nomad.Modules
         /// </remarks>
         public void InvokeUnload()
         {
-            foreach (IModuleBootstraper moduleBootstraper in _loadedModules)
+            foreach (var moduleBootstraper in _loadedModules)
             {
                 moduleBootstraper.OnUnLoad();
             }

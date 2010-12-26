@@ -9,11 +9,11 @@ namespace FileLoaderModule
     public class FileLoaderModule : IModuleBootstraper
     {
         private readonly IServiceLocator _serviceLocator;
-        private readonly EventAggregator _eventAggregator;
+        private readonly IEventAggregator _eventAggregator;
         private readonly RegionManager _regionManager;
 
 
-        public FileLoaderModule(EventAggregator eventAggregator, IServiceLocator serviceLocator, RegionManager regionManager)
+        public FileLoaderModule(IEventAggregator eventAggregator, IServiceLocator serviceLocator, RegionManager regionManager)
         {
             _serviceLocator = serviceLocator;
             _eventAggregator = eventAggregator;

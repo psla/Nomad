@@ -5,6 +5,7 @@ using System.Linq;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using Moq;
+using Nomad.Communication.EventAggregation;
 using Nomad.Modules;
 using Nomad.Modules.Discovery;
 using Nomad.Modules.Filters;
@@ -35,7 +36,8 @@ namespace Nomad.Tests.FunctionalTests.Fixtures
             dependencyCheckerMock.Setup(x => x.SortModules(It.IsAny<IEnumerable<ModuleInfo>>()))
                 .Returns<IEnumerable<ModuleInfo>>(e => e);
 
-            Manager = new ModuleManager(new ModuleLoader(Container), new CompositeModuleFilter(),
+            Manager = new ModuleManager(new ModuleLoader(Container, new NullGuiThreadProvider()),
+                                        new CompositeModuleFilter(),
                                         dependencyCheckerMock.Object);
         }
 
@@ -62,7 +64,6 @@ namespace Nomad.Tests.FunctionalTests.Fixtures
                                                 moduleDirectory);
             Manager.LoadModules(new SimpleDirectoryModuleDiscovery(fullDirectory));
         }
-
 
 
         protected void AssertModulesLoadedAreEqualTo(params string[] expectedModuleNames)
