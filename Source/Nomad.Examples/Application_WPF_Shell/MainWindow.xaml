@@ -20,7 +20,7 @@
 
 				<ItemsControl Regions:RegionManager.RegionName="leftSideMenu" Grid.Column="0" />
 				<ItemsControl Regions:RegionManager.RegionName="rightSideMenu" Grid.Column="2" />
-				<TabControl Regions:RegionManager.RegionName="mainTabs" Grid.Column="1" />
+				<TabControl Regions:RegionManager.RegionName="mainTabs" Grid.Column="1"/>
 			</Grid>
 
 			<StatusBar Regions:RegionManager.RegionName="statusBarRegion" Grid.Row="3">

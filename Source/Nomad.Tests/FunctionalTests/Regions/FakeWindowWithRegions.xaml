@@ -9,7 +9,15 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
         <ToolBarTray x:Name="ToolBarTray" Grid.Row="0"></ToolBarTray>
-		<TabControl x:Name="TabControl" Grid.Row="1"></TabControl>
+		<TabControl x:Name="TabControl" Grid.Row="1">
+            <TabControl.Resources>
+                <DataTemplate x:Key="Nomad_ItemWithTitle">
+                    <Grid>
+                        <Label Content="{Binding Title}"/>
+                    </Grid>
+                </DataTemplate>
+            </TabControl.Resources>
+        </TabControl>
         <StatusBar x:Name="StatusBar" Grid.Row="2"></StatusBar>
         <ItemsControl x:Name="ItemsControl" Grid.Row="3"></ItemsControl>
         <ToolBarTray Grid.Row="4">

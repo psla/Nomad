@@ -141,7 +141,10 @@
     <Compile Include="Regions\Adapters\MultipleActiveViewRegion.cs" />
     <Compile Include="Regions\Adapters\StatusBarAdapter.cs" />
     <Compile Include="Regions\Adapters\ToolbarTrayAdapter.cs" />
+    <Compile Include="Regions\Behaviors\IHaveTitle.cs" />
     <Compile Include="Regions\Behaviors\SynchronizeToolbarsBehavior.cs" />
+    <Compile Include="Regions\Behaviors\ItemsControlTemplateSelector.cs" />
+    <Compile Include="Regions\Behaviors\TabControlHeaderTemplateSelectorBehavior.cs" />
     <Compile Include="Services\ILoadedModulesService.cs" />
     <Compile Include="Services\LoadedModulesService.cs" />
     <Compile Include="Signing\FileUtils\SignedFile.cs" />

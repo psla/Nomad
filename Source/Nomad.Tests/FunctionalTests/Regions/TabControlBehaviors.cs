@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Windows;
 using System.Windows.Controls;
 using Moq;
 using Nomad.Communication.EventAggregation;
@@ -8,7 +9,11 @@ using Nomad.Regions.Behaviors;
 using NUnit.Framework;
 using TestsShared;
 using TestsShared.FunctionalTests;
+using White.Core.UIItems.Finders;
+using White.Core.UIItems.ListBoxItems;
 using White.Core.UIItems.TabItems;
+using White.Core.UIItems.WPFUIItems;
+using Label = White.Core.UIItems.Label;
 
 namespace Nomad.Tests.FunctionalTests.Regions
 {
@@ -67,6 +72,27 @@ namespace Nomad.Tests.FunctionalTests.Regions
 
             var whiteTab = WhiteWindow.Get<Tab>("TabControl");
             Assert.IsNotNull(whiteTab.Pages.Find(obj => obj.Name.Contains("tab1")));
+        }
+
+
+        [Test]
+        public void can_add_a_tab_with_title()
+        {
+            Invoke(
+                () =>
+                    {
+                        var region = _regionManager.AttachRegion("region", _tabControl);
+                        var view = new Mock<IHaveTitle>();
+                        view.SetupGet(iht => iht.Title).Returns("tab1");
+                        region.AddView(view.Object);
+                    });
+
+            Wait();
+
+            var whiteTab = WhiteWindow.Get<Tab>("TabControl");
+            Assert.IsNotNull(whiteTab.Pages.Find(
+                obj => GetTabPageHeaderText(obj).Contains("tab1")
+                ));
         }
 
 
@@ -144,6 +170,12 @@ namespace Nomad.Tests.FunctionalTests.Regions
             tab.Select();
 
             Assert.IsTrue(lastIsActive);
+        }
+
+        private string GetTabPageHeaderText(ITabPage obj)
+        {
+            var tabPage = (TabPage) obj;
+            return tabPage.Get<Label>(SearchCriteria.All).Text;
         }
     }
 }
