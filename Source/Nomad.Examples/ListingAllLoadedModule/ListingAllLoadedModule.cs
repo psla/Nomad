@@ -1,6 +1,5 @@
 ﻿using Nomad.Communication.EventAggregation;
 using Nomad.Communication.ServiceLocation;
-using Nomad.Messages.Loading;
 using Nomad.Modules;
 using Nomad.Regions;
 
@@ -24,7 +23,9 @@ namespace ListingAllLoadedModule
 
         public void OnLoad()
         {
-            _eventAggregator.Subscribe<NomadAllModulesLoadedMessage>(AllModulesLoaded, DeliveryMethod.GuiThread);
+            var listingControl = new ListingControl(_serviceLocator);
+            var region = _regionManager.GetRegion("rightSideMenu");
+            region.AddView(listingControl);
         }
 
 
@@ -33,12 +34,5 @@ namespace ListingAllLoadedModule
         }
 
         #endregion
-
-        private void AllModulesLoaded(NomadAllModulesLoadedMessage obj)
-        {
-            var listingControl = new ListingControl(_serviceLocator);
-            var region = _regionManager.GetRegion("rightSideMenu");
-            region.AddView(listingControl);
-        }
     }
 }

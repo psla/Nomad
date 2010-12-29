@@ -1,5 +1,4 @@
 ﻿using Nomad.Communication.EventAggregation;
-using Nomad.Messages.Loading;
 using Nomad.Modules;
 using Nomad.Regions;
 
@@ -20,12 +19,6 @@ namespace ThreadedToolbarControlledModule
 
 
         public void OnLoad()
-        {
-            _eventAggregator.Subscribe<NomadAllModulesLoadedMessage>(PrepareGui, DeliveryMethod.GuiThread);
-        }
-
-
-        private void PrepareGui(NomadAllModulesLoadedMessage obj)
         {
             var region = _regionManager.GetRegion("toolbarTrayRegion");
             region.AddView(new ThreadedToolbarPanel(_eventAggregator));

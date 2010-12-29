@@ -1,6 +1,5 @@
 ﻿using Nomad.Communication.EventAggregation;
 using Nomad.Communication.ServiceLocation;
-using Nomad.Messages.Loading;
 using Nomad.Modules;
 using Nomad.Regions;
 
@@ -22,12 +21,6 @@ namespace FileLoaderModule
 
 
         public void OnLoad()
-        {
-            _eventAggregator.Subscribe<NomadAllModulesLoadedMessage>(AllModulesLoaded, DeliveryMethod.GuiThread);
-        }
-
-
-        private void AllModulesLoaded(NomadAllModulesLoadedMessage obj)
         {
             var region = _regionManager.GetRegion("leftSideMenu");
             region.AddView(new SelectFileView(_serviceLocator, _eventAggregator));
