@@ -38,7 +38,7 @@ namespace WpfButtonModule
         private void AllModulesLoaded(NomadAllModulesLoadedMessage obj)
         {
             var threadProvider = _locator.Resolve<IGuiThreadProvider>();
-            threadProvider.RunInGui((ThreadStart) AllModulesLoadedInGui);
+            threadProvider.RunInGui(AllModulesLoadedInGui);
         }
 
         private void AllModulesLoadedInGui()

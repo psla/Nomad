@@ -7,11 +7,17 @@ namespace Nomad.Communication.EventAggregation
     /// </summary>
     public class NullGuiThreadProvider : IGuiThreadProvider
     {
+        private readonly object _serialEnsurance = new object();
         #region IGuiThreadProvider Members
 
-        public void RunInGui(Delegate @delegate)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="action"></param>
+        public void RunInGui(Action action)
         {
-            @delegate.DynamicInvoke(null);
+            lock (_serialEnsurance)
+                action();
         }
 
         #endregion

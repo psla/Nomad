@@ -51,7 +51,7 @@ namespace Nomad.Communication.EventAggregation
                     break;
                 case (DeliveryMethod.GuiThread):
                     // m_guiThreadExecute
-                    _guiThreadProvider.RunInGui((ThreadStart) (() => Action(payload)));
+                    _guiThreadProvider.RunInGui((() => Action(payload)));
                     break;
                 case (DeliveryMethod.SeparateThread):
                     ThreadPool.QueueUserWorkItem(delegate { Action(payload); });

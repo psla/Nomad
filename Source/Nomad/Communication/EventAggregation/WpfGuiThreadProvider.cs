@@ -7,7 +7,7 @@ namespace Nomad.Communication.EventAggregation
     /// Uses wpf dispatcher tu run <see cref="Delegate"/> in gui thread
     ///</summary>
     public class WpfGuiThreadProvider : IGuiThreadProvider{
-        private Dispatcher _dispatcher;
+        private readonly Dispatcher _dispatcher;
 
 
         ///<summary>
@@ -28,12 +28,12 @@ namespace Nomad.Communication.EventAggregation
             _dispatcher = dispatcher;
         }
 
-        public void RunInGui(Delegate @delegate)
+        public void RunInGui(Action action)
         {
             if (_dispatcher.CheckAccess())
-                @delegate.DynamicInvoke(null);
+                action();
             else
-                _dispatcher.Invoke(@delegate);
+                _dispatcher.Invoke(action);
         }
     }
 }

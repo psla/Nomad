@@ -51,7 +51,7 @@ namespace WpfButtonModule
                                        }
                            };
             var threadProvider = _locator.Resolve<IGuiThreadProvider>();
-            threadProvider.RunInGui((ThreadStart) delegate
+            threadProvider.RunInGui(delegate
                                         {
                                             region.AddView(view);
                                             region.Activate(view);
