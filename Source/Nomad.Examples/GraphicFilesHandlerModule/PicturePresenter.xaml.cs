@@ -12,18 +12,30 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Nomad.Regions.Behaviors;
 
 namespace GraphicFilesHandlerModule
 {
     /// <summary>
     /// Interaction logic for PicturePresenter.xaml
     /// </summary>
-    public partial class PicturePresenter : UserControl
+    public partial class PicturePresenter : UserControl, IActiveAware
     {
-        public PicturePresenter(string imagePath)
+        private readonly GraphicFilesEditToolbar _graphicFilesEditToolbar;
+
+        public PicturePresenter(string imagePath, GraphicFilesEditToolbar graphicFilesEditToolbar)
         {
+            _graphicFilesEditToolbar = graphicFilesEditToolbar;
             InitializeComponent();
             Image.Source = new BitmapImage(new Uri(imagePath));
+        }
+
+        public void SetIsActive(bool isActive)
+        {
+            if (isActive)
+                _graphicFilesEditToolbar.Visibility = Visibility.Visible;
+            else
+                _graphicFilesEditToolbar.Visibility = Visibility.Collapsed;
         }
     }
 }

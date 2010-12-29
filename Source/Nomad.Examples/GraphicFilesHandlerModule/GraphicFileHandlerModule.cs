@@ -11,6 +11,7 @@ namespace GraphicFilesHandlerModule
     {
         private readonly IEventAggregator _eventAggregator;
         private readonly RegionManager _regionManager;
+        private GraphicFilesEditToolbar _graphicFilesEditToolbar;
 
 
         public GraphicFileHandlerModule(IEventAggregator eventAggregator, RegionManager regionManager)
@@ -25,6 +26,10 @@ namespace GraphicFilesHandlerModule
         {
             _eventAggregator.Subscribe<FileLoaderMenuRegionRegisteredMessage>(NewMenu, DeliveryMethod.GuiThread);
             _eventAggregator.Subscribe<FileSelectedMessage>(FileSelected, DeliveryMethod.GuiThread);
+
+            _graphicFilesEditToolbar = new GraphicFilesEditToolbar();
+            var region = _regionManager.GetRegion("toolbarTrayRegion");
+            region.AddView(_graphicFilesEditToolbar);
         }
 
 
@@ -49,11 +54,11 @@ namespace GraphicFilesHandlerModule
             // this happens always in gui thread
             if (obj.FilePath.EndsWith("png") || obj.FilePath.EndsWith("jpg"))
             {
-                var pp = new PicturePresenter(obj.FilePath);
-                var tabItem = new TabItem {Header = obj.FilePath, Content = pp};
+                var pp = new PicturePresenter(obj.FilePath, _graphicFilesEditToolbar);
+                //var tabItem = new TabItem {Header = obj.FilePath, Content = pp};
                 IRegion region = _regionManager.GetRegion("mainTabs");
-                region.AddView(tabItem);
-                region.Activate(tabItem);
+                region.AddView(pp);
+                region.Activate(pp);
             }
         }
     }

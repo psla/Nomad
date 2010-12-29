@@ -44,6 +44,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GraphicFileHandlerModule.cs" />
+    <Compile Include="GraphicFilesEditToolbar.xaml.cs">
+      <DependentUpon>GraphicFilesEditToolbar.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PicturePresenter.xaml.cs">
       <DependentUpon>PicturePresenter.xaml</DependentUpon>
     </Compile>
@@ -60,6 +63,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="GraphicFilesEditToolbar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="PicturePresenter.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
