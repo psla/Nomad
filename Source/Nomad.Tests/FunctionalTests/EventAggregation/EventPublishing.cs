@@ -143,7 +143,7 @@ namespace Nomad.Tests.FunctionalTests.EventAggregation
 
             _eventAggregator.Publish(sentPayload);
             _guiThread.Verify(
-                x => x.RunInGui(It.IsAny<Delegate>()),
+                x => x.RunInGui(It.IsAny<Action>()),
                 Times.Exactly(1));
         }
 
@@ -157,7 +157,7 @@ namespace Nomad.Tests.FunctionalTests.EventAggregation
 
             _eventAggregator.Publish(sentPayload);
             _guiThread.Verify(
-                x => x.RunInGui(It.Is<Delegate>(y => y.GetInvocationList().Contains(@delegate))),
+                x => x.RunInGui(It.Is<Action>(y => y.GetInvocationList().Contains(@delegate))),
                 Times.Exactly(0));
         }
 
@@ -176,7 +176,7 @@ namespace Nomad.Tests.FunctionalTests.EventAggregation
 
             Assert.AreSame(anyThreadPayload, sentPayload);
             _guiThread.Verify(
-                x => x.RunInGui(It.IsAny<Delegate>()),
+                x => x.RunInGui(It.IsAny<Action>()),
                 Times.Exactly(1));
         }
     }

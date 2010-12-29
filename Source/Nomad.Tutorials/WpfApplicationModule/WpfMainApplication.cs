@@ -42,7 +42,7 @@ namespace WpfApplicationModule
             _app = new App();
             var guiThreadProvider = (new WpfGuiThreadProvider(_app.Dispatcher));
             RegionManager regionManager = null;
-            guiThreadProvider.RunInGui((ThreadStart) delegate
+            guiThreadProvider.RunInGui(delegate
                 {
                     regionManager = new RegionManager( new RegionFactory(new IRegionAdapter[] { new TabControlAdapter () }));
                 });

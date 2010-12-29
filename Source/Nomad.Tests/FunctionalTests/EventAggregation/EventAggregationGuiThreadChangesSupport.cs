@@ -32,7 +32,7 @@ namespace Nomad.Tests.FunctionalTests.EventAggregation
             _eventAggregator.Publish(new NullMessage());
 
             // verify that publish executed in gui thread
-            guiThreadProvider.Verify(x => x.RunInGui(It.IsAny<Delegate>()), Times.Exactly(1),
+            guiThreadProvider.Verify(x => x.RunInGui(It.IsAny<Action>()), Times.Exactly(1),
                                      "After changing type of IGuiThreadProvider, gui should be executed in new gui thread");
         }
 
