@@ -1,5 +1,6 @@
-﻿using System;
+﻿using Nomad.Communication.EventAggregation;
 using Nomad.Communication.ServiceLocation;
+using Nomad.Messages.Loading;
 using Nomad.Modules;
 using SimpleCommunicationServiceInterface;
 
@@ -10,7 +11,9 @@ namespace ServiceLocator_dependent_Module
     /// </summary>
     public class ServiceLocatorDependentModule : IModuleBootstraper
     {
+        private readonly IEventAggregator _eventAggregator;
         private readonly IServiceLocator _serviceLocator;
+        private IEventAggregatorTicket<NomadAllModulesLoadedMessage> _readyForResolvingTicket;
         private ISimpleCommunicationService _simpleCommunicationService;
 
 
@@ -20,25 +23,34 @@ namespace ServiceLocator_dependent_Module
         /// <param name="serviceLocator"><see cref="IServiceLocator"/>
         ///     Nomad's IServieLocator which will be provided (injected by framework) to module. 
         /// </param>
-        public ServiceLocatorDependentModule(IServiceLocator serviceLocator)
+        public ServiceLocatorDependentModule(IServiceLocator serviceLocator,
+                                             IEventAggregator eventAggregator)
         {
             _serviceLocator = serviceLocator;
+            _eventAggregator = eventAggregator;
         }
 
         #region Implementation of IModuleBootstraper
 
         public void OnLoad()
         {
-               // resolving object that provides implementation of ISimpleCommunicationService
-            _simpleCommunicationService = _serviceLocator.Resolve<ISimpleCommunicationService>();
-            //performing operation on interface
-            _simpleCommunicationService.Execute();
+            _readyForResolvingTicket =
+                _eventAggregator.Subscribe<NomadAllModulesLoadedMessage>(LocalResolutionMethod);
         }
 
 
         public void OnUnLoad()
         {
             ;
+        }
+
+
+        private void LocalResolutionMethod(NomadAllModulesLoadedMessage obj)
+        {
+            // resolving object that provides implementation of ISimpleCommunicationService
+            _simpleCommunicationService = _serviceLocator.Resolve<ISimpleCommunicationService>();
+            //performing operation on interface
+            _simpleCommunicationService.Execute();
         }
 
         #endregion

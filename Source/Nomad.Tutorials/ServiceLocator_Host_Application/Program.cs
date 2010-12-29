@@ -24,8 +24,9 @@ namespace ServiceLocator_Host_Application
 
             // loading modules using composite module discovery pattern
             var discovery = new CompositeModuleDiscovery(
-                new DirectoryModuleDiscovery(@".\Modules\RegisteringModule"),
-                new DirectoryModuleDiscovery(@".\Modules\DependantModule"));
+                new DirectoryModuleDiscovery(@".\Modules\DependantModule"),
+                new DirectoryModuleDiscovery(@".\Modules\RegisteringModule"));
+                
             kernel.LoadModules(discovery);
 
             //wait
