@@ -199,7 +199,7 @@ namespace Nomad.Core
                                       ModuleAppDomain.CreateInstanceAndUnwrap(asmName, typeName);
 
             // create facade for event aggregator combining proxy and on site object
-            EventAggregator = new EventAggregatorFacade(moduleLoaderCreator.EventAggregatorOnModulesDomain,
+            EventAggregator = new ForwardingEventAggregator(moduleLoaderCreator.EventAggregatorOnModulesDomain,
                                           siteEventAggregator);
 
             // used proxied service locator

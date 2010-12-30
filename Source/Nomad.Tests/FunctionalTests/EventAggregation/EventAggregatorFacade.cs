@@ -20,7 +20,7 @@ namespace Nomad.Tests.FunctionalTests.EventAggregation
             _proxied = new EventAggregator(null);
             _site = new EventAggregator(null);
 
-            _eventAggregator = new Communication.EventAggregation.EventAggregatorFacade(_proxied, _site);
+            _eventAggregator = new Communication.EventAggregation.ForwardingEventAggregator(_proxied, _site);
         }
 
         [Test]

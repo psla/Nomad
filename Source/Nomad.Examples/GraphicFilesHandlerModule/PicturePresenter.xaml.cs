@@ -19,7 +19,7 @@ namespace GraphicFilesHandlerModule
     /// <summary>
     /// Interaction logic for PicturePresenter.xaml
     /// </summary>
-    public partial class PicturePresenter : UserControl, IActiveAware
+    public partial class PicturePresenter : UserControl, IActiveAware, IHaveTitle
     {
         private readonly GraphicFilesEditToolbar _graphicFilesEditToolbar;
 
@@ -27,6 +27,7 @@ namespace GraphicFilesHandlerModule
         {
             _graphicFilesEditToolbar = graphicFilesEditToolbar;
             InitializeComponent();
+            Title = imagePath;
             Image.Source = new BitmapImage(new Uri(imagePath));
         }
 
@@ -37,5 +38,8 @@ namespace GraphicFilesHandlerModule
             else
                 _graphicFilesEditToolbar.Visibility = Visibility.Collapsed;
         }
+
+
+        public string Title { get; private set; }
     }
 }
