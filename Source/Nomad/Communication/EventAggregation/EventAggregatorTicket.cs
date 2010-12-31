@@ -81,7 +81,7 @@ namespace Nomad.Communication.EventAggregation
 
         #endregion
 
-        public void InvokeTicketDisposed(TicketDisposedArgs e)
+        private void InvokeTicketDisposed(TicketDisposedArgs e)
         {
             EventHandler<TicketDisposedArgs> handler = TicketDisposed;
             if (handler != null) handler(this, e);

@@ -14,7 +14,7 @@ namespace Nomad.Communication.EventAggregation
 
         private IGuiThreadProvider _guiThreadProvider;
 
-        private IEventAggregatorTicket<WpfGuiChangedMessage> ticket;
+        private IEventAggregatorTicket<WpfGuiChangedMessage> _ticket;
 
 
         ///<summary>
@@ -23,15 +23,15 @@ namespace Nomad.Communication.EventAggregation
         public EventAggregator(IGuiThreadProvider guiThreadProvider)
         {
             _guiThreadProvider = guiThreadProvider;
-            ticket = Subscribe<WpfGuiChangedMessage>(GuiThreadChanged);
+            _ticket = Subscribe<WpfGuiChangedMessage>(GuiThreadChanged);
         }
 
 
         private void GuiThreadChanged(WpfGuiChangedMessage wpfGuiChangedMessage)
         {
             _guiThreadProvider = wpfGuiChangedMessage.NewGuiThreadProvider;
-            Unsubscribe(ticket);
-            ticket = Subscribe<WpfGuiChangedMessage>(GuiThreadChangedInvalid);
+            Unsubscribe(_ticket);
+            _ticket = Subscribe<WpfGuiChangedMessage>(GuiThreadChangedInvalid);
         }
 
 
