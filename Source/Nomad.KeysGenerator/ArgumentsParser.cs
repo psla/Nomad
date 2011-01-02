@@ -7,11 +7,21 @@ namespace Nomad.KeysGenerator
     {
         public ArgumentsParser(string[] args)
         {
+            KeySize = 1024;
+
             TargetFile = args[0];
             if (args.Length > 1)
                 PublicFile = args[1];
+            if (args.Length > 2)
+                KeySize = int.Parse(args[2]);
             VerifyValues();
         }
+
+
+        /// <summary>
+        /// Length of the generated key in bits. Default 1024
+        /// </summary>
+        public int KeySize { get; private set; }
 
 
         /// <summary>

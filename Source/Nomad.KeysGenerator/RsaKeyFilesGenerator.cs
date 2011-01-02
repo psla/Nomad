@@ -15,12 +15,14 @@ namespace Nomad.KeysGenerator
         /// </summary>
         private readonly string _targetFile;
 
+
         /// <summary>
         /// Initializes instance of<see cref="RsaKeyFilesGenerator"/> class.
         /// </summary>
         /// <param name="publicFile">File containing the assembly to be signed.</param>
         /// <param name="targetFile">File containing the secure signature.</param>
-        public RsaKeyFilesGenerator(string publicFile, string targetFile)
+        /// <param name="keySize">length of the key in bits</param>
+        public RsaKeyFilesGenerator(string publicFile, string targetFile, int keySize)
         {
             _publicFile = publicFile;
             _targetFile = targetFile;

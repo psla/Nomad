@@ -9,7 +9,7 @@ namespace Nomad.KeysGenerator
             try
             {
                 var arguments = new ArgumentsParser(args);
-                var keyGenerator = new RsaKeyFilesGenerator(arguments.PublicFile, arguments.TargetFile);
+                var keyGenerator = new RsaKeyFilesGenerator(arguments.PublicFile, arguments.TargetFile, arguments.KeySize);
                 keyGenerator.GenerateSignature();
                 //Console.WriteLine("Successfuly generated signature file");
             }

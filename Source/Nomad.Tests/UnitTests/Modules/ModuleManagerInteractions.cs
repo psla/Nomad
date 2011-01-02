@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Moq;
 using Nomad.Modules;
 using Nomad.Modules.Discovery;
@@ -7,15 +8,14 @@ using Nomad.Modules.Manifest;
 using NUnit.Framework;
 using TestsShared;
 
-
 namespace Nomad.Tests.UnitTests.Modules
 {
     [UnitTests]
     public class ModuleManagerInteractions
     {
         private Mock<IDependencyChecker> _dependencyMock;
-        private Mock<IModuleManifestFactory> _moduleManifestMock;
         private Mock<IModuleFilter> _moduleFilterMock;
+        private Mock<IModuleManifestFactory> _moduleManifestMock;
 
         private ModuleManifest _simpleManifest;
 
@@ -34,7 +34,6 @@ namespace Nomad.Tests.UnitTests.Modules
 
             _moduleFilterMock = new Mock<IModuleFilter>(MockBehavior.Loose);
             _moduleFilterMock.Setup(x => x.Matches(It.IsAny<ModuleInfo>())).Returns(true);
-
         }
 
 
@@ -56,6 +55,51 @@ namespace Nomad.Tests.UnitTests.Modules
 
 
         [Test]
+        public void manager_delegates_module_dependency_resolving_with_currently_loaded_modules()
+        {
+            const string moduleAssemblyName = "module assembly name";
+            var expectedModuleInfo = new ModuleInfo(moduleAssemblyName, _moduleManifestMock.Object);
+            var loaderMock = new Mock<IModuleLoader>(MockBehavior.Strict);
+            loaderMock.Setup(x => x.GetLoadedModules()).Returns(new List<ModuleInfo>
+                                                                    {
+                                                                        new ModuleInfo("bzdura",
+                                                                                       new ModuleManifest
+                                                                                           {
+                                                                                               ModuleName
+                                                                                                   =
+                                                                                                   "bzdura"
+                                                                                           },
+                                                                                       new ModuleManifestFactory
+                                                                                           ())
+                                                                    });
+            loaderMock.Setup(
+                x => x.LoadModule(It.Is<ModuleInfo>(y => y.AssemblyPath == moduleAssemblyName)));
+
+            var dependencyCheckerMock = new Mock<IDependencyChecker>(MockBehavior.Loose);
+
+            dependencyCheckerMock.Setup(x => x.SortModules(
+                It.Is<IEnumerable<ModuleInfo>>((y) => y.Count(z => z.AssemblyPath == "bzdura") == 1)))
+                .Returns<IEnumerable<ModuleInfo>>(y => y);
+
+            var manager = new ModuleManager(loaderMock.Object, _moduleFilterMock.Object,
+                                            dependencyCheckerMock.Object);
+
+            var discoveryMock = new Mock<IModuleDiscovery>(MockBehavior.Loose);
+            discoveryMock.Setup(x => x.GetModules()).Returns(new List<ModuleInfo>
+                                                                 {
+                                                                     new ModuleInfo(
+                                                                         moduleAssemblyName,
+                                                                         _moduleManifestMock.Object)
+                                                                 });
+            manager.LoadModules(discoveryMock.Object);
+
+            dependencyCheckerMock.Verify(x => x.SortModules(
+                It.Is<IEnumerable<ModuleInfo>>((y) => y.Count(z => z.AssemblyPath == "bzdura") == 1)),
+                                         Times.Exactly(1));
+        }
+
+
+        [Test]
         public void manager_delegates_module_dependency_resolving_to_dependency_checker()
         {
             const string moduleAssemblyName = "module assembly name";
@@ -72,7 +116,7 @@ namespace Nomad.Tests.UnitTests.Modules
                                             dependencyCheckerMock.Object);
 
             var discoveryMock = new Mock<IModuleDiscovery>(MockBehavior.Loose);
-            discoveryMock.Setup(x => x.GetModules()).Returns(new List<ModuleInfo>()
+            discoveryMock.Setup(x => x.GetModules()).Returns(new List<ModuleInfo>
                                                                  {
                                                                      new ModuleInfo(
                                                                          moduleAssemblyName,
@@ -98,7 +142,7 @@ namespace Nomad.Tests.UnitTests.Modules
                 .Returns(expectedModuleInfos);
 
             var loaderMock = new Mock<IModuleLoader>(MockBehavior.Strict);
-            
+
             loaderMock.Setup(loader => loader.LoadModule(expectedModuleInfos[0]))
                 .Verifiable("First module was never loaded");
 
@@ -106,7 +150,7 @@ namespace Nomad.Tests.UnitTests.Modules
                 .Verifiable("Second module was never loaded");
 
             var moduleManager = new ModuleManager(loaderMock.Object, _moduleFilterMock.Object,
-                                                 _dependencyMock.Object);
+                                                  _dependencyMock.Object);
 
             moduleManager.LoadModules(discoveryMock.Object);
 
@@ -122,7 +166,7 @@ namespace Nomad.Tests.UnitTests.Modules
 
             var expectedModuleInfos = new[]
                                           {
-                                              a,b
+                                              a, b
                                           };
 
             var discoveryMock = new Mock<IModuleDiscovery>(MockBehavior.Loose);
@@ -139,12 +183,12 @@ namespace Nomad.Tests.UnitTests.Modules
             loaderMock.Setup(loader => loader.LoadModule(a));
 
             var moduleManager = new ModuleManager(loaderMock.Object, filterMock.Object,
-                                                 _dependencyMock.Object);
+                                                  _dependencyMock.Object);
 
             moduleManager.LoadModules(discoveryMock.Object);
 
             loaderMock.Verify(x => x.LoadModule(a));
-            loaderMock.Verify(x => x.LoadModule(It.IsAny<ModuleInfo>()),Times.Exactly(1));
+            loaderMock.Verify(x => x.LoadModule(It.IsAny<ModuleInfo>()), Times.Exactly(1));
         }
     }
 }

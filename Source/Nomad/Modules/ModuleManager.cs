@@ -72,12 +72,12 @@ namespace Nomad.Modules
             // pass to filtering 
             var allModules = moduleDiscovery.GetModules();
             var filteredModules = allModules.Where(module => _moduleFilter.Matches(module));
-
+            var modulesToSort = filteredModules.Union(_moduleLoader.GetLoadedModules());
             // perform fail safe dependency checking
             IEnumerable<ModuleInfo> dependencyCheckedModules;
             try
             {
-                dependencyCheckedModules = _dependencyChecker.SortModules(filteredModules);
+                dependencyCheckedModules = _dependencyChecker.SortModules(modulesToSort);
             }
             catch (ArgumentException e)
             {
@@ -92,7 +92,9 @@ namespace Nomad.Modules
             // perform fail safe loading
             try
             {
-                foreach (var moduleInfo in dependencyCheckedModules)
+                //skip items which are loaded
+                var modulesToLoad = dependencyCheckedModules.Where(x => filteredModules.Contains(x));
+                foreach (var moduleInfo in modulesToLoad) 
                     LoadSingleModule(moduleInfo);
             }
             catch (Exception e)
