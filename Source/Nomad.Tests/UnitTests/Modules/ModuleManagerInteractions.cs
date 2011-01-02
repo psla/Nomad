@@ -43,6 +43,7 @@ namespace Nomad.Tests.UnitTests.Modules
             const string moduleAssemblyName = "module assembly name";
             var expectedModuleInfo = new ModuleInfo(moduleAssemblyName, _moduleManifestMock.Object);
             var loaderMock = new Mock<IModuleLoader>(MockBehavior.Strict);
+            loaderMock.Setup(x => x.GetLoadedModules()).Returns(new List<ModuleInfo>());
             loaderMock.Setup(loader => loader.LoadModule(expectedModuleInfo))
                 .Verifiable("Loader was not told to load requested module");
 
@@ -105,6 +106,7 @@ namespace Nomad.Tests.UnitTests.Modules
             const string moduleAssemblyName = "module assembly name";
             var expectedModuleInfo = new ModuleInfo(moduleAssemblyName, _moduleManifestMock.Object);
             var loaderMock = new Mock<IModuleLoader>(MockBehavior.Loose);
+            loaderMock.Setup(x => x.GetLoadedModules()).Returns(new List<ModuleInfo>());
             loaderMock.Setup(loader => loader.LoadModule(expectedModuleInfo));
 
             var dependencyCheckerMock = new Mock<IDependencyChecker>(MockBehavior.Strict);
@@ -142,6 +144,7 @@ namespace Nomad.Tests.UnitTests.Modules
                 .Returns(expectedModuleInfos);
 
             var loaderMock = new Mock<IModuleLoader>(MockBehavior.Strict);
+            loaderMock.Setup(x => x.GetLoadedModules()).Returns(new List<ModuleInfo>());
 
             loaderMock.Setup(loader => loader.LoadModule(expectedModuleInfos[0]))
                 .Verifiable("First module was never loaded");
@@ -180,6 +183,7 @@ namespace Nomad.Tests.UnitTests.Modules
                 .Returns(false);
 
             var loaderMock = new Mock<IModuleLoader>(MockBehavior.Strict);
+            loaderMock.Setup(x => x.GetLoadedModules()).Returns(new List<ModuleInfo>());
             loaderMock.Setup(loader => loader.LoadModule(a));
 
             var moduleManager = new ModuleManager(loaderMock.Object, filterMock.Object,

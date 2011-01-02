@@ -1,7 +1,7 @@
 namespace Nomad.Modules.Filters
 {
     /// <summary>
-    /// IModuleFilter provides mininum weight interface to check if ModuleInfo fullfils filtering rules applied.
+    /// IModuleFilter provides minimum weight interface to check if ModuleInfo fullfils filtering rules applied.
     /// </summary>
     public interface IModuleFilter
     {

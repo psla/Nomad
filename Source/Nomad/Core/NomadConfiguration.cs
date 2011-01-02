@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Nomad.Modules;
 using Nomad.Modules.Filters;
 using Nomad.Signing.SignatureAlgorithms;
@@ -125,6 +126,7 @@ namespace Nomad.Core
                                DependencyChecker = new DependencyChecker(),
                                UpdaterType = UpdaterType.Manual,
                                ModulePackager = new ModulePackager(),
+                               ModuleDirectoryPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "modules"),
                                SignatureProvider =
                                    new SignatureProvider(new NullSignatureAlgorithm())
                            };
