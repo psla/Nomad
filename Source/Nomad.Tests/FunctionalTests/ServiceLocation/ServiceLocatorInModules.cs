@@ -1,7 +1,6 @@
 using Castle.MicroKernel.Registration;
 using Nomad.Communication.ServiceLocation;
 using Nomad.Tests.FunctionalTests.Fixtures;
-using Nomad.Tests.FunctionalTests.Modules;
 using NUnit.Framework;
 using TestsShared;
 
@@ -26,6 +25,9 @@ namespace Nomad.Tests.FunctionalTests.ServiceLocation
             Container.Register(
                 Component.For<IServiceLocator>().Instance(_serviceLocator)
                 );
+
+            SignModule(@"RegistringServiceModule.dll", PathToRegistering);
+            SignModule(@"ResolvingServiceModule.dll", PathToResolving);
         }
 
 

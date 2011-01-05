@@ -7,6 +7,7 @@ using Moq;
 using Nomad.Core;
 using Nomad.Modules;
 using Nomad.Modules.Discovery;
+using Nomad.Utils.ManifestCreator;
 using NUnit.Framework;
 using TestsShared;
 
@@ -27,12 +28,15 @@ namespace Nomad.Tests.FunctionalTests.Kernel
         private const string AssemblyPath = @"Modules\Simple\SimplestModulePossible1.dll";
         private const string AssemblyPath2 = @"Modules\Simple\SimplestModulePossible2.dll";
 
+        protected const string IssuerXmlPath = "KEY.xml";
+        protected const string IssuerName = "KEY_issuer";
+
         private static string _assemblyFullPath;
         private static string _assemblyFullPath2;
         private static Mock<IModuleDiscovery> _moduleDiscoveryMock;
         private static NomadKernel _nomadKernel;
-        private AppDomain _testAppDomain;
         private static NomadConfiguration _configuration;
+        private AppDomain _testAppDomain;
 
 
         private static void SetUpModuleDiscovery(IEnumerable<ModuleInfo> moduleInfos)
@@ -43,15 +47,28 @@ namespace Nomad.Tests.FunctionalTests.Kernel
         }
 
 
+        private void SignUsedModules()
+        {
+            var builder = new ManifestBuilder(IssuerName, IssuerXmlPath,
+                                              @"SimplestModulePossible1.dll", @"Modules\Simple\");
+            builder.CreateAndPublish();
+            builder = new ManifestBuilder(IssuerName, IssuerXmlPath, @"SimplestModulePossible2.dll",
+                                          @"Modules\Simple\");
+            builder.CreateAndPublish();
+        }
+
+
         [SetUp]
         public void set_up()
         {
             _testAppDomain = AppDomain.CreateDomain("Kernel test domain",
                                                     new Evidence(AppDomain.CurrentDomain.Evidence),
-                                                    AppDomain.CurrentDomain.BaseDirectory, 
+                                                    AppDomain.CurrentDomain.BaseDirectory,
                                                     ".",
                                                     false);
+            SignUsedModules();
         }
+
 
         private static void SetUpInDomain()
         {
@@ -65,6 +82,7 @@ namespace Nomad.Tests.FunctionalTests.Kernel
             _configuration.DependencyChecker = dependencyMock.Object;
         }
 
+
         [Test]
         public void loading_module_into_module_appdomain()
         {
@@ -75,7 +93,7 @@ namespace Nomad.Tests.FunctionalTests.Kernel
         private static void loading_module_into_module_appdomain_callback()
         {
             SetUpInDomain();
-           
+
             _nomadKernel = new NomadKernel(_configuration);
 
             var expectedModuleInfos = new[]
@@ -194,11 +212,11 @@ namespace Nomad.Tests.FunctionalTests.Kernel
 
             _nomadKernel.LoadModules(_moduleDiscoveryMock.Object);
 
-            var moduleAppDomain = _nomadKernel.ModuleAppDomain;
+            AppDomain moduleAppDomain = _nomadKernel.ModuleAppDomain;
 
             _nomadKernel.UnloadModules();
 
-            Assert.AreNotSame(moduleAppDomain,_nomadKernel.ModuleAppDomain);
+            Assert.AreNotSame(moduleAppDomain, _nomadKernel.ModuleAppDomain);
         }
     }
 }

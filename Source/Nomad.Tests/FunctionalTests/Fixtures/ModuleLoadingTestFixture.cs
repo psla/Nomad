@@ -10,15 +10,25 @@ using Nomad.Modules;
 using Nomad.Modules.Discovery;
 using Nomad.Modules.Filters;
 using Nomad.Tests.FunctionalTests.Modules;
+using Nomad.Utils.ManifestCreator;
 using NUnit.Framework;
 
 namespace Nomad.Tests.FunctionalTests.Fixtures
 {
     public abstract class ModuleLoadingTestFixture
     {
+        protected const string IssuerXmlPath = "KEY.xml";
+        protected const string IssuerName = "KEY_issuer";
         protected WindsorContainer Container;
         protected ModuleManager Manager;
         private InjectableModulesRegistry _registry;
+
+
+        protected void SignModule(string name, string path)
+        {
+            var builder = new ManifestBuilder(IssuerName, IssuerXmlPath, name, path);
+            builder.CreateAndPublish();
+        }
 
 
         [SetUp]

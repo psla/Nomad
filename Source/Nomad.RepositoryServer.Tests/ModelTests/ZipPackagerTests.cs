@@ -82,6 +82,12 @@ namespace Nomad.RepositoryServer.Tests.ModelTests
                    ModuleManifest.ManifestFileNameSuffix;
         }
 
+        [TearDown]
+        public void TearDown()
+        {
+            File.Delete(@"Modules\Simple\SimplestModulePossible1.dll.manifest");
+            File.Delete(@"Modules\Simple\SimplestModulePossible1.dll.manifest.asc");
+        }
         #region Unpacking
 
         [Test]
