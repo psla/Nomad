@@ -24,6 +24,13 @@ namespace Nomad.Tests.FunctionalTests.Fixtures
         private InjectableModulesRegistry _registry;
 
 
+        protected void CopyModuleIntoDirectory(string from, string to)
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(to));
+            File.Copy(from, to, true);
+        }
+
+
         protected void SignModule(string name, string path)
         {
             var builder = new ManifestBuilder(IssuerName, IssuerXmlPath, name, path);
@@ -67,14 +74,10 @@ namespace Nomad.Tests.FunctionalTests.Fixtures
             Assert.That(unloadedModuleNames, Is.EqualTo(expectedModuleNames));
         }
 
-
-        protected void LoadModulesFromDirectory(string moduleDirectory)
+        protected void LoadModulesFromDirectory(IModuleDiscovery moduleDiscovery)
         {
-            string fullDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-                                                moduleDirectory);
-            Manager.LoadModules(new SimpleDirectoryModuleDiscovery(fullDirectory));
+            Manager.LoadModules(moduleDiscovery);
         }
-
 
         protected void AssertModulesLoadedAreEqualTo(params string[] expectedModuleNames)
         {

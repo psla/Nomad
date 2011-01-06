@@ -1,4 +1,4 @@
-using System.IO;
+using Nomad.Modules.Discovery;
 using Nomad.Tests.FunctionalTests.Fixtures;
 using NUnit.Framework;
 using TestsShared;
@@ -11,17 +11,14 @@ namespace Nomad.Tests.FunctionalTests.Modules
         [SetUp]
         public void SetUp()
         {
-            Directory.CreateDirectory(@"Modules\WithDependencies\ModuleWithConstructorDependency");
-            File.Copy(@"Modules\WithDependencies\ModuleWithConstructorDependency.dll",
-                      @"Modules\WithDependencies\ModuleWithConstructorDependency\ModuleWithConstructorDependency.dll",
-                      true);
+            CopyModuleIntoDirectory(
+                @"Modules\WithDependencies\ModuleWithConstructorDependency.dll",
+                @"Modules\WithDependencies\ModuleWithConstructorDependency\ModuleWithConstructorDependency.dll");
             SignModule(@"ModuleWithConstructorDependency.dll",
                        @"Modules\WithDependencies\ModuleWithConstructorDependency\");
 
-            Directory.CreateDirectory(@"Modules\WithDependencies\ModuleWithPropertyDependency\");
-            File.Copy(@"Modules\WithDependencies\ModuleWithPropertyDependency.dll",
-                      @"Modules\WithDependencies\ModuleWithPropertyDependency\ModuleWithPropertyDependency.dll",
-                      true);
+            CopyModuleIntoDirectory(@"Modules\WithDependencies\ModuleWithPropertyDependency.dll",
+                                    @"Modules\WithDependencies\ModuleWithPropertyDependency\ModuleWithPropertyDependency.dll");
             SignModule(@"ModuleWithPropertyDependency.dll",
                        @"Modules\WithDependencies\ModuleWithPropertyDependency\");
         }
@@ -30,8 +27,17 @@ namespace Nomad.Tests.FunctionalTests.Modules
         [Test]
         public void module_loader_discovers_and_loads_all_simple_modules()
         {
-            LoadModulesFromDirectory(@"Modules\WithDependencies\ModuleWithConstructorDependency\");
-            LoadModulesFromDirectory(@"Modules\WithDependencies\ModuleWithPropertyDependency\");
+            var compositeDiscovery =
+                new CompositeModuleDiscovery(new IModuleDiscovery[]
+                                                 {
+                                                     new DirectoryModuleDiscovery
+                                                         (@"Modules\WithDependencies\ModuleWithConstructorDependency\")
+                                                     ,
+                                                     new DirectoryModuleDiscovery
+                                                         (@"Modules\WithDependencies\ModuleWithPropertyDependency\")
+                                                 });
+            LoadModulesFromDirectory(compositeDiscovery);
+
             AssertModulesLoadedAreEqualTo("ModuleWithConstructorDependency",
                                           "ModuleWithPropertyDependency");
         }
