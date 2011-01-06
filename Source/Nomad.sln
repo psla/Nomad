@@ -90,6 +90,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Kernel", "Kernel", "{7BE8A0
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{B3D7575D-70C2-46B4-98CE-6E262FB558B0}"
 	ProjectSection(SolutionItems) = preProject
+		Nomad.Tests\FunctionalTests\Data\Services\LoadedModulesServiceTestingModule.cs = Nomad.Tests\FunctionalTests\Data\Services\LoadedModulesServiceTestingModule.cs
 		Nomad.Tests\FunctionalTests\Data\Services\SimplestModulePossible1.cs = Nomad.Tests\FunctionalTests\Data\Services\SimplestModulePossible1.cs
 		Nomad.Tests\FunctionalTests\Data\Services\SimplestModulePossible2.cs = Nomad.Tests\FunctionalTests\Data\Services\SimplestModulePossible2.cs
 	EndProjectSection
