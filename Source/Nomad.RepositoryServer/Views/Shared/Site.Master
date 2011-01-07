@@ -16,7 +16,7 @@
             </div>
               
             <div id="logindisplay">
-                Nomad Preview
+                <% Html.RenderPartial("LogOnUserControl"); %>
             </div> 
             
             <div id="menucontainer">
