@@ -47,6 +47,7 @@
                 <%= Html.ActionLink("Download","GetModulePackage","Modules",new { urlId = item.Id},HttpVerbs.Get) %>
             </td>
             <td>
+            <% if(Request.IsAuthenticated) %>
                 <%= Html.ActionLink("Remove", "Remove", "Home", new { itemId = item.Id }, HttpVerbs.Get)%>
             </td>
         </tr>
