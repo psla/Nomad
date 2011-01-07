@@ -1,4 +1,5 @@
 using System.Windows.Controls;
+using Nomad.Communication.EventAggregation;
 using Nomad.Modules;
 using Nomad.Regions;
 using Nomad.Updater;
@@ -14,14 +15,16 @@ namespace WpfUpdaterModule
     public class UpdaterModuleBootstraper : IModuleBootstraper
     {
         private readonly RegionManager _regionManager;
+        private readonly IEventAggregator _eventAggregator;
         private readonly IUpdater _updater;
 
 
-        public UpdaterModuleBootstraper(IUpdater updater, RegionManager regionManager)
+        public UpdaterModuleBootstraper(IUpdater updater, RegionManager regionManager,IEventAggregator eventAggregator)
         {
             // use injected services from Nomad, instead of using IServiceLocator mechanism
             _updater = updater;
             _regionManager = regionManager;
+            _eventAggregator = eventAggregator;
         }
 
         #region IModuleBootstraper Members
@@ -34,7 +37,7 @@ namespace WpfUpdaterModule
             // create the view in the mvvm style
             var updaterView = new UpdaterControl
                                   {
-                                      DataContext = new UpdaterViewModel(_updater)
+                                      DataContext = new UpdaterViewModel(_updater,_eventAggregator)
                                   };
 
             // create the compatible view 

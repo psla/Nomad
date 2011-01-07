@@ -12,18 +12,22 @@
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Content="Check"/>
-            <Button Grid.Column="1" Content="Download"/>
-            <Button Grid.Column="2" Content="Perform" />
+            <Button Grid.Column="0" Content="Check" Command="{Binding Path=CheckCommand}"/>
+            <Button Grid.Column="1" Content="Download" Command="{Binding Path=PrepareCommand}"/>
+            <Button Grid.Column="2" Content="Perform" Command="{Binding Path=PerformCommand}" />
         </Grid>
     
         <Grid Background="SkyBlue" DockPanel.Dock="Top">
-            
+            <!--
+                TODO: add viewing the details
+            -->
         </Grid>
             
         <Grid Background="Beige">
-            <ListBox>
-                
+            <ListBox ItemsSource="{Binding Path=AvaliableUpdates}">
+                <!--
+                    TODO: add the data template for showing the 
+                -->
             </ListBox>
         </Grid>
     </DockPanel>

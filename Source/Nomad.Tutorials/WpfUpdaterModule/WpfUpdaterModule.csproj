@@ -44,6 +44,8 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ModuleManifestWrapper.cs" />
+    <Compile Include="RelayCommand.cs" />
     <Compile Include="UpdaterViewModel.cs" />
     <Page Include="UpdaterControl.xaml">
       <Generator>MSBuild:Compile</Generator>
