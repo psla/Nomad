@@ -1,3 +1,4 @@
+using System.IO;
 using Castle.MicroKernel.Registration;
 using Nomad.Communication.ServiceLocation;
 using Nomad.Modules.Discovery;
@@ -35,7 +36,7 @@ namespace Nomad.Tests.FunctionalTests.ServiceLocation
         [Test]
         public void when_one_module_registers_a_service_other_module_can_resolve_it()
         {
-            LoadModulesFromDirectory(new DirectoryModuleDiscovery(PathToRegistering));
+            LoadModulesFromDirectory(new DirectoryModuleDiscovery(PathToRegistering, SearchOption.TopDirectoryOnly));
 
             Assert.AreEqual(1, ServiceRegistry.GetRegisteredServices().Count,
                             "Module has not called the constructor of the service provider class");
@@ -44,7 +45,7 @@ namespace Nomad.Tests.FunctionalTests.ServiceLocation
             Assert.AreEqual(0, ServiceRegistry.GetRegisteredServiceCounter()[typeof (ITestService)],
                             "Method in service has already been used");
 
-            LoadModulesFromDirectory(new DirectoryModuleDiscovery(PathToResolving));
+            LoadModulesFromDirectory(new DirectoryModuleDiscovery(PathToResolving, SearchOption.TopDirectoryOnly));
 
             Assert.AreEqual(1, ServiceRegistry.GetRegisteredServiceCounter()[typeof (ITestService)],
                             "Method in service was not called exactly one time");

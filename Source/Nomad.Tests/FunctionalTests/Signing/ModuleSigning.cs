@@ -1,10 +1,8 @@
 using System;
 using System.IO;
-using System.Reflection;
 using Nomad.ManifestCreator;
-using Nomad.Modules;
 using Nomad.Modules.Manifest;
-using Nomad.Tests.FunctionalTests.Modules;
+using Nomad.Tests.FunctionalTests.Fixtures;
 using Nomad.Utils;
 using NUnit.Framework;
 using TestsShared;

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 using Ionic.Zip;
 using Moq;
 using Nomad.Core;
@@ -13,7 +12,6 @@ using Nomad.Modules.Discovery;
 using Nomad.Modules.Manifest;
 using Nomad.Services;
 using Nomad.Tests.FunctionalTests.Fixtures;
-using Nomad.Tests.FunctionalTests.Modules;
 using Nomad.Updater;
 using Nomad.Updater.ModuleRepositories;
 using Nomad.Utils.ManifestCreator;
@@ -97,8 +95,8 @@ namespace Nomad.Tests.FunctionalTests.Updater
             SetUpModuleWithManifest(moduleB, ModuleCompiler.DefaultSimpleModuleSourceAlternative,
                                     builderConfiguration);
 
-            return new CompositeModuleDiscovery(new DirectoryModuleDiscovery(moduleA),
-                                                new DirectoryModuleDiscovery(moduleB));
+            return new CompositeModuleDiscovery(new DirectoryModuleDiscovery(moduleA, SearchOption.TopDirectoryOnly),
+                                                new DirectoryModuleDiscovery(moduleB, SearchOption.TopDirectoryOnly));
         }
 
         #endregion
@@ -182,7 +180,7 @@ namespace Nomad.Tests.FunctionalTests.Updater
             SetUpModuleWithManifest(moduleBVersionUpperDir, ModuleCompiler.DefaultSimpleModuleSourceAlternative, moduleAConfiguration);
 
             // put module B into repository
-            var bRepoModuleInfo = new DirectoryModuleDiscovery(moduleBVersionUpperDir)
+            var bRepoModuleInfo = new DirectoryModuleDiscovery(moduleBVersionUpperDir, SearchOption.TopDirectoryOnly)
                 .GetModules()
                 .Select(x => x)
                 .Single();
@@ -204,10 +202,10 @@ namespace Nomad.Tests.FunctionalTests.Updater
             SetUpKernel();
             
             // load modules A,B,C in version v0 into Nomad
-            var discovery = new CompositeModuleDiscovery(new DirectoryModuleDiscovery(moduelADir),
-                                                         new DirectoryModuleDiscovery(moduelBDir),
-                                                         new DirectoryModuleDiscovery(moduleCDir),
-                                                         new DirectoryModuleDiscovery(updaterDir));
+            var discovery = new CompositeModuleDiscovery(new DirectoryModuleDiscovery(moduelADir, SearchOption.TopDirectoryOnly),
+                                                         new DirectoryModuleDiscovery(moduelBDir, SearchOption.TopDirectoryOnly),
+                                                         new DirectoryModuleDiscovery(moduleCDir, SearchOption.TopDirectoryOnly),
+                                                         new DirectoryModuleDiscovery(updaterDir, SearchOption.TopDirectoryOnly));
             Kernel.LoadModules(discovery);
 
             // register for updates avaliable message
@@ -249,7 +247,7 @@ namespace Nomad.Tests.FunctionalTests.Updater
             SetUpKernel();
 
             // test against loading
-            var discovery = new CompositeModuleDiscovery(new DirectoryModuleDiscovery(updaterDir),
+            var discovery = new CompositeModuleDiscovery(new DirectoryModuleDiscovery(updaterDir, SearchOption.TopDirectoryOnly),
                                                          v0Discovery);
 
             Kernel.LoadModules(discovery);
@@ -317,7 +315,7 @@ namespace Nomad.Tests.FunctionalTests.Updater
             SetUpKernel();
 
             // skip verification about loaded modules, just load them
-            Kernel.LoadModules(new CompositeModuleDiscovery(basicDiscovery,new DirectoryModuleDiscovery(updaterDir)));
+            Kernel.LoadModules(new CompositeModuleDiscovery(basicDiscovery, new DirectoryModuleDiscovery(updaterDir, SearchOption.TopDirectoryOnly)));
 
             // get updater reference, for synchronization
             var updater = Kernel.ServiceLocator.Resolve<IUpdater>();

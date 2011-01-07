@@ -37,11 +37,11 @@ namespace Nomad.Tests.FunctionalTests.Modules
             var discovery = new CompositeModuleDiscovery(new IModuleDiscovery[]
                                                              {
                                                                  new DirectoryModuleDiscovery(
-                                                                     dir2),
+                                                                     dir2, SearchOption.TopDirectoryOnly),
                                                                  new DirectoryModuleDiscovery(
-                                                                     dir),
+                                                                     dir, SearchOption.TopDirectoryOnly),
                                                                  new DirectoryModuleDiscovery(
-                                                                     dir3),
+                                                                     dir3, SearchOption.TopDirectoryOnly),
                                                              });
 
             // perform test and assert
@@ -79,11 +79,11 @@ namespace Nomad.Tests.FunctionalTests.Modules
             var discovery = new CompositeModuleDiscovery(new IModuleDiscovery[]
                                                              {
                                                                  new DirectoryModuleDiscovery(
-                                                                     dir2),
+                                                                     dir2, SearchOption.TopDirectoryOnly),
                                                                  new DirectoryModuleDiscovery(
-                                                                     dir),
+                                                                     dir, SearchOption.TopDirectoryOnly),
                                                                  new DirectoryModuleDiscovery(
-                                                                     dir3),
+                                                                     dir3, SearchOption.TopDirectoryOnly),
                                                              });
 
             // perform test and assert
@@ -125,9 +125,9 @@ namespace Nomad.Tests.FunctionalTests.Modules
             var discovery = new CompositeModuleDiscovery(new IModuleDiscovery[]
                                                              {
                                                                  new DirectoryModuleDiscovery(
-                                                                     dir2),
+                                                                     dir2, SearchOption.TopDirectoryOnly),
                                                                  new DirectoryModuleDiscovery(
-                                                                     dir),
+                                                                     dir, SearchOption.TopDirectoryOnly),
                                                              });
 
             // perform test and assert
@@ -155,9 +155,9 @@ namespace Nomad.Tests.FunctionalTests.Modules
             var discovery = new CompositeModuleDiscovery(new IModuleDiscovery[]
                                                              {
                                                                  new DirectoryModuleDiscovery(
-                                                                     dir2),
+                                                                     dir2, SearchOption.TopDirectoryOnly),
                                                                  new DirectoryModuleDiscovery(
-                                                                     dir1),
+                                                                     dir1, SearchOption.TopDirectoryOnly),
                                                              });
 
             // perform test and assert
@@ -188,9 +188,9 @@ namespace Nomad.Tests.FunctionalTests.Modules
             var discovery = new CompositeModuleDiscovery(new IModuleDiscovery[]
                                                              {
                                                                  new DirectoryModuleDiscovery(
-                                                                     dir2),
+                                                                     dir2, SearchOption.TopDirectoryOnly),
                                                                  new DirectoryModuleDiscovery(
-                                                                     dir1),
+                                                                     dir1, SearchOption.TopDirectoryOnly),
                                                              });
 
             // perform test and assert

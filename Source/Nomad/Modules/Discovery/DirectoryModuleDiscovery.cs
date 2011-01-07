@@ -6,7 +6,7 @@ using Nomad.Modules.Manifest;
 namespace Nomad.Modules.Discovery
 {
     /// <summary>
-    ///      Discovers modules by enumerating all module files in an assembly
+    ///      Discovers modules by enumerating all module files in a directory tree.
     /// </summary>
     /// <remarks>
     ///     Discovers only the modules that are described with proper  <see cref="ModuleManifest"/> file 
@@ -15,16 +15,20 @@ namespace Nomad.Modules.Discovery
     [Serializable]
     public class DirectoryModuleDiscovery : IModuleDiscovery
     {
+        private readonly SearchOption _searchOption;
         private readonly string _directoryPath;
+        
 
 
         /// <summary>
         ///     Initializes new instance of the <see cref="SimpleDirectoryModuleDiscovery"/>.
         /// </summary>
-        /// <param name="directoryPath">Full or relative path to the directory with modules</param>
+        /// <param name="directoryPath">Full or relative path to the root directory with modules</param>
+        /// <param name="searchOption">Determines if the discovery should proceed recursively or top-directory only.</param>
         /// <exception cref="ArgumentNullException">When <paramref name="directoryPath"/> is <c>null</c> or empty.</exception>
-        public DirectoryModuleDiscovery(string directoryPath)
+        public DirectoryModuleDiscovery(string directoryPath, SearchOption searchOption)
         {
+            _searchOption = searchOption;
             if (string.IsNullOrEmpty(directoryPath))
                 throw new ArgumentException("directoryPath is required", "directoryPath");
 
@@ -38,7 +42,7 @@ namespace Nomad.Modules.Discovery
         /// </summary>
         public IEnumerable<ModuleInfo> GetModules()
         {
-            string[] dllsInDirectory = Directory.GetFiles(_directoryPath, "*.dll");
+           string[] dllsInDirectory = Directory.GetFiles(_directoryPath, "*.dll",_searchOption);
 
             foreach (string dll in dllsInDirectory)
             {

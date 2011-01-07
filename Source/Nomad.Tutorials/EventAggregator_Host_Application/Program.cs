@@ -23,8 +23,8 @@ namespace EventAggregator_Host_Application
 
             // loading modules using single module discovery pattern
             var discovery = new CompositeModuleDiscovery(
-                new DirectoryModuleDiscovery(@".\Modules\ControllingPublisher"),
-                new DirectoryModuleDiscovery(@".\Modules\SimplePublisher"));
+                new DirectoryModuleDiscovery(@".\Modules\ControllingPublisher", SearchOption.TopDirectoryOnly),
+                new DirectoryModuleDiscovery(@".\Modules\SimplePublisher", SearchOption.TopDirectoryOnly));
             kernel.LoadModules(discovery);
 
             //wait for input

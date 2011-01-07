@@ -31,6 +31,8 @@ namespace Nomad.Tests.FunctionalTests.Fixtures
                 File.Delete(KeyFile);
             }
             KeysGeneratorProgram.Main(new[] {KeyFile});
+
+            _moduleCompiler = new ModuleCompiler();
         }
 
         [TestFixtureTearDown]
@@ -46,8 +48,6 @@ namespace Nomad.Tests.FunctionalTests.Fixtures
         [SetUp]
         public virtual void SetUp()
         {
-            _moduleCompiler = new ModuleCompiler();
-
             // prepare configuration
             NomadConfiguration configuration = NomadConfiguration.Default;
             configuration.ModuleFilter = new CompositeModuleFilter();

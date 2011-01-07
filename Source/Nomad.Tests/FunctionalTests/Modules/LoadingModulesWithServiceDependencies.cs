@@ -1,3 +1,4 @@
+using System.IO;
 using Nomad.Modules.Discovery;
 using Nomad.Tests.FunctionalTests.Fixtures;
 using NUnit.Framework;
@@ -31,10 +32,10 @@ namespace Nomad.Tests.FunctionalTests.Modules
                 new CompositeModuleDiscovery(new IModuleDiscovery[]
                                                  {
                                                      new DirectoryModuleDiscovery
-                                                         (@"Modules\WithDependencies\ModuleWithConstructorDependency\")
+                                                         (@"Modules\WithDependencies\ModuleWithConstructorDependency\", SearchOption.TopDirectoryOnly)
                                                      ,
                                                      new DirectoryModuleDiscovery
-                                                         (@"Modules\WithDependencies\ModuleWithPropertyDependency\")
+                                                         (@"Modules\WithDependencies\ModuleWithPropertyDependency\", SearchOption.TopDirectoryOnly)
                                                  });
             LoadModulesFromDirectory(compositeDiscovery);
 

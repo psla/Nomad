@@ -5,10 +5,9 @@ using System.IO;
 using System.Linq;
 using Nomad.Modules.Manifest;
 using Nomad.Signing;
-using Nomad.Utils;
 using Nomad.Utils.ManifestCreator;
 
-namespace Nomad.Tests.FunctionalTests.Modules
+namespace Nomad.Tests.FunctionalTests.Fixtures
 {
     /// <summary>
     ///     Generates the module assembly from source files.

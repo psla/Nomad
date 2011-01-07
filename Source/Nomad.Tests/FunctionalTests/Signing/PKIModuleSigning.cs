@@ -6,7 +6,7 @@ using System.Threading;
 using Nomad.ManifestCreator;
 using Nomad.Modules.Manifest;
 using Nomad.Signing.SignatureAlgorithms;
-using Nomad.Tests.FunctionalTests.Modules;
+using Nomad.Tests.FunctionalTests.Fixtures;
 using Nomad.Utils;
 using NUnit.Framework;
 using TestsShared;

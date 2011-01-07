@@ -46,16 +46,9 @@ namespace Nomad.Tests.FunctionalTests.Services
             SetUpModuleWithManifest(dir3,
                                     @"..\Source\Nomad.Tests\FunctionalTests\Data\Services\LoadedModulesServiceTestingModule.cs");
 
-            // define discovery sequence
-            var discovery =
-                new CompositeModuleDiscovery(new[]
-                                                 {
-                                                     new DirectoryModuleDiscovery(dir),
-                                                     new DirectoryModuleDiscovery(dir2),
-                                                     new DirectoryModuleDiscovery(dir3)
-                                                 });
+            
             // perform kernel test and assert
-            LoadModulesFromDiscovery(discovery);
+            LoadModulesFromDiscovery(new DirectoryModuleDiscovery(@"Modules\Services\",SearchOption.AllDirectories));
 
             var loadedModulesService = Kernel.ServiceLocator.Resolve<ILoadedModulesService>();
 

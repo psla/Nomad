@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Nomad.Core;
 using Nomad.Modules.Discovery;
 using Nomad.Utils.ManifestCreator;
@@ -23,9 +24,10 @@ namespace ServiceLocator_Host_Application
             var kernel = new NomadKernel();
 
             // loading modules using composite module discovery pattern
-            var discovery = new CompositeModuleDiscovery(
-                new DirectoryModuleDiscovery(@".\Modules\DependantModule"),
-                new DirectoryModuleDiscovery(@".\Modules\RegisteringModule"));
+            var discovery =
+                new CompositeModuleDiscovery(new DirectoryModuleDiscovery(@".\Modules\",
+                                                                          SearchOption.
+                                                                              AllDirectories));
                 
             kernel.LoadModules(discovery);
 

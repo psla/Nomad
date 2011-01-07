@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using Nomad.Communication.EventAggregation;
@@ -107,7 +108,7 @@ namespace Nomad.Updater
             get
             {
                 if (_defaultAfterUpdateModules == null)
-                    return new DirectoryModuleDiscovery(_targetDirectory);
+                    return new DirectoryModuleDiscovery(_targetDirectory, SearchOption.TopDirectoryOnly);
 
                 return _defaultAfterUpdateModules;
             }

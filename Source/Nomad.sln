@@ -45,8 +45,18 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loading_Unloading_Modules_Host_Application", "Nomad.Tutorials\Loading_Unloading_Modules_Host_Application\Loading_Unloading_Modules_Host_Application.csproj", "{EDB3E0D1-A7AD-46EC-9620-13FE3C5A661B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceLocator_Host_Application", "Nomad.Tutorials\ServiceLocator_Host_Application\ServiceLocator_Host_Application.csproj", "{A6AECD48-8DCB-4B6F-B9DA-66B6CD39D37F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{44F71B67-7CBD-41F2-A136-14405E2C9C31} = {44F71B67-7CBD-41F2-A136-14405E2C9C31}
+		{C2298ED2-F3AA-40E0-8216-9762C09C1F56} = {C2298ED2-F3AA-40E0-8216-9762C09C1F56}
+		{E15369D3-E227-47C0-8273-E336DF1BB519} = {E15369D3-E227-47C0-8273-E336DF1BB519}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventAggregator_Host_Application", "Nomad.Tutorials\EventAggregator_Host_Application\EventAggregator_Host_Application.csproj", "{8DA40355-D458-4EE6-9FD9-E1406C73E5EB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DD8DFE4B-BF87-4C8A-95A4-EFAA3F6EABD7} = {DD8DFE4B-BF87-4C8A-95A4-EFAA3F6EABD7}
+		{609956AE-F9B0-489C-AE90-EC9D6068055F} = {609956AE-F9B0-489C-AE90-EC9D6068055F}
+		{2B0A0CD6-FD57-48F0-A163-F39073981934} = {2B0A0CD6-FD57-48F0-A163-F39073981934}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Controlling_Publisher_Module", "Nomad.Tutorials\Controlling_Publisher_Module\Controlling_Publisher_Module.csproj", "{609956AE-F9B0-489C-AE90-EC9D6068055F}"
 EndProject
@@ -86,6 +96,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Kernel", "Kernel", "{7BE8A0
 	ProjectSection(SolutionItems) = preProject
 		Nomad.Tests\FunctionalTests\Data\Kernel\AllModulesLoadedEventAwareModule.cs = Nomad.Tests\FunctionalTests\Data\Kernel\AllModulesLoadedEventAwareModule.cs
 		Nomad.Tests\FunctionalTests\Data\Kernel\EventAwareModule.cs = Nomad.Tests\FunctionalTests\Data\Kernel\EventAwareModule.cs
+		Nomad.Tests\FunctionalTests\Data\Kernel\FileWritingModule.cs = Nomad.Tests\FunctionalTests\Data\Kernel\FileWritingModule.cs
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{B3D7575D-70C2-46B4-98CE-6E262FB558B0}"
@@ -102,6 +113,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Updater", "Updater", "{CEE0
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThinWpfHost", "Nomad.Tutorials\ThinWpfHost\ThinWpfHost.csproj", "{22E06AFA-4B74-45AC-8BF3-1F33F54F0A28}"
+	ProjectSection(ProjectDependencies) = postProject
+		{20A70754-FC70-41D7-B395-68777BEF1AC8} = {20A70754-FC70-41D7-B395-68777BEF1AC8}
+		{E67D7FB1-4F68-4B6A-9FD6-F8C2EDC6AFFF} = {E67D7FB1-4F68-4B6A-9FD6-F8C2EDC6AFFF}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfApplicationModule", "Nomad.Tutorials\WpfApplicationModule\WpfApplicationModule.csproj", "{20A70754-FC70-41D7-B395-68777BEF1AC8}"
 EndProject

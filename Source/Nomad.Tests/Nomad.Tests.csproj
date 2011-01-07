@@ -112,13 +112,14 @@
     <Compile Include="FunctionalTests\Kernel\Messages\EventHandledRegistry.cs" />
     <Compile Include="FunctionalTests\Kernel\NomadKernelAppDomainManagmentTests.cs" />
     <Compile Include="FunctionalTests\Fixtures\NomadKernelTestFixture.cs" />
+    <Compile Include="FunctionalTests\Kernel\NomadSandboxingTests.cs" />
     <Compile Include="FunctionalTests\Modules\IInjectableModulesRegistry.cs" />
     <Compile Include="FunctionalTests\Modules\InjectableModulesRegistry.cs" />
     <Compile Include="FunctionalTests\Modules\LoadedModulesRegistry.cs" />
     <Compile Include="FunctionalTests\Modules\LoadingModules.cs" />
     <Compile Include="FunctionalTests\Modules\LoadingModulesWithReferenceDependencies.cs" />
     <Compile Include="FunctionalTests\Modules\LoadingModulesWithServiceDependencies.cs" />
-    <Compile Include="FunctionalTests\Modules\ModuleCompiler.cs" />
+    <Compile Include="FunctionalTests\Fixtures\ModuleCompiler.cs" />
     <Compile Include="FunctionalTests\Fixtures\ModuleLoadingTestFixture.cs" />
     <Compile Include="FunctionalTests\Fixtures\ModuleLoadingWithCompilerTestFixture.cs" />
     <Compile Include="FunctionalTests\Regions\MenuBehaviors.cs" />

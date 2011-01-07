@@ -118,7 +118,7 @@ namespace Nomad.Tests.FunctionalTests.Kernel
             KeysGeneratorProgram.Main(new[] {keyFile});
             compiler.GenerateManifestForModule(modulePath, keyFile);
 
-            var directoryDiscovery = new DirectoryModuleDiscovery(dir);
+            var directoryDiscovery = new DirectoryModuleDiscovery(dir, SearchOption.TopDirectoryOnly);
 
             // loading modules
             Assert.DoesNotThrow(() => kernel.LoadModules(directoryDiscovery));
@@ -176,7 +176,7 @@ namespace Nomad.Tests.FunctionalTests.Kernel
             Assert.DoesNotThrow(() => kernel.LoadModules(setUpDiscovery));
 
             // loading simple modules
-            var directoryDiscovery = new DirectoryModuleDiscovery(dir);
+            var directoryDiscovery = new DirectoryModuleDiscovery(dir, SearchOption.TopDirectoryOnly);
             Assert.DoesNotThrow(() => kernel.LoadModules(directoryDiscovery));
 
             //verify the method being called in a module.
