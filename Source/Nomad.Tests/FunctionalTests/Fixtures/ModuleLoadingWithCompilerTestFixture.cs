@@ -33,6 +33,15 @@ namespace Nomad.Tests.FunctionalTests.Fixtures
             KeysGeneratorProgram.Main(new[] {KeyFile});
         }
 
+        [TestFixtureTearDown]
+        public virtual void CleanUpFixture()
+        {
+            if (File.Exists(KeyFile))
+            {
+                File.Delete(KeyFile);
+            }
+        }
+
 
         [SetUp]
         public virtual void SetUp()

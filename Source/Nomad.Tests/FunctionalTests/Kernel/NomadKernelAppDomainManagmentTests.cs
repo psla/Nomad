@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Security.Policy;
 using Moq;
 using Nomad.Core;
+using Nomad.KeysGenerator;
 using Nomad.Modules;
 using Nomad.Modules.Discovery;
 using Nomad.Utils.ManifestCreator;
@@ -57,6 +58,26 @@ namespace Nomad.Tests.FunctionalTests.Kernel
             builder.CreateAndPublish();
         }
 
+
+        [TestFixtureSetUp]
+        public virtual void SetUpFixture()
+        {
+            if (File.Exists(IssuerXmlPath))
+            {
+                File.Delete(IssuerXmlPath);
+            }
+            KeysGeneratorProgram.Main(new[] { IssuerXmlPath });
+        }
+
+
+        [TestFixtureTearDown]
+        public virtual void CleanUpFixture()
+        {
+            if (File.Exists(IssuerXmlPath))
+            {
+                File.Delete(IssuerXmlPath);
+            }
+        }
 
         [SetUp]
         public void set_up()

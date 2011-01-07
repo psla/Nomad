@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,6 +5,7 @@ using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using Moq;
 using Nomad.Communication.EventAggregation;
+using Nomad.KeysGenerator;
 using Nomad.Modules;
 using Nomad.Modules.Discovery;
 using Nomad.Modules.Filters;
@@ -22,6 +22,27 @@ namespace Nomad.Tests.FunctionalTests.Fixtures
         protected WindsorContainer Container;
         protected ModuleManager Manager;
         private InjectableModulesRegistry _registry;
+
+
+        [TestFixtureSetUp]
+        public virtual void SetUpFixture()
+        {
+            if (File.Exists(IssuerXmlPath))
+            {
+                File.Delete(IssuerXmlPath);
+            }
+            KeysGeneratorProgram.Main(new[] {IssuerXmlPath});
+        }
+
+
+        [TestFixtureTearDown]
+        public virtual void CleanUpFixture()
+        {
+            if (File.Exists(IssuerXmlPath))
+            {
+                File.Delete(IssuerXmlPath);
+            }
+        }
 
 
         protected void CopyModuleIntoDirectory(string from, string to)
@@ -74,10 +95,12 @@ namespace Nomad.Tests.FunctionalTests.Fixtures
             Assert.That(unloadedModuleNames, Is.EqualTo(expectedModuleNames));
         }
 
+
         protected void LoadModulesFromDirectory(IModuleDiscovery moduleDiscovery)
         {
             Manager.LoadModules(moduleDiscovery);
         }
+
 
         protected void AssertModulesLoadedAreEqualTo(params string[] expectedModuleNames)
         {

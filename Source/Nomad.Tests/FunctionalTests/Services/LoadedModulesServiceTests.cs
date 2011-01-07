@@ -17,8 +17,9 @@ namespace Nomad.Tests.FunctionalTests.Services
 
 
         [TestFixtureTearDown]
-        public void Clean()
+        public override void CleanUpFixture()
         {
+            base.CleanUpFixture();
             Kernel.UnloadModules();
             Directory.Delete(@"Modules\Services\", true);
         }
