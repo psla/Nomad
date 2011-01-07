@@ -40,14 +40,9 @@ namespace WpfApplicationModule
         private void StartApplication()
         {
             _app = new App();
-            var guiThreadProvider = (new WpfGuiThreadProvider(_app.Dispatcher));
-            RegionManager regionManager = null;
-            guiThreadProvider.RunInGui(delegate
-                {
-                    regionManager = new RegionManager( new RegionFactory(new IRegionAdapter[] { new TabControlAdapter () }));
-                });
+           
+            var regionManager = new RegionManager(new RegionFactory(new IRegionAdapter[] { new TabControlAdapter() }));
 
-            _locator.Register<IGuiThreadProvider>(guiThreadProvider);
             _locator.Register(regionManager);
             
             _app.Run(new MainWindow(_locator, _resetEvent));

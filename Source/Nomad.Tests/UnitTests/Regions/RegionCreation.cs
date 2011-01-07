@@ -3,12 +3,14 @@ using System.Windows;
 using Moq;
 using Nomad.Regions;
 using NUnit.Framework;
+using TestsShared;
 
 namespace Nomad.Tests.UnitTests.Regions
 {
     /// <summary>
     ///     Specifies default implementation of <see cref="IRegionFactory"/>
     /// </summary>
+    [UnitTests]
     public class RegionCreation
     {
         private readonly Mock<IRegion> _regionMock;

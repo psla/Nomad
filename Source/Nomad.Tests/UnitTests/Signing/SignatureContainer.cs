@@ -3,9 +3,11 @@ using Nomad.Signing;
 using Nomad.Signing.SignatureAlgorithms;
 using Nomad.Signing.SignatureProviders;
 using NUnit.Framework;
+using TestsShared;
 
 namespace Nomad.Tests.UnitTests.Signing
 {
+    [UnitTests]
     public class SignatureContainer
     {
         private ISignatureProvider _signatureProvider;

@@ -2,9 +2,11 @@ using Moq;
 using Nomad.Modules;
 using Nomad.Modules.Filters;
 using NUnit.Framework;
+using TestsShared;
 
 namespace Nomad.Tests.UnitTests.Modules
 {
+    [UnitTests]
     public class CompositeModuleFilterTests
     {
         private readonly ModuleInfo _moduleInfo = new ModuleInfo("test");
