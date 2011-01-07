@@ -112,7 +112,6 @@
     </Content>
     <Content Include="Global.asax" />
     <Content Include="Views\Shared\AddingError.aspx" />
-    <Content Include="Views\Adder\AddModule.aspx" />
     <Content Include="Views\Home\Details.aspx" />
     <Content Include="Views\Shared\FileNotFound.aspx" />
     <Content Include="Web.config" />

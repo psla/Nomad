@@ -7,10 +7,11 @@ using Nomad.Utils.ManifestCreator;
 namespace ThinWpfHost
 {
     /// <summary>
-    /// Sample WpfApplication loader 
+    ///     Sample WpfApplication loader 
     /// </summary>
     /// <remarks>
-    /// This tutorial shows how to load & unload & load again wpf application
+    ///     This tutorial shows how to load & unload & load again wpf application.
+    ///     Second part of this tutorial shows how to use updater module.
     /// </remarks>
     internal class Program
     {
@@ -20,6 +21,7 @@ namespace ThinWpfHost
             // signing the assemblies and creating the manifest using manifestBuilder api
             GenerateManifestUsingApi("WpfApplicationModule.exe", @".\Modules\WpfApplication");
             GenerateManifestUsingApi("WpfButtonModule.dll", @".\Modules\WpfButton");
+            GenerateManifestUsingApi("WpfUpdaterModule.dll", @".\Modules\WpfUpdater");
 
             // using default configuration
             var kernel = new NomadKernel();
@@ -27,28 +29,13 @@ namespace ThinWpfHost
             // loading modules using single module discovery pattern
             var discovery = new CompositeModuleDiscovery(
                 new SingleModuleDiscovery(@".\Modules\WpfApplication\WpfApplicationModule.exe"),
-                new SingleModuleDiscovery(@".\Modules\WpfButton\WpfButtonModule.dll")
+                new SingleModuleDiscovery(@".\Modules\WpfButton\WpfButtonModule.dll"),
+                new SingleModuleDiscovery(@".\Modules\WpfUpdater\WpfUpdaterModule.dll")
                 );
 
             kernel.LoadModules(discovery);
 
-            //wait for input
-            //Console.ReadLine();
-
-            //simulate reloading :]
-            /*Thread.Sleep(15000);
-
-            kernel.UnloadModules();
-
-            //TODO: Here we might to try to substitute dll with new version to see if it was really unloaded
-
-            Thread.Sleep(2000);
-
-            kernel.LoadModules(discovery);
-
-            Thread.Sleep(5000);
-            */
-            //TODO: Here we should wait for event "onclose", because we are going to loose nomad ;)
+            // FIXME: what about ending the thread here ?
         }
 
 
