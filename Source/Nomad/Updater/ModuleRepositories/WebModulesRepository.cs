@@ -8,7 +8,7 @@ using Nomad.Utils;
 
 namespace Nomad.Updater.ModuleRepositories
 {
-    internal class WebModulesRepository : IModulesRepository
+    public class WebModulesRepository : IModulesRepository
     {
         private readonly string _repositoryUrl;
         private readonly WebClient _webClient;

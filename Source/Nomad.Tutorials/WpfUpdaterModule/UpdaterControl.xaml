@@ -18,6 +18,11 @@
         </Grid>
     
         <Grid Background="SkyBlue" DockPanel.Dock="Top">
+            <Grid.RowDefinitions >
+                <RowDefinition Height="0.4*" />
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Label Grid.Row="0" Content="{Binding Path=Info}" />
             <!--
                 TODO: add viewing the details
             -->

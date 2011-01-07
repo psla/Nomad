@@ -2,6 +2,7 @@
 using System.Threading;
 using Nomad.Core;
 using Nomad.Modules.Discovery;
+using Nomad.Updater.ModuleRepositories;
 using Nomad.Utils.ManifestCreator;
 
 namespace ThinWpfHost
@@ -23,8 +24,13 @@ namespace ThinWpfHost
             GenerateManifestUsingApi("WpfButtonModule.dll", @".\Modules\WpfButton");
             GenerateManifestUsingApi("WpfUpdaterModule.dll", @".\Modules\WpfUpdater");
 
+
+            // setting up configuration for repository 
+            NomadConfiguration configuration = NomadConfiguration.Default;
+            configuration.ModuleRepository = new  WebModulesRepository("x");
+
             // using default configuration
-            var kernel = new NomadKernel();
+            var kernel = new NomadKernel(configuration);
 
             // loading modules using single module discovery pattern
             var discovery = new CompositeModuleDiscovery(
