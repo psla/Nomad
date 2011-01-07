@@ -41,9 +41,9 @@ namespace WpfButtonModule
             IRegion region = regionManager.GetRegion("mainTab");
             var view = new TabItem
                            {
-                               Header = "From button header",
+                               Header = string.Format("{0}",_id),
                                Content =
-                                   new Button
+                                   new Label
                                        {
                                            Content =
                                                string.Format("Content of from button header {0}",
