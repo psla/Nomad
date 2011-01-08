@@ -7,7 +7,14 @@ namespace WpfUpdaterModule
     /// </summary>
     public class ModuleManifestWrapper
     {
+        /// <summary>
+        ///     Manifest describing module
+        /// </summary>
         public ModuleManifest Manifest { get; set; }
+
+        /// <summary>
+        ///     Indicates if selected module is for update
+        /// </summary>
         public bool SelectedForUpdate { get; set; }
 
     }

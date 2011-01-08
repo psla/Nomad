@@ -12,23 +12,23 @@ namespace Nomad.Messages.Updating
     public class NomadUpdatesReadyMessage : NomadMessage
     {
         private readonly bool _error;
-        private readonly List<ModuleManifest> _modulePackages;
+        private readonly List<ModuleManifest> _moduleManifests;
 
 
         ///<summary>
         /// Initializes immutable class with information about ready Update Packages.
         ///</summary>
-        ///<param name="modulePackages"></param>
-        public NomadUpdatesReadyMessage(List<ModuleManifest> modulePackages)
-            : this(modulePackages, false, string.Empty)
+        ///<param name="moduleManifests"></param>
+        public NomadUpdatesReadyMessage(List<ModuleManifest> moduleManifests)
+            : this(moduleManifests, false, string.Empty)
         {
         }
 
 
-        public NomadUpdatesReadyMessage(List<ModuleManifest> modulePackages, bool error, string message)
+        public NomadUpdatesReadyMessage(List<ModuleManifest> moduleManifests, bool error, string message)
             : base(message)
         {
-            _modulePackages = modulePackages;
+            _moduleManifests = moduleManifests;
             _error = error;
         }
 
@@ -44,9 +44,9 @@ namespace Nomad.Messages.Updating
         /// <summary>
         ///     Update elements. Completely ready.
         /// </summary>
-        public IList<ModuleManifest> ModulePackages
+        public IList<ModuleManifest> ModuleManifests
         {
-            get { return _modulePackages.AsReadOnly(); }
+            get { return _moduleManifests.AsReadOnly(); }
         }
 
 

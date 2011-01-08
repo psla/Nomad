@@ -32,23 +32,26 @@ namespace WpfUpdaterModule
             Info = "Idle";
 
             // command initialization, execution and and canExecute logic
-            _checkCommand = new RelayCommand(CheckMethod, CheckMethodPredicate);
-            _prepareCommand = new RelayCommand(PrepareMethod, PrepareCommandPredicate);
-            _performCommand = new RelayCommand(PerformMethod, PerformMethodPredicate);
+            _checkCommand = new RelayCommand(CheckMethod, CheckPredicate);
+            _prepareCommand = new RelayCommand(PrepareMethod, PreparePredicate);
+            _performCommand = new RelayCommand(PerformMethod, PerformPredicate);
 
             // subscribe for updater events
             _eventAggregator.Subscribe<NomadAvailableUpdatesMessage>(UpdatedAvaliableCallback);
             _eventAggregator.Subscribe<NomadUpdatesReadyMessage>(UpdatesReadyCallback);
         }
 
-        #region Update Event Method Groups
+        #region Update Event Handlers Groups
 
         private void UpdatesReadyCallback(NomadUpdatesReadyMessage message)
         {
+            // check if in the preparing was an error
             if (message.Error)
+            {
                 Info = message.Message;
+            }
 
-            Info = "Updates Ready";
+            Info = _updater.Status.ToString();
             InvokePropertyChanged("Info");
         }
 
@@ -71,7 +74,7 @@ namespace WpfUpdaterModule
                                                                      });
 
             AvaliableUpdates = new List<ModuleManifestWrapper>(listOfUpdates);
-            Info = "Updates avaliable";
+            Info = _updater.Status.ToString();
 
             InvokePropertyChanged("AvaliableUpdates");
             InvokePropertyChanged("Info");
@@ -79,21 +82,21 @@ namespace WpfUpdaterModule
 
         #endregion
 
-        #region Command Predicate Method Groups
+        #region Command Predicate Groups
 
-        private bool PerformMethodPredicate(object obj)
+        private bool PerformPredicate(object obj)
         {
             return _updater.Status == UpdaterStatus.Prepared;
         }
 
 
-        private bool PrepareCommandPredicate(object obj)
+        private bool PreparePredicate(object obj)
         {
             return _updater.Status == UpdaterStatus.Checked;
         }
 
 
-        private bool CheckMethodPredicate(object obj)
+        private bool CheckPredicate(object obj)
         {
             return _updater.Status == UpdaterStatus.Idle ||
                    _updater.Status == UpdaterStatus.Checked ||

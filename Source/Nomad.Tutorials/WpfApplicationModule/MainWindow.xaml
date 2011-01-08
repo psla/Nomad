@@ -5,7 +5,6 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition/>
-            <RowDefinition/>
         </Grid.RowDefinitions>
         <TabControl Name="OurTabcontrol" ></TabControl>
     </Grid>

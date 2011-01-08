@@ -30,9 +30,15 @@
             
         <Grid Background="Beige">
             <ListBox ItemsSource="{Binding Path=AvaliableUpdates}">
-                <!--
-                    TODO: add the data template for showing the 
-                -->
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <CheckBox IsChecked="{Binding Path=SelectedForUpdate}" />
+                            <TextBlock Text="{Binding Path=Manifest.ModuleName}" />
+                            <TextBlock Text="{Binding Path=Manifest.ModuleVersion}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
             </ListBox>
         </Grid>
     </DockPanel>

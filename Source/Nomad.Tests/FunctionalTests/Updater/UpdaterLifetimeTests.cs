@@ -216,7 +216,7 @@ namespace Nomad.Tests.FunctionalTests.Updater
                                                                                Assert.IsTrue(message.Error,"The error should be reported");
                                                                                
                                                                                // list of non valid modules is accurate
-                                                                               Assert.AreEqual("SimplestModulePossible2", message.ModulePackages[0].ModuleName);
+                                                                               Assert.AreEqual("SimplestModulePossible2", message.ModuleManifests[0].ModuleName);
                                                                            });
 
             // initialize check updates (automatic mode)

@@ -106,9 +106,9 @@ namespace Nomad.Tests.UnitTests.Updater
                 .Callback<NomadUpdatesReadyMessage>(msg =>
                                                         {
                                                             Assert.IsFalse(msg.Error);
-                                                            Assert.AreEqual(1,msg.ModulePackages.Count);
+                                                            Assert.AreEqual(1,msg.ModuleManifests.Count);
                                                             Assert.AreSame(modulePacakge.ModuleManifest,
-                                                                           msg.ModulePackages[0]);
+                                                                           msg.ModuleManifests[0]);
                                                         })
                 .Verifiable("This message should be published upon exit");
 

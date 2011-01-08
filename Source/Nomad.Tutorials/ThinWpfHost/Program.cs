@@ -27,7 +27,7 @@ namespace ThinWpfHost
 
             // setting up configuration for repository 
             NomadConfiguration configuration = NomadConfiguration.Default;
-            configuration.ModuleRepository = new  WebModulesRepository("x");
+            configuration.ModuleRepository = new WebModulesRepository("http://localhost:10514/Modules/GetModules");
 
             // using default configuration
             var kernel = new NomadKernel(configuration);
