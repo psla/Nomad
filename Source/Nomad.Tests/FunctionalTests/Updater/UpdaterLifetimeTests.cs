@@ -272,12 +272,33 @@ namespace Nomad.Tests.FunctionalTests.Updater
             _configuration.UpdaterType = UpdaterType.Automatic;
             SetUpKernel();
 
+            // set up the subscribers for stages of update
+            bool updatesChecked = false;
+            bool updatesReady = false;
+            Kernel.EventAggregator.Subscribe<NomadAvailableUpdatesMessage>((m) =>
+                {
+                    Assert.IsFalse(m.Error, "There should no error in checking");
+                    updatesChecked = true;
+                });
+
+            Kernel.EventAggregator.Subscribe<NomadUpdatesReadyMessage>((m) =>
+                {
+                    Assert.IsFalse(m.Error, "There should no error in preparing");
+                    updatesReady = true;
+                });
+
             // load those two modules into kernel
-            Kernel.LoadModules(twoSimpleModules);
+            var discovery = new CompositeModuleDiscovery(twoSimpleModules,
+                                                         new DirectoryModuleDiscovery(updaterDir,SearchOption.TopDirectoryOnly));
+            Kernel.LoadModules(discovery);
 
             // invoke automatic update process
             var updater = Kernel.ServiceLocator.Resolve<IUpdater>();
             Kernel.EventAggregator.Publish(new BeginUpdateMessage());
+
+            // check stages of update
+            Assert.IsTrue(updatesChecked,"Updates checked message has never been invoked");
+            Assert.IsTrue(updatesReady,"Updates ready message has never been invoked ");
 
             // wait for updater to finish and being in a good state
             Assert.NotNull(updater.UpdateFinished,"Update finshed object is null, meaning that no one has started perform update");

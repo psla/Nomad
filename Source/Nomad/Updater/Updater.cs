@@ -210,10 +210,7 @@ namespace Nomad.Updater
             }
             catch (Exception e)
             {
-                // change exception into message
-                _eventAggregator.Publish(new NomadUpdatesReadyMessage(new List<ModuleManifest>(),
-                                                                      true, e.Message));
-                Status = UpdaterStatus.Invalid;
+                InvokeErrorReadyMessage(e.Message,new List<ModuleManifest>());
                 return;
             }
 
@@ -251,7 +248,7 @@ namespace Nomad.Updater
         /// <see cref="AppDomain.Unload"/> method, which can not be invoked by thread which used to be on unloading domain.
         /// </para>
         /// <para>
-        /// Upon success or failure sets the flag <see cref="Status"/> with corresponding value. 
+        ///     Upon success or failure sets the flag <see cref="Status"/> with corresponding value. 
         /// </para>
         /// </remarks>
         public void PerformUpdates(IModuleDiscovery afterUpdateModulesToBeLoaded)
@@ -357,7 +354,6 @@ namespace Nomad.Updater
             IEnumerable<ModuleManifest> availableUpdates)
         {
             // FIXME: this method should be romved in the final version
-            IEnumerable<ModuleInfo> nonValidModules = null;
             var rnd = new Random();
             return
                 availableUpdates.Select(x => new ModuleInfo(rnd.Next().ToString(), x, null)).ToList();
