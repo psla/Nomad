@@ -30,7 +30,7 @@ namespace Nomad.Tests.UnitTests.Updater
                         })
                     .Verifiable("Message was not published");
 
-            Assert.DoesNotThrow(() => Updater.CheckUpdates());
+            Assert.DoesNotThrow(() => NomadUpdater.CheckUpdates());
 
             EventAggregator.Verify();
         }
@@ -84,7 +84,7 @@ namespace Nomad.Tests.UnitTests.Updater
                              })
                 .Verifiable("Get Avaliable modules has not been called");
 
-            Updater.CheckUpdates();
+            NomadUpdater.CheckUpdates();
 
             ModulesRepository.Verify();
             EventAggregator.Verify();

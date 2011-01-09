@@ -9,7 +9,7 @@ namespace Nomad.Messages.Updating
     ///     Contains information about updates that are available in repository.
     /// </summary>
     /// <remarks>
-    ///     Basing on this information you may call <see cref="Updater.PrepareUpdate"/> which will download all available updates
+    ///     Basing on this information you may call <see cref="NomadUpdater.PrepareUpdate"/> which will download all available updates
     /// </remarks>
     [Serializable]
     public class NomadAvailableUpdatesMessage : NomadMessage

@@ -29,7 +29,7 @@ namespace Nomad.Tests.UnitTests.Updater
         /// <summary>
         ///     System under test
         /// </summary>
-        protected Nomad.Updater.Updater Updater;
+        protected Nomad.Updater.NomadUpdater NomadUpdater;
 
 
         [SetUp]
@@ -51,7 +51,7 @@ namespace Nomad.Tests.UnitTests.Updater
                 Directory.Delete(PluginsDir, true);
             Directory.CreateDirectory(PluginsDir);
 
-            Updater = new Nomad.Updater.Updater(PluginsDir, ModulesRepository.Object,
+            NomadUpdater = new Nomad.Updater.NomadUpdater(PluginsDir, ModulesRepository.Object,
                                                       ModulesOperations.Object,
                                                       ModuleManifestFactory.Object,
                                                       EventAggregator.Object, ModulePackager.Object,DependencyChecker.Object);

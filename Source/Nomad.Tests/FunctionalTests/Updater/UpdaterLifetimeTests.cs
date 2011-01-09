@@ -127,6 +127,15 @@ namespace Nomad.Tests.FunctionalTests.Updater
         }
 
         /// <summary>
+        ///     Testing the process of the installation new, completly indendepnt module.
+        /// </summary>
+        [Test]
+        public void basic_update_scenario_when_installing_new_module()
+        {
+            
+        }
+
+        /// <summary>
         ///     Module A depends on B which depends on C. Only B is in repository with newer version.
         /// </summary>
         /// <remarks>

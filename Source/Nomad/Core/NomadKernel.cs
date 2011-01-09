@@ -216,7 +216,7 @@ namespace Nomad.Core
         private void RegisterAdditionalServices()
         {
             // registering updater using data from configuration
-            var updater = new Updater.Updater(KernelConfiguration.ModuleDirectoryPath,
+            var updater = new Updater.NomadUpdater(KernelConfiguration.ModuleDirectoryPath,
                                            KernelConfiguration.ModuleRepository,
                                            this,
                                            ModuleInfo.DefaultFactory,

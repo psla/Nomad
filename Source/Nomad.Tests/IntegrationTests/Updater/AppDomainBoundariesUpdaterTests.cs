@@ -28,7 +28,7 @@ namespace Nomad.Tests.IntegrationTests.Updater
         private Mock<IModuleDiscovery> _moduleDiscovery;
         private Mock<IModuleManifestFactory> _moduleManifestFactory;
         private Mock<IEventAggregator> _eventAggregator;
-        private Nomad.Updater.Updater _updater;
+        private Nomad.Updater.NomadUpdater _nomadUpdater;
 
 
         [SetUp]
@@ -47,7 +47,7 @@ namespace Nomad.Tests.IntegrationTests.Updater
             var asmName = typeof(Operations).Assembly.FullName;
             var typeName = typeof(Operations).FullName; 
             var instance = Activator.CreateInstance(_appdomain, asmName, typeName);
-            _updater = (instance.Unwrap() as Operations).Updater;
+            _nomadUpdater = (instance.Unwrap() as Operations).NomadUpdater;
         }
 
         [Test]
@@ -60,7 +60,7 @@ namespace Nomad.Tests.IntegrationTests.Updater
         public void update_event_is_cross_domain()
         {
             SetupUpdater();
-            _updater.CheckUpdates();
+            _nomadUpdater.CheckUpdates();
         }
 
         [TearDown]
@@ -84,11 +84,11 @@ namespace Nomad.Tests.IntegrationTests.Updater
             var eventAggregator = new Mock<IEventAggregator>();
             var dependencyChecker = new Mock<IDependencyChecker>();
             var packager = new Mock<IModulePackager>();
-            Updater = new Nomad.Updater.Updater(targetDirectory, modulesRepository.Object,
+            NomadUpdater = new Nomad.Updater.NomadUpdater(targetDirectory, modulesRepository.Object,
                                                  modulesOperations.Object,
                                                  moduleManifestFactory.Object, eventAggregator.Object,packager.Object,dependencyChecker.Object);
         }
 
-        public Nomad.Updater.Updater Updater { get; set; }
+        public Nomad.Updater.NomadUpdater NomadUpdater { get; set; }
     }
 }

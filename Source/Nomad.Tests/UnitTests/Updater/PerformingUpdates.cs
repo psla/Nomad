@@ -51,11 +51,11 @@ namespace Nomad.Tests.UnitTests.Updater
                                                                         .Select(x => x).Single()
                                              });
 
-            Updater.PrepareUpdate(modulePackages);
+            NomadUpdater.PrepareUpdate(modulePackages);
 
-            Updater.PerformUpdates(new CompositeModuleDiscovery());
+            NomadUpdater.PerformUpdates(new CompositeModuleDiscovery());
 
-            Updater.UpdateFinished.WaitOne();
+            NomadUpdater.UpdateFinished.WaitOne();
             ModulePackager.Verify(x => x.PerformUpdates(PluginsDir, It.IsAny<ModulePackage>()),
                                   Times.Exactly(n),
                                   string.Format("One package should be invoked {0} times.", n));
@@ -76,16 +76,16 @@ namespace Nomad.Tests.UnitTests.Updater
                                  new ModuleManifest(),
                              };
             // preapre stub module manifest
-            Updater.PrepareUpdate(moduleManifests);
+            NomadUpdater.PrepareUpdate(moduleManifests);
 
             ModulesRepository.Setup(x => x.GetModule(It.IsAny<string>()))
                 .Returns(new ModulePackage() {ModuleManifest = moduleManifests[0]});
 
-            Updater.PerformUpdates(new CompositeModuleDiscovery());
+            NomadUpdater.PerformUpdates(new CompositeModuleDiscovery());
 
             // wait till end to get the information about failure
-            Updater.UpdateFinished.WaitOne();
-            Assert.AreEqual(UpdaterStatus.Invalid, Updater.Status);
+            NomadUpdater.UpdateFinished.WaitOne();
+            Assert.AreEqual(UpdaterStatus.Invalid, NomadUpdater.Status);
         }
 
 
@@ -106,26 +106,26 @@ namespace Nomad.Tests.UnitTests.Updater
                 .Returns(new ModulePackage() {ModuleManifest = manifest});
 
             // preapre stub module manifest
-            Updater.PrepareUpdate(moduleManifests);
+            NomadUpdater.PrepareUpdate(moduleManifests);
 
             ModulesRepository.Setup(x => x.GetModule(It.IsAny<string>()))
                 .Returns(new ModulePackage() { ModuleManifest = moduleManifests[0] });
 
-            Updater.PerformUpdates(new CompositeModuleDiscovery());
+            NomadUpdater.PerformUpdates(new CompositeModuleDiscovery());
 
             // wait till end to get the information about failure
-            Updater.UpdateFinished.WaitOne();
-            Assert.AreEqual(UpdaterStatus.Invalid, Updater.Status);
+            NomadUpdater.UpdateFinished.WaitOne();
+            Assert.AreEqual(UpdaterStatus.Invalid, NomadUpdater.Status);
         }
 
 
         [Test]
         public void performing_updates_has_information_about_success()
         {
-            Updater.PerformUpdates(new CompositeModuleDiscovery());
+            NomadUpdater.PerformUpdates(new CompositeModuleDiscovery());
 
-            Updater.UpdateFinished.WaitOne();
-            Assert.AreEqual(UpdaterStatus.Idle, Updater.Status);
+            NomadUpdater.UpdateFinished.WaitOne();
+            Assert.AreEqual(UpdaterStatus.Idle, NomadUpdater.Status);
         }
 
         #endregion
@@ -135,9 +135,9 @@ namespace Nomad.Tests.UnitTests.Updater
         [Test]
         public void performing_updates_unload_modules()
         {
-            Updater.PerformUpdates(new CompositeModuleDiscovery());
+            NomadUpdater.PerformUpdates(new CompositeModuleDiscovery());
 
-            Updater.UpdateFinished.WaitOne();
+            NomadUpdater.UpdateFinished.WaitOne();
             ModulesOperations.Verify(x => x.UnloadModules(), Times.Exactly(1));
         }
 
@@ -145,9 +145,9 @@ namespace Nomad.Tests.UnitTests.Updater
         [Test]
         public void performing_updates_load_modules_back()
         {
-            Updater.PerformUpdates(new CompositeModuleDiscovery());
+            NomadUpdater.PerformUpdates(new CompositeModuleDiscovery());
 
-            Updater.UpdateFinished.WaitOne();
+            NomadUpdater.UpdateFinished.WaitOne();
             ModulesOperations.Verify(x => x.LoadModules(It.IsAny<IModuleDiscovery>()),
                                      Times.Exactly(1));
         }

@@ -68,7 +68,7 @@ namespace Nomad.Updater
         /// then <see cref="DefaultAfterUpdateModules"/> will be used.
         /// </para>
         /// <para>
-        /// Upon success or failure sets the flag <see cref="Updater.Status"/> with corresponding value.
+        /// Upon success or failure sets the flag <see cref="NomadUpdater.Status"/> with corresponding value.
         /// </para>
         /// </remarks>
         void PerformUpdates(IModuleDiscovery discovery);

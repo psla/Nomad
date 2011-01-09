@@ -53,10 +53,10 @@ namespace Nomad.Tests.UnitTests.Updater
             ModulesRepository.Setup(x => x.GetModule(It.IsAny<string>())).Returns(
                 new ModulePackage());
 
-            Updater.PrepareUpdate(modulePackages);
+            NomadUpdater.PrepareUpdate(modulePackages);
 
             EventAggregator.Verify();
-            Assert.AreEqual(UpdaterStatus.Invalid, Updater.Status);
+            Assert.AreEqual(UpdaterStatus.Invalid, NomadUpdater.Status);
         }
 
         [Test]
@@ -66,10 +66,10 @@ namespace Nomad.Tests.UnitTests.Updater
                 .Callback<NomadUpdatesReadyMessage>( msg => Assert.IsTrue(msg.Error))
                 .Verifiable("The message should be published");
 
-            Updater.PrepareUpdate(null);
+            NomadUpdater.PrepareUpdate(null);
 
             EventAggregator.Verify();
-            Assert.AreEqual(UpdaterStatus.Invalid, Updater.Status);
+            Assert.AreEqual(UpdaterStatus.Invalid, NomadUpdater.Status);
         }
 
         [Test]
@@ -82,13 +82,13 @@ namespace Nomad.Tests.UnitTests.Updater
                 .Callback<NomadUpdatesReadyMessage>(msg => Assert.IsTrue(msg.Error))
                 .Verifiable("The message should be published");
 
-            Updater.PrepareUpdate(new List<ModuleManifest>()
+            NomadUpdater.PrepareUpdate(new List<ModuleManifest>()
                                                                        {
                                                                            _moduleManifest
                                                                        });
 
             EventAggregator.Verify();
-            Assert.AreEqual(UpdaterStatus.Invalid,Updater.Status);
+            Assert.AreEqual(UpdaterStatus.Invalid,NomadUpdater.Status);
         }
         
         [Test]
@@ -112,14 +112,14 @@ namespace Nomad.Tests.UnitTests.Updater
                                                         })
                 .Verifiable("This message should be published upon exit");
 
-            Updater.PrepareUpdate(new List<ModuleManifest>()
+            NomadUpdater.PrepareUpdate(new List<ModuleManifest>()
                                                                        {
                                                                            _moduleManifest
                                                                        });
 
             EventAggregator.Verify();
             ModulesRepository.Verify();
-            Assert.AreEqual(UpdaterStatus.Prepared, Updater.Status);
+            Assert.AreEqual(UpdaterStatus.Prepared, NomadUpdater.Status);
         }
         
 
