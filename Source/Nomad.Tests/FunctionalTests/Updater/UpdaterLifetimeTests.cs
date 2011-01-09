@@ -29,6 +29,8 @@ namespace Nomad.Tests.FunctionalTests.Updater
     /// </summary>
     /// <remarks>
     ///     Some minor classes might be mocked like <see cref="IVersionProvider"/> from Manifest building.
+    /// 
+    ///     TODO: refactor this class into more managable one
     /// </remarks>
     [FunctionalTests]
     public class UpdaterLifetimeTests : ModuleLoadingWithCompilerTestFixture
@@ -126,14 +128,7 @@ namespace Nomad.Tests.FunctionalTests.Updater
             Assert.DoesNotThrow(() => Kernel.ServiceLocator.Resolve<IUpdater>());
         }
 
-        /// <summary>
-        ///     Testing the process of the installation new, completly indendepnt module.
-        /// </summary>
-        [Test]
-        public void basic_update_scenario_when_installing_new_module()
-        {
-            
-        }
+       
 
         /// <summary>
         ///     Module A depends on B which depends on C. Only B is in repository with newer version.
@@ -217,7 +212,7 @@ namespace Nomad.Tests.FunctionalTests.Updater
                                                          new DirectoryModuleDiscovery(updaterDir, SearchOption.TopDirectoryOnly));
             Kernel.LoadModules(discovery);
 
-            // register for updates avaliable message
+            // register for updates available message
             var hasBeenInvoked = false;
             Kernel.EventAggregator.Subscribe<NomadUpdatesReadyMessage>(message =>
                                                                            {
@@ -237,8 +232,63 @@ namespace Nomad.Tests.FunctionalTests.Updater
         }
 
 
-       
 
+        /// <summary>
+        ///     Testing the process of the installation new, completely independent module.
+        /// </summary>
+        /// <remarks>
+        ///     Modules used in this tests are simple module possible guys.
+        /// </remarks>
+        [Test]
+        public void basic_update_scenario_when_installing_new_module()
+        {
+            // create the updater module
+            string updaterDir = _configuration.ModuleDirectoryPath;
+            SetUpModuleWithManifest(updaterDir,
+                                    @"..\Source\Nomad.Tests\FunctionalTests\Data\Updater\UpdaterModule.cs");
+
+            // set up two simple modules -- to be loaded into kernel
+            string modulaADir = Path.Combine(_configuration.ModuleDirectoryPath,"moduleA");
+            string modulaBDir = Path.Combine(_configuration.ModuleDirectoryPath,"moduleB");
+            SetUpModuleWithManifest(modulaADir,ModuleCompiler.DefaultSimpleModuleSource);
+            SetUpModuleWithManifest(modulaBDir, ModuleCompiler.DefaultSimpleModuleSourceAlternative);
+            var twoSimpleModules = new CompositeModuleDiscovery(
+                new DirectoryModuleDiscovery(modulaADir, SearchOption.TopDirectoryOnly),
+                new DirectoryModuleDiscovery(modulaBDir, SearchOption.TopDirectoryOnly)
+                    );
+
+            // set up third simple module -- completely independent to be placed in remote repository
+            string moduleCDir = Path.Combine(_configuration.ModuleDirectoryPath, "moduleC");
+            SetUpModuleWithManifest(moduleCDir,ModuleCompiler.DefaultSimpleModuleSourceLastAlternative);
+            
+
+            // put the third one in repository
+            var listOfModuleInRepositoryInfos = twoSimpleModules.GetModules();
+            var listOfModuleInRepository = new List<ModuleManifest>(twoSimpleModules.GetModules().Select(x => x.Manifest));
+          
+            SetUpModulesRepository(listOfModuleInRepository,listOfModuleInRepositoryInfos);
+
+            // initialize kernel 
+            _configuration.UpdaterType = UpdaterType.Automatic;
+            SetUpKernel();
+
+            // load those two modules into kernel
+            Kernel.LoadModules(twoSimpleModules);
+
+            // invoke automatic update process
+            var updater = Kernel.ServiceLocator.Resolve<IUpdater>();
+            Kernel.EventAggregator.Publish(new BeginUpdateMessage());
+
+            // wait for updater to finish and being in a good state
+            Assert.NotNull(updater.UpdateFinished,"Update finshed object is null, meaning that no one has started perform update");
+            updater.UpdateFinished.WaitOne();
+            Assert.AreEqual(UpdaterStatus.Idle,Kernel.ServiceLocator.Resolve<IUpdater>().Status, "Problem with the state of the updater after reload");
+
+            // assert that there are 4 modules installed and running - 3 simples and one updater
+            var loadedModules = Kernel.ServiceLocator.Resolve<ILoadedModulesService>().GetLoadedModules();
+            Assert.AreEqual(4, loadedModules.Count);
+            
+        }
 
         [Test]
         public void basic_usage_scenerio_with_newer_versions_avaliable_automatic_update()
@@ -270,6 +320,8 @@ namespace Nomad.Tests.FunctionalTests.Updater
 
             // check if all stages of update were done
             bool avaliableUpdates = false;
+            bool readyUpdates = false;
+
             Kernel.EventAggregator.Subscribe<NomadAvailableUpdatesMessage>(
                 message =>
                     {
@@ -277,7 +329,7 @@ namespace Nomad.Tests.FunctionalTests.Updater
                             avaliableUpdates = true;
                     });
 
-            bool readyUpdates = false;
+            
             Kernel.EventAggregator.Subscribe<NomadUpdatesReadyMessage>(message =>
                                                                            {
                                                                                if (message.Error ==
@@ -292,7 +344,7 @@ namespace Nomad.Tests.FunctionalTests.Updater
             Kernel.EventAggregator.Publish(new BeginUpdateMessage());
 
             // verify stages
-            Assert.IsTrue(avaliableUpdates, "Avaliable updates message was not published.");
+            Assert.IsTrue(avaliableUpdates, "Available updates message was not published.");
             Assert.IsTrue(readyUpdates, "Updates ready message was not published.");
 
             // verify the outcome of the updater after finishing (this wait is for test purposes)
@@ -311,7 +363,7 @@ namespace Nomad.Tests.FunctionalTests.Updater
         public void selective_manual_update_with_updater_wokring_on_threads()
         {
            
-            // create the updater module for maual testing
+            // create the updater module for manual testing
             string updaterDir = _configuration.ModuleDirectoryPath;
             SetUpModuleWithManifest(updaterDir,
                                     @"..\Source\Nomad.Tests\FunctionalTests\Data\Updater\UpdaterModuleManual.cs");
@@ -350,7 +402,7 @@ namespace Nomad.Tests.FunctionalTests.Updater
             IModuleDiscovery v0Discovery =
                 SetUpModulesWithVersion(_configuration.ModuleDirectoryPath, "1.0.0.0");
 
-            // preapre module for this test with verions v1 (only of module A and module B) and put them into repository
+            // prepare module for this test with versions v1 (only of module A and module B) and put them into repository
             IModuleDiscovery v1Discovery = SetUpModulesWithVersion(repositoryDir, "2.0.0.0");
 
             // putting them into repo
@@ -358,21 +410,29 @@ namespace Nomad.Tests.FunctionalTests.Updater
             List<ModuleManifest> updateManifests = (from moduleInfo in updateModuleInfos
                                                     select moduleInfo.Manifest).ToList();
 
-            _moduleRepository.Setup(x => x.GetAvailableModules())
-                .Returns(new AvailableModules(updateManifests));
+            SetUpModulesRepository(updateManifests,updateModuleInfos);
+
+            return v0Discovery;
+        }
+
+        private void SetUpModulesRepository(List<ModuleManifest> moduleManifests,IEnumerable<ModuleInfo> updateModuleInfos)
+        {
+            _moduleRepository
+                .Setup(x => x.GetAvailableModules())
+                .Returns(new AvailableModules(moduleManifests));
 
             _moduleRepository.Setup(
-                x => x.GetModule(It.IsAny<string>()))
-                .Returns<string>(name => new ModulePackage
-                {
-                    ModuleManifest = updateModuleInfos
-                        .Where(x => x.Manifest.ModuleName.Equals(name))
-                        .Select(x => x.Manifest)
-                        .Single(),
-                    ModuleZip = GetZippedData(updateModuleInfos,
-                                              name)
-                });
-            return v0Discovery;
+               x => x.GetModule(It.IsAny<string>()))
+               .Returns<string>(name => new ModulePackage
+               {
+                   ModuleManifest = updateModuleInfos
+                       .Where(x => x.Manifest.ModuleName.Equals(name))
+                       .Select(x => x.Manifest)
+                       .Single(),
+
+                   ModuleZip = GetZippedData(updateModuleInfos,
+                                             name)
+               });
         }
 
         private static void AssertVersion(string version, IEnumerable<ModuleInfo> modules,
@@ -388,7 +448,7 @@ namespace Nomad.Tests.FunctionalTests.Updater
         }
 
 
-        private static byte[] GetZippedData(List<ModuleInfo> updateModuleInfos,
+        private static byte[] GetZippedData(IEnumerable<ModuleInfo> updateModuleInfos,
                                             string name)
         {
             string tmpFile = Path.GetTempFileName();
