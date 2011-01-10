@@ -10,7 +10,7 @@ using TestsShared;
 namespace Nomad.Tests.IntegrationTests.Updater
 {
     [IntegrationTests]
-    public class ZipPackager
+    public class ModulePackagerTests
     {
         [Test]
         public void zip_packager_unzips_the_file_properly()

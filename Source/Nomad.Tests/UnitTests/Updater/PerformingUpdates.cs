@@ -28,6 +28,10 @@ namespace Nomad.Tests.UnitTests.Updater
                               It.IsAny<IEnumerable<ModuleInfo>>(),
                               out outter))
                .Returns(true);
+
+           ModuleFinder
+               .Setup(x => x.FindDirectoryForPackage(It.IsAny<string>(), It.IsAny<ModulePackage>()))
+               .Returns<string,ModulePackage>( (dict,package) => dict );
        }
 
 

@@ -147,13 +147,15 @@
     <Compile Include="FunctionalTests\Modules\Filters\SignedModulesFiltering.cs" />
     <Compile Include="FunctionalTests\Kernel\NomadKernelEventRaising.cs" />
     <Compile Include="FunctionalTests\Updater\UpdaterLifetimeTests.cs" />
+    <Compile Include="FunctionalTests\Updater\UpdaterLifetimeTestsBase.cs" />
     <Compile Include="FunctionalTests\Utils\FromFileModuleDependencies.cs" />
     <Compile Include="IntegrationTests\Modules\DependencyChecker\CheckModulesTest.cs" />
     <Compile Include="IntegrationTests\Modules\DependencyChecker\DependencyCheckerBase.cs" />
     <Compile Include="IntegrationTests\Modules\DependencyChecker\VersionsSortModulesTests.cs" />
     <Compile Include="IntegrationTests\Modules\DirectoryModuleDiscovery.cs" />
     <Compile Include="IntegrationTests\Updater\AppDomainBoundariesUpdaterTests.cs" />
-    <Compile Include="IntegrationTests\Updater\ZipPackager.cs" />
+    <Compile Include="IntegrationTests\Updater\ModuleFinderTests.cs" />
+    <Compile Include="IntegrationTests\Updater\ModulePackagerTests.cs" />
     <Compile Include="UnitTests\Updater\CheckingUpdates.cs" />
     <Compile Include="UnitTests\Updater\PerformingUpdates.cs" />
     <Compile Include="GuiNunitHooks.cs" />

@@ -154,6 +154,8 @@
     <Compile Include="Updater\AvailableModules.cs" />
     <Compile Include="Messages\Updating\NomadAvailableUpdatesMessage.cs" />
     <Compile Include="Updater\IUpdater.cs" />
+    <Compile Include="Updater\ModuleFinders\IModuleFinder.cs" />
+    <Compile Include="Updater\ModuleFinders\ModuleFinder.cs" />
     <Compile Include="Updater\ModulePackagers\IModulePackager.cs" />
     <Compile Include="Updater\ModuleRepositories\IModulesRepository.cs" />
     <Compile Include="Updater\ModulePackage.cs" />

@@ -7,6 +7,7 @@ using Nomad.Modules;
 using Nomad.Modules.Discovery;
 using Nomad.Modules.Manifest;
 using Nomad.Updater;
+using Nomad.Updater.ModuleFinders;
 using Nomad.Updater.ModulePackagers;
 using Nomad.Updater.ModuleRepositories;
 using NUnit.Framework;
@@ -24,6 +25,7 @@ namespace Nomad.Tests.UnitTests.Updater
         protected Mock<IModulesRepository> ModulesRepository;
         protected Mock<IModulePackager> ModulePackager;
         protected Mock<IDependencyChecker> DependencyChecker;
+        protected Mock<IModuleFinder> ModuleFinder;
         protected string PluginsDir;
 
         /// <summary>
@@ -43,6 +45,7 @@ namespace Nomad.Tests.UnitTests.Updater
             EventAggregator = new Mock<IEventAggregator>(MockBehavior.Loose);
             DependencyChecker = new Mock<IDependencyChecker>(MockBehavior.Loose);
             ModulePackager = new Mock<IModulePackager>();
+            ModuleFinder = new Mock<IModuleFinder>();
             
             PluginsDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "UpdateTests");
 
@@ -51,9 +54,10 @@ namespace Nomad.Tests.UnitTests.Updater
                 Directory.Delete(PluginsDir, true);
             Directory.CreateDirectory(PluginsDir);
 
-            NomadUpdater = new Nomad.Updater.NomadUpdater(PluginsDir, ModulesRepository.Object,
-                                                      ModulesOperations.Object,
-                                                      EventAggregator.Object, ModulePackager.Object,DependencyChecker.Object);
+            NomadUpdater = new NomadUpdater(PluginsDir, ModulesRepository.Object,
+                                                      ModulesOperations.Object,EventAggregator.Object,
+                                                      ModulePackager.Object,DependencyChecker.Object,
+                                                      ModuleFinder.Object);
         }
     }
 }

@@ -9,6 +9,7 @@ using Nomad.Messages.Updating;
 using Nomad.Modules;
 using Nomad.Modules.Discovery;
 using Nomad.Modules.Manifest;
+using Nomad.Updater.ModuleFinders;
 using Nomad.Updater.ModulePackagers;
 using Nomad.Updater.ModuleRepositories;
 using Nomad.Utils;
@@ -42,12 +43,14 @@ namespace Nomad.Updater
         private readonly IDependencyChecker _dependencyChecker;
         private readonly IEventAggregator _eventAggregator;
         private readonly IModulePackager _modulePackager;
+        private readonly IModuleFinder _moduleFinder;
         private readonly IModulesOperations _modulesOperations;
         private readonly IModulesRepository _modulesRepository;
         private readonly string _targetDirectory;
         private IModuleDiscovery _defaultAfterUpdateModules;
 
         private IEnumerable<ModulePackage> _modulesPackages;
+        
 
 
         /// <summary>
@@ -62,11 +65,12 @@ namespace Nomad.Updater
         public NomadUpdater(string targetDirectory, IModulesRepository modulesRepository,
                             IModulesOperations modulesOperations,
                             IEventAggregator eventAggregator, IModulePackager modulePackager,
-                            IDependencyChecker dependencyChecker)
+                            IDependencyChecker dependencyChecker, IModuleFinder moduleFinder)
         {
             Status = UpdaterStatus.Idle;
 
             _targetDirectory = targetDirectory;
+            _moduleFinder = moduleFinder;
             _dependencyChecker = dependencyChecker;
             _modulePackager = modulePackager;
             _modulesRepository = modulesRepository;
@@ -302,7 +306,8 @@ namespace Nomad.Updater
                 // use packager for the each of the downloaded packages
                 foreach (ModulePackage modulePackage in _modulesPackages)
                 {
-                    var targetDirectory = SmartPackageFind(_targetDirectory, modulePackage);
+                    var targetDirectory = _moduleFinder.FindDirectoryForPackage(_targetDirectory,
+                                                                                modulePackage);
                     
                     _modulePackager.PerformUpdates(targetDirectory, modulePackage);
                 }
@@ -321,57 +326,6 @@ namespace Nomad.Updater
 
             // make signal about finishing the update.
             UpdateFinished.Set();
-        }
-
-        /// <summary>
-        ///    Gets the target folder for every package.
-        /// </summary>
-        /// <remarks>
-        ///     Checks for existing of the following module in the file system. If the module does not exists it creates new folder
-        /// for this module. 
-        ///     If module already exists, verification by <see cref="ModuleManifest.ModuleName"/> the unpack will be into its folder.
-        ///     Content of the folders won't be change by this method. 
-        ///     By using file system operation this method might provide impact on performance. However the search is not totally accurate due to 
-        /// impact on the loading each manifest found.
-        /// TODO: Method constructs dictionary for speeding up already found element.
-        /// </remarks>
-        /// <param name="targetDirectory">The directory where all modules reside</param>
-        /// <param name="modulePackage">Module to be replaced</param>
-        /// <returns>The folder where to unpack module</returns>
-        private string SmartPackageFind(string targetDirectory, ModulePackage modulePackage)
-        {
-            // get module name from package
-            var moduleName = modulePackage.ModuleManifest.ModuleName;
-
-            // founded manifest
-            string manifestDirectory = string.Empty;
-
-            // search directory for the module with such name
-            var directoryInfo = new DirectoryInfo(targetDirectory);
-            const string searchPattern = "*" + ModuleManifest.ManifestFileNameSuffix;
-            var files = directoryInfo.GetFiles(searchPattern,SearchOption.AllDirectories);
-            foreach(var manifestFile in files)
-            {
-                // get manifest outta file
-                var fileData = File.ReadAllBytes(manifestFile.FullName);
-                var manifest = XmlSerializerHelper.Deserialize<ModuleManifest>(fileData);
-
-                // check the names with the manifest)
-                if(manifest.ModuleName.Equals(moduleName))
-                {
-                    manifestDirectory = manifestFile.DirectoryName;
-                    break;
-                }
-            }
-
-            // if no manifest direcotry found then make the new folder containing the new module
-            if(string.IsNullOrEmpty(manifestDirectory))
-            {
-                manifestDirectory = Path.Combine(targetDirectory, moduleName);
-                Directory.CreateDirectory(manifestDirectory);
-            }
-
-            return manifestDirectory;
         }
 
 

@@ -33,10 +33,8 @@ namespace Nomad.Tests.FunctionalTests.Updater
     ///     TODO: refactor this class into more managable one
     /// </remarks>
     [FunctionalTests]
-    public class UpdaterLifetimeTests : ModuleLoadingWithCompilerTestFixture
+    public class UpdaterLifetimeTests : UpdaterLifetimeTestsBase
     {
-        private const string TestSpacePath = @"UpdaterLifetime\";
-
         #region SetUp Methods
 
         [TestFixtureSetUp]
@@ -62,50 +60,18 @@ namespace Nomad.Tests.FunctionalTests.Updater
         {
             base.SetUp();
 
-            _moduleRepository = new Mock<IModulesRepository>(MockBehavior.Loose);
+            ModulesRepository = new Mock<IModulesRepository>(MockBehavior.Loose);
 
             // get the basic of configuration (common place)
-            _configuration = NomadConfiguration.Default;
-            _configuration.ModuleRepository = _moduleRepository.Object;
-            _configuration.ModuleDirectoryPath = Path.Combine(TestSpacePath, "ModulesDir_") +
+            NomadConfigurationSettings = NomadConfiguration.Default;
+            NomadConfigurationSettings.ModuleRepository = ModulesRepository.Object;
+            NomadConfigurationSettings.ModuleDirectoryPath = Path.Combine(TestSpacePath, "ModulesDir_") +
                                                  _random.Next();
-        }
-
-
-        /// <summary>
-        ///     Sets the kernel up with the provided in <see cref="_configuration"/> configuration.
-        /// </summary>
-        private void SetUpKernel()
-        {
-            Kernel = new NomadKernel(_configuration);
-
-            Domain = Kernel.KernelAppDomain;
-        }
-
-
-        private IModuleDiscovery SetUpModulesWithVersion(string directory,
-                                                         string versionString)
-        {
-            string moduleA = directory + @"\ModuleA";
-            string moduleB = directory + @"\ModuleB";
-
-            ManifestBuilderConfiguration builderConfiguration = ManifestBuilderConfiguration.Default;
-            builderConfiguration.VersionProvider = GetVersionProviderForVersion(versionString);
-
-            SetUpModuleWithManifest(moduleA, ModuleCompiler.DefaultSimpleModuleSource,
-                                    builderConfiguration);
-            SetUpModuleWithManifest(moduleB, ModuleCompiler.DefaultSimpleModuleSourceAlternative,
-                                    builderConfiguration);
-
-            return new CompositeModuleDiscovery(new DirectoryModuleDiscovery(moduleA, SearchOption.TopDirectoryOnly),
-                                                new DirectoryModuleDiscovery(moduleB, SearchOption.TopDirectoryOnly));
         }
 
         #endregion
 
         private readonly Random _random = new Random();
-        private NomadConfiguration _configuration;
-        private Mock<IModulesRepository> _moduleRepository;
 
 
         [Test]
@@ -142,7 +108,7 @@ namespace Nomad.Tests.FunctionalTests.Updater
         public void failing_update_beacause_of_the_missing_dependencies()
         {
             // create the updater module
-            string updaterDir = _configuration.ModuleDirectoryPath;
+            string updaterDir = NomadConfigurationSettings.ModuleDirectoryPath;
             SetUpModuleWithManifest(updaterDir,
                                     @"..\Source\Nomad.Tests\FunctionalTests\Data\Updater\UpdaterModule.cs"); 
 
@@ -150,7 +116,7 @@ namespace Nomad.Tests.FunctionalTests.Updater
             const string versionString = "1.0.0.0";
            
             // create modules A with version v0 (this version and dependencies are only in manifest - not in assembly)
-            var moduelADir = Path.Combine(_configuration.ModuleDirectoryPath, @"ModuleADir");
+            var moduelADir = Path.Combine(NomadConfigurationSettings.ModuleDirectoryPath, @"ModuleADir");
             var moduleAConfiguration = ManifestBuilderConfiguration.Default;
             
             moduleAConfiguration.VersionProvider = GetVersionProviderForVersion(versionString);
@@ -159,7 +125,7 @@ namespace Nomad.Tests.FunctionalTests.Updater
             SetUpModuleWithManifest(moduelADir,ModuleCompiler.DefaultSimpleModuleSource,moduleAConfiguration);
 
             // create module B with the same setting as A (with version v0)
-            var moduelBDir = Path.Combine(_configuration.ModuleDirectoryPath, @"ModuleBDir");
+            var moduelBDir = Path.Combine(NomadConfigurationSettings.ModuleDirectoryPath, @"ModuleBDir");
             moduleAConfiguration = ManifestBuilderConfiguration.Default;
 
             moduleAConfiguration.VersionProvider = GetVersionProviderForVersion(versionString);
@@ -168,14 +134,14 @@ namespace Nomad.Tests.FunctionalTests.Updater
             SetUpModuleWithManifest(moduelBDir, ModuleCompiler.DefaultSimpleModuleSourceAlternative, moduleAConfiguration);
 
             // create module C with no dependency on any other module with version v0
-            var moduleCDir = Path.Combine(_configuration.ModuleDirectoryPath, @"ModuleCDir");
+            var moduleCDir = Path.Combine(NomadConfigurationSettings.ModuleDirectoryPath, @"ModuleCDir");
             moduleAConfiguration = ManifestBuilderConfiguration.Default;
 
             moduleAConfiguration.VersionProvider = GetVersionProviderForVersion(versionString);
             SetUpModuleWithManifest(moduleCDir, ModuleCompiler.DefaultSimpleModuleSourceLastAlternative, moduleAConfiguration);
 
             // create module B in version v1 which depends on module C in version v1
-            var moduleBVersionUpperDir = Path.Combine(_configuration.ModuleDirectoryPath,@"ModuleBUpperDir");
+            var moduleBVersionUpperDir = Path.Combine(NomadConfigurationSettings.ModuleDirectoryPath,@"ModuleBUpperDir");
             moduleAConfiguration = ManifestBuilderConfiguration.Default;
 
             moduleAConfiguration.VersionProvider = GetVersionProviderForVersion("2.0.0.0");
@@ -190,10 +156,10 @@ namespace Nomad.Tests.FunctionalTests.Updater
                 .Single();
 
 
-            _moduleRepository.Setup(x => x.GetAvailableModules())
+            ModulesRepository.Setup(x => x.GetAvailableModules())
                 .Returns(new AvailableModules(new List<ModuleManifest>(){bRepoModuleInfo.Manifest}));
 
-            _moduleRepository
+            ModulesRepository
                 .Setup(x => x.GetModule(It.IsAny<string>()))
                 .Returns(new ModulePackage()
                              {
@@ -202,7 +168,7 @@ namespace Nomad.Tests.FunctionalTests.Updater
                              });
 
             // configure kernel
-            _configuration.UpdaterType = UpdaterType.Automatic;
+            NomadConfigurationSettings.UpdaterType = UpdaterType.Automatic;
             SetUpKernel();
             
             // load modules A,B,C in version v0 into Nomad
@@ -243,13 +209,13 @@ namespace Nomad.Tests.FunctionalTests.Updater
         public void basic_update_scenario_when_installing_new_module()
         {
             // create the updater module
-            string updaterDir = _configuration.ModuleDirectoryPath;
+            string updaterDir = NomadConfigurationSettings.ModuleDirectoryPath;
             SetUpModuleWithManifest(updaterDir,
                                     @"..\Source\Nomad.Tests\FunctionalTests\Data\Updater\UpdaterModule.cs");
 
             // set up two simple modules -- to be loaded into kernel
-            string modulaADir = Path.Combine(_configuration.ModuleDirectoryPath,"moduleA");
-            string modulaBDir = Path.Combine(_configuration.ModuleDirectoryPath,"moduleB");
+            string modulaADir = Path.Combine(NomadConfigurationSettings.ModuleDirectoryPath,"moduleA");
+            string modulaBDir = Path.Combine(NomadConfigurationSettings.ModuleDirectoryPath,"moduleB");
             SetUpModuleWithManifest(modulaADir,ModuleCompiler.DefaultSimpleModuleSource);
             SetUpModuleWithManifest(modulaBDir, ModuleCompiler.DefaultSimpleModuleSourceAlternative);
             var twoSimpleModules = new CompositeModuleDiscovery(
@@ -258,7 +224,7 @@ namespace Nomad.Tests.FunctionalTests.Updater
                     );
 
             // set up third simple module -- completely independent to be placed in remote repository
-            string moduleCDir = Path.Combine(_configuration.ModuleDirectoryPath, "moduleC");
+            string moduleCDir = Path.Combine(NomadConfigurationSettings.ModuleDirectoryPath, "moduleC");
             SetUpModuleWithManifest(moduleCDir,ModuleCompiler.DefaultSimpleModuleSourceLastAlternative);
             
 
@@ -269,7 +235,7 @@ namespace Nomad.Tests.FunctionalTests.Updater
             SetUpModulesRepository(listOfModuleInRepository,listOfModuleInRepositoryInfos);
 
             // initialize kernel 
-            _configuration.UpdaterType = UpdaterType.Automatic;
+            NomadConfigurationSettings.UpdaterType = UpdaterType.Automatic;
             SetUpKernel();
 
             // set up the subscribers for stages of update
@@ -310,12 +276,13 @@ namespace Nomad.Tests.FunctionalTests.Updater
             Assert.AreEqual(4, loadedModules.Count);
             
         }
+        #region Manual / Automatic
 
         [Test]
         public void basic_usage_scenerio_with_newer_versions_avaliable_automatic_update()
         {
             // create the updater module
-            string updaterDir = _configuration.ModuleDirectoryPath;
+            string updaterDir = NomadConfigurationSettings.ModuleDirectoryPath;
             SetUpModuleWithManifest(updaterDir,
                                     @"..\Source\Nomad.Tests\FunctionalTests\Data\Updater\UpdaterModule.cs");
 
@@ -323,7 +290,7 @@ namespace Nomad.Tests.FunctionalTests.Updater
             IModuleDiscovery v0Discovery = SetUpTwoSimpleModulesGetTheirDiscovery();
 
             //  override kernel configuration and initialize kernel
-            _configuration.UpdaterType = UpdaterType.Automatic;
+            NomadConfigurationSettings.UpdaterType = UpdaterType.Automatic;
             SetUpKernel();
 
             // test against loading
@@ -385,7 +352,7 @@ namespace Nomad.Tests.FunctionalTests.Updater
         {
            
             // create the updater module for manual testing
-            string updaterDir = _configuration.ModuleDirectoryPath;
+            string updaterDir = NomadConfigurationSettings.ModuleDirectoryPath;
             SetUpModuleWithManifest(updaterDir,
                                     @"..\Source\Nomad.Tests\FunctionalTests\Data\Updater\UpdaterModuleManual.cs");
 
@@ -393,7 +360,7 @@ namespace Nomad.Tests.FunctionalTests.Updater
             IModuleDiscovery basicDiscovery = SetUpTwoSimpleModulesGetTheirDiscovery();
 
             // override kernel configuration
-            _configuration.UpdaterType = UpdaterType.Manual;
+            NomadConfigurationSettings.UpdaterType = UpdaterType.Manual;
             SetUpKernel();
 
             // skip verification about loaded modules, just load them
@@ -414,116 +381,7 @@ namespace Nomad.Tests.FunctionalTests.Updater
             AssertVersion("2.0.0.0", loadedModules, "SimplestModulePossible2");
         }
 
-        #region Helper methods
-
-        private IModuleDiscovery SetUpTwoSimpleModulesGetTheirDiscovery()
-        {
-            string repositoryDir = Path.Combine(TestSpacePath, "Repository");
-
-            // create the modules with specific version (mocking the version provider) and use the special manifest builder
-            IModuleDiscovery v0Discovery =
-                SetUpModulesWithVersion(_configuration.ModuleDirectoryPath, "1.0.0.0");
-
-            // prepare module for this test with versions v1 (only of module A and module B) and put them into repository
-            IModuleDiscovery v1Discovery = SetUpModulesWithVersion(repositoryDir, "2.0.0.0");
-
-            // putting them into repo
-            var updateModuleInfos = new List<ModuleInfo>(v1Discovery.GetModules());
-            List<ModuleManifest> updateManifests = (from moduleInfo in updateModuleInfos
-                                                    select moduleInfo.Manifest).ToList();
-
-            SetUpModulesRepository(updateManifests,updateModuleInfos);
-
-            return v0Discovery;
-        }
-
-        private void SetUpModulesRepository(List<ModuleManifest> moduleManifests,IEnumerable<ModuleInfo> updateModuleInfos)
-        {
-            _moduleRepository
-                .Setup(x => x.GetAvailableModules())
-                .Returns(new AvailableModules(moduleManifests));
-
-            _moduleRepository.Setup(
-               x => x.GetModule(It.IsAny<string>()))
-               .Returns<string>(name => new ModulePackage
-               {
-                   ModuleManifest = updateModuleInfos
-                       .Where(x => x.Manifest.ModuleName.Equals(name))
-                       .Select(x => x.Manifest)
-                       .Single(),
-
-                   ModuleZip = GetZippedData(updateModuleInfos,
-                                             name)
-               });
-        }
-
-        private static void AssertVersion(string version, IEnumerable<ModuleInfo> modules,
-                                          string moduleName)
-        {
-            string loadedVersion = modules
-                .Where(x => x.Manifest.ModuleName.Equals(moduleName))
-                .Select(x => x.Manifest.ModuleVersion)
-                .Single()
-                .ToString();
-
-            Assert.AreEqual(version, loadedVersion);
-        }
-
-
-        private static byte[] GetZippedData(IEnumerable<ModuleInfo> updateModuleInfos,
-                                            string name)
-        {
-            string tmpFile = Path.GetTempFileName();
-            using (var zipFile = new ZipFile())
-            {
-                // get the directory in which we have this module
-                string asmPath =
-                    updateModuleInfos.Where(x => x.Manifest.ModuleName.Equals(name)).Select(
-                        x => x.AssemblyPath).Single();
-
-                DirectoryInfo directoryInfo = new DirectoryInfo(asmPath).Parent;
-
-                // get all files from this directory into zip archive
-                foreach (FileInfo fileInfo in directoryInfo.GetFiles())
-                {
-                    zipFile.AddFile(fileInfo.FullName,".");
-                }
-
-                zipFile.Save(tmpFile);
-            }
-
-            return File.ReadAllBytes(tmpFile);
-        }
-
-        private static IModulesDependenciesProvider GetModuleDependenciesOnSingleModule(string s, string versionString)
-        {
-            var moduleAonBDependency = new ModuleDependency()
-            {
-                HasLoadingOrderPriority = false,
-                MinimalVersion = new Version(versionString),
-                ModuleName = s,
-                ProcessorArchitecture = ProcessorArchitecture.MSIL
-            };
-
-            var moduleDependencyProviderMock = new Mock<IModulesDependenciesProvider>(MockBehavior.Loose);
-            moduleDependencyProviderMock
-                .Setup(x => x.GetDependencyModules(It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(new List<ModuleDependency>() { moduleAonBDependency });
-
-            return moduleDependencyProviderMock.Object;
-        }
-
-        private static IVersionProvider GetVersionProviderForVersion(string versionString)
-        {
-            var mockedVersionProvider = new Mock<IVersionProvider>(MockBehavior.Loose);
-            mockedVersionProvider
-                .Setup(x => x.GetVersion(It.IsAny<string>()))
-                .Returns(new Version(versionString));
-
-            return mockedVersionProvider.Object;
-        }
-
-        #endregion
+        #endregion        
     }
 
     [Serializable]

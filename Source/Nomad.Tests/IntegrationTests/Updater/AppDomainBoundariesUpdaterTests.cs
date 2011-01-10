@@ -11,6 +11,7 @@ using Nomad.Modules;
 using Nomad.Modules.Discovery;
 using Nomad.Modules.Manifest;
 using Nomad.Updater;
+using Nomad.Updater.ModuleFinders;
 using Nomad.Updater.ModulePackagers;
 using Nomad.Updater.ModuleRepositories;
 using NUnit.Framework;
@@ -80,14 +81,16 @@ namespace Nomad.Tests.IntegrationTests.Updater
             modulesRepository.Setup(x => x.GetAvailableModules()).Returns(
                 new AvailableModules(new List<ModuleManifest>()));
             var modulesOperations = new Mock<IModulesOperations>();
-            var moduleManifestFactory = new Mock<IModuleManifestFactory>();
+            var modulesFinder = new Mock<IModuleFinder>();
             var eventAggregator = new Mock<IEventAggregator>();
             var dependencyChecker = new Mock<IDependencyChecker>();
             var packager = new Mock<IModulePackager>();
-            NomadUpdater = new Nomad.Updater.NomadUpdater(targetDirectory, modulesRepository.Object,
-                                                 modulesOperations.Object, eventAggregator.Object,packager.Object,dependencyChecker.Object);
+            NomadUpdater = new NomadUpdater(targetDirectory, modulesRepository.Object,
+                                                 modulesOperations.Object, eventAggregator.Object,
+                                                 packager.Object,
+                                                 dependencyChecker.Object,modulesFinder.Object);
         }
 
-        public Nomad.Updater.NomadUpdater NomadUpdater { get; set; }
+        public NomadUpdater NomadUpdater { get; set; }
     }
 }

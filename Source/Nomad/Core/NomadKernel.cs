@@ -216,13 +216,15 @@ namespace Nomad.Core
         private void RegisterAdditionalServices()
         {
             // registering updater using data from configuration
+            // TODO: maybe changing the event aggregator not to be passed via constructor
             var updater = new Updater.NomadUpdater(KernelConfiguration.ModuleDirectoryPath,
                                            KernelConfiguration.ModuleRepository,
                                            this,
-                                           //TODO ? change it to use configuration class ?
                                            EventAggregator,
                                            KernelConfiguration.ModulePackager,
-                                           KernelConfiguration.DependencyChecker);
+                                           KernelConfiguration.DependencyChecker,
+                                           KernelConfiguration.ModuleFinder);
+
             // FIXME this into construcot of the updater ?
             updater.Mode = KernelConfiguration.UpdaterType;
             ServiceLocator.Register<IUpdater>(updater);
