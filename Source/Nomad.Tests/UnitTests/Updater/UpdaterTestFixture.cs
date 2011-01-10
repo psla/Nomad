@@ -53,7 +53,6 @@ namespace Nomad.Tests.UnitTests.Updater
 
             NomadUpdater = new Nomad.Updater.NomadUpdater(PluginsDir, ModulesRepository.Object,
                                                       ModulesOperations.Object,
-                                                      ModuleManifestFactory.Object,
                                                       EventAggregator.Object, ModulePackager.Object,DependencyChecker.Object);
         }
     }

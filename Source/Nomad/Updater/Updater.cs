@@ -11,6 +11,7 @@ using Nomad.Modules.Discovery;
 using Nomad.Modules.Manifest;
 using Nomad.Updater.ModulePackagers;
 using Nomad.Updater.ModuleRepositories;
+using Nomad.Utils;
 
 namespace Nomad.Updater
 {
@@ -40,7 +41,6 @@ namespace Nomad.Updater
     {
         private readonly IDependencyChecker _dependencyChecker;
         private readonly IEventAggregator _eventAggregator;
-        private readonly IModuleManifestFactory _moduleManifestFactory;
         private readonly IModulePackager _modulePackager;
         private readonly IModulesOperations _modulesOperations;
         private readonly IModulesRepository _modulesRepository;
@@ -56,13 +56,11 @@ namespace Nomad.Updater
         /// <param name="targetDirectory">directory to install modules to</param>
         /// <param name="modulesRepository">backend used to retrieve modules information. ie. WebServiceModulesRepository, WebModulesRepository, and so on</param>
         /// <param name="modulesOperations">backend used to unload / load modules</param>
-        /// <param name="moduleManifestFactory">factory which creates <see cref="ModuleManifest"/> based on <see cref="ModuleInfo"/></param>
         /// <param name="eventAggregator">event aggregator for providing events</param>
         /// <param name="modulePackager">packager used for unpacking packages</param>
         /// <param name="dependencyChecker">dependency checker engine used for validating the outcome</param>
         public NomadUpdater(string targetDirectory, IModulesRepository modulesRepository,
                             IModulesOperations modulesOperations,
-                            IModuleManifestFactory moduleManifestFactory,
                             IEventAggregator eventAggregator, IModulePackager modulePackager,
                             IDependencyChecker dependencyChecker)
         {
@@ -73,7 +71,6 @@ namespace Nomad.Updater
             _modulePackager = modulePackager;
             _modulesRepository = modulesRepository;
             _modulesOperations = modulesOperations;
-            _moduleManifestFactory = moduleManifestFactory;
             _eventAggregator = eventAggregator;
 
             _modulesPackages = new List<ModulePackage>();
@@ -92,7 +89,7 @@ namespace Nomad.Updater
         ///     The type in which updater works.
         /// </summary>
         /// <remarks>
-        ///     TODO: implement thread safety of this property (within the 
+        ///     TODO: implement thread safety of this property and the whole NomadUpdater
         ///     This property is freezable in case of working w
         /// </remarks>
         public UpdaterType Mode { get; set; }
@@ -101,15 +98,16 @@ namespace Nomad.Updater
         ///     Provides the default discovery to be loaded during <see cref="Mode"/> being set to <see cref="UpdaterType.Automatic"/>
         /// </summary>
         /// <remarks>
-        ///     The default value are all currently loaded modules.
+        ///     The default value are all modules from configuration directory <see cref="NomadConfiguration.ModuleDirectoryPath"/>
         /// </remarks>
         public IModuleDiscovery DefaultAfterUpdateModules
         {
             get
             {
+                // if no specified defaults the use configuration directory full search
                 if (_defaultAfterUpdateModules == null)
                     return new DirectoryModuleDiscovery(_targetDirectory,
-                                                        SearchOption.TopDirectoryOnly);
+                                                        SearchOption.AllDirectories);
 
                 return _defaultAfterUpdateModules;
             }
@@ -267,7 +265,7 @@ namespace Nomad.Updater
         #endregion
 
         /// <summary>
-        ///     Helper method that performs the dowloading.
+        ///     Helper method that performs the downloading.
         /// </summary>
         /// <param name="availableUpdates"></param>
         /// <param name="modulePackages"></param>
@@ -294,7 +292,6 @@ namespace Nomad.Updater
 
         private void UpdateInThreadPerforming(IModuleDiscovery afterUpdateModulesToBeLoaded)
         {
-            IEnumerable<ModulePackage> modulePackages = _modulesPackages;
             try
             {
                 // FIXME: this sleep is totally wrong
@@ -302,30 +299,79 @@ namespace Nomad.Updater
 
                 _modulesOperations.UnloadModules();
 
-                foreach (ModulePackage modulePackage in modulePackages)
+                // use packager for the each of the downloaded packages
+                foreach (ModulePackage modulePackage in _modulesPackages)
                 {
-                    // FIXME: replace this thing into directory from directory discovery
-                    _modulePackager.PerformUpdates(_targetDirectory, modulePackage);
+                    var targetDirectory = SmartPackageFind(_targetDirectory, modulePackage);
+                    
+                    _modulePackager.PerformUpdates(targetDirectory, modulePackage);
                 }
-
                 _modulesOperations.LoadModules(afterUpdateModulesToBeLoaded);
             }
             catch (Exception)
             {
                 // catch exceptions, TODO: add logging for this
                 Status = UpdaterStatus.Invalid;
-
                 // make signal about finishing the update
                 UpdateFinished.Set();
-
                 return;
             }
-
             // set result of the updates
             Status = UpdaterStatus.Idle;
 
             // make signal about finishing the update.
             UpdateFinished.Set();
+        }
+
+        /// <summary>
+        ///    Gets the target folder for every package.
+        /// </summary>
+        /// <remarks>
+        ///     Checks for existing of the following module in the file system. If the module does not exists it creates new folder
+        /// for this module. 
+        ///     If module already exists, verification by <see cref="ModuleManifest.ModuleName"/> the unpack will be into its folder.
+        ///     Content of the folders won't be change by this method. 
+        ///     By using file system operation this method might provide impact on performance. However the search is not totally accurate due to 
+        /// impact on the loading each manifest found.
+        /// TODO: Method constructs dictionary for speeding up already found element.
+        /// </remarks>
+        /// <param name="targetDirectory">The directory where all modules reside</param>
+        /// <param name="modulePackage">Module to be replaced</param>
+        /// <returns>The folder where to unpack module</returns>
+        private string SmartPackageFind(string targetDirectory, ModulePackage modulePackage)
+        {
+            // get module name from package
+            var moduleName = modulePackage.ModuleManifest.ModuleName;
+
+            // founded manifest
+            string manifestDirectory = string.Empty;
+
+            // search directory for the module with such name
+            var directoryInfo = new DirectoryInfo(targetDirectory);
+            const string searchPattern = "*" + ModuleManifest.ManifestFileNameSuffix;
+            var files = directoryInfo.GetFiles(searchPattern,SearchOption.AllDirectories);
+            foreach(var manifestFile in files)
+            {
+                // get manifest outta file
+                var fileData = File.ReadAllBytes(manifestFile.FullName);
+                var manifest = XmlSerializerHelper.Deserialize<ModuleManifest>(fileData);
+
+                // check the names with the manifest)
+                if(manifest.ModuleName.Equals(moduleName))
+                {
+                    manifestDirectory = manifestFile.DirectoryName;
+                    break;
+                }
+            }
+
+            // if no manifest direcotry found then make the new folder containing the new module
+            if(string.IsNullOrEmpty(manifestDirectory))
+            {
+                manifestDirectory = Path.Combine(targetDirectory, moduleName);
+                Directory.CreateDirectory(manifestDirectory);
+            }
+
+            return manifestDirectory;
         }
 
 
@@ -353,7 +399,7 @@ namespace Nomad.Updater
         private static IEnumerable<ModuleInfo> FormatAvalibaleModules(
             IEnumerable<ModuleManifest> availableUpdates)
         {
-            // FIXME: this method should be romved in the final version
+            // FIXME: this method should be removed in the final version
             var rnd = new Random();
             return
                 availableUpdates.Select(x => new ModuleInfo(rnd.Next().ToString(), x, null)).ToList();

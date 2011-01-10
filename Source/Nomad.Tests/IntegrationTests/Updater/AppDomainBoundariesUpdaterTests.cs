@@ -85,8 +85,7 @@ namespace Nomad.Tests.IntegrationTests.Updater
             var dependencyChecker = new Mock<IDependencyChecker>();
             var packager = new Mock<IModulePackager>();
             NomadUpdater = new Nomad.Updater.NomadUpdater(targetDirectory, modulesRepository.Object,
-                                                 modulesOperations.Object,
-                                                 moduleManifestFactory.Object, eventAggregator.Object,packager.Object,dependencyChecker.Object);
+                                                 modulesOperations.Object, eventAggregator.Object,packager.Object,dependencyChecker.Object);
         }
 
         public Nomad.Updater.NomadUpdater NomadUpdater { get; set; }

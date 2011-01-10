@@ -219,7 +219,6 @@ namespace Nomad.Core
             var updater = new Updater.NomadUpdater(KernelConfiguration.ModuleDirectoryPath,
                                            KernelConfiguration.ModuleRepository,
                                            this,
-                                           ModuleInfo.DefaultFactory,
                                            //TODO ? change it to use configuration class ?
                                            EventAggregator,
                                            KernelConfiguration.ModulePackager,

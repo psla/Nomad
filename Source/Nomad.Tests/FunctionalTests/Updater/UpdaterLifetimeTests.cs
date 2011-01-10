@@ -409,7 +409,8 @@ namespace Nomad.Tests.FunctionalTests.Updater
             updater.UpdateFinished.WaitOne();
 
             var loadedModules = Kernel.ServiceLocator.Resolve<ILoadedModulesService>().GetLoadedModules();
-            Assert.AreEqual(2, loadedModules.Count); // updater + simples module 2 ;)
+            Assert.AreEqual(3, loadedModules.Count); // updater + simples ;)
+            AssertVersion("1.0.0.0", loadedModules, "SimplestModulePossible1");
             AssertVersion("2.0.0.0", loadedModules, "SimplestModulePossible2");
         }
 
