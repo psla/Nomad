@@ -18,3 +18,4 @@ NDependOut/
 *.log
 *.toc
 StyleCop.Cache
+*.vs10x
