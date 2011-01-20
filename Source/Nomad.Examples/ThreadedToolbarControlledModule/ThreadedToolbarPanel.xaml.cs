@@ -37,7 +37,8 @@ namespace ThreadedToolbarControlledModule
 
         private void WorkerMethod(object sender, DoWorkEventArgs e)
         {
-            for (int i = 1; i < 100; i++)
+            var bw = sender as BackgroundWorker;
+            for (int i = 1; i < 100 && !bw.CancellationPending; i++)
             {
                 Thread.Sleep(100);
                 _bgWorker.ReportProgress(i);
