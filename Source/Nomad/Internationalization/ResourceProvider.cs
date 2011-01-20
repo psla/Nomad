@@ -18,8 +18,8 @@ namespace Nomad.Internationalization
         ///</summary>
         public static readonly ResourceProvider CurrentResourceProvider = new ResourceProvider();
 
-        private readonly IDictionary<string, IResourceSource> _resourceSources =
-            new Dictionary<string, IResourceSource>();
+        private readonly IDictionary<string, ICollection<IResourceSource>> _resourceSources =
+            new Dictionary<string, ICollection<IResourceSource>>();
 
 
         private ResourceProvider()
@@ -51,33 +51,38 @@ namespace Nomad.Internationalization
         //TODO: We may add 2nd step return default if not found for current culture
         public string Retrieve(string request)
         {
-            IResourceSource source;
-            if (_resourceSources.TryGetValue(Thread.CurrentThread.CurrentUICulture.Name, out source))
+            ICollection<IResourceSource> sources;
+            if (_resourceSources.TryGetValue(Thread.CurrentThread.CurrentUICulture.Name, out sources))
             {
-                string resource = source.Retrieve(request);
-                if (null != resource)
-                    return resource;
+                foreach (var source in sources) //TODO: Consider thread safety (collection changed..)
+                {
+                    string resource = source.Retrieve(request);
+                    if (null != resource)
+                        return resource;
+                }
             }
             return request;
         }
 
 
         ///<summary>
-        /// Adds resource source in specific culture name
+        /// Adds resource source in specific culture name. 
         ///</summary>
         /// <remarks>
-        /// The same resource may be added many times to vary culture names</remarks>
+        /// <para>
+        /// The same resource may be added many times to vary culture names</para>
+        /// <para>
+        /// Resources for the same language may be added many times - they will be used in random order
+        /// </para>
+        /// </remarks>
         ///<param name="cultureName">culture name for which resource should be used</param>
         ///<param name="resourceSource">source to use for specified language</param>
-        /// <exception cref="ArgumentException">when provided <see cref="cultureName"/> was already registered</exception>
         public void AddSource(string cultureName, IResourceSource resourceSource)
         {
-            if (_resourceSources.ContainsKey(cultureName))
-                throw new ArgumentException(
-                    "There is already defined resource source for provided culture name",
-                    "cultureName");
+            if (!_resourceSources.ContainsKey(cultureName))
+                _resourceSources[cultureName] = new List<IResourceSource>();
 
-            _resourceSources.Add(cultureName, resourceSource);
+            _resourceSources[cultureName].Add(resourceSource);
         }
 
 

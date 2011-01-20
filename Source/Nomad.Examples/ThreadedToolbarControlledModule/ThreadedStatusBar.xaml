@@ -1,0 +1,13 @@
+﻿<UserControl x:Class="ThreadedToolbarControlledModule.ThreadedStatusBar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:Internationalization="clr-namespace:Nomad.Internationalization;assembly=Nomad" mc:Ignorable="d" 
+             >
+    <Grid>
+        <TextBlock Name="ready" Visibility="Collapsed" Text="{Internationalization:ResourceExtension ThreadedToolbarPanel.Ready}" />
+        <TextBlock Name="calculating" Visibility="Collapsed" Text="{Internationalization:ResourceExtension ThreadedToolbarPanel.Processing}"></TextBlock>
+        <TextBlock Name="calculated" Visibility="Collapsed" Text="{Internationalization:ResourceExtension ThreadedToolbarPanel.Completed}"></TextBlock>
+        <TextBlock Name="cancelled" Visibility="Collapsed" Text="{Internationalization:ResourceExtension ThreadedToolbarPanel.Cancelled}"></TextBlock>
+    </Grid>
+</UserControl>

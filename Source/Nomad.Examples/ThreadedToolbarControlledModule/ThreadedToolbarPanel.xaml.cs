@@ -17,11 +17,13 @@ namespace ThreadedToolbarControlledModule
     {
         private readonly BackgroundWorker _bgWorker;
         private readonly IEventAggregator _eventAggregator;
+        private readonly ThreadedStatusBar _statusBar;
 
 
-        public ThreadedToolbarPanel(IEventAggregator eventAggregator)
+        public ThreadedToolbarPanel(IEventAggregator eventAggregator, ThreadedStatusBar statusBar)
         {
             _eventAggregator = eventAggregator;
+            _statusBar = statusBar;
             InitializeComponent();
             _bgWorker = new BackgroundWorker
                             {
@@ -30,6 +32,7 @@ namespace ThreadedToolbarControlledModule
                             };
             _bgWorker.DoWork += WorkerMethod;
             _bgWorker.ProgressChanged += HandleProgressChanged;
+            statusBar.ShowReady();
         }
 
 
@@ -47,12 +50,14 @@ namespace ThreadedToolbarControlledModule
                 Thread.Sleep(100);
                 _bgWorker.ReportProgress(i);
             }
+            _statusBar.ShowCalculated();
         }
 
 
         private void StopMe(object sender, RoutedEventArgs e)
         {
             _bgWorker.CancelAsync();
+            _statusBar.ShowCancelled();
         }
 
 
@@ -61,6 +66,7 @@ namespace ThreadedToolbarControlledModule
             if (!_bgWorker.IsBusy)
             {
                 _bgWorker.RunWorkerAsync();
+                _statusBar.ShowCalculating();
             }
         }
     }
