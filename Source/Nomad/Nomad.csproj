@@ -104,6 +104,8 @@
     <Compile Include="Communication\EventAggregation\NullGuiThreadProvider.cs" />
     <Compile Include="Communication\EventAggregation\TicketDisposedArgs.cs" />
     <Compile Include="Communication\EventAggregation\WpfGuiThreadProvider.cs" />
+    <Compile Include="Internationalization\IResourceSource.cs" />
+    <Compile Include="Internationalization\ResourceProvider.cs" />
     <Compile Include="Messages\Loading\NomadAllModulesLoadedMessage.cs" />
     <Compile Include="Messages\Loading\NomadCouldNotLoadModuleMessage.cs" />
     <Compile Include="Messages\NomadCultureChangedMessage.cs" />

@@ -156,6 +156,7 @@
     <Compile Include="IntegrationTests\Updater\AppDomainBoundariesUpdaterTests.cs" />
     <Compile Include="IntegrationTests\Updater\ModuleFinderTests.cs" />
     <Compile Include="IntegrationTests\Updater\ModulePackagerTests.cs" />
+    <Compile Include="UnitTests\Internationalization.cs" />
     <Compile Include="UnitTests\Updater\CheckingUpdates.cs" />
     <Compile Include="UnitTests\Updater\PerformingUpdates.cs" />
     <Compile Include="GuiNunitHooks.cs" />
