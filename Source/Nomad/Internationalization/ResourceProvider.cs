@@ -13,15 +13,38 @@ namespace Nomad.Internationalization
     /// </remarks>
     public class ResourceProvider
     {
+        ///<summary>
+        /// Contains current instance of resource provider
+        ///</summary>
+        public static readonly ResourceProvider CurrentResourceProvider = new ResourceProvider();
+
         private readonly IDictionary<string, IResourceSource> _resourceSources =
             new Dictionary<string, IResourceSource>();
+
+
+        private ResourceProvider()
+        {
+        }
+
+
+        ///<summary>
+        /// Invoked when culture changes
+        ///</summary>
+        public event EventHandler<EventArgs> CultureChanged;
+
+
+        internal void InvokeCultureChanged(EventArgs e)
+        {
+            EventHandler<EventArgs> handler = CultureChanged;
+            if (handler != null) handler(this, e);
+        }
 
 
         /// <summary>
         /// Returns resources based on current thread <see cref="CultureInfo"/>
         /// </summary>
         /// <remarks>
-        /// 1. Look up into current culture resource source
+        /// 1. Look up into current UI culture resource source
         /// 2. If not found, return request
         /// <param name="request">resource to find</param>
         /// <returns>Resource or request when no found</returns>
@@ -29,9 +52,9 @@ namespace Nomad.Internationalization
         public string Retrieve(string request)
         {
             IResourceSource source;
-            if(_resourceSources.TryGetValue(Thread.CurrentThread.CurrentCulture.Name, out source))
+            if (_resourceSources.TryGetValue(Thread.CurrentThread.CurrentUICulture.Name, out source))
             {
-                var resource = source.Retrieve(request);
+                string resource = source.Retrieve(request);
                 if (null != resource)
                     return resource;
             }
@@ -55,6 +78,27 @@ namespace Nomad.Internationalization
                     "cultureName");
 
             _resourceSources.Add(cultureName, resourceSource);
+        }
+
+
+        /// <summary>
+        /// Changes UI Culture of current thread and notifies its children
+        /// </summary>
+        /// <param name="newUiCulture"></param>
+        public void ChangeUiCulture(CultureInfo newUiCulture)
+        {
+            Thread.CurrentThread.CurrentUICulture = newUiCulture;
+            InvokeCultureChanged(EventArgs.Empty);
+        }
+
+
+        /// <summary>
+        /// Resets state of resource provider
+        /// </summary>
+        public void Reset()
+        {
+            _resourceSources.Clear();
+            InvokeCultureChanged(EventArgs.Empty);
         }
     }
 }

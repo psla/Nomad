@@ -1,6 +1,7 @@
 using System.Threading;
 using Nomad.Communication.EventAggregation;
 using Nomad.Communication.ServiceLocation;
+using Nomad.Internationalization;
 using Nomad.Messages;
 using Nomad.Modules;
 using Nomad.Regions;
@@ -54,6 +55,10 @@ namespace Application_WPF_Shell
         {
             var regionManager = new RegionManager(new RegionFactory(GetRegionAdapters()));
             _locator.Register(regionManager);
+
+            var resourceProvider = ResourceProvider.CurrentResourceProvider;
+            resourceProvider.AddSource("pl-PL", new FakeResourceSource());
+            _aggregator.Subscribe<NomadCultureChangedMessage>(x => resourceProvider.ChangeUiCulture(x.CurrentCulture));
 
             _app = new App();
             _app.Run(new MainWindow(_locator, _aggregator, _resetEvent));
