@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Threading;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace ThreadedToolbarControlledModule
@@ -14,7 +15,7 @@ namespace ThreadedToolbarControlledModule
         }
 
 
-        public void HideAllStatus()
+        private void HideAllStatus()
         {
             cancelled.Visibility = Visibility.Collapsed;
             ready.Visibility = Visibility.Collapsed;
@@ -24,26 +25,38 @@ namespace ThreadedToolbarControlledModule
 
         public void ShowCancelled()
         {
-            HideAllStatus();
-            cancelled.Visibility = System.Windows.Visibility.Visible;
+            Dispatcher.BeginInvoke((ThreadStart) delegate
+                                       {
+                                           HideAllStatus();
+                                           cancelled.Visibility = System.Windows.Visibility.Visible;
+                                       });
         }
 
         public void ShowCalculating()
         {
-            HideAllStatus();
-            calculating.Visibility = System.Windows.Visibility.Visible;
+            Dispatcher.BeginInvoke((ThreadStart) delegate
+                                                     {
+                                            HideAllStatus();
+                                            calculating.Visibility = System.Windows.Visibility.Visible;
+                                                     });
         }
 
         public void ShowReady()
         {
-            HideAllStatus();
-            ready.Visibility = System.Windows.Visibility.Visible;
+            Dispatcher.BeginInvoke((ThreadStart) delegate
+                                                     {
+                                             HideAllStatus();
+                                             ready.Visibility = System.Windows.Visibility.Visible;
+                                                     });
         }
 
         public void ShowCalculated()
         {
-            HideAllStatus();
-            ready.Visibility = System.Windows.Visibility.Visible;
+            Dispatcher.BeginInvoke((ThreadStart) delegate
+                                                     {
+                                            HideAllStatus();
+                                            ready.Visibility = System.Windows.Visibility.Visible;
+                                                     });
         }
     }
 }
