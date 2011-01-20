@@ -4,9 +4,11 @@ using System.Threading;
 using Moq;
 using Nomad.Internationalization;
 using NUnit.Framework;
+using TestsShared;
 
 namespace Nomad.Tests.UnitTests
 {
+    [UnitTests]
     public class Internationalization
     {
         private ResourceProvider _resourceProvider;
