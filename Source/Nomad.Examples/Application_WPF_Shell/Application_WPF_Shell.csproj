@@ -50,17 +50,24 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="en-GB.Designer.cs">
+    <Compile Include="LanguageSelecting.xaml.cs">
+      <DependentUpon>LanguageSelecting.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\en-GB.Designer.cs">
       <DependentUpon>en-GB.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="pl-PL.Designer.cs">
+    <Compile Include="Resources\pl-PL.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>pl-PL.resx</DependentUpon>
     </Compile>
     <Compile Include="ShellBootstraper.cs" />
+    <Page Include="LanguageSelecting.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -88,13 +95,14 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <EmbeddedResource Include="en-GB.resx">
+    <EmbeddedResource Include="Resources\en-GB.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>en-GB.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="pl-PL.resx">
+    <EmbeddedResource Include="Resources\pl-PL.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>pl-PL.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

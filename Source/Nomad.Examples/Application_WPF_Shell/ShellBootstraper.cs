@@ -1,4 +1,9 @@
+using System.Globalization;
+using System.Resources;
 using System.Threading;
+using System.Windows;
+using System.Windows.Controls;
+using Application_WPF_Shell.Resources;
 using Nomad.Communication.EventAggregation;
 using Nomad.Communication.ServiceLocation;
 using Nomad.Internationalization;
@@ -57,14 +62,21 @@ namespace Application_WPF_Shell
             _locator.Register(regionManager);
 
             var resourceProvider = ResourceProvider.CurrentResourceProvider;
-            resourceProvider.AddSource("pl-PL", new FakeResourceSource());
+            //var resourceManager = new ResourceManager("Application_WPF_Shell", GetType().Assembly);
+            var assembly = GetType().Assembly;
+            
+            var resourceManager = new ResourceManager("Application_WPF_Shell.Resources.en-GB",  assembly);
+            var resourceManagerPL = new ResourceManager("Application_WPF_Shell.Resources.pl-PL",  assembly);
+            resourceProvider.AddSource("pl-PL", new ResourceManagerResourceSource(resourceManagerPL));
+            resourceProvider.AddSource("en-GB", new ResourceManagerResourceSource(resourceManager));
+
+            
             _aggregator.Subscribe<NomadCultureChangedMessage>(x => resourceProvider.ChangeUiCulture(x.CurrentCulture));
 
             _app = new App();
-            _app.Run(new MainWindow(_locator, _aggregator, _resetEvent));
+            _app.Run(new MainWindow(_locator, _aggregator, _resetEvent, regionManager));
         }
-
-
+        
         private static IRegionAdapter[] GetRegionAdapters()
         {
             return new IRegionAdapter[]

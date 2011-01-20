@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Application_WPF_Shell {
+namespace Application_WPF_Shell.Resources {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace Application_WPF_Shell {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class pl_PL {
+    public class en_GB {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal pl_PL() {
+        internal en_GB() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Application_WPF_Shell {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Application_WPF_Shell.pl-PL", typeof(pl_PL).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Application_WPF_Shell.Resources.en-GB", typeof(en_GB).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,7 +61,7 @@ namespace Application_WPF_Shell {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Uruchom przetwarzanie.
+        ///   Looks up a localized string similar to Run.
         /// </summary>
         internal static string MainWindow_Run {
             get {
@@ -70,7 +70,25 @@ namespace Application_WPF_Shell {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Zatrzymaj przetwarzanie.
+        ///   Looks up a localized string similar to Set English.
+        /// </summary>
+        internal static string MainWindow_SetEN {
+            get {
+                return ResourceManager.GetString("MainWindow.SetEN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set Polish.
+        /// </summary>
+        internal static string MainWindow_SetPL {
+            get {
+                return ResourceManager.GetString("MainWindow.SetPL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stop.
         /// </summary>
         internal static string MainWindow_Stop {
             get {

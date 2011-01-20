@@ -107,6 +107,7 @@
     <Compile Include="Internationalization\FakeResourceSource.cs" />
     <Compile Include="Internationalization\IResourceSource.cs" />
     <Compile Include="Internationalization\ResourceExtension.cs" />
+    <Compile Include="Internationalization\ResourceManagerResourceSource.cs" />
     <Compile Include="Internationalization\ResourceProvider.cs" />
     <Compile Include="Internationalization\TranslationSource.cs" />
     <Compile Include="Messages\Loading\NomadAllModulesLoadedMessage.cs" />

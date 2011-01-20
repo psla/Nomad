@@ -1,19 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Threading;
 using Nomad.Communication.EventAggregation;
 using Nomad.Communication.ServiceLocation;
+using Nomad.Regions;
 
 namespace Application_WPF_Shell
 {
@@ -22,11 +10,27 @@ namespace Application_WPF_Shell
     /// </summary>
     public partial class MainWindow
     {
-        public MainWindow(IServiceLocator locator, IEventAggregator aggregator, ManualResetEvent resetEvent)
+        private readonly IEventAggregator _aggregator;
+        private readonly RegionManager _regionManager;
+
+
+        public MainWindow(IServiceLocator locator, IEventAggregator aggregator,
+                          ManualResetEvent resetEvent, RegionManager regionManager)
         {
+            _aggregator = aggregator;
+            _regionManager = regionManager;
             InitializeComponent();
 
             resetEvent.Set();
+
+            AddButtonsForLanguage();
+        }
+
+
+        private void AddButtonsForLanguage()
+        {
+            IRegion region = _regionManager.GetRegion("leftSideMenu");
+            region.AddView(new LanguageSelecting(_aggregator));
         }
     }
 }

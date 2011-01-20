@@ -120,6 +120,12 @@
   <data name="MainWindow.Run" xml:space="preserve">
     <value>Uruchom przetwarzanie</value>
   </data>
+  <data name="MainWindow.SetEN" xml:space="preserve">
+    <value>Ustaw angielski</value>
+  </data>
+  <data name="MainWindow.SetPL" xml:space="preserve">
+    <value>Ustaw polski</value>
+  </data>
   <data name="MainWindow.Stop" xml:space="preserve">
     <value>Zatrzymaj przetwarzanie</value>
   </data>
