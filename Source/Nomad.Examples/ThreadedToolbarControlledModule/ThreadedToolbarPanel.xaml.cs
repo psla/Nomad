@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -10,10 +9,15 @@ namespace ThreadedToolbarControlledModule
     /// <summary>
     /// Interaction logic for ThreadedToolbarPanel.xaml
     /// </summary>
+    /// <remarks>
+    /// Threaded worker searches for all pictures in last directory provided, loads all, transform to black & white and after finish adds region transformed images
+    /// When not fully finished (not all images transformed) it adds only pictures, that were transformed
+    /// </remarks>
     public partial class ThreadedToolbarPanel : ToolBar
     {
+        private readonly BackgroundWorker _bgWorker;
         private readonly IEventAggregator _eventAggregator;
-        private BackgroundWorker _bgWorker;
+
 
         public ThreadedToolbarPanel(IEventAggregator eventAggregator)
         {
