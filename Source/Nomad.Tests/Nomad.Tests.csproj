@@ -112,7 +112,6 @@
     <Compile Include="FunctionalTests\Kernel\Messages\EventHandledRegistry.cs" />
     <Compile Include="FunctionalTests\Kernel\NomadKernelAppDomainManagmentTests.cs" />
     <Compile Include="FunctionalTests\Fixtures\NomadKernelTestFixture.cs" />
-    <Compile Include="FunctionalTests\Kernel\NomadSandboxingTests.cs" />
     <Compile Include="FunctionalTests\Modules\IInjectableModulesRegistry.cs" />
     <Compile Include="FunctionalTests\Modules\InjectableModulesRegistry.cs" />
     <Compile Include="FunctionalTests\Modules\LoadedModulesRegistry.cs" />
