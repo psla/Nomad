@@ -43,7 +43,7 @@ namespace Nomad.Modules
                             "No such dependency in dictionary. The {0} could not be found.",
                             moduleInfo.Manifest.ModuleName));
 
-                GoDFS(moduleInfo.Manifest.ModuleName, moduleInfo.Manifest.ModuleName, 0, wrapper);
+                GoDFS(moduleInfo.Manifest.ModuleName, wrapper);
             }
 
             // read stack backwardly O(n)
@@ -70,10 +70,12 @@ namespace Nomad.Modules
             {
                 ModuleInfo inLoopModule = loadedModule;
                 ModuleInfo uploadModule =
-                    concatentedList.Where((module) => module.Manifest.ModuleName.Equals(inLoopModule.Manifest.ModuleName))
-                    .Select(x => x)
-                    .DefaultIfEmpty(null)
-                    .SingleOrDefault();
+                    concatentedList.Where(
+                        (module) =>
+                        module.Manifest.ModuleName.Equals(inLoopModule.Manifest.ModuleName))
+                        .Select(x => x)
+                        .DefaultIfEmpty(null)
+                        .SingleOrDefault();
 
                 if (uploadModule == null)
                 {
@@ -125,7 +127,7 @@ namespace Nomad.Modules
                 _myNodesDict[moduleInfo.Manifest.ModuleName] = new ModuleWrapper
                                                                    {
                                                                        Module = moduleInfo,
-                                                                       Visited = false
+                                                                       Color = NodeColor.White
                                                                    };
             }
         }
@@ -159,7 +161,7 @@ namespace Nomad.Modules
                     _nonValidModules.Add(moduleInfo);
                 }
 
-                GoDFS(moduleInfo.Manifest.ModuleName, moduleInfo.Manifest.ModuleName, 0, wrapper);
+                GoDFS(moduleInfo.Manifest.ModuleName, wrapper);
             }
 
             // read stack backwardly O(n) or return empty list if sorting was not possible
@@ -176,10 +178,11 @@ namespace Nomad.Modules
         }
 
 
-        private void GoDFS(string myNode, string startingNode, int depth, ModuleWrapper myNodeInfo)
+        private void GoDFS(string myNode, ModuleWrapper myNodeInfo)
         {
             // get list of nodes to go
             List<string> nodesToGo;
+
             if (!_nextNodeList.TryGetValue(myNode, out nodesToGo))
                 if (_sortingMode == SortingMode.Exceptions)
                 {
@@ -194,28 +197,27 @@ namespace Nomad.Modules
                     return; // nodes to go wil be empty -> no place to go
                 }
 
-            // check if graph has cycles
-            if (myNode.Equals(startingNode) && depth > 0)
+            // stop condition (already visted)
+            if (myNodeInfo.Color == NodeColor.Black)
+                return;
+
+            // stop c
+            if (myNodeInfo.Color == NodeColor.Gray)
+            {
                 if (_sortingMode == SortingMode.Exceptions)
-                {
                     throw new ArgumentException(
-                        string.Format("DependencyGraph has cycles. Duplicated node is {0}.",
-                                      startingNode),
-                        "startingNode");
-                }
+                        string.Format("DependencyGraph has cycles. Duplicated node is {0}.", myNode),
+                        "myNode");
                 else if (_sortingMode == SortingMode.Silent)
                 {
                     _canBeSorted = false;
-                    return; // we have to jump out because of the infinite loop
+                    return;
                 }
+                    
+            }
 
-            depth++;
-
-            // stop condition
-            if (myNodeInfo.Visited)
-                return;
-
-            myNodeInfo.Visited = true;
+            // mark node as gray (meaning we are traversing this node)
+            myNodeInfo.Color = NodeColor.Gray;
 
             foreach (string nodeName in nodesToGo)
             {
@@ -275,47 +277,29 @@ namespace Nomad.Modules
                     }
 
                 // if everything ok, go DFS
-                GoDFS(nodeName, startingNode, depth, nodeToGo);
+                GoDFS(nodeName, nodeToGo);
             }
             _stack.Push(myNodeInfo.Module);
+            myNodeInfo.Color = NodeColor.Black;
         }
-
-        #region Nested type: InjectableEqualityComparer
-
-        private class InjectableEqualityComparer<T> : IEqualityComparer<T>
-        {
-            private readonly Func<T, T, bool> _comparer;
-
-
-            public InjectableEqualityComparer(Func<T, T, bool> comparer)
-            {
-                _comparer = comparer;
-            }
-
-            #region IEqualityComparer<T> Members
-
-            public bool Equals(T a, T b)
-            {
-                return _comparer(a, b);
-            }
-
-
-            public int GetHashCode(T a)
-            {
-                return a.GetHashCode();
-            }
-
-            #endregion
-        }
-
-        #endregion
 
         #region Nested type: ModuleWrapper
 
         private class ModuleWrapper
         {
             public ModuleInfo Module { get; set; }
-            public bool Visited { get; set; }
+            public NodeColor Color { get; set; }
+        }
+
+        #endregion
+
+        #region Nested type: NodeColor
+
+        private enum NodeColor
+        {
+            White,
+            Gray,
+            Black
         }
 
         #endregion

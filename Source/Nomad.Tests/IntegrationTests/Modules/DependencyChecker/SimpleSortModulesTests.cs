@@ -38,6 +38,26 @@ namespace Nomad.Tests.IntegrationTests.Modules.DependencyChecker
             Assert.AreEqual(ExpectedModules, result);
         }
 
+        [Test]
+        public void sorting_one_elment_list()
+        {
+            var a = SetUpModuleInfo("A");
+            Modules = new List<ModuleInfo>() {a};
+            ExpectedModules = new List<ModuleInfo>() {a};
+
+            Assert.AreEqual(ExpectedModules,DependencyChecker.SortModules(Modules),"One element list should be sorted right away");
+        }
+
+        [Test]
+        public void sorting_two_independnt_element_list()
+        {
+            var a = SetUpModuleInfo("A");
+            var b = SetUpModuleInfo("B");
+            Modules = new List<ModuleInfo>() { a,b };
+            ExpectedModules = new List<ModuleInfo>() { a,b };
+
+            Assert.AreEqual(ExpectedModules, DependencyChecker.SortModules(Modules), "Two element list with no dependencies should be sorted right away");
+        }
 
         [Test]
         public void sorting_hard_linked_dag_list()
@@ -110,10 +130,22 @@ namespace Nomad.Tests.IntegrationTests.Modules.DependencyChecker
             Assert.Throws<ArgumentException>(() => DependencyChecker.SortModules(Modules));
         }
 
-        #region SetUp of ModuleInfo
+        [Test]
+        public void sorting_contains_cycle_exception()
+        {
+            /*
+             * A -> B -> C -> B
+             */
+            var a = SetUpModuleInfo("A", "B");
+            var b = SetUpModuleInfo("B", "C");
+            var c = SetUpModuleInfo("C", "B");
 
-        #endregion
+            Modules = new List<ModuleInfo> { a, b, c };
 
-       
+            ExpectedModules = null;
+
+            // perform test
+            Assert.Throws<ArgumentException>(() => DependencyChecker.SortModules(Modules));
+        }
     }
 }
