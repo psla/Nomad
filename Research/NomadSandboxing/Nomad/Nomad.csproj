@@ -1,0 +1,254 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{3828EBBD-FFBA-4C30-BF46-D3742BC165F1}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Nomad</RootNamespace>
+    <AssemblyName>Nomad</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Release\Nomad\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\XmlDocumentation\Nomad\Nomad.XML</DocumentationFile>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>Nomad.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Castle.Core, Version=2.5.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Libraries\Windsor\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Windsor, Version=2.5.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Libraries\Windsor\Castle.Windsor.dll</HintPath>
+    </Reference>
+    <Reference Include="Ionic.Zip.Reduced, Version=1.9.1.5, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Libraries\DotNetZip\Ionic.Zip.Reduced.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="PresentationFramework">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Security" />
+    <Reference Include="System.ServiceModel">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Communication\EventAggregation\DeliveryMethod.cs" />
+    <Compile Include="Communication\EventAggregation\ForwardingEventAggregator.cs" />
+    <Compile Include="Communication\EventAggregation\EventAggregatorTicket.cs" />
+    <Compile Include="Communication\EventAggregation\IEventAggregatorTicket.cs" />
+    <Compile Include="Communication\EventAggregation\IGuiThreadProvider.cs" />
+    <Compile Include="Communication\EventAggregation\LazyWpfGuiThreadProvider.cs" />
+    <Compile Include="Communication\EventAggregation\NullGuiThreadProvider.cs" />
+    <Compile Include="Communication\EventAggregation\TicketDisposedArgs.cs" />
+    <Compile Include="Communication\EventAggregation\WpfGuiThreadProvider.cs" />
+    <Compile Include="Internationalization\FakeResourceSource.cs" />
+    <Compile Include="Internationalization\IResourceSource.cs" />
+    <Compile Include="Internationalization\ResourceExtension.cs" />
+    <Compile Include="Internationalization\ResourceManagerResourceSource.cs" />
+    <Compile Include="Internationalization\ResourceProvider.cs" />
+    <Compile Include="Internationalization\TranslationSource.cs" />
+    <Compile Include="Messages\Loading\NomadAllModulesLoadedMessage.cs" />
+    <Compile Include="Messages\Loading\NomadCouldNotLoadModuleMessage.cs" />
+    <Compile Include="Messages\NomadCultureChangedMessage.cs" />
+    <Compile Include="Messages\NomadMessage.cs" />
+    <Compile Include="Core\IModulesOperations.cs" />
+    <Compile Include="Exceptions\NomadCouldNotLoadModuleException.cs" />
+    <Compile Include="Exceptions\NomadException.cs" />
+    <Compile Include="Messages\WpfGuiChangedMessage.cs" />
+    <Compile Include="Modules\ContainerCreator.cs" />
+    <Compile Include="Core\NomadConfiguration.cs" />
+    <Compile Include="Core\NomadKernel.cs" />
+    <Compile Include="Communication\EventAggregation\EventAggregator.cs" />
+    <Compile Include="Communication\EventAggregation\IEventAggregator.cs" />
+    <Compile Include="Exceptions\NomadDuplicateServiceException.cs" />
+    <Compile Include="Exceptions\NomadServiceNotFoundException .cs" />
+    <Compile Include="Modules\DependencyChecker.cs" />
+    <Compile Include="Modules\Discovery\CompositeModuleDiscovery.cs" />
+    <Compile Include="Modules\Discovery\DirectoryModuleDiscovery.cs" />
+    <Compile Include="Modules\Discovery\ListModuleDiscovery.cs" />
+    <Compile Include="Modules\Discovery\SingleModuleDiscovery.cs" />
+    <Compile Include="Modules\Filters\CompositeModuleFilter.cs" />
+    <Compile Include="Modules\Discovery\SimpleDirectoryModuleDiscovery.cs" />
+    <Compile Include="Modules\IDependencyChecker.cs" />
+    <Compile Include="Modules\IModuleBootstraper.cs" />
+    <Compile Include="Modules\Discovery\IModuleDiscovery.cs" />
+    <Compile Include="Modules\Filters\IModuleFilter.cs" />
+    <Compile Include="Modules\IModuleLoader.cs" />
+    <Compile Include="Modules\Installers\ModuleLoaderInstaller.cs" />
+    <Compile Include="Modules\Installers\NomadServiceLocatorInstaller.cs" />
+    <Compile Include="Modules\Manifest\IModuleManifestFactory.cs" />
+    <Compile Include="Modules\Manifest\ModuleDependency.cs" />
+    <Compile Include="Modules\Manifest\ModuleManifestFactory.cs" />
+    <Compile Include="Modules\Installers\NomadEventAggregatorInstaller.cs" />
+    <Compile Include="Regions\Adapters\ItemsControlAdapter.cs" />
+    <Compile Include="Regions\Adapters\MultipleActiveViewRegion.cs" />
+    <Compile Include="Regions\Adapters\StatusBarAdapter.cs" />
+    <Compile Include="Regions\Adapters\ToolbarTrayAdapter.cs" />
+    <Compile Include="Regions\Behaviors\IHaveTitle.cs" />
+    <Compile Include="Regions\Behaviors\SynchronizeToolbarsBehavior.cs" />
+    <Compile Include="Regions\Behaviors\ItemsControlTemplateSelector.cs" />
+    <Compile Include="Regions\Behaviors\TabControlHeaderTemplateSelectorBehavior.cs" />
+    <Compile Include="Services\ILoadedModulesService.cs" />
+    <Compile Include="Services\LoadedModulesService.cs" />
+    <Compile Include="Signing\FileUtils\SignedFile.cs" />
+    <Compile Include="Signing\KeyStorage.cs" />
+    <Compile Include="Signing\SignatureAlgorithms\AcceptSignatureAlgorithm.cs" />
+    <Compile Include="Signing\SignatureAlgorithms\PkiSignatureAlgorithm.cs" />
+    <Compile Include="Updater\AvailableModules.cs" />
+    <Compile Include="Messages\Updating\NomadAvailableUpdatesMessage.cs" />
+    <Compile Include="Updater\IUpdater.cs" />
+    <Compile Include="Updater\ModuleFinders\IModuleFinder.cs" />
+    <Compile Include="Updater\ModuleFinders\ModuleFinder.cs" />
+    <Compile Include="Updater\ModulePackagers\IModulePackager.cs" />
+    <Compile Include="Updater\ModuleRepositories\IModulesRepository.cs" />
+    <Compile Include="Updater\ModulePackage.cs" />
+    <Compile Include="Updater\ModulePackagers\ModulePackager.cs" />
+    <Compile Include="Updater\ModuleRepositories\WebModulesRepository.cs" />
+    <Compile Include="Updater\ModuleRepositories\WebRepositories\WebAvailablePackagesCollection.cs" />
+    <Compile Include="Updater\ModuleRepositories\WebRepositories\WebModulePackageInfo.cs" />
+    <Compile Include="Updater\UpdateArguments.cs" />
+    <Compile Include="Updater\Updater.cs" />
+    <Compile Include="Messages\Updating\NomadUpdatesReadyMessage.cs" />
+    <Compile Include="Updater\UpdaterStatus.cs" />
+    <Compile Include="Updater\UpdaterType.cs" />
+    <Compile Include="Utils\ManifestCreator\FileSignerProviders\ISignedFilesProvider.cs" />
+    <Compile Include="Utils\ManifestCreator\DependenciesProvider\IModulesDependenciesProvider.cs" />
+    <Compile Include="Utils\ManifestCreator\DependenciesProvider\FromFileModulesDependencyProvider.cs" />
+    <Compile Include="Utils\ManifestCreator\VersionProviders\IVersionProvider.cs" />
+    <Compile Include="Utils\ManifestCreator\ManifestBuilder.cs" />
+    <Compile Include="Utils\ManifestCreator\ManifestBuilderConfiguration.cs" />
+    <Compile Include="Utils\ManifestCreator\VersionProviders\SimpleVersionProvider.cs" />
+    <Compile Include="Utils\ManifestCreator\FileSignerProviders\WholeDirectorySignedFilesProvider.cs" />
+    <Compile Include="Utils\ManifestCreator\DependenciesProvider\WholeDirectoryModulesDependenciesProvider.cs" />
+    <Compile Include="Utils\Version.cs" />
+    <Compile Include="Modules\ModuleInfo.cs" />
+    <Compile Include="Modules\ModuleLoader.cs" />
+    <Compile Include="Modules\ModuleManager.cs" />
+    <Compile Include="Modules\Manifest\ModuleManifest.cs" />
+    <Compile Include="Modules\Filters\SignatureModuleFilter.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Regions\Adapters\TabControlAdapter.cs" />
+    <Compile Include="Regions\Behaviors\ActiveAwareBehavior.cs" />
+    <Compile Include="Regions\Behaviors\IActiveAware.cs" />
+    <Compile Include="Regions\Behaviors\SynchronizeActiveItemsBehavior.cs" />
+    <Compile Include="Regions\Behaviors\SynchronizeItemsBehavior.cs" />
+    <Compile Include="Regions\IRegion.cs" />
+    <Compile Include="Regions\IRegionAdapter.cs" />
+    <Compile Include="Regions\IRegionBehavior.cs" />
+    <Compile Include="Regions\IRegionFactory.cs" />
+    <Compile Include="Regions\IViewCollection.cs" />
+    <Compile Include="Regions\RegionFactory.cs" />
+    <Compile Include="Regions\RegionManager.cs" />
+    <Compile Include="Regions\SingleActiveViewRegion.cs" />
+    <Compile Include="Regions\ViewCollection.cs" />
+    <Compile Include="Communication\ServiceLocation\IServiceLocator.cs" />
+    <Compile Include="Communication\ServiceLocation\ServiceLocator.cs" />
+    <Compile Include="Signing\FileSignatureVerificator.cs" />
+    <Compile Include="Signing\FileUtils\File.cs" />
+    <Compile Include="Signing\FileUtils\FileSignature.cs" />
+    <Compile Include="Signing\SignatureAlgorithms\ISignatureAlgorithm.cs" />
+    <Compile Include="Signing\SignatureProviders\ISignatureProvider.cs" />
+    <Compile Include="Signing\IssuerInformation.cs" />
+    <Compile Include="Signing\SignatureAlgorithms\NullSignatureAlgorithm.cs" />
+    <Compile Include="Signing\SignatureAlgorithms\RsaSignatureAlgorithm.cs" />
+    <Compile Include="Signing\SignatureProviders\SignatureProvider.cs" />
+    <Compile Include="Utils\XmlSerializerHelper.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Nomad.snk" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

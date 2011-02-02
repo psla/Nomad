@@ -1,0 +1,267 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{18AC8400-37F4-4473-9BEB-204B0C9D9ABE}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Nomad.Tests</RootNamespace>
+    <AssemblyName>Nomad.Tests</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Build\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Build\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Bricks.RuntimeFramework, Version=1.0.0.0, Culture=neutral, PublicKeyToken=83a26c96fb92c77f, processorArchitecture=MSIL" />
+    <Reference Include="Castle.Core, Version=2.5.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Libraries\Windsor\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Windsor, Version=2.5.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Libraries\Windsor\Castle.Windsor.dll</HintPath>
+    </Reference>
+    <Reference Include="Ionic.Zip.Reduced, Version=1.9.1.5, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Libraries\DotNetZip\Ionic.Zip.Reduced.dll</HintPath>
+    </Reference>
+    <Reference Include="Moq, Version=4.0.10501.6, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Libraries\Moq\Moq.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework, Version=2.5.5.10112, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Libraries\NUnit\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="PresentationFramework">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UIAutomationClient" />
+    <Reference Include="UIAutomationProvider">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="White.Core, Version=0.2.0.0, Culture=neutral, PublicKeyToken=2672efbf3e161801, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Libraries\White\White.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsBase">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="FunctionalTests\EventAggregation\EventAggregationGuiThreadChangesSupport.cs" />
+    <Compile Include="FunctionalTests\EventAggregation\EventAggregatorFacade.cs" />
+    <Compile Include="FunctionalTests\EventAggregation\EventPublishing.cs" />
+    <Compile Include="FunctionalTests\EventAggregation\ThreadingTestsHelpers.cs" />
+    <Compile Include="FunctionalTests\Kernel\Messages\EventHandledRegistry.cs" />
+    <Compile Include="FunctionalTests\Kernel\NomadKernelAppDomainManagmentTests.cs" />
+    <Compile Include="FunctionalTests\Fixtures\NomadKernelTestFixture.cs" />
+    <Compile Include="FunctionalTests\Modules\IInjectableModulesRegistry.cs" />
+    <Compile Include="FunctionalTests\Modules\InjectableModulesRegistry.cs" />
+    <Compile Include="FunctionalTests\Modules\LoadedModulesRegistry.cs" />
+    <Compile Include="FunctionalTests\Modules\LoadingModules.cs" />
+    <Compile Include="FunctionalTests\Modules\LoadingModulesWithReferenceDependencies.cs" />
+    <Compile Include="FunctionalTests\Modules\LoadingModulesWithServiceDependencies.cs" />
+    <Compile Include="FunctionalTests\Fixtures\ModuleCompiler.cs" />
+    <Compile Include="FunctionalTests\Fixtures\ModuleLoadingTestFixture.cs" />
+    <Compile Include="FunctionalTests\Fixtures\ModuleLoadingWithCompilerTestFixture.cs" />
+    <Compile Include="FunctionalTests\Regions\MenuBehaviors.cs" />
+    <Compile Include="FunctionalTests\Regions\ToolbarBehaviors.cs" />
+    <Compile Include="FunctionalTests\Regions\ItemsControlBehaviors.cs" />
+    <Compile Include="FunctionalTests\Regions\ToolbarTrayBehaviors.cs" />
+    <Compile Include="FunctionalTests\Regions\RegisteringRegionsFromMarkup.cs" />
+    <Compile Include="FunctionalTests\Regions\FakeWindowWithRegionsRegisteredByAttachedProperty.xaml.cs">
+      <DependentUpon>FakeWindowWithRegionsRegisteredByAttachedProperty.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FunctionalTests\Regions\FakeWindowWithRegions.xaml.cs">
+      <DependentUpon>FakeWindowWithRegions.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FunctionalTests\Regions\StatusBarBehaviors.cs" />
+    <Compile Include="FunctionalTests\Regions\StatusBarUIItem.cs" />
+    <Compile Include="FunctionalTests\Regions\TabControlBehaviors.cs" />
+    <Compile Include="FunctionalTests\ServiceLocation\ITestService.cs" />
+    <Compile Include="FunctionalTests\ServiceLocation\ServiceLocatorInModules.cs" />
+    <Compile Include="FunctionalTests\ServiceLocation\ServiceRegistry.cs" />
+    <Compile Include="FunctionalTests\Services\LoadedModulesServiceTests.cs" />
+    <Compile Include="FunctionalTests\Signing\KernelSupportOfPki.cs" />
+    <Compile Include="FunctionalTests\Signing\PKIModuleSigning.cs" />
+    <Compile Include="FunctionalTests\Signing\KeyGenerating.cs" />
+    <Compile Include="FunctionalTests\Signing\ModuleSigning.cs" />
+    <Compile Include="FunctionalTests\Modules\Filters\SignedModulesFiltering.cs" />
+    <Compile Include="FunctionalTests\Kernel\NomadKernelEventRaising.cs" />
+    <Compile Include="FunctionalTests\Updater\UpdaterLifetimeTests.cs" />
+    <Compile Include="FunctionalTests\Updater\UpdaterLifetimeTestsBase.cs" />
+    <Compile Include="FunctionalTests\Utils\FromFileModuleDependencies.cs" />
+    <Compile Include="IntegrationTests\Modules\DependencyChecker\CheckModulesTest.cs" />
+    <Compile Include="IntegrationTests\Modules\DependencyChecker\DependencyCheckerBase.cs" />
+    <Compile Include="IntegrationTests\Modules\DependencyChecker\VersionsSortModulesTests.cs" />
+    <Compile Include="IntegrationTests\Modules\DirectoryModuleDiscovery.cs" />
+    <Compile Include="IntegrationTests\Updater\AppDomainBoundariesUpdaterTests.cs" />
+    <Compile Include="IntegrationTests\Updater\ModuleFinderTests.cs" />
+    <Compile Include="IntegrationTests\Updater\ModulePackagerTests.cs" />
+    <Compile Include="FunctionalTests\Kernel\NomadSandboxingTests.cs" />
+    <Compile Include="UnitTests\Internationalization.cs" />
+    <Compile Include="UnitTests\Updater\CheckingUpdates.cs" />
+    <Compile Include="UnitTests\Updater\PerformingUpdates.cs" />
+    <Compile Include="GuiNunitHooks.cs" />
+    <Compile Include="IntegrationTests\Modules\SimpleDirectoryModuleDiscovery.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="IntegrationTests\Kernel\NomadKernelTests.cs" />
+    <Compile Include="UnitTests\Kernel\NomadConfigurationTests.cs" />
+    <Compile Include="UnitTests\Modules\CompositeModuleFilterTests.cs" />
+    <Compile Include="IntegrationTests\Modules\DependencyChecker\SimpleSortModulesTests.cs" />
+    <Compile Include="UnitTests\Modules\ModuleManagerInteractions.cs" />
+    <Compile Include="UnitTests\Modules\VersionConverting.cs" />
+    <Compile Include="UnitTests\Regions\Adapters\AdapterContractBase.cs" />
+    <Compile Include="UnitTests\Regions\Adapters\TabControlAdapterContract.cs" />
+    <Compile Include="UnitTests\Regions\RegionCreation.cs" />
+    <Compile Include="UnitTests\Regions\RegionManagement.cs" />
+    <Compile Include="UnitTests\Regions\SingleActiveViewRegionBehavior.cs" />
+    <Compile Include="IntegrationTests\ServiceLocation\ServiceLocationIsolatedTests.cs" />
+    <Compile Include="UnitTests\Services\NomadGetLoadedModulesServiceTests.cs" />
+    <Compile Include="UnitTests\Signing\AssemblyVerification.cs" />
+    <Compile Include="UnitTests\Signing\SignatureContainer.cs" />
+    <Compile Include="UnitTests\Signing\SignatureTests.cs" />
+    <Compile Include="UnitTests\Updater\PreparingUpdates.cs" />
+    <Compile Include="UnitTests\Updater\UpdaterTestFixture.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Nomad.KeysGenerator\Nomad.KeysGenerator.csproj">
+      <Project>{1F6C3A60-1A3C-4627-A9F3-B71897468E21}</Project>
+      <Name>Nomad.KeysGenerator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Nomad.ManifestCreator\Nomad.ManifestCreator.csproj">
+      <Project>{EF5A9D12-B2C4-46E0-B7E9-75868819C4C8}</Project>
+      <Name>Nomad.ManifestCreator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Nomad\Nomad.csproj">
+      <Project>{3828EBBD-FFBA-4C30-BF46-D3742BC165F1}</Project>
+      <Name>Nomad</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TestsShared\TestsShared.csproj">
+      <Project>{568F24F9-9ED8-4D0B-931C-8506E3A4808C}</Project>
+      <Name>TestsShared</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="FunctionalTests\.gitignore" />
+    <None Include="IntegrationTests\.gitignore" />
+    <None Include="res\pki\NomadInvalidCa.cer">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="res\pki\NomadInvalidCa.crl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="res\pki\signed_with_untrusted_cert\sample_module.dll.manifest">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="res\pki\signed_with_untrusted_cert\sample_module.dll.manifest.asc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="res\pki\SignedByCA.pfx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="res\pki\SignedByInvalidCA.pfx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="res\test.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="UnitTests\.gitignore" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="FunctionalTests\Regions\FakeWindowWithRegionsRegisteredByAttachedProperty.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="FunctionalTests\Regions\FakeWindowWithRegions.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
