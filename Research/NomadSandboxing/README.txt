@@ -10,3 +10,5 @@ Nomad.Tests/FunctionalTests/Kernel/NomadSandboxingTests.cs
 Nomad.Tests/Nomad.Tests.csproj
 
 Above files should be copied into the main Source folder in order to continue research on this feature.
+
+Full buildable branch also available in file NomadSandboxingFullRepo.7z
