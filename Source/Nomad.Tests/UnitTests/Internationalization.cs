@@ -26,7 +26,7 @@ namespace Nomad.Tests.UnitTests
         public void returns_request_when_no_resource_matching_language()
         {
             string request = "test-resource";
-            string result = _resourceProvider.Retrieve(request);
+            string result = _resourceProvider.Retrieve(request) as string;
             Assert.AreEqual(request, result);
         }
 
@@ -40,7 +40,7 @@ namespace Nomad.Tests.UnitTests
             resourceSource.Setup(x => x.Retrieve(It.Is<string>(y => y == request))).Returns(response);
             _resourceProvider.AddSource(Thread.CurrentThread.CurrentCulture.Name,
                                         resourceSource.Object);
-            string result = _resourceProvider.Retrieve(request);
+            string result = _resourceProvider.Retrieve(request) as string;
             Assert.AreEqual(response, result);
         }
 
@@ -52,7 +52,7 @@ namespace Nomad.Tests.UnitTests
             var resourceSource = new Mock<IResourceSource>();
             _resourceProvider.AddSource(Thread.CurrentThread.CurrentCulture.Name,
                                         resourceSource.Object);
-            string response = _resourceProvider.Retrieve(request);
+            string response = _resourceProvider.Retrieve(request) as string;
             Assert.AreEqual(request, response);
         }
 

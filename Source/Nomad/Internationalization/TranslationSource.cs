@@ -20,7 +20,7 @@ namespace Nomad.Internationalization
         }
 
 
-        public string Value
+        public object Value
         {
             get { return _resourceProvider.Retrieve(_key); }
         }

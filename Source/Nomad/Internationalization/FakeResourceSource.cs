@@ -7,9 +7,9 @@ namespace Nomad.Internationalization
     ///</summary>
     public class FakeResourceSource : IResourceSource
     {
-        public string Retrieve(string request)
+        public object Retrieve(string request)
         {
-            return "fa³szywy resource";
+            return "Fake resource";
         }
     }
 }

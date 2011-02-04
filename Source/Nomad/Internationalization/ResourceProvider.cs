@@ -46,17 +46,18 @@ namespace Nomad.Internationalization
         /// <remarks>
         /// 1. Look up into current UI culture resource source
         /// 2. If not found, return request
+        /// </remarks>
         /// <param name="request">resource to find</param>
-        /// <returns>Resource or request when no found</returns>
+        /// <returns>Resource or request when not found</returns>
         //TODO: We may add 2nd step return default if not found for current culture
-        public string Retrieve(string request)
+        public object Retrieve(string request)
         {
             ICollection<IResourceSource> sources;
             if (_resourceSources.TryGetValue(Thread.CurrentThread.CurrentUICulture.Name, out sources))
             {
                 foreach (var source in sources) //TODO: Consider thread safety (collection changed..)
                 {
-                    string resource = source.Retrieve(request);
+                    var resource = source.Retrieve(request);
                     if (null != resource)
                         return resource;
                 }

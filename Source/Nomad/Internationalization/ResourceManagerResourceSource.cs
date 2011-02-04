@@ -18,7 +18,7 @@ namespace Nomad.Internationalization
 
         #region IResourceSource Members
 
-        public string Retrieve(string request)
+        public object Retrieve(string request)
         {
             try
             {
