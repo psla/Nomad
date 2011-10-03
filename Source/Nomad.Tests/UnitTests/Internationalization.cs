@@ -38,7 +38,7 @@ namespace Nomad.Tests.UnitTests
             string response = "Translated test resource";
             var resourceSource = new Mock<IResourceSource>();
             resourceSource.Setup(x => x.Retrieve(It.Is<string>(y => y == request))).Returns(response);
-            _resourceProvider.AddSource(Thread.CurrentThread.CurrentCulture.Name,
+            _resourceProvider.AddSource(Thread.CurrentThread.CurrentUICulture.Name,
                                         resourceSource.Object);
             string result = _resourceProvider.Retrieve(request) as string;
             Assert.AreEqual(response, result);
@@ -92,8 +92,8 @@ namespace Nomad.Tests.UnitTests
             var resourceSource2 = new Mock<IResourceSource>();
             resourceSource2.Setup(x => x.Retrieve(It.Is<string>(y => y == request2))).Returns(response2);
 
-            _resourceProvider.AddSource(Thread.CurrentThread.CurrentCulture.Name,resourceSource.Object);
-            _resourceProvider.AddSource(Thread.CurrentThread.CurrentCulture.Name,resourceSource2.Object);
+            _resourceProvider.AddSource(Thread.CurrentThread.CurrentUICulture.Name,resourceSource.Object);
+            _resourceProvider.AddSource(Thread.CurrentThread.CurrentUICulture.Name,resourceSource2.Object);
 
             var result1 = _resourceProvider.Retrieve(request);
             var result2 = _resourceProvider.Retrieve(request2);
