@@ -17,10 +17,11 @@ Binaries would be located in D:\projekty\studia\studia-inz\Release\Nomad\bin.
 If you would like to contribute in development, make sure to install Nomad Fake CA, what is obligatory to pass all of the unit tests. Follow instructions written in Research/Certificates/INSTALL_INSTRUCTIONS
 
 #### Authors:
-Mikołaj Dobski
-Piotr Jessa
-Maciej Kowalewski
-Piotr Ślatała
+
+ * Mikołaj Dobski
+ * Piotr Jessa
+ * Maciej Kowalewski
+ * Piotr Ślatała
 
 #### License:
 Copyright (c) 2011, Mikołaj Dobski, Maciej Kowalewski, Piotr Jessa, Piotr Ślatała
@@ -28,13 +29,10 @@ All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-    * Names of the copyright holders may not be used to endorse or promote products
-      derived from this software without specific prior written permission.
+
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+ * Names of the copyright holders may not be used to endorse or promote products derived from this software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
